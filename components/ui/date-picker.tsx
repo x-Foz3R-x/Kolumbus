@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function DatePicker() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate]: [Date | null, any] = useState(null);
-  const onChange = (dates: [Date, Date | null]) => {
+  const onChange = (dates: [Date, Date | null]): void => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
@@ -17,7 +17,7 @@ export default function DatePicker() {
   return (
     <Calendar
       selected={startDate}
-      onChange={onChange([startDate, endDate])}
+      onChange={onChange}
       startDate={startDate}
       endDate={endDate}
       selectsRange
