@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { AuthProvider } from "@/context/auth";
 import { inter, gordita, adso, inconsolata } from "../assets/fonts/fonts";
 import "./tailwind.css";
@@ -39,6 +40,7 @@ export default function RootLayout({
         }
       >
         <AuthProvider>{children}</AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
