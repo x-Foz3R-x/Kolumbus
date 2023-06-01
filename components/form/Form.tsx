@@ -26,12 +26,17 @@ export function Submit({ handleClick, isEnabled, className }: SubmitProps) {
 }
 
 interface SeparatorProps {
-  scale?: number;
+  separatorWidth?: number;
 }
 
 /**
- * @param scale scale * 100 = width in px
+ * @param separatorWidth separatorWidth * 100 = width in px
  */
-export function FormSeparator({ scale = 3.2 }: SeparatorProps) {
-  return <FormSeparatorSVG className={`my-6 h-px scale-x-[${scale}]`} />;
+export function FormSeparator({ separatorWidth = 3.2 }: SeparatorProps) {
+  return (
+    <FormSeparatorSVG
+      style={{ transform: `scaleX(${separatorWidth})` }}
+      className="my-6 h-px"
+    />
+  );
 }

@@ -3,7 +3,6 @@ import colors from "tailwindcss/colors";
 
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
@@ -21,7 +20,7 @@ module.exports = {
       },
       boxShadow: {
         default:
-          "rgba(15,15,15,.03) 0px 0px 0px 1px,rgba(15,15,15,.1) 0px 2px 4px,rgba(15,15,15,.05) 0px 5px 10px;",
+          "0px 0px 0px 1px rgba(15,15,15,.03), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
         kolumblueSelected:
           "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
         kolumblueHover:
