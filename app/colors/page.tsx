@@ -1,4 +1,4 @@
-import Color from "./Color";
+import Color from "./ColorBlock";
 import Icon from "@/assets/kolumbus/icon.svg";
 
 export default function ColorPallette() {

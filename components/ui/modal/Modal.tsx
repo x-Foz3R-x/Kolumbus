@@ -18,6 +18,22 @@ export default function Modal({
   const modalRef: any = useRef(null);
 
   useLayoutEffect(() => {
+    const handleClick = (e: any) => {
+      const modalDimensions = modalRef.current?.getBoundingClientRect();
+      if (
+        e.clientX < modalDimensions.left ||
+        e.clientX > modalDimensions.right ||
+        e.clientY < modalDimensions.top ||
+        e.clientY > modalDimensions.bottom
+      )
+        setIsModalOpen(false);
+    };
+
+    const handleKeyDown = (e: any) => {
+      const ESCAPE_KEY = 27;
+      if (e.keyCode == ESCAPE_KEY) setIsModalOpen(false);
+    };
+
     if (isModalOpen) {
       document.addEventListener("click", handleClick);
       document.addEventListener("keydown", handleKeyDown);
@@ -28,22 +44,6 @@ export default function Modal({
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isModalOpen]);
-
-  const handleClick = (e: any) => {
-    const modalDimensions = modalRef.current?.getBoundingClientRect();
-    if (
-      e.clientX < modalDimensions.left ||
-      e.clientX > modalDimensions.right ||
-      e.clientY < modalDimensions.top ||
-      e.clientY > modalDimensions.bottom
-    )
-      setIsModalOpen(false);
-  };
-
-  const handleKeyDown = (e: any) => {
-    const ESCAPE_KEY = 27;
-    if (e.keyCode == ESCAPE_KEY) setIsModalOpen(false);
-  };
 
   return (
     <div

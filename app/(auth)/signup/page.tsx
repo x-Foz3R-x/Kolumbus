@@ -230,7 +230,7 @@ export default function SignUp() {
               Costa Rica
             </option>
             <option value="CIV" dir="auto">
-              Côte d'Ivoire
+              Côte d&apos;Ivoire
             </option>
             <option value="HRV" dir="auto">
               Croatia

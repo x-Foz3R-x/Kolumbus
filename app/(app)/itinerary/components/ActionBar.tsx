@@ -1,6 +1,5 @@
 import DatePicker from "@/app/(app)/components/DatePicker";
 import DaysPicker from "@/app/(app)/components/DaysPicker";
-import DaysPicker2 from "@/app/(app)/components/DaysPicker copy";
 
 import SavedSVG from "@/assets/svg/Saved.svg";
 import SavingSVG from "@/assets/svg/Saving.svg";

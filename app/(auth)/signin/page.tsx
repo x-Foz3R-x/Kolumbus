@@ -83,7 +83,7 @@ export default function SignUp() {
         <Link href="/">Forgot password?</Link>
 
         <div>
-          <span>Don't have an account? </span>
+          <span>Don&apos;t have an account? </span>
           <Link href="/signup">Create yours now.</Link>
         </div>
       </div>
