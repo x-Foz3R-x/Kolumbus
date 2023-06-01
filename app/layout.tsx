@@ -1,6 +1,6 @@
+import { AuthProvider } from "@/context/auth";
+import { inter, gordita, adso, inconsolata } from "../assets/fonts/fonts";
 import "./tailwind.css";
-
-import { inter, gordita, adso } from "./fonts";
 
 export const metadata = {
   title: {
@@ -26,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={
+          "scroll-smooth text-kolumbGray-800 antialiased " +
           gordita.className +
           " " +
           gordita.variable +
@@ -33,10 +34,11 @@ export default function RootLayout({
           adso.variable +
           " " +
           inter.variable +
-          " "
+          " " +
+          inconsolata.variable
         }
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

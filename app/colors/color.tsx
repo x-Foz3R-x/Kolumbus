@@ -1,33 +1,22 @@
-import Icon from "@/assets/logo/icon.svg";
+import Icon from "@/assets/kolumbus/icon.svg";
 
-export default function ColorPallette(props: any) {
-  const Pallette: any = [
-    <div key={props.color} className="flex items-center justify-center p-1">
-      {props.color}
-    </div>,
-  ];
+interface Props {
+  value?: number;
+  className: string;
+}
 
-  for (let i = 50; i <= 950; i += 100) {
-    let fill = `bg-${props.color}-` + i;
-
-    Pallette.push(
-      <div
-        key={props.color + i}
-        className={
-          "flex h-14 w-full items-center justify-center border-black " + fill
-        }
-      >
-        <Icon className="h-8 fill-black" />
-        <div className={"bg-blackAlpha-300 mx-14 rounded-lg p-1 text-white"}>
-          PALETA {i}
-        </div>
-        <Icon className="h-8 fill-white" />
+export default function Color({ value, className }: Props) {
+  return (
+    <div
+      className={
+        "flex h-14 w-full items-center justify-center border-black " + className
+      }
+    >
+      <Icon className="h-8 fill-black" />
+      <div className={"mx-14 rounded-lg bg-black/30 p-1 text-white"}>
+        PALETA {value}
       </div>
-    );
-
-    if (i == 50) i = 0;
-    if (i == 900) i = 850;
-  }
-
-  return Pallette;
+      <Icon className="h-8 fill-white" />
+    </div>
+  );
 }
