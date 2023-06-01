@@ -8,29 +8,29 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // fontFamily: {
-      //   gordita: "var(--font-gordita)",
-      //   adso: "var(--font-adso)",
-      //   inter: "var(--font-inter)",
-      //   inconsolata: "var(--font-inconsolata)",
-      // },
-      // transitionTimingFunction: {
-      //   "kolumb-overflow": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-      //   "kolumb-flow": "cubic-bezier(0.175, 0.885, 0.32, 1)",
-      // },
-      // boxShadow: {
-      //   default:
-      //     "0px 0px 0px 1px rgba(15,15,15,.03), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
-      //   kolumblueSelected:
-      //     "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
-      //   kolumblueHover:
-      //     "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
-      //   kolumblueInset:
-      //     "inset 0 1px 2px 1px hsla(210, 78%, 94%, 0.1),inset 0 2px 4px 0 rgba(15,15,15,.06)",
-      //   kolumblue:
-      //     "0 1px 2px 1px hsla(210, 78%, 94%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06)",
-      //   focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
-      // },
+      fontFamily: {
+        gordita: "var(--font-gordita)",
+        adso: "var(--font-adso)",
+        inter: "var(--font-inter)",
+        inconsolata: "var(--font-inconsolata)",
+      },
+      transitionTimingFunction: {
+        "kolumb-overflow": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        "kolumb-flow": "cubic-bezier(0.175, 0.885, 0.32, 1)",
+      },
+      boxShadow: {
+        default:
+          "0px 0px 0px 1px rgba(15,15,15,.03), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
+        kolumblueSelected:
+          "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
+        kolumblueHover:
+          "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
+        kolumblueInset:
+          "inset 0 1px 2px 1px hsla(210, 78%, 94%, 0.1),inset 0 2px 4px 0 rgba(15,15,15,.06)",
+        kolumblue:
+          "0 1px 2px 1px hsla(210, 78%, 94%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06)",
+        focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
+      },
     },
     colors: {
       transparent: "transparent",
