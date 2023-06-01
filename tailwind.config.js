@@ -8,16 +8,16 @@ module.exports = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        gordita: "var(--font-gordita)",
-        adso: "var(--font-adso)",
-        inter: "var(--font-inter)",
-        inconsolata: "var(--font-inconsolata)",
-      },
-      transitionTimingFunction: {
-        "kolumb-overflow": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-        "kolumb-flow": "cubic-bezier(0.175, 0.885, 0.32, 1)",
-      },
+      // fontFamily: {
+      //   gordita: "var(--font-gordita)",
+      //   adso: "var(--font-adso)",
+      //   inter: "var(--font-inter)",
+      //   inconsolata: "var(--font-inconsolata)",
+      // },
+      // transitionTimingFunction: {
+      //   "kolumb-overflow": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+      //   "kolumb-flow": "cubic-bezier(0.175, 0.885, 0.32, 1)",
+      // },
       // boxShadow: {
       //   default:
       //     "0px 0px 0px 1px rgba(15,15,15,.03), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
