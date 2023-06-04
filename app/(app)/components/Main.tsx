@@ -1,7 +1,5 @@
 import React from "react";
 
-// import "../itinerary/components/ScrollBar.css";
-
 interface Props {
   children: React.ReactNode;
   className?: string;

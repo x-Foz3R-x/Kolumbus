@@ -14,7 +14,6 @@ interface Props {
 export default function DaysPicker({ maxTripsDays }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tripDays, setTripDays] = useState(1);
-  console.log(tripDays);
 
   const renderDays = () => {
     let days = [];
@@ -50,7 +49,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
       <button onClick={() => setIsModalOpen(true)} className="relative">
         <DaysSVG className="h-9 fill-kolumblue-500" />
 
-        <div className="absolute top-1 w-9 text-[10px] font-semibold uppercase text-kolumblue-200">
+        <div className="absolute top-1 w-9 text-[10px] font-medium uppercase text-white/75">
           days
         </div>
 

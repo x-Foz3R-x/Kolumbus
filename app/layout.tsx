@@ -1,5 +1,4 @@
 import { Analytics } from "@vercel/analytics/react";
-import { AuthProvider } from "@/context/auth";
 import { inter, gordita, adso, inconsolata } from "../assets/fonts/fonts";
 import "./tailwind.css";
 
@@ -11,7 +10,7 @@ export const metadata = {
   description: "Trip planning app | Adventure awaits",
   openGraph: {
     title: "Kolumbus",
-    description: "The TOP 1 trip planning app",
+    description: "TOP 1 trip planning app",
     url: "https://kolumbus.app",
     siteName: "Kolumbus",
     type: "website",
@@ -27,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={
-          "scroll-smooth text-kolumbGray-800 antialiased " +
+          "scroll-smooth fill-kolumbGray-900 text-kolumbGray-900 antialiased " +
           gordita.className +
           " " +
           gordita.variable +
@@ -39,7 +38,7 @@ export default function RootLayout({
           inconsolata.variable
         }
       >
-        <AuthProvider>{children}</AuthProvider>
+        {children}
         <Analytics />
       </body>
     </html>

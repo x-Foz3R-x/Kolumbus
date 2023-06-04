@@ -30,7 +30,7 @@ export default function HeaderLink({ link, name }: any) {
     <Link
       href={link}
       className={
-        "flex h-9 flex-none items-center gap-3 rounded-lg fill-tintedGray-400 px-4 font-medium hover:bg-kolumblue-100 hover:fill-kolumblue-500 "
+        "flex h-9 flex-none items-center gap-3 rounded-lg fill-tintedGray-500 px-4 font-medium hover:bg-kolumblue-100 hover:fill-kolumblue-500 "
       }
     >
       {ICON(name)}

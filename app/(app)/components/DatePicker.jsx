@@ -61,7 +61,7 @@ export default function DatePicker() {
     <div className="relative select-none">
       <DateSVG className="absolute h-9 fill-kolumblue-500" />
 
-      <section className="absolute h-9 w-[5.0625rem] text-center text-[10px] font-semibold text-kolumblue-200">
+      <section className="absolute h-9 w-[5.0625rem] text-center text-[10px] font-medium text-white/75">
         <div className="absolute left-[-0.125rem] top-1 w-10">
           {startDate
             .toLocaleString("default", { month: "short" })

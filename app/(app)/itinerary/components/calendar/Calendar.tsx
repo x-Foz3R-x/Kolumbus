@@ -19,7 +19,7 @@ export default function Calendar({
   dayOfWeek = 5,
 }: Props) {
   return (
-    <div className="group flex-none">
+    <div className="group/calendar flex-none">
       <CalendarHeader tripDay={tripDay} />
 
       <div className="flex h-fit w-32 flex-col items-center gap-1 bg-white/70 p-2 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">

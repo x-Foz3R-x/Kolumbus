@@ -42,6 +42,7 @@ export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
 
     dayOfWeekName.push(
       <div
+        key={i + " " + currentDayOfWeekName}
         className={
           "h-fit w-[0.875rem] rounded " +
           (dayOfWeek == i ? "font-extrabold " : "font-medium ") +

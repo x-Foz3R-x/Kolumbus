@@ -1,23 +1,27 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth } from "@/context/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-import Modal from "./modal/Modal";
-import ModalButton from "./modal/ModalButton";
-import ModalProfile from "./modal/ModalProfile";
-import ModalSeparator from "./modal/ModalSeparator";
+import { useAuth } from "@/context/auth";
+
+import Modal from "../../../../components/ui/modal/Modal";
+import ModalButton from "../../../../components/ui/modal/ModalButton";
+import ModalProfile from "../../../../components/ui/modal/ModalProfile";
+import ModalSeparator from "../../../../components/ui/modal/ModalSeparator";
 
 import SwitchAccountSVG from "@/assets/svg/SwitchAccount.svg";
 import AppearanceSVG from "@/assets/svg/Appearance.svg";
 import GlobeSVG from "@/assets/svg/Globe.svg";
 import AccountSettingsSVG from "@/assets/svg/AccountSettings.svg";
 import SignOutSVG from "@/assets/svg/SignOut.svg";
+import UserSVG from "@/assets/svg/User.svg";
 
 export default function ProfileButton() {
   const { currentUser, signout } = useAuth();
+
+  const isUser: boolean = currentUser == null ? true : false;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -27,12 +31,10 @@ export default function ProfileButton() {
     router.push("/signin");
   };
 
-  console.log(currentUser);
-
   const className =
-    "mr-4 w-4 fill-tintedGray-400 group-hover:fill-kolumblue-500";
-  return (
-    <div className="relative">
+    "mr-4 w-4 fill-tintedGray-500 group-hover:fill-kolumblue-500";
+  return currentUser ? (
+    <div className="relative w-fit">
       <button
         onClick={() => setIsModalOpen(true)}
         className="relative h-14 w-14 rounded-full p-3 outline-none after:absolute after:left-3 after:top-3 after:hidden after:h-8 after:w-8 after:rounded-full after:border-2 after:border-kolumblue-500 focus:shadow-none focus:after:inline"
@@ -87,5 +89,21 @@ export default function ProfileButton() {
         </ModalButton>
       </Modal>
     </div>
+  ) : (
+    <section className="flex h-14 w-fit flex-none items-center px-2 font-medium">
+      <span className="flex flex-none cursor-default items-center gap-1 px-2">
+        <UserSVG className="h-4 w-4" />
+        <span className="w-10 text-center text-xs leading-3">Guest Mode</span>
+      </span>
+
+      <div className="m-2 h-5 border-r border-kolumbGray-200"></div>
+
+      <button
+        onClick={handleSignOut}
+        className="rounded-lg px-2 py-1 text-sm duration-200 ease-kolumb-flow hover:scale-110 hover:bg-kolumblue-100 hover:fill-kolumblue-500"
+      >
+        Sign in
+      </button>
+    </section>
   );
 }

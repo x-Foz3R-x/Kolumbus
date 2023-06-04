@@ -35,14 +35,6 @@ export const gordita = localFont({
 export const adso = localFont({
   src: [
     {
-      path: "./adso/Adso-ExtraLight.woff2",
-      weight: "200",
-    },
-    {
-      path: "./adso/Adso-Light.woff2",
-      weight: "300",
-    },
-    {
       path: "./adso/Adso-Regular.woff2",
       weight: "400",
     },

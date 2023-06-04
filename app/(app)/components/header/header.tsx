@@ -1,7 +1,9 @@
 import Link from "next/link";
+
+import { AuthProvider } from "@/context/auth";
 import HeaderLink from "./header-link";
 
-import ProfileButton from "@/components/ui/ProfileButton";
+import ProfileButton from "@/app/(app)/components/header/ProfileButton";
 import FullLogo from "@/assets/kolumbus/full-logo.svg";
 
 export default function Header() {
@@ -24,9 +26,11 @@ export default function Header() {
         <div className="m-3 h-5 border-r border-kolumbGray-200"></div>
         <HeaderLink link="/start" name="Showcase" />
       </nav>
-      <section className="mr-4 flex h-14 w-56 min-w-fit justify-end">
+      <section className="mr-4 flex h-14 w-56 flex-none justify-end">
         {/* <button>DARKMODE button</button> */}
-        <ProfileButton />
+        <AuthProvider>
+          <ProfileButton />
+        </AuthProvider>
       </section>
     </header>
   );

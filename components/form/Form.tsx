@@ -1,6 +1,7 @@
 import React from "react";
 
-import SubmitModal from "./submit";
+import SubmitButton from "./submit";
+import AuthProviderSection from "./AuthProviderSection";
 
 import FormSeparatorSVG from "@/assets/svg/Separator.svg";
 
@@ -17,12 +18,16 @@ interface SubmitProps {
  */
 export function Submit({ handleClick, isEnabled, className }: SubmitProps) {
   return (
-    <SubmitModal
+    <SubmitButton
       handleClick={handleClick}
       isEnabled={isEnabled}
       className={className}
     />
   );
+}
+
+export function AuthProviders() {
+  return <AuthProviderSection />;
 }
 
 interface SeparatorProps {

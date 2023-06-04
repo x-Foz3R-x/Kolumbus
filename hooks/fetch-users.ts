@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { doc, getDoc, collection } from "firebase/firestore";
 
 import { useAuth } from "@/context/auth";
 import { db } from "@/lib/firebase";
@@ -16,11 +17,13 @@ export default function useFetchUsers() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const docRef = doc(db, "users", currentUser.uid);
+        const colRef = collection(db, "users");
+        const docRef = doc(colRef, currentUser.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) setUsers(docSnap.data());
       } catch (error) {
         setError("failed to fetch users");
+        console.log(error);
       } finally {
         setLoading(false);
       }

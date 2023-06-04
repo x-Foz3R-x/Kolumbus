@@ -47,7 +47,7 @@ export default function ToolLink({
         "h-[5.5rem] w-full rounded-lg hover:bg-kolumblue-100 hover:fill-kolumblue-500 hover:shadow-kolumblueHover " +
         (isSelected
           ? "bg-kolumblue-200 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected "
-          : "bg-kolumblue-50 fill-tintedGray-400 shadow-kolumblueInset ") +
+          : "bg-kolumblue-50 fill-tintedGray-500 shadow-kolumblueInset ") +
         className
       }
     >

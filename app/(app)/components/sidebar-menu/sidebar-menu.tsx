@@ -1,4 +1,7 @@
-import TileLink from "./tile-link";
+import { AuthProvider } from "@/context/auth";
+
+import TileLink from "./TileLink";
+import TripsSection from "./TripsSection";
 
 export default function SidebarMenu() {
   return (
@@ -14,9 +17,9 @@ export default function SidebarMenu() {
           className="col-span-2"
         />
       </section>
-      <section className="flex flex-col px-3 pb-3">
-        <h1>Trips</h1>
-      </section>
+      <AuthProvider LoadingIndicator="spinner">
+        <TripsSection />
+      </AuthProvider>
     </nav>
   );
 }

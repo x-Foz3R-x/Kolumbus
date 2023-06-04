@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-export default function SubmitModal({
+export default function SubmitButton({
   handleClick,
   isEnabled,
   className,

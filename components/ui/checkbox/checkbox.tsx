@@ -5,12 +5,30 @@ import "./checkbox.css";
 interface Props {
   children: React.ReactNode;
   isChecked?: boolean;
-  setIsChecked?: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsChecked?: Function;
+  formObject?: { isChecked: boolean };
+  setFormObject?: Function;
+  formKey?: string;
 }
 
-export default function Checkbox({ children, isChecked, setIsChecked }: Props) {
+export default function Checkbox({
+  children,
+  isChecked,
+  setIsChecked,
+  formObject,
+  setFormObject,
+  formKey = "",
+}: Props) {
   const handleChange = () => {
-    if (setIsChecked) setIsChecked((prevStatus: any) => !prevStatus);
+    if (setIsChecked && isChecked) {
+      setIsChecked((prevStatus: boolean) => !prevStatus);
+    }
+    if (setFormObject && formObject) {
+      setFormObject({
+        ...formObject,
+        [formKey]: !formObject.isChecked,
+      });
+    }
   };
 
   return (
@@ -20,7 +38,7 @@ export default function Checkbox({ children, isChecked, setIsChecked }: Props) {
       <input
         type="checkbox"
         onChange={handleChange}
-        checked={isChecked}
+        checked={formObject ? formObject.isChecked : isChecked}
         className="absolute -z-10 opacity-0"
       ></input>
 

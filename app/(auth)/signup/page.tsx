@@ -1,4 +1,5 @@
 "use client";
+
 import "@/components/form/input.css";
 
 import React, { useState } from "react";
@@ -11,32 +12,32 @@ import { Submit, FormSeparator } from "@/components/form/Form";
 import Checkbox from "@/components/ui/checkbox/checkbox";
 
 export default function SignUp() {
-  const [username, setUsername] = useState("");
-  const [country, setCountry] = useState("USA");
-  const [sex, setSex] = useState("male");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
   const { signup } = useAuth();
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    field: string
-  ) => {
-    if (field == "username") setUsername(e.currentTarget.value);
-    if (field == "country") setCountry(e.currentTarget.value);
-    if (field == "sex") setSex(e.currentTarget.id);
-    if (field == "email") setEmail(e.currentTarget.value);
-    if (field == "password") setPassword(e.currentTarget.value);
-    if (field == "confirmPassword") setConfirmPassword(e.currentTarget.value);
+  const initialFormState = {
+    username: "",
+    country: "USA",
+    sex: "M",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    isChecked: false,
+    error: "",
   };
+
+  const [form, setForm] = useState(initialFormState);
 
   const router = useRouter();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      await signup(email, password, username, country, sex);
+      await signup(
+        form.email,
+        form.password,
+        form.username,
+        form.country,
+        form.sex
+      );
       router.push("/signin");
     } catch (err) {
       console.log(err);
@@ -46,7 +47,12 @@ export default function SignUp() {
   return (
     <>
       <h1 className="py-6 text-2xl font-medium">Create your account</h1>
-      <form action="" className="relative flex flex-col">
+      {form.error && (
+        <div className="mb-2 rounded-md bg-red-100 px-4 py-1 text-red-600">
+          {form.error}
+        </div>
+      )}
+      <form className="relative flex flex-col">
         <div>
           <input
             type="text"
@@ -55,18 +61,24 @@ export default function SignUp() {
             spellCheck="false"
             placeholder="Username"
             className="input input-top"
-            value={username}
-            onChange={(e) => {
-              handleInputChange(e, "username");
+            value={form.username}
+            onChange={(e: any) => {
+              setForm({
+                ...form,
+                ["username"]: e.target.value,
+              });
             }}
           />
         </div>
 
         <div>
           <select
-            value={country}
-            onChange={(e) => {
-              handleInputChange(e, "country");
+            value={form.country}
+            onChange={(e: any) => {
+              setForm({
+                ...form,
+                ["country"]: e.target.value,
+              });
             }}
             className="input input-bot"
           >
@@ -813,15 +825,19 @@ export default function SignUp() {
 
         <div className="relative flex w-full flex-col px-4 py-7">
           <span className="absolute top-2 text-xs">Select sex *</span>
+
           <div className="flex justify-between">
             <div>
               <input
                 type="radio"
                 name="sex"
                 id="M"
-                checked={sex == "M"}
-                onChange={(e) => {
-                  handleInputChange(e, "sex");
+                checked={form.sex == "M"}
+                onChange={(e: any) => {
+                  setForm({
+                    ...form,
+                    ["sex"]: e.target.id,
+                  });
                 }}
                 className="mr-1"
               />
@@ -833,9 +849,12 @@ export default function SignUp() {
                 type="radio"
                 name="sex"
                 id="F"
-                checked={sex == "F"}
-                onChange={(e) => {
-                  handleInputChange(e, "sex");
+                checked={form.sex == "F"}
+                onChange={(e: any) => {
+                  setForm({
+                    ...form,
+                    ["sex"]: e.target.id,
+                  });
                 }}
                 className="mr-1"
               />
@@ -847,9 +866,12 @@ export default function SignUp() {
                 type="radio"
                 name="sex"
                 id="U"
-                checked={sex == "U"}
-                onChange={(e) => {
-                  handleInputChange(e, "sex");
+                checked={form.sex == "U"}
+                onChange={(e: any) => {
+                  setForm({
+                    ...form,
+                    ["sex"]: e.target.id,
+                  });
                 }}
                 className="mr-1"
               />
@@ -866,9 +888,12 @@ export default function SignUp() {
             spellCheck="false"
             placeholder="E-mail"
             className="input input-top"
-            value={email}
-            onChange={(e) => {
-              handleInputChange(e, "email");
+            value={form.email}
+            onChange={(e: any) => {
+              setForm({
+                ...form,
+                ["email"]: e.target.value,
+              });
             }}
           />
         </div>
@@ -881,9 +906,12 @@ export default function SignUp() {
             spellCheck="false"
             placeholder="Password"
             className="input input-mid"
-            value={password}
-            onChange={(e) => {
-              handleInputChange(e, "password");
+            value={form.password}
+            onChange={(e: any) => {
+              setForm({
+                ...form,
+                ["password"]: e.target.value,
+              });
             }}
           />
         </div>
@@ -896,16 +924,20 @@ export default function SignUp() {
             spellCheck="false"
             placeholder="Confirm password"
             className="input input-bot"
-            value={confirmPassword}
-            onChange={(e) => {
-              handleInputChange(e, "confirmPassword");
+            value={form.confirmPassword}
+            onChange={(e: any) => {
+              setForm({
+                ...form,
+                ["confirmPassword"]: e.target.value,
+              });
             }}
           />
         </div>
 
-        <Checkbox>I accept the Terms of Use & Privacy Policy. *</Checkbox>
+        <Checkbox formObject={form} setFormObject={setForm} formKey="isChecked">
+          I accept the Terms of Use & Privacy Policy. *
+        </Checkbox>
 
-        {/* bottom position = (48px input height - 28px button height) / 2 = 10px = 0.625rem */}
         <Submit
           handleClick={handleSubmit}
           isEnabled={false}

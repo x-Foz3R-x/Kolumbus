@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { useAuth } from "@/context/auth";
-import { auth } from "@/lib/firebase";
 
-import { Submit, FormSeparator } from "@/components/form/Form";
+import { Submit, AuthProviders, FormSeparator } from "@/components/form/Form";
 import Checkbox from "@/components/ui/checkbox/checkbox";
 
 import "@/components/form/input.css";
@@ -15,15 +14,20 @@ import "@/components/form/input.css";
 export default function SignUp() {
   const { signin } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isRememberChecked, setIsRememberChecked] = useState(false);
+  const initialFormState = {
+    email: "",
+    password: "",
+    isChecked: false,
+    error: "",
+  };
+
+  const [form, setForm] = useState(initialFormState);
 
   const router = useRouter();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      await signin(email, password, isRememberChecked);
+      await signin(form.email, form.password, form.isChecked);
       router.push("/itinerary");
     } catch (err) {
       console.log(err);
@@ -33,11 +37,19 @@ export default function SignUp() {
   return (
     <>
       <h1 className="my-6 text-2xl font-medium">Sign in to Kolumbus</h1>
-      <form action="" className="relative flex flex-col">
+      {form.error && (
+        <div className="mb-2 rounded-md bg-red-100 px-4 py-1 text-red-600">
+          {form.error}
+        </div>
+      )}
+      <form className="relative flex flex-col">
         <input
-          value={email}
+          value={form.email}
           onChange={(e: any) => {
-            setEmail(e.target.value);
+            setForm({
+              ...form,
+              ["email"]: e.target.value,
+            });
           }}
           type="email"
           name="email"
@@ -49,9 +61,12 @@ export default function SignUp() {
         />
 
         <input
-          value={password}
+          value={form.password}
           onChange={(e: any) => {
-            setPassword(e.target.value);
+            setForm({
+              ...form,
+              ["password"]: e.target.value,
+            });
           }}
           type="password"
           name="password"
@@ -63,13 +78,13 @@ export default function SignUp() {
         />
 
         <Checkbox
-          isChecked={isRememberChecked}
-          setIsChecked={setIsRememberChecked}
+          formObject={form}
+          setFormObject={setForm}
+          formKey={"isChecked"}
         >
           Remember me
         </Checkbox>
 
-        {/* bottom position = (48px input height - 28px button height) / 2 = 10px = 0.625rem */}
         <Submit
           handleClick={handleSubmit}
           isEnabled={false}
@@ -77,6 +92,8 @@ export default function SignUp() {
         />
       </form>
 
+      <FormSeparator />
+      <AuthProviders />
       <FormSeparator />
 
       <div className="flex flex-col items-center justify-center text-xs">

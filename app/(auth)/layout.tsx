@@ -1,3 +1,5 @@
+import { AuthProvider } from "@/context/auth";
+
 import Link from "next/link";
 import LogoSVG from "@/assets/kolumbus/logo.svg";
 
@@ -11,7 +13,7 @@ export default function RootLayout({
       <Link href="/">
         <LogoSVG className="h-24" />
       </Link>
-      {children}
+      <AuthProvider>{children}</AuthProvider>
     </main>
   );
 }

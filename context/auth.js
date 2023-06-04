@@ -1,12 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, {
-  useState,
-  useContext,
-  createContext,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useState, useContext, createContext, useEffect } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -17,8 +12,11 @@ import {
   browserSessionPersistence,
 } from "firebase/auth";
 
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
+
+import Itinerary from "@/components/loading-indicator/Itinerary";
+import Spinner from "@/components/loading-indicator/Spinner";
 
 const AuthContext = createContext();
 
@@ -26,10 +24,20 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children, LoadingIndicator = "" }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const userInfo = useRef();
+
+  const LoadingIndicatorComponent = () => {
+    switch (LoadingIndicator) {
+      case "spinner":
+        return <Spinner />;
+      case "itinerary":
+        return <Itinerary />;
+      default:
+        return "";
+    }
+  };
 
   async function signin(email, password, isRememberChecked) {
     try {
@@ -48,7 +56,6 @@ export function AuthProvider({ children }) {
         email,
         password
       );
-      setCurrentUser(userCredentials);
 
       const user = userCredentials.user;
       const userRef = doc(db, "users", user.uid);
@@ -64,6 +71,9 @@ export function AuthProvider({ children }) {
       });
 
       await sendEmailVerification(user);
+
+      setCurrentUser(userCredentials);
+      setLoading(false);
 
       signout();
       return userCredentials;
@@ -89,12 +99,11 @@ export function AuthProvider({ children }) {
     signin,
     signup,
     signout,
-    userInfo,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {!loading ? children : LoadingIndicatorComponent()}
     </AuthContext.Provider>
   );
 }
