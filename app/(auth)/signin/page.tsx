@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -52,6 +52,7 @@ export default function SignUp() {
             });
           }}
           type="email"
+          id="email"
           name="email"
           autoComplete="email"
           autoCorrect="off"
@@ -69,6 +70,7 @@ export default function SignUp() {
             });
           }}
           type="password"
+          id="password"
           name="password"
           autoComplete="current-password"
           autoCorrect="off"

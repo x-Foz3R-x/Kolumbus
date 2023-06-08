@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function WeatherIndicator() {
   return (
     <div className="mt-1 flex w-full items-center gap-1 text-xs">

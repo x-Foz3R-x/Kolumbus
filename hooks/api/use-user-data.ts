@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { doc, getDoc, collection } from "firebase/firestore";
 
 import { useAuth } from "@/context/auth";

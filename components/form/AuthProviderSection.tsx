@@ -1,5 +1,3 @@
-import React from "react";
-
 import UserSVG from "@/assets/svg/User.svg";
 import GoogleSVG from "@/assets/svg/brands/Google.svg";
 

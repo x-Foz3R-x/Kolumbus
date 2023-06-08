@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useReducer } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   easepick,
   AmpPlugin,
@@ -8,13 +8,29 @@ import {
   LockPlugin,
   DateTime,
 } from "@easepick/bundle";
-
+import useUserTrips from "@/hooks/api/use-user-trips";
+import useSelectedTrip from "@/hooks/use-selected-trip";
+import { ACTION } from "@/hooks/use-actions";
 import DateSVG from "@/assets/svg/Date.svg";
 
 export default function DatePicker() {
-  const [startDate, setStartDate] = useState(new DateTime());
-  const [endDate, setEndDate] = useState(new DateTime());
+  const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
+  const [selectedTrip] = useSelectedTrip();
+
   const [isOpen, setIsOpen] = useState(false);
+  const [date, setDate] = useState({
+    start: new DateTime(),
+    end: new DateTime(),
+  });
+
+  useEffect(() => {
+    if (!loadingTrips) {
+      setDate({
+        start: new Date(userTrips[selectedTrip]["start_date"]),
+        end: new Date(userTrips[selectedTrip]["end_date"]),
+      });
+    }
+  }, [loadingTrips, userTrips, selectedTrip]);
 
   const DatePickerRef = useRef();
 
@@ -37,8 +53,8 @@ export default function DatePicker() {
         },
       },
       RangePlugin: {
-        startDate: startDate,
-        endDate: endDate,
+        startDate: date.start,
+        endDate: date.end,
       },
       LockPlugin: {
         // maxDays: 90,
@@ -48,8 +64,21 @@ export default function DatePicker() {
 
     picker.show();
     picker.on("select", async () => {
-      setStartDate(picker.getStartDate());
-      setEndDate(picker.getEndDate());
+      setDate({
+        start: picker.getStartDate(),
+        end: picker.getEndDate(),
+      });
+
+      dispatchUserTrips({
+        type: ACTION.X_UPDATES,
+        trip: selectedTrip,
+        fields: ["start_date", "end_date", "days"],
+        payload: [
+          picker.getStartDate().format("YYYY-MM-DD"),
+          picker.getEndDate().format("YYYY-MM-DD"),
+          CalculateDays(picker.getStartDate(), picker.getEndDate()),
+        ],
+      });
     });
     picker.on("hide", () => {
       setIsOpen(false);
@@ -57,27 +86,36 @@ export default function DatePicker() {
     });
   };
 
-  return (
+  function CalculateDays(startDate, endDate) {
+    const difference =
+      new Date(endDate).getTime() - new Date(startDate).getTime();
+
+    return Math.round(difference / (1000 * 3600 * 24) + 1); // (ms in sec * secs in hour * hours in day).
+  }
+
+  return loadingTrips ? (
+    <></>
+  ) : (
     <div className="relative select-none">
       <DateSVG className="absolute h-9 fill-kolumblue-500" />
 
       <section className="absolute h-9 w-[5.0625rem] text-center text-[10px] font-medium text-white/75">
         <div className="absolute left-[-0.125rem] top-1 w-10">
-          {startDate
+          {date.start
             .toLocaleString("default", { month: "short" })
             .toUpperCase()}
         </div>
         <div className="absolute right-[-0.125rem] top-1 w-10">
-          {endDate.toLocaleString("default", { month: "short" }).toUpperCase()}
+          {date.end.toLocaleString("default", { month: "short" }).toUpperCase()}
         </div>
       </section>
 
       <section className="absolute h-9 w-[5.0625rem] text-center text-sm font-medium">
         <div className="absolute bottom-0 left-[-0.125rem] w-10">
-          {startDate.getDate()}
+          {date.start.getDate()}
         </div>
         <div className="absolute bottom-0 right-[-0.125rem] w-10">
-          {endDate.getDate()}
+          {date.end.getDate()}
         </div>
       </section>
 

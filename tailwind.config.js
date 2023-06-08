@@ -26,9 +26,9 @@ module.exports = {
         kolumblueHover:
           "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
         kolumblueInset:
-          "inset 0 1px 2px 1px hsla(210, 78%, 94%, 0.1),inset 0 2px 4px 0 rgba(15,15,15,.06)",
+          "inset 0 1px 2px 1px hsla(210, 78%, 90%, 0.1),inset 0 2px 4px 0 rgba(15,15,15,.06)",
         kolumblue:
-          "0 1px 2px 1px hsla(210, 78%, 94%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06)",
+          "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06)",
         soft: "0px 1px 2px rgba(15, 15, 15, 0.05)",
         focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
       },

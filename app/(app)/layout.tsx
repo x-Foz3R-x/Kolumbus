@@ -1,4 +1,4 @@
-import { UserTripsProvider } from "@/context/user-trips";
+import { UserDataProvider } from "@/context/user-data";
 import { AuthProvider } from "@/context/auth";
 
 import Header from "./components/header/header";
@@ -13,10 +13,10 @@ export default function RootLayout({
     <div className="overflow-hidden font-inter ">
       <Header />
       <div className="flex bg-white">
-        <UserTripsProvider>
+        <UserDataProvider>
           <SidebarMenu />
           <AuthProvider LoadingIndicator="itinerary">{children}</AuthProvider>
-        </UserTripsProvider>
+        </UserDataProvider>
       </div>
     </div>
   );

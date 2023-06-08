@@ -1,5 +1,3 @@
-import React from "react";
-
 import SubmitButton from "./submit";
 import AuthProviderSection from "./AuthProviderSection";
 

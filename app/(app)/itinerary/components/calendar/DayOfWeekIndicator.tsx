@@ -1,4 +1,4 @@
-import React from "react";
+import useMondaySundayFormat from "@/hooks/use-monday-sunday-format";
 
 interface Props {
   dayOfWeek: number;
@@ -8,62 +8,64 @@ interface Props {
  * @param {number} dayOfWeek number 0-6 starting at monday
  */
 export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
-  let dayOfWeekName = [];
+  dayOfWeek = useMondaySundayFormat(dayOfWeek);
+
+  let daysOfWeek = [];
 
   for (let i = 0; i < 7; i++) {
-    let currentDayOfWeekName;
+    let currentDayOfWeek;
 
     switch (i) {
       case 0:
-        currentDayOfWeekName = "M";
+        currentDayOfWeek = "M";
         break;
       case 1:
-        currentDayOfWeekName = "T";
+        currentDayOfWeek = "T";
         break;
       case 2:
-        currentDayOfWeekName = "W";
+        currentDayOfWeek = "W";
         break;
       case 3:
-        currentDayOfWeekName = "T";
+        currentDayOfWeek = "T";
         break;
       case 4:
-        currentDayOfWeekName = "F";
+        currentDayOfWeek = "F";
         break;
       case 5:
-        currentDayOfWeekName = "S";
+        currentDayOfWeek = "S";
         break;
       case 6:
-        currentDayOfWeekName = "S";
+        currentDayOfWeek = "S";
         break;
       default:
-        currentDayOfWeekName = "M";
+        currentDayOfWeek = "Err";
         break;
     }
 
-    dayOfWeekName.push(
+    daysOfWeek.push(
       <div
-        key={i + " " + currentDayOfWeekName}
+        key={i + " " + currentDayOfWeek}
         className={
-          "h-fit w-[0.875rem] rounded " +
+          "h-fit w-[0.875rem] rounded text-center " +
           (dayOfWeek == i ? "font-extrabold " : "font-medium ") +
-          (i == 5 || i == 6 ? "text-red-500 " : "text-kolumbGray-900/40 ")
+          (i == 5 || i == 6 ? "text-red-400 " : "text-kolumbGray-500 ")
         }
       >
-        {currentDayOfWeekName}
+        {currentDayOfWeek}
       </div>
     );
   }
 
   return (
-    <div className="flex w-full cursor-default select-none flex-col text-center text-sm">
+    <div className="flex w-28 cursor-default select-none flex-col text-center text-sm">
       <div className="flex justify-between px-1 text-center font-inconsolata text-xs ">
-        {dayOfWeekName}
+        {daysOfWeek}
       </div>
 
-      <div className="relative flex h-2 rounded-md bg-kolumblue-500/10 px-1 shadow-kolumblueInset">
+      <div className="relative flex h-2 rounded-md bg-kolumblue-500/20 px-1 shadow-kolumblueInset">
         <span
           className={
-            "absolute -top-px h-[0.625rem] w-[0.875rem] rounded-[3px] border border-kolumblue-500 bg-kolumblue-500/25 " +
+            "absolute -top-px z-10 h-[0.625rem] w-4 rounded-[3px] border-x-2 border-y border-kolumblue-500 bg-white/30 shadow-kolumblue " +
             (dayOfWeek == 0
               ? "left-[3px] "
               : dayOfWeek == 1

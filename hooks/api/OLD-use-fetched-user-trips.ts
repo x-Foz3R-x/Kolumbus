@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getDocs, collection, query, where } from "firebase/firestore";
+import { getDocs, collection, query, where, orderBy } from "firebase/firestore";
 
 import { useAuth } from "@/context/auth";
 import { useUserTrips } from "@/context/user-trips";
@@ -11,20 +11,23 @@ import { db } from "@/lib/firebase";
 
 export default function useFetchUserTrips() {
   const { currentUser } = useAuth();
+  const { userTrips, dispatch, ACTION } = useUserTrips();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [payload, setPayload] = useState<Array<any>>([]);
   const [newlyFetched, setNewlyFetched] = useState(false);
 
-  const { userTrips, dispatch, ACTIONS } = useUserTrips();
-
   useEffect(() => {
     async function fetchData() {
       try {
         if (currentUser != null) {
           const colRef = collection(db, "trips");
-          const q = query(colRef, where("owner_id", "==", currentUser.uid));
+          const q = query(
+            colRef,
+            where("owner_id", "==", currentUser.uid),
+            orderBy("position")
+          );
 
           const docSnap = await getDocs(q);
           if (docSnap.empty) return;
@@ -36,23 +39,27 @@ export default function useFetchUserTrips() {
           const docSnap = JSON.parse(localStorage.getItem("trips") || "");
           setPayload(docSnap);
         }
+
+        setNewlyFetched(true);
       } catch (error) {
         setError("failed to fetch user trips");
         console.log(error);
-      } finally {
-        setLoading(false);
-        setNewlyFetched(true);
       }
     }
 
     fetchData();
   }, []);
 
-  if (!loading && newlyFetched) {
-    setTimeout(() => {
-      dispatch({ type: ACTIONS.REPLACE, payload: payload });
-    }, 0);
-    setNewlyFetched(false);
-  }
-  return { loading, error, userTrips, dispatch, ACTIONS };
+  useEffect(() => {
+    if (payload.length != 0 && newlyFetched) {
+      dispatch({ type: ACTION.REPLACE, payload: payload });
+      setNewlyFetched(false);
+    }
+
+    if (userTrips.length != 0) {
+      setLoading(false);
+    }
+  }, [payload, userTrips]);
+
+  return [loading, error, userTrips, dispatch, ACTION];
 }

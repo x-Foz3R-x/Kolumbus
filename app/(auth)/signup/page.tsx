@@ -2,7 +2,7 @@
 
 import "@/components/form/input.css";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -56,7 +56,9 @@ export default function SignUp() {
         <div>
           <input
             type="text"
-            autoComplete="off"
+            id="username"
+            name="username"
+            autoComplete="username"
             autoCorrect="off"
             spellCheck="false"
             placeholder="Username"
@@ -73,6 +75,9 @@ export default function SignUp() {
 
         <div>
           <select
+            id="country"
+            name="country"
+            autoComplete="country"
             value={form.country}
             onChange={(e: any) => {
               setForm({
@@ -883,6 +888,8 @@ export default function SignUp() {
         <div>
           <input
             type="email"
+            id="email"
+            name="email"
             autoComplete="email"
             autoCorrect="off"
             spellCheck="false"
@@ -901,6 +908,8 @@ export default function SignUp() {
         <div>
           <input
             type="password"
+            id="password"
+            name="password"
             autoComplete="new-password"
             autoCorrect="off"
             spellCheck="false"
@@ -919,7 +928,9 @@ export default function SignUp() {
         <div>
           <input
             type="password"
-            autoComplete="off"
+            id="confirm-password"
+            name="confirm-password"
+            autoComplete="new-password"
             autoCorrect="off"
             spellCheck="false"
             placeholder="Confirm password"

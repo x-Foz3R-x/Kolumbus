@@ -1,0 +1,14 @@
+.sortable-ghost {
+  background-color: #333;
+  min-width: 150px;
+  display: none;
+}
+
+.sortable-ghost > header,
+.sortable-ghost > .event-body {
+  display: none;
+}
+
+.sortable-fallback {
+  opacity: 1 !important;
+}

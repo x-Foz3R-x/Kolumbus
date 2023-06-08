@@ -7,7 +7,7 @@ import CostsSVG from "@/assets/svg/tools/Costs.svg";
 import PackingListSVG from "@/assets/svg/tools/PackingList.svg";
 
 const ICON = (name: string) => {
-  const ClassName = "h-6 w-6 flex-none ";
+  const ClassName = "h-6 w-6 flex-none mt-[9px] mb-[3px] ";
 
   switch (name) {
     case "Itinerary":
@@ -28,8 +28,7 @@ const ICON = (name: string) => {
 interface Props {
   link: string;
   name: string;
-  isSelected?: boolean;
-  isLongName?: boolean;
+  isSelected: boolean;
   className?: string;
 }
 
@@ -37,9 +36,8 @@ export default function ToolLink({
   link,
   name,
   isSelected = false,
-  isLongName = false,
   className,
-}: any) {
+}: Props) {
   return (
     <Link
       href={link}
@@ -53,13 +51,15 @@ export default function ToolLink({
     >
       <div
         className={
-          "flex h-full w-full flex-col items-center justify-center rounded-lg p-2 duration-200 ease-kolumb-overflow hover:scale-110 " +
-          (isLongName ? "gap-2" : "gap-3")
+          "flex h-full w-full flex-col items-center rounded-lg p-2 duration-200 ease-kolumb-overflow hover:scale-110 "
+          // (isLongName ? "gap-2" : "gap-3")
         }
       >
         {ICON(name)}
-        <div className="text-center text-sm font-medium leading-[1.125rem]">
-          {name}
+        <div className="flex h-full w-full items-center justify-center">
+          <div className="text-center text-sm font-medium leading-[0.875rem]">
+            {name}
+          </div>
         </div>
       </div>
     </Link>

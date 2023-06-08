@@ -1,5 +1,3 @@
-import React from "react";
-
 import "./checkbox.css";
 
 interface Props {
@@ -37,6 +35,8 @@ export default function Checkbox({
 
       <input
         type="checkbox"
+        id="checkbox"
+        name="checkbox"
         onChange={handleChange}
         checked={formObject ? formObject.isChecked : isChecked}
         className="absolute -z-10 opacity-0"
