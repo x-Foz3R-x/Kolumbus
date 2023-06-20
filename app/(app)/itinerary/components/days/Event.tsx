@@ -1,12 +1,21 @@
 import Image from "next/image";
 
 interface Props {
-  number: number;
+  event: {
+    event_cost: number;
+    event_date: string;
+    event_id: string;
+    event_link: string;
+    event_location: string;
+    event_name: string;
+    event_position: number;
+    event_type: string;
+  };
 }
 
-export default function Day({ number }: Props) {
+export default function Event({ event }: Props) {
   return (
-    <li className="h-24 w-36 flex-none rounded-lg bg-white/70 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
+    <li className="h-[108px] w-36 flex-none list-none rounded-lg bg-white/70 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
       <header className="relative h-5 w-full rounded-t-lg bg-kolumblue-500">
         <input
           type="text"
@@ -15,15 +24,15 @@ export default function Day({ number }: Props) {
         />
       </header>
       <div className="event-body flex h-fit w-full select-none gap-2 p-2">
-        <Image
+        {/* <Image
           src={"/images/Untitled.png"}
           height={1}
           width={108}
           className="h-fit rounded-md bg-contain bg-center object-contain object-center shadow-default"
           alt="default event image"
-        />
+        /> */}
         <div className="flex flex-col justify-center overflow-hidden">
-          Day {number}
+          {event?.["event_name"]}
         </div>
       </div>
     </li>

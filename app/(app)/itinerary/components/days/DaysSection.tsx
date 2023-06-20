@@ -1,14 +1,15 @@
 "use client";
 
-import { createRef, useEffect, useMemo, useState } from "react";
-import Sortable from "sortablejs";
-import { ReactSortable } from "react-sortablejs";
+import { useEffect, useState } from "react";
+import { ReactSortable, Sortable } from "react-sortablejs";
 import useUserTrips from "@/hooks/api/use-user-trips";
 import useTripsEvents from "@/hooks/api/use-trips-events";
 import useSelectedTrip from "@/hooks/use-selected-trip";
 import { ACTION } from "@/hooks/use-actions";
 
-import Day from "./Day";
+import Event from "./Event";
+
+// Sortable.mount(new MultiDrag());
 
 export default function DaysSection() {
   const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
@@ -16,66 +17,100 @@ export default function DaysSection() {
     useTripsEvents();
   const [selectedTrip] = useSelectedTrip();
 
-  // const [loading, setLoading] = useState(true);
+  const [state, setState] = useState([]);
 
-  const DaysRefs = useMemo(() => {
-    const refs: any = {};
-    for (let i = 0; i < userTrips[selectedTrip]["days"]; i++) {
-      refs["day" + i] = createRef();
+  useEffect(() => {
+    if (!loadingEvents) {
+      setState(tripEvents);
     }
-    return refs;
-  }, [userTrips, selectedTrip]);
+  }, [loadingEvents]);
+
+  // const [state, setState] = useState([
+  //   { id: 1, name: "shrek" },
+  //   { id: 2, name: "fiona" },
+  // ]);
+
+  console.log(state);
 
   const RenderDays = () => {
     const days = [];
+    let currentDate = new Date(userTrips[selectedTrip]?.["start_date"]);
 
     for (let i = 0; i < userTrips[selectedTrip]["days"]; i++) {
+      let kupa = [
+        "biyeuw",
+        "fnqeuripf",
+        "bfiqepouv",
+        "avierkj3",
+        "qpbgoelvxnja",
+        "vnbqeouivw",
+        "bao6gvb3df",
+        "asj0qv9buy",
+      ];
+      // const sortableKey = kupa[i];
       days.push(
-        <ul
-          key={"day " + i}
-          ref={DaysRefs["day" + i]}
-          className="mt-5 flex h-[6.75rem] w-full items-center gap-2 px-3 last:mb-5 "
+        <ReactSortable
+          key={kupa[i]}
+          list={state}
+          setList={setState}
+          tag={"ul"}
+          group="days"
+          sort={true}
+          selectedClass="event-selected"
+          ghostClass="event-ghost"
+          chosenClass="event-chosen"
+          dragClass="event-darg"
+          animation={150}
+          easing="cubic-bezier(0.175, 0.885, 0.32, 1.1)"
+          forceFallback={true}
+          fallbackTolerance={3}
+          multiDrag={true}
+          swapThreshold={1}
+          className="flex h-[108px] w-full gap-2"
         >
-          <Day number={i} />
-        </ul>
+          {state?.map((event: any) =>
+            ConvertDate(currentDate) != event["event_date"] ? (
+              <></>
+            ) : (
+              <>
+                {console.log(event.event_name)}
+                <Event key={event.id} event={event} />
+              </>
+            )
+          )}
+        </ReactSortable>
       );
+
+      currentDate.setDate(currentDate.getDate() + 1);
     }
     return days;
   };
 
-  if (DaysRefs["day" + 0].current != null) {
-    for (let i = 0; i < userTrips[selectedTrip]["days"]; i++) {
-      Sortable.create(DaysRefs["day" + i].current, {
-        group: "shared",
-        animation: 150,
-        easing: "cubic-bezier(0.175, 0.885, 0.32, 1.1)",
-        handle: "li",
-        ghostClass: "sortable-ghost",
-        chosenClass: "sortable-chosen",
-        dragClass: "sortable-drag",
-        forceFallback: true,
-        fallbackTolerance: 3,
-        // onStart: function () {
-        // let styl =
-        //   "-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;-o-user-select: none;       user-select: none;";
-        // for (let j = 0; j < document.querySelectorAll(".date").length; j++) {
-        //   document.querySelectorAll(".date")[j].setAttribute("style", styl);
-        // }
-        // },
-        // onEnd: async function (event) {
-        // for (let i = 0; i < document.querySelectorAll(".date").length; i++) {
-        //   document.querySelectorAll(".date")[i].setAttribute("style", "");
-        // }
-        // await Post.Trips(
-        //   JSON.stringify(Event.UpdatePosition(trips, tripSel, event))
-        // );
-        // },
-        multiDrag: true,
-        selectedClass: "event-selected",
-        swapThreshold: 1,
-      });
+  /**
+   * Converts date to text.
+   * @param {Date} dateToConvert
+   * @returns {string} Date in yyyy-mm-dd format
+   */
+  function ConvertDate(dateToConvert: Date) {
+    let date = new Date(dateToConvert);
+
+    let dd: string | number = date.getDate();
+    let mm: string | number = date.getMonth() + 1;
+    let yyyy: number = date.getFullYear();
+
+    if (dd < 10) {
+      dd = "0" + dd;
     }
+    if (mm < 10) {
+      mm = "0" + mm;
+    }
+
+    return yyyy + "-" + mm + "-" + dd;
   }
 
-  return <section className="flex w-full flex-col">{RenderDays()}</section>;
+  return (
+    <section className="flex w-full flex-col gap-5 py-5 pl-4">
+      {!loadingEvents && RenderDays()}
+    </section>
+  );
 }

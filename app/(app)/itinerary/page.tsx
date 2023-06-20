@@ -29,7 +29,7 @@ export default function Itinerary() {
 
           <section className="flex w-[calc(100vw-384px)] flex-col gap-10 overflow-scroll">
             <DaysSection />
-            <DaysSection />
+            {/* <DaysSection /> */}
           </section>
         </div>
       )}
