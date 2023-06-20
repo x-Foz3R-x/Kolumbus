@@ -41,7 +41,7 @@ export default function useTripsEvents() {
           // Retrieving trip documents that match the query
           const docSnap = await getDocs(q);
 
-          // Processing each trip document
+          // Processing trip document
           docSnap?.docs.forEach(async (trip) => {
             // Querying the events sub collection of each trip
             const subColRef = collection(db, "trips", trip.id, "events");

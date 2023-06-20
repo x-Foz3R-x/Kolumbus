@@ -16,11 +16,11 @@ interface Props {
 export default function Event({ event }: Props) {
   return (
     <li className="h-[108px] w-36 flex-none list-none rounded-lg bg-white/70 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
-      <header className="relative h-5 w-full rounded-t-lg bg-kolumblue-500">
+      <header className="relative h-8 w-full rounded-t-lg border-b">
         <input
           type="text"
           placeholder="Enter location"
-          className="absolute inset-0 rounded-t-lg bg-transparent px-2 text-xs font-medium text-white/75 placeholder:font-light placeholder:text-white/50"
+          className="absolute inset-0 rounded-t-lg bg-transparent px-2 text-sm font-medium placeholder:font-light placeholder:text-black/50"
         />
       </header>
       <div className="event-body flex h-fit w-full select-none gap-2 p-2">

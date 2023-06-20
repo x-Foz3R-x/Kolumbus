@@ -27,7 +27,8 @@ export default function Itinerary() {
             {RenderCalendarSection(userTrips, selectedTrip)}
           </section>
 
-          <section className="flex w-[calc(100vw-384px)] flex-col gap-10 overflow-scroll">
+          {/* <section className="flex w-[calc(100vw-384px)] flex-col gap-10 overflow-scroll"> */}
+          <section className="flex w-[calc(100vw-384px)] flex-col gap-10">
             <DaysSection />
             {/* <DaysSection /> */}
           </section>
