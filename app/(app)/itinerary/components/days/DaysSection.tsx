@@ -1,16 +1,41 @@
 "use client";
 
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  forwardRef,
+  memo,
+} from "react";
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  pointerWithin,
+  getFirstCollision,
+  rectIntersection,
+  UniqueIdentifier,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import {
   useSortedTripsEvents,
   useSetTripsEvents,
 } from "@/hooks/useSortedUserTrips";
+import SortableEvent from "./SortableEvent";
 
 import Event from "./Event";
 
 export default function DaysSection() {
   const [days, dispatchTripEvents] = useSortedTripsEvents();
-  console.log(days);
+
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  // console.log(days);
   // let x = useSetTripsEvents(days);
   // dispatchTripEvents({
   //   type: ACTION.REPLACE,
@@ -18,46 +43,43 @@ export default function DaysSection() {
   // });
   // useSetTripsEvents(XD);
 
-  const handleDragAndDrop = () => {
-    console.log("handle drag and drop");
+  const handleDragEnd = (e: any) => {
+    console.log("handle drag End");
+    const { active, over } = e;
+
+    if (active.id != over.id) {
+    }
   };
 
   return (
-    <section className="flex w-full flex-col gap-5 py-5 pl-4">
-      <DragDropContext onDragEnd={handleDragAndDrop}>
-        {days?.map((day: { id: string; events: object[] }, index: number) => (
-          <Droppable key={day.id} droppableId={day.id} direction="horizontal">
-            {(provided) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                className="flex h-[108px] bg-kolumblue-200"
-              >
-                {day.events.map((event, index): any => (
-                  <Draggable
-                    key={event.id}
-                    draggableId={event.id}
-                    index={index}
-                  >
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <div className="h-10 w-32">
-                          <Event event={event} />
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
+    <section className="flex w-full flex-col gap-5 py-5">
+      <DndContext
+        collisionDetection={closestCenter}
+        onDragStart={({ active }) => {
+          setActiveId(active.id);
+        }}
+        onDragEnd={handleDragEnd}
+      >
+        {days?.map((day: { id: string; events: [] }, index: number) => (
+          <>
+            {console.log(day.events)}
+            <SortableContext
+              key={day.id}
+              items={day.events}
+              strategy={horizontalListSortingStrategy}
+            >
+              <ul className="flex h-[6.75rem] gap-[0.625rem]">
+                {day.events?.map((event: any) => (
+                  <SortableEvent key={event.id} event={event} />
                 ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
+              </ul>
+            </SortableContext>
+          </>
         ))}
-      </DragDropContext>
+        <DragOverlay adjustScale={false}>
+          {activeId ? <div>ELO</div> : null}
+        </DragOverlay>
+      </DndContext>
     </section>
   );
 }

@@ -2,9 +2,9 @@ import Image from "next/image";
 
 interface Props {
   event: {
+    id: string;
     event_cost: number;
     event_date: string;
-    event_id: string;
     event_link: string;
     event_location: string;
     event_name: string;
@@ -15,7 +15,7 @@ interface Props {
 
 export default function Event({ event }: Props) {
   return (
-    <li className="h-[108px] w-36 flex-none list-none rounded-lg bg-white/70 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
+    <>
       <header className="relative h-8 w-full rounded-t-lg border-b">
         <input
           type="text"
@@ -35,6 +35,6 @@ export default function Event({ event }: Props) {
           {event?.["event_name"]}
         </div>
       </div>
-    </li>
+    </>
   );
 }
