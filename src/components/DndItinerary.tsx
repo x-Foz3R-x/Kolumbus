@@ -26,6 +26,7 @@ import {
 import DndDay from "./DndDay";
 import { DndEventContent } from "./DndEvent";
 import { produce } from "immer";
+import { FormatDate } from "@/lib/utils";
 
 const CurrentTripDATA = {
   id: "uidHh4tHx9te7sH83ueM",
@@ -219,7 +220,7 @@ export default function DndItinerary() {
     newItinerary = produce(newItinerary, (draft: any) => {
       let iteratedDate = new Date(CurrentTripDATA.start_date);
       draft.forEach((day: any) => {
-        const currentDate = ConvertDate(iteratedDate);
+        const currentDate = FormatDate(iteratedDate);
 
         day.date = currentDate;
 
@@ -234,28 +235,6 @@ export default function DndItinerary() {
     recentlyMovedToNewContainer.current = true;
     // @ts-ignore
     setActiveTrip({ itinerary: newItinerary, ...tripInfo });
-  }
-
-  /**
-   * Converts date to text.
-   * @param {Date} dateToConvert
-   * @returns {string} Date in yyyy-mm-dd format
-   */
-  function ConvertDate(dateToConvert: Date) {
-    let date = new Date(dateToConvert);
-
-    let dd: string | number = date.getDate();
-    let mm: string | number = date.getMonth() + 1;
-    let yyyy: number = date.getFullYear();
-
-    if (dd < 10) {
-      dd = "0" + dd;
-    }
-    if (mm < 10) {
-      mm = "0" + mm;
-    }
-
-    return yyyy + "-" + mm + "-" + dd;
   }
 
   return (
