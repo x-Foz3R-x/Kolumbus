@@ -1,5 +1,4 @@
 import React, { forwardRef, memo } from "react";
-import { UniqueIdentifier } from "@dnd-kit/core";
 import {
   SortableContext,
   horizontalListSortingStrategy,
@@ -7,14 +6,24 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import DndEvent from "./DndEvent";
+import { Day, Event, Trip } from "@/types";
+import Calendar from "./app/itinerary/calendar";
 
 interface Props {
-  day: { day_id: string; date: string; events: any };
-  activeId: UniqueIdentifier | null;
+  day: Day | any;
+  activeId: string | number | null;
+  trip: Trip;
+  index: number;
 }
 
-const DndDay = memo(function Day({ day, activeId, ...props }: Props) {
-  const id = day.day_id;
+const DndDay = memo(function Day({
+  day,
+  activeId,
+  trip,
+  index,
+  ...props
+}: Props) {
+  const id = day.id;
 
   const {
     attributes,
@@ -44,6 +53,8 @@ const DndDay = memo(function Day({ day, activeId, ...props }: Props) {
         ref={setActivatorNodeRef}
         activeId={activeId!}
         day={day!}
+        trip={trip}
+        index={index}
         {...attributes}
         {...listeners}
         {...props}
@@ -53,34 +64,25 @@ const DndDay = memo(function Day({ day, activeId, ...props }: Props) {
 });
 
 interface ContentProps {
-  activeId: UniqueIdentifier | null;
-  day: { day_id: string; date: string; events: any };
+  activeId: string | number | null;
+  day: Day | any;
+  trip: Trip;
+  index: number;
   className?: string;
 }
 
 export const DndDayContent = memo(
   forwardRef(function DayItem(
-    { activeId, day, className, ...props }: ContentProps,
+    { activeId, day, trip, index, className, ...props }: ContentProps,
     ref: any
   ) {
-    const { day_id, date, events } = day;
-    const eventsId = events.map(
-      (event: { event_id: string }) => event.event_id
-    );
+    const { id, date, events } = day;
+    const eventsId = events.map((event: Event) => event.id);
 
     return (
-      <div className="flex h-[6.75rem] w-full gap-5">
-        <div className="flex-none select-none bg-kolumblue-400">
-          <div
-            ref={ref}
-            className={day_id !== activeId ? "cursor-grab" : ""}
-            {...props}
-          >
-            X
-          </div>
-          {date}
-        </div>
-        <ul className="flex list-none gap-[0.625rem]">
+      <div className="flex w-full gap-5">
+        <Calendar trip={trip} index={index} {...props} />
+        <ul className="flex h-[6.75rem] list-none gap-[0.625rem]">
           <SortableContext
             items={eventsId}
             strategy={horizontalListSortingStrategy}
@@ -88,9 +90,7 @@ export const DndDayContent = memo(
             {eventsId.map((eventId: string) => (
               <DndEvent
                 key={eventId}
-                event={events.find(
-                  (event: { event_id: string }) => event.event_id === eventId
-                )}
+                event={events.find((event: Event) => event.id === eventId)}
                 activeId={activeId}
               />
             ))}

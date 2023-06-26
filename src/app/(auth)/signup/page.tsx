@@ -1,19 +1,14 @@
 "use client";
 
-import "@/components/form/input.css";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import { useAuth } from "@/context/auth";
+import Icon from "@/components/icons";
+import SignupForm from "@/components/form/signup-form";
 
-import { Submit, FormSeparator } from "@/components/form/Form";
-import Checkbox from "@/components/ui/checkbox/checkbox";
+import "@/components/form/input.css";
 
 export default function SignUp() {
-  const { signup } = useAuth();
-
   const initialFormState = {
     username: "",
     country: "USA",
@@ -27,32 +22,19 @@ export default function SignUp() {
 
   const [form, setForm] = useState(initialFormState);
 
-  const router = useRouter();
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    try {
-      await signup(
-        form.email,
-        form.password,
-        form.username,
-        form.country,
-        form.sex
-      );
-      router.push("/signin");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   return (
     <>
       <h1 className="py-6 text-2xl font-medium">Create your account</h1>
+
       {form.error && (
         <div className="mb-2 rounded-md bg-red-100 px-4 py-1 text-red-600">
           {form.error}
         </div>
       )}
-      <form className="relative flex flex-col">
+
+      <SignupForm />
+
+      {/* <form className="relative flex flex-col">
         <div>
           <input
             type="text"
@@ -954,9 +936,9 @@ export default function SignUp() {
           isEnabled={false}
           className="bottom-14 right-2"
         />
-      </form>
+      </form> */}
 
-      <FormSeparator />
+      <Icon.separator className="my-6 h-px scale-x-[3.2]" />
 
       <div className="flex flex-col items-center justify-center text-xs">
         <div>* Required Fields</div>

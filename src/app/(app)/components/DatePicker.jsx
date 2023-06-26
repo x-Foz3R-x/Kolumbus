@@ -8,13 +8,14 @@ import {
   LockPlugin,
   DateTime,
 } from "@easepick/bundle";
-import useUserTrips from "@/hooks/api/use-user-trips";
+import useUserTripsInfo from "@/hooks/api/use-user-trips-info";
 import useSelectedTrip from "@/hooks/use-selected-trip";
-import { ACTION } from "@/hooks/use-actions";
+import { ACTIONS } from "@/lib/utils";
 import DateSVG from "@/assets/svg/Date.svg";
 
 export default function DatePicker() {
-  const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
+  const { userTripsInfo, dispatchUserTripsInfo, loadingTrips } =
+    useUserTripsInfo();
   const [selectedTrip] = useSelectedTrip();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -26,11 +27,11 @@ export default function DatePicker() {
   useEffect(() => {
     if (!loadingTrips) {
       setDate({
-        start: new Date(userTrips[selectedTrip]["start_date"]),
-        end: new Date(userTrips[selectedTrip]["end_date"]),
+        start: new Date(userTripsInfo[selectedTrip]["start_date"]),
+        end: new Date(userTripsInfo[selectedTrip]["end_date"]),
       });
     }
-  }, [loadingTrips, userTrips, selectedTrip]);
+  }, [loadingTrips, userTripsInfo, selectedTrip]);
 
   const DatePickerRef = useRef();
 
@@ -69,8 +70,8 @@ export default function DatePicker() {
         end: picker.getEndDate(),
       });
 
-      dispatchUserTrips({
-        type: ACTION.X_UPDATES,
+      dispatchUserTripsInfo({
+        type: ACTIONS.X_UPDATES,
         trip: selectedTrip,
         fields: ["start_date", "end_date", "days"],
         payload: [

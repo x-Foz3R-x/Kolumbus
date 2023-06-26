@@ -1,20 +1,15 @@
 import { forwardRef, memo } from "react";
-import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Event } from "@/types";
 
 interface Props {
-  event: {
-    event_id: string;
-    event_name: string;
-    event_position: number;
-    date: string;
-  };
-  activeId: UniqueIdentifier | null;
+  event: Event;
+  activeId: string | number | null;
 }
 
 const DndEvent = memo(function Event({ event, activeId }: Props) {
-  const id = event.event_id;
+  const id = event.id;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
@@ -44,12 +39,7 @@ const DndEvent = memo(function Event({ event, activeId }: Props) {
 });
 
 interface ContentProps {
-  event: {
-    event_id: string;
-    event_name: string;
-    date: string;
-    event_position: number;
-  };
+  event: Event;
   className?: string;
 }
 
@@ -67,14 +57,14 @@ export const DndEventContent = memo(
       >
         <input
           type="text"
-          value={event.event_name}
+          value={event.name}
           onChange={handleOnChange}
           className="h-8 w-full bg-green-300 text-base"
         />
         <div ref={ref} className="cursor-move" {...props}>
           {event.date}
           <br />
-          {event.event_position}
+          {event.position}
         </div>
       </div>
     );

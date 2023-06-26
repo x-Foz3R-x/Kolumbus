@@ -1,4 +1,7 @@
+"use client";
+
 import { useState, useEffect, useRef, useCallback } from "react";
+
 import {
   DndContext,
   DragOverlay,
@@ -18,132 +21,140 @@ import {
 import {
   getItem,
   getIndex,
-  getDragVerticalDirection,
   getDragHorizontalDirection,
   eventOverDay,
   eventOverEvent,
 } from "@/lib/dnd";
+
+import { produce } from "immer";
+import { FormatDate, ACTIONS } from "@/lib/utils";
+import { Day } from "@/types";
+
 import DndDay from "./DndDay";
 import { DndEventContent } from "./DndEvent";
-import { produce } from "immer";
-import { FormatDate } from "@/lib/utils";
 
-const CurrentTripDATA = {
-  id: "uidHh4tHx9te7sH83ueM",
-  name: "Stężyca",
-  days: 5,
-  end_date: "2023-06-13",
-  start_date: "2023-06-09",
-  itinerary: [
-    {
-      day_id: "d1",
-      date: "2023-06-09",
-      drag_type: "day",
-      events: [
-        {
-          event_id: "e1",
-          event_name: "event 1",
-          event_position: 0,
-          date: "2023-06-09",
-          drag_type: "event",
-        },
-      ],
-    },
-    {
-      day_id: "d2",
-      date: "2023-06-10",
-      drag_type: "day",
-      events: [
-        {
-          event_id: "e2",
-          event_name: "event 2",
-          event_position: 0,
-          date: "2023-06-10",
-          drag_type: "event",
-        },
-        {
-          event_id: "e3",
-          event_name: "event 3",
-          event_position: 1,
-          date: "2023-06-10",
-          drag_type: "event",
-        },
-        {
-          event_id: "e4",
-          event_name: "event 4",
-          event_position: 2,
-          date: "2023-06-10",
-          drag_type: "event",
-        },
-      ],
-    },
-    {
-      day_id: "d3",
-      date: "2023-06-11",
-      drag_type: "day",
-      events: [],
-    },
-    {
-      day_id: "d4",
-      date: "2023-06-12",
-      drag_type: "day",
-      events: [
-        {
-          event_id: "e5",
-          event_name: "event 5",
-          event_position: 0,
-          date: "2023-06-12",
-          drag_type: "event",
-        },
-        {
-          event_id: "e6",
-          event_name: "event 6",
-          event_position: 1,
-          date: "2023-06-12",
-          drag_type: "event",
-        },
-      ],
-    },
-    {
-      day_id: "d5",
-      date: "2023-06-13",
-      drag_type: "day",
-      events: [
-        {
-          event_id: "e7",
-          event_name: "event 7",
-          event_position: 0,
-          date: "2023-06-13",
-          drag_type: "event",
-        },
-        {
-          event_id: "e8",
-          event_name: "event 8",
-          event_position: 1,
-          date: "2023-06-13",
-          drag_type: "event",
-        },
-        {
-          event_id: "e9",
-          event_name: "event 9",
-          event_position: 2,
-          date: "2023-06-13",
-          drag_type: "event",
-        },
-      ],
-    },
-  ],
-};
+const CurrentTripDATA = [
+  {
+    id: "uidHh4tHx9te7sH83ueM",
+    name: "Stężyca",
+    days: 5,
+    end_date: "2023-06-13",
+    start_date: "2023-06-09",
+    itinerary: [
+      {
+        id: "d1",
+        date: "2023-06-09",
+        drag_type: "day",
+        events: [
+          {
+            id: "e1",
+            name: "event 1",
+            position: 0,
+            date: "2023-06-09",
+            drag_type: "event",
+          },
+        ],
+      },
+      {
+        id: "d2",
+        date: "2023-06-10",
+        drag_type: "day",
+        events: [
+          {
+            id: "e2",
+            name: "event 2",
+            position: 0,
+            date: "2023-06-10",
+            drag_type: "event",
+          },
+          {
+            id: "e3",
+            name: "event 3",
+            position: 1,
+            date: "2023-06-10",
+            drag_type: "event",
+          },
+          {
+            id: "e4",
+            name: "event 4",
+            position: 2,
+            date: "2023-06-10",
+            drag_type: "event",
+          },
+        ],
+      },
+      {
+        id: "d3",
+        date: "2023-06-11",
+        drag_type: "day",
+        events: [],
+      },
+      {
+        id: "d4",
+        date: "2023-06-12",
+        drag_type: "day",
+        events: [
+          {
+            id: "e5",
+            name: "event 5",
+            position: 0,
+            date: "2023-06-12",
+            drag_type: "event",
+          },
+          {
+            id: "e6",
+            name: "event 6",
+            position: 1,
+            date: "2023-06-12",
+            drag_type: "event",
+          },
+        ],
+      },
+      {
+        id: "d5",
+        date: "2023-06-13",
+        drag_type: "day",
+        events: [
+          {
+            id: "e7",
+            name: "event 7",
+            position: 0,
+            date: "2023-06-13",
+            drag_type: "event",
+          },
+          {
+            id: "e8",
+            name: "event 8",
+            position: 1,
+            date: "2023-06-13",
+            drag_type: "event",
+          },
+          {
+            id: "e9",
+            name: "event 9",
+            position: 2,
+            date: "2023-06-13",
+            drag_type: "event",
+          },
+        ],
+      },
+    ],
+  },
+];
 
-console.log(CurrentTripDATA);
+export default function DndItinerary({
+  userTrips,
+  dispatchUserTrips,
+  selectedTrip,
+}: any) {
+  const [activeTrip, setActiveTrip] = useState(userTrips[selectedTrip]);
+  // const [activeTrip, setActiveTrip] = useState(CurrentTripDATA[0]);
 
-export default function DndItinerary() {
-  const [activeTrip, setActiveTrip] = useState(CurrentTripDATA);
   const { itinerary, ...tripInfo } = activeTrip;
-  const events = itinerary?.map((day) => day.events).flat();
+  const events = itinerary?.map((day: Day) => day.events).flat();
 
-  const daysId = itinerary?.map((day) => day.day_id);
-  const eventsId = events?.map((event) => event.event_id);
+  const daysId = itinerary?.map((day: Day) => day.id);
+  const eventsId = events?.map((event: any) => event.id);
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
@@ -161,6 +172,10 @@ export default function DndItinerary() {
 
   function handleDragEnd() {
     setActiveId(null);
+    dispatchUserTrips({
+      type: ACTIONS.REPLACE_TRIP,
+      payload: activeTrip,
+    });
   }
 
   function handleDragOver({ active, over }: DragOverEvent) {
@@ -174,7 +189,6 @@ export default function DndItinerary() {
     const activeIndex = getIndex(itinerary, activeType, activeId);
     if (typeof activeIndex !== "number" || activeIndex < 0) return;
     const activeDate = getItem(itinerary, events, activeId)?.date;
-    console.log(activeDate);
     if (typeof activeDate !== "string" || typeof activeDate === undefined)
       return;
 
@@ -183,10 +197,7 @@ export default function DndItinerary() {
     const overDate = getItem(itinerary, events, overId)?.date;
     if (typeof overDate !== "string" || typeof overDate === undefined) return;
 
-    const dragDirection =
-      activeType === "day"
-        ? getDragVerticalDirection({ active, over })
-        : getDragHorizontalDirection({ active, over });
+    const dragDirection = getDragHorizontalDirection({ active, over });
     if (!dragDirection) return;
 
     let newItinerary;
@@ -218,38 +229,40 @@ export default function DndItinerary() {
 
     if (!newItinerary) return;
     newItinerary = produce(newItinerary, (draft: any) => {
-      let iteratedDate = new Date(CurrentTripDATA.start_date);
+      let iteratedDate = new Date(CurrentTripDATA[0].start_date);
       draft.forEach((day: any) => {
         const currentDate = FormatDate(iteratedDate);
 
         day.date = currentDate;
 
         day.events.forEach((event: any, index: number) => {
-          event.event_position = index;
+          event.position = index;
           event.date = currentDate;
         });
 
         iteratedDate.setDate(iteratedDate.getDate() + 1);
       });
     });
+
     recentlyMovedToNewContainer.current = true;
-    // @ts-ignore
     setActiveTrip({ itinerary: newItinerary, ...tripInfo });
   }
 
   return (
-    <ul className="my-5 flex flex-col gap-5">
+    <ul className="group/calendar flex flex-col">
       <DndContext
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
-          {daysId?.map((dayId) => (
+          {daysId?.map((dayId: string, index: number) => (
             <DndDay
               key={dayId}
               day={getItem(itinerary, events, dayId)}
               activeId={activeId}
+              trip={userTrips[selectedTrip]}
+              index={index}
             />
           ))}
         </SortableContext>

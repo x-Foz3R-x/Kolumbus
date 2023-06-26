@@ -12,10 +12,10 @@ import { produce } from "immer";
  */
 export function getItem(itinerary, events, id) {
   // Find the day with the matching ID
-  const day = itinerary?.find((day) => day.day_id == id);
+  const day = itinerary?.find((day) => day.id == id);
 
   // Find the event with the matching ID
-  const event = events?.find((event) => event.event_id == id);
+  const event = events?.find((event) => event.id == id);
 
   return day ? day : event ? event : undefined;
 }
@@ -30,13 +30,13 @@ export function getItem(itinerary, events, id) {
 export function getIndex(itinerary, type, id) {
   if (type === "day") {
     // Find the index of the day with the matching ID
-    return itinerary.findIndex((day) => day.day_id === id);
+    return itinerary.findIndex((day) => day.id === id);
   } else if (type === "event") {
     let result;
 
     itinerary.forEach((day) => {
       // Find the index of the event with the matching ID within the current day
-      const index = day.events.findIndex((event) => event.event_id === id);
+      const index = day.events.findIndex((event) => event.id === id);
 
       // If the event index is found, assign it to the result variable
       if (index >= 0) result = index;
@@ -44,23 +44,6 @@ export function getIndex(itinerary, type, id) {
 
     return result;
   }
-}
-
-/**
- * Function to determine the vertical direction of a drag based on the active and over elements positions
- * @returns Drag direction
- */
-export function getDragVerticalDirection({ active, over }) {
-  // Get the bottom position of the active element
-  const activeBottom = active?.rect?.current?.initial?.bottom;
-  // Get the top position of the over element
-  const overTop = over?.rect?.top;
-
-  // If the active element is above the over element, return "fromAbove"
-  if (activeBottom < overTop) return "fromAbove";
-
-  // If the active element is below the over element, return "fromBelow"
-  if (activeBottom > overTop) return "fromBelow";
 }
 
 /**
@@ -188,9 +171,7 @@ export function eventOverEvent(
       const currentEvents = currentDay?.events;
 
       // Filter out the active event from the current day's events array
-      const newEvents = currentEvents.filter(
-        (event) => event.event_id !== activeId
-      );
+      const newEvents = currentEvents.filter((event) => event.id !== activeId);
 
       // Update the events array of the current day in the draft itinerary
       if (newEvents) draft[activeDayIndex].events = newEvents;

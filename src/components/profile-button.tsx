@@ -6,10 +6,10 @@ import Image from "next/image";
 
 import { useAuth } from "@/context/auth";
 
-import Modal from "../../../../components/ui/modal/Modal";
-import ModalButton from "../../../../components/ui/modal/ModalButton";
-import ModalProfile from "../../../../components/ui/modal/ModalProfile";
-import ModalSeparator from "../../../../components/ui/modal/ModalSeparator";
+import Modal from "./ui/modal/Modal";
+import ModalButton from "./ui/modal/ModalButton";
+import ModalProfile from "./ui/modal/ModalProfile";
+import ModalSeparator from "./ui/modal/ModalSeparator";
 
 import SwitchAccountSVG from "@/assets/svg/SwitchAccount.svg";
 import AppearanceSVG from "@/assets/svg/Appearance.svg";

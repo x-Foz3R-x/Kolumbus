@@ -3,9 +3,9 @@
 
 import { useEffect, useState } from "react";
 
-import useUserTrips from "@/hooks/api/use-user-trips";
+import useUserTripsInfo from "@/hooks/api/use-user-trips-info";
 import useSelectedTrip from "@/hooks/use-selected-trip";
-import { ACTION } from "@/hooks/use-actions";
+import { ACTIONS } from "@/lib/utils";
 
 import Modal from "@/components/ui/modal/Modal";
 import ModalButton from "@/components/ui/modal/ModalButton";
@@ -17,19 +17,20 @@ interface Props {
 }
 
 export default function DaysPicker({ maxTripsDays }: Props) {
-  const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
+  const { userTripsInfo, dispatchUserTripsInfo, loadingTrips } =
+    useUserTripsInfo();
   const [selectedTrip] = useSelectedTrip();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tripDay, setTripDay] = useState(1);
 
   useEffect(() => {
-    if (!loadingTrips) setTripDay(userTrips[selectedTrip]["days"]);
-  }, [loadingTrips, userTrips[selectedTrip]["days"]]);
+    if (!loadingTrips) setTripDay(userTripsInfo[selectedTrip]["days"]);
+  }, [loadingTrips, userTripsInfo[selectedTrip]["days"]]);
 
   useEffect(() => {
-    dispatchUserTrips({
-      type: ACTION.UPDATE,
+    dispatchUserTripsInfo({
+      type: ACTIONS.UPDATE,
       trip: selectedTrip,
       field: "days",
       payload: tripDay,

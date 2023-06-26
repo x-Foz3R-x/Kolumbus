@@ -1,17 +1,19 @@
 "use client";
 
 // Importing necessary dependencies and custom hooks
+import useUserTripsInfo from "@/hooks/api/use-user-trips-info";
 import useUserTrips from "@/hooks/api/use-user-trips";
 import useTripsEvents from "@/hooks/api/use-trips-events";
 import useSelectedTrip from "@/hooks/use-selected-trip";
 
-import Spinner from "@/components/loading-indicator/Spinner";
+import Spinner from "@/components/loading/Spinner";
 import DefaultTripSVG from "@/assets/svg/DefaultTrip.svg";
 
 // TripsSection component
-export default function TripsSection() {
+export default function Trips() {
   // Using custom hooks to fetch user trips and trips events
-  const { userTrips, loadingTrips, tripsError } = useUserTrips();
+  const { userTripsInfo, loadingTrips, tripsError } = useUserTripsInfo();
+  const { fetchMoreTrips } = useUserTrips();
   const { refetchEvents } = useTripsEvents();
 
   // Using the useSelectedTrip hook to get the selected trip
@@ -22,6 +24,7 @@ export default function TripsSection() {
     setSelectedTrip(index);
     sessionStorage.setItem("selected_trip", index.toString());
     refetchEvents();
+    fetchMoreTrips();
   };
 
   return (
@@ -40,7 +43,7 @@ export default function TripsSection() {
         <Spinner />
       ) : (
         <section className="flex flex-col">
-          {userTrips?.map((trip: any, index: number) => {
+          {userTripsInfo?.map((trip: any, index: number) => {
             return (
               // Rendering each trip as a button
               <button

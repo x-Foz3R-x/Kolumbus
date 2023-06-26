@@ -1,8 +1,8 @@
 import { UserDataProvider } from "@/context/user-data";
 import { AuthProvider } from "@/context/auth";
 
-import Header from "./components/header/header";
-import SidebarMenu from "./components/sidebar-menu/sidebar-menu";
+import Header from "@/components/layouts/header";
+import SidebarMenu from "@/components/layouts/sidebar-menu";
 
 export default function RootLayout({
   children,

@@ -1,7 +1,7 @@
 import UserSVG from "@/assets/svg/User.svg";
 import GoogleSVG from "@/assets/svg/brands/Google.svg";
 
-export default function AuthProviderSection() {
+export default function AuthProviders() {
   const className =
     "flex h-9 w-80 select-none items-center justify-center gap-2 rounded-md border border-kolumbGray-200 px-4 shadow-soft hover:bg-kolumbGray-200";
 

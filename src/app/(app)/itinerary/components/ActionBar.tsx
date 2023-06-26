@@ -1,6 +1,7 @@
-import useUserTrips from "@/hooks/api/use-user-trips";
+import useUserTripsInfo from "@/hooks/api/use-user-trips-info";
 import useSelectedTrip from "@/hooks/use-selected-trip";
-import { ACTION } from "@/hooks/use-actions";
+
+import { ACTIONS } from "@/lib/utils";
 
 import DatePicker from "@/app/(app)/components/DatePicker";
 import DaysPicker from "@/app/(app)/components/DaysPicker";
@@ -9,12 +10,13 @@ import SavedSVG from "@/assets/svg/Saved.svg";
 import SavingSVG from "@/assets/svg/Saving.svg";
 
 export default function ActionBar() {
-  const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
+  const { userTripsInfo, dispatchUserTripsInfo, loadingTrips } =
+    useUserTripsInfo();
   const [selectedTrip] = useSelectedTrip();
 
   const handleTripNameChange = (e: any) => {
-    dispatchUserTrips({
-      type: ACTION.UPDATE,
+    dispatchUserTripsInfo({
+      type: ACTIONS.UPDATE,
       trip: selectedTrip,
       field: "trip_name",
       payload: e.target.value,
@@ -29,7 +31,7 @@ export default function ActionBar() {
         type="text"
         placeholder="Untitled"
         spellCheck="false"
-        value={userTrips[selectedTrip]["trip_name"]}
+        value={userTripsInfo[selectedTrip]["trip_name"]}
         onChange={handleTripNameChange}
         className="w-full bg-transparent px-2 py-1"
       />

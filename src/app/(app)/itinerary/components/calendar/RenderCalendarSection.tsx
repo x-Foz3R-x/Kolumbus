@@ -2,15 +2,15 @@ import Calendar from "./Calendar";
 import CalendarEnd from "./CalendarEnd";
 
 export default function RenderCalendarSection(
-  userTrips: [],
+  userTripsInfo: [],
   selectedTrip: number
 ) {
   const calendar = [];
 
-  const startDate = new Date(userTrips[selectedTrip]["start_date"]);
+  const startDate = new Date(userTripsInfo[selectedTrip]["start_date"]);
   let currentDate = new Date(startDate);
 
-  for (let i = 0; i < userTrips[selectedTrip]["days"]; i++) {
+  for (let i = 0; i < userTripsInfo[selectedTrip]["days"]; i++) {
     calendar.push(
       <Calendar
         key={"calendar " + i}
@@ -23,7 +23,7 @@ export default function RenderCalendarSection(
   return (
     <section className="h-fit w-fit rounded-xl shadow-kolumblue">
       {calendar}
-      <CalendarEnd totalDays={userTrips[selectedTrip]["days"]} />
+      <CalendarEnd totalDays={userTripsInfo[selectedTrip]["days"]} />
     </section>
   );
 }
