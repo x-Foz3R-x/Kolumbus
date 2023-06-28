@@ -14,7 +14,7 @@ import { ACTIONS } from "@/lib/utils";
 import DateSVG from "@/assets/svg/Date.svg";
 
 export default function DatePicker() {
-  const { userTripsInfo, dispatchUserTripsInfo, loadingTrips } =
+  const { userTripsInfo, dispatchUserTripsInfo, loadingTripsInfo } =
     useUserTripsInfo();
   const [selectedTrip] = useSelectedTrip();
 
@@ -25,13 +25,13 @@ export default function DatePicker() {
   });
 
   useEffect(() => {
-    if (!loadingTrips) {
+    if (!loadingTripsInfo) {
       setDate({
         start: new Date(userTripsInfo[selectedTrip]["start_date"]),
         end: new Date(userTripsInfo[selectedTrip]["end_date"]),
       });
     }
-  }, [loadingTrips, userTripsInfo, selectedTrip]);
+  }, [loadingTripsInfo, userTripsInfo, selectedTrip]);
 
   const DatePickerRef = useRef();
 
@@ -94,7 +94,7 @@ export default function DatePicker() {
     return Math.round(difference / (1000 * 3600 * 24) + 1); // (ms in sec * secs in hour * hours in day).
   }
 
-  return loadingTrips ? (
+  return loadingTripsInfo ? (
     <></>
   ) : (
     <div className="relative select-none">

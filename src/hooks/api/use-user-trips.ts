@@ -22,6 +22,7 @@ export default function useUserTrips() {
   useEffect(() => {
     async function fetchData() {
       try {
+        if (fetchMore === false) return;
         // If there is no current user, retrieve trips from local storage
         if (!currentUser) {
           const docSnap = JSON.parse(localStorage.getItem("trips")!);
@@ -37,8 +38,6 @@ export default function useUserTrips() {
           where("position", "==", selectedTrip)
         );
         const docSnap = await getDocs(q);
-
-        const tripsData = userTrips;
 
         // Iterate over the fetched documents and dispatch them to the userTrips
         docSnap?.docs.forEach(async (trip) => {
@@ -69,7 +68,7 @@ export default function useUserTrips() {
             );
 
             const Day: Day = {
-              id: `d${i}`,
+              id: `d${i}@` + Trip.id,
               date: currentDate,
               drag_type: "day",
               events: currentDateEvents,
@@ -81,18 +80,7 @@ export default function useUserTrips() {
 
           Trip.itinerary = TripDays;
 
-          // Generate the trips
-          for (let j = 0; j <= Trip.position; j++) {
-            // Replace the existing trip at the specified position with the new trip
-            if (Trip.position === j) tripsData.splice(j, 1, Trip);
-            // Replace the existing trip at the specified position with the existing trip from userTrips
-            else if (typeof userTrips[j] !== "undefined")
-              tripsData.splice(j, 1, userTrips[j]);
-            // Add an empty trip at the specified position
-            else if (typeof userTrips[j] === "undefined") tripsData.push([]);
-          }
-
-          dispatchUserTrips({ type: ACTIONS.REPLACE, payload: tripsData });
+          dispatchUserTrips({ type: ACTIONS.REPLACE, payload: Trip });
         });
       } catch (error) {
         setTripsError("Failed to fetch user trips");
@@ -108,16 +96,18 @@ export default function useUserTrips() {
       fetchData();
       setFetchedTripsIndex((selectedTrips) => [...selectedTrips, selectedTrip]);
     }
-  }, [fetchMore]);
+  }, [selectedTrip]);
 
   // Function to trigger a refetch of trip events
   const fetchMoreTrips = () => {
+    setLoadingTrips(true);
     setFetchMore(true);
   };
 
   return {
     userTrips,
     dispatchUserTrips,
+    selectedTrip,
     loadingTrips,
     tripsError,
     fetchMoreTrips,

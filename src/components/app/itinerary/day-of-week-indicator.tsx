@@ -10,8 +10,7 @@ interface Props {
 export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
   dayOfWeek = FormatDayOfWeek(dayOfWeek);
 
-  let daysOfWeek = [];
-
+  const daysOfWeek = [];
   for (let i = 0; i < 7; i++) {
     let currentDayOfWeek;
 
@@ -44,7 +43,7 @@ export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
 
     daysOfWeek.push(
       <div
-        key={i + " " + currentDayOfWeek}
+        key={currentDayOfWeek + i}
         className={
           "h-fit w-[0.875rem] rounded text-center " +
           (dayOfWeek == i ? "font-extrabold " : "font-medium ") +
@@ -62,10 +61,10 @@ export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
         {daysOfWeek}
       </div>
 
-      <div className="relative flex h-2 rounded-md bg-kolumblue-500/20 px-1 shadow-kolumblueInset">
+      <div className="relative flex h-2 rounded-md bg-kolumblue-500/20 px-1 shadow-kolumblueInsetSoft">
         <span
           className={
-            "absolute -top-px z-10 h-[0.625rem] w-4 rounded-[3px] border-x-2 border-y border-kolumblue-500 bg-white/30 shadow-kolumblue " +
+            "absolute -top-px z-10 h-[0.625rem] w-4 rounded-[3px] border-x-2 border-y border-kolumblue-500 bg-white/30 shadow-kolumblue duration-500 ease-kolumb-flow " +
             (dayOfWeek == 0
               ? "left-[3px] "
               : dayOfWeek == 1

@@ -12,12 +12,15 @@ import { ACTIONS } from "@/lib/utils";
 // Custom hook for fetching user trips
 export default function useUserTripsInfo() {
   const { currentUser } = useAuth();
-  const { userTripsInfo, dispatchUserTripsInfo } = useUserData();
+  const {
+    userTripsInfo,
+    dispatchUserTripsInfo,
+    selectedTrip,
+    setSelectedTrip,
+  } = useUserData();
 
-  const [loadingTrips, setLoadingTrips] = useState(true);
+  const [loadingTripsInfo, setLoadingTripsInfo] = useState(true);
   const [tripsError, setTripsError] = useState<string | null>(null);
-
-  const [refetch, setRefetch] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -49,23 +52,19 @@ export default function useUserTripsInfo() {
         setTripsError("failed to fetch user trips");
         console.log(error);
       } finally {
-        setLoadingTrips(false);
+        setLoadingTripsInfo(false);
       }
     }
 
     fetchData();
-  }, [refetch]);
-
-  // Function to trigger trips refetching
-  const refetchTrips = () => {
-    setRefetch(!refetch);
-  };
+  }, []);
 
   return {
     userTripsInfo,
     dispatchUserTripsInfo,
-    loadingTrips,
+    selectedTrip,
+    setSelectedTrip,
+    loadingTripsInfo,
     tripsError,
-    refetchTrips,
   };
 }

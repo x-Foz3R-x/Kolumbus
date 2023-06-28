@@ -1,4 +1,6 @@
 import { forwardRef, memo } from "react";
+import Image from "next/image";
+
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Event } from "@/types";
@@ -17,6 +19,10 @@ const DndEvent = memo(function Event({ event, activeId }: Props) {
       data: {
         item: event,
       },
+      transition: {
+        duration: 200,
+        easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
+      },
     });
 
   return (
@@ -25,10 +31,10 @@ const DndEvent = memo(function Event({ event, activeId }: Props) {
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={
-        "h-[6.75rem] w-36 rounded-lg " +
+        "h-[6.75rem] w-36 rounded-[0.625rem] " +
         (id === activeId
-          ? "border-2 border-dashed border-kolumblue-300 bg-white "
-          : "")
+          ? "z-20 border-2 border-dashed border-kolumblue-300 bg-kolumblue-100/70 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter "
+          : "z-10 ")
       }
     >
       {id === activeId ? null : (
@@ -40,32 +46,37 @@ const DndEvent = memo(function Event({ event, activeId }: Props) {
 
 interface ContentProps {
   event: Event;
-  className?: string;
+  overlay?: boolean;
 }
 
 export const DndEventContent = memo(
   forwardRef(function EventContent(
-    { event, className, ...props }: ContentProps,
+    { event, overlay, ...props }: ContentProps,
     ref: any
   ) {
     return (
       <div
         className={
-          "relative h-[6.75rem] w-36 flex-none bg-white duration-200 ease-kolumb-overflow " +
-          className
+          "relative h-[6.75rem] w-36 flex-none rounded-[0.625rem] border-2 bg-white/80 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-200 ease-kolumb-overflow " +
+          (overlay ? "border-kolumblue-300" : "border-transparent")
         }
       >
+        <div ref={ref} className="z-10 cursor-move" {...props}>
+          <Image
+            src={"/images/Untitled.png"}
+            width={144}
+            height={81}
+            alt="event image"
+            priority={true}
+            className="rounded-t-lg after:absolute after:inset-0 after:z-50 after:rounded-t-[0.625rem] after:bg-black after:shadow-kolumblueInset"
+          />
+        </div>
         <input
           type="text"
           value={event.name}
           onChange={handleOnChange}
-          className="h-8 w-full bg-green-300 text-base"
+          className="h-[27px] w-full bg-transparent px-2 text-base"
         />
-        <div ref={ref} className="cursor-move" {...props}>
-          {event.date}
-          <br />
-          {event.position}
-        </div>
       </div>
     );
   })

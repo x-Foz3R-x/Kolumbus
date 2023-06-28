@@ -3,14 +3,14 @@ import useSelectedTrip from "@/hooks/use-selected-trip";
 
 import { ACTIONS } from "@/lib/utils";
 
-import DatePicker from "@/app/(app)/components/DatePicker";
-import DaysPicker from "@/app/(app)/components/DaysPicker";
+import DatePicker from "@/components/app/date-picker";
+import DaysPicker from "@/components/app/days-picker";
 
 import SavedSVG from "@/assets/svg/Saved.svg";
 import SavingSVG from "@/assets/svg/Saving.svg";
 
 export default function ActionBar() {
-  const { userTripsInfo, dispatchUserTripsInfo, loadingTrips } =
+  const { userTripsInfo, dispatchUserTripsInfo, loadingTripsInfo } =
     useUserTripsInfo();
   const [selectedTrip] = useSelectedTrip();
 
@@ -23,10 +23,10 @@ export default function ActionBar() {
     });
   };
 
-  return loadingTrips ? (
+  return loadingTripsInfo ? (
     <></>
   ) : (
-    <section className="sticky top-4 z-20 flex h-14 w-full items-center justify-between gap-4 rounded-lg bg-white/70 px-4 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
+    <section className="sticky top-5 z-20 mx-5 flex h-14 w-[calc(100%-2.5rem)] items-center justify-between gap-4 rounded-lg bg-white/70 px-4 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
       <input
         type="text"
         placeholder="Untitled"

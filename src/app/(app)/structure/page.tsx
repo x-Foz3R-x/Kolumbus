@@ -1,4 +1,4 @@
-import Main from "../components/Main";
+import Main from "../../../components/app/main";
 
 export default function Structure() {
   return (

@@ -1,4 +1,4 @@
-import Main from "@/app/(app)/components/Main";
+import Main from "@/components/app/main";
 
 export default function Itinerary() {
   return <Main>Loading Itinerary...</Main>;
