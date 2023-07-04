@@ -6,13 +6,15 @@ export interface IconProps {
 //#region app
 export type Trips = Trip[];
 export interface Trip {
-  id: string;
+  id?: string;
   owner_id: string | number;
   participants_id: string | number[];
   name: string;
   start_date: string;
   end_date: string;
   days: number;
+  position: number;
+  itinerary: Days;
   created_at: string;
   updated_at: string;
 }

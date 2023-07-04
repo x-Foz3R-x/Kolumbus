@@ -15,7 +15,7 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
-import Itinerary from "@/components/loading/itinerary";
+import ItinerarySkeleton from "@/components/loading/itinerary-skeleton";
 import Spinner from "@/components/loading/spinner";
 
 const AuthContext = createContext();
@@ -33,7 +33,7 @@ export function AuthProvider({ children, LoadingIndicator = "" }) {
       case "spinner":
         return <Spinner />;
       case "/itinerary":
-        return <Itinerary />;
+        return <ItinerarySkeleton />;
       default:
         return null;
     }

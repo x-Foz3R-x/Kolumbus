@@ -8,15 +8,14 @@ import {
   LockPlugin,
   DateTime,
 } from "@easepick/bundle";
-import useUserTripsInfo from "@/hooks/api/use-user-trips-info";
-import useSelectedTrip from "@/hooks/use-selected-trip";
-import { ACTIONS } from "@/lib/utils";
-import DateSVG from "@/assets/svg/Date.svg";
+import useUserTrips from "@/hooks/use-user-trips";
+import { CalculateDays } from "@/lib/utils";
+import { UT } from "@/config/actions";
+import Icon from "../icons";
 
 export default function DatePicker() {
-  const { userTripsInfo, dispatchUserTripsInfo, loadingTripsInfo } =
-    useUserTripsInfo();
-  const [selectedTrip] = useSelectedTrip();
+  const { userTrips, dispatchUserTrips, loadingTrips, selectedTrip } =
+    useUserTrips();
 
   const [isOpen, setIsOpen] = useState(false);
   const [date, setDate] = useState({
@@ -25,13 +24,13 @@ export default function DatePicker() {
   });
 
   useEffect(() => {
-    if (!loadingTripsInfo) {
+    if (!loadingTrips) {
       setDate({
-        start: new Date(userTripsInfo[selectedTrip]["start_date"]),
-        end: new Date(userTripsInfo[selectedTrip]["end_date"]),
+        start: new Date(userTrips[selectedTrip].start_date),
+        end: new Date(userTrips[selectedTrip].end_date),
       });
     }
-  }, [loadingTripsInfo, userTripsInfo, selectedTrip]);
+  }, [loadingTrips, userTrips, selectedTrip]);
 
   const DatePickerRef = useRef();
 
@@ -70,8 +69,8 @@ export default function DatePicker() {
         end: picker.getEndDate(),
       });
 
-      dispatchUserTripsInfo({
-        type: ACTIONS.X_UPDATES,
+      dispatchUserTrips({
+        type: UT.UPDATE_FIELDS,
         trip: selectedTrip,
         fields: ["start_date", "end_date", "days"],
         payload: [
@@ -87,38 +86,34 @@ export default function DatePicker() {
     });
   };
 
-  function CalculateDays(startDate, endDate) {
-    const difference =
-      new Date(endDate).getTime() - new Date(startDate).getTime();
-
-    return Math.round(difference / (1000 * 3600 * 24) + 1); // (ms in sec * secs in hour * hours in day).
-  }
-
-  return loadingTripsInfo ? (
-    <></>
-  ) : (
+  return (
     <div className="relative select-none">
-      <DateSVG className="absolute h-9 fill-kolumblue-500" />
+      <Icon.rangeCalendar className="absolute h-9 fill-kolumblue-500" />
 
-      <section className="absolute h-9 w-[5.0625rem] text-center text-[10px] font-medium text-white/75">
-        <div className="absolute left-[-0.125rem] top-1 w-10">
-          {date.start
-            .toLocaleString("default", { month: "short" })
-            .toUpperCase()}
-        </div>
-        <div className="absolute right-[-0.125rem] top-1 w-10">
-          {date.end.toLocaleString("default", { month: "short" }).toUpperCase()}
-        </div>
-      </section>
-
-      <section className="absolute h-9 w-[5.0625rem] text-center text-sm font-medium">
-        <div className="absolute bottom-0 left-[-0.125rem] w-10">
-          {date.start.getDate()}
-        </div>
-        <div className="absolute bottom-0 right-[-0.125rem] w-10">
-          {date.end.getDate()}
-        </div>
-      </section>
+      {!loadingTrips && (
+        <>
+          <section className="absolute h-9 w-[5.0625rem] text-center text-[10px] font-medium text-white/75">
+            <div className="absolute left-[-0.125rem] top-1 w-10">
+              {date.start
+                .toLocaleString("default", { month: "short" })
+                .toUpperCase()}
+            </div>
+            <div className="absolute right-[-0.125rem] top-1 w-10">
+              {date.end
+                .toLocaleString("default", { month: "short" })
+                .toUpperCase()}
+            </div>
+          </section>
+          <section className="absolute h-9 w-[5.0625rem] text-center text-sm font-medium">
+            <div className="absolute bottom-0 left-[-0.125rem] w-10">
+              {date.start.getDate()}
+            </div>
+            <div className="absolute bottom-0 right-[-0.125rem] w-10">
+              {date.end.getDate()}
+            </div>
+          </section>
+        </>
+      )}
 
       <input
         className="relative z-10 h-9 w-[5.0625rem] cursor-pointer appearance-none border-none bg-transparent text-xs font-thin text-transparent outline-0"

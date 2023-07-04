@@ -3,34 +3,31 @@
 
 import { useEffect, useState } from "react";
 
-import useUserTripsInfo from "@/hooks/api/use-user-trips-info";
-import useSelectedTrip from "@/hooks/use-selected-trip";
-import { ACTIONS } from "@/lib/utils";
+import useUserTrips from "@/hooks/use-user-trips";
+import { UT } from "@/config/actions";
 
 import Modal from "@/components/ui/modal/Modal";
 import ModalButton from "@/components/ui/modal/ModalButton";
-
-import DaysSVG from "@/assets/svg/Days.svg";
+import Icon from "../icons";
 
 interface Props {
   maxTripsDays: number;
 }
 
 export default function DaysPicker({ maxTripsDays }: Props) {
-  const { userTripsInfo, dispatchUserTripsInfo, loadingTrips } =
-    useUserTripsInfo();
-  const [selectedTrip] = useSelectedTrip();
+  const { userTrips, dispatchUserTrips, loadingTrips, selectedTrip } =
+    useUserTrips();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tripDay, setTripDay] = useState(1);
 
   useEffect(() => {
-    if (!loadingTrips) setTripDay(userTripsInfo[selectedTrip]["days"]);
-  }, [loadingTrips, userTripsInfo[selectedTrip]["days"]]);
+    if (!loadingTrips) setTripDay(userTrips[selectedTrip]?.days);
+  }, [loadingTrips, userTrips[selectedTrip]?.days]);
 
   useEffect(() => {
-    dispatchUserTripsInfo({
-      type: ACTIONS.UPDATE,
+    dispatchUserTrips({
+      type: UT.UPDATE_FIELD,
       trip: selectedTrip,
       field: "days",
       payload: tripDay,
@@ -71,22 +68,25 @@ export default function DaysPicker({ maxTripsDays }: Props) {
     );
   };
 
-  return loadingTrips ? (
-    <div></div>
-  ) : (
+  return (
     <div className="relative h-9 w-9 select-none">
-      <button onClick={() => setIsModalOpen(true)} className="relative">
-        <DaysSVG className="h-9 fill-kolumblue-500" />
+      {!loadingTrips && (
+        <>
+          <button onClick={() => setIsModalOpen(true)} className="relative">
+            <Icon.calendar className="h-9 fill-kolumblue-500" />
 
-        <div className="absolute top-1 w-9 text-[10px] font-medium uppercase text-white/75">
-          days
-        </div>
+            <div className="absolute top-1 w-9 text-[10px] font-medium uppercase text-white/75">
+              days
+            </div>
 
-        <div className="absolute bottom-0 m-auto w-9 text-sm font-medium">
-          {tripDay}
-        </div>
-      </button>
-      {renderDays()}
+            <div className="absolute bottom-0 m-auto w-9 text-sm font-medium">
+              {tripDay}
+            </div>
+          </button>
+
+          {renderDays()}
+        </>
+      )}
     </div>
   );
 }

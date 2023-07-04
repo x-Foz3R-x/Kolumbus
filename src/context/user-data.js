@@ -7,30 +7,50 @@ import {
   useContext,
   createContext,
 } from "react";
-import { ACTIONS } from "@/lib/utils";
+import { UT } from "@/config/actions";
 
 // Creating a context for user data
-const UserDataContext = createContext();
+const UserDataContext = createContext([]);
 
 // Custom hook to access user data context
 export function useUserData() {
   return useContext(UserDataContext);
 }
 
-// Reducer function for managing user trips info state
-function TripsInfoReducer(state, action) {
+// Reducer function for managing user trips state
+function TripsReducer(state, action) {
   switch (action.type) {
-    // Adding a new payload to the state
-    case ACTIONS.ADD:
-      if (action.payload) return (state = [...state, action.payload]);
-    // Emptying state
-    case ACTIONS.EMPTY:
-      return (state = []);
-    // Replacing the state with a new payload
-    case ACTIONS.REPLACE:
-      if (action.payload) return (state = action.payload);
-    // Updating a specific trip info in the state
-    case ACTIONS.UPDATE:
+    // replacing the state with a new payload
+    case UT.REPLACE:
+      if (action.payload) {
+        let newState = [...state];
+        newState = action.payload;
+        return newState;
+      }
+      return state;
+    // Adding/replacing the state trip with a new payload
+    case UT.ADD_REPLACE_TRIP:
+      if (action.payload) {
+        const newState = [...state];
+
+        if (typeof newState[action.payload.position]?.itinerary !== "undefined")
+          return newState;
+
+        newState.splice(action.payload.position, 1, action.payload);
+
+        return newState;
+      }
+      return state;
+    // Replacing the state trip itinerary with a new payload
+    case UT.REPLACE_TRIP:
+      if (action.payload) {
+        const newState = [...state];
+        newState.splice(action.payload.position, 1, action.payload);
+        return newState;
+      }
+      return state;
+    // Updating a specific trip field in the state
+    case UT.UPDATE_FIELD:
       state = state?.map((trip, index) => {
         if (index == action.trip) {
           return { ...trip, [action.field]: action.payload };
@@ -39,8 +59,8 @@ function TripsInfoReducer(state, action) {
         }
       });
       return state;
-    // Updating multiple fields of a specific trip info in the state
-    case ACTIONS.X_UPDATES:
+    // Updating multiple fields of a specific trip in the state
+    case UT.UPDATE_FIELDS:
       state = state?.map((trip, index) => {
         if (index == action.trip) {
           const newTrip = { ...trip };
@@ -53,31 +73,15 @@ function TripsInfoReducer(state, action) {
         }
       });
       return state;
-    // Return unchanged state
-    default:
-      return state;
-  }
-}
+    // Updating a specific event field in the state
+    case UT.UPDATE_EVENT_FIELD:
+      if (action.payload) {
+        const { tripIndex, dayIndex, eventIndex, field, payload } = action;
+        const newState = [...state];
 
-// Reducer function for managing user trips state
-function TripsReducer(state, action) {
-  switch (action.type) {
-    // Replacing the state with a new payload
-    case ACTIONS.REPLACE:
-      if (action.payload) {
-        const newState = [...state];
-        for (let i = 0; i < action.payload.position + 1; i++) {
-          if (typeof state[i] === "undefined") state = [...state, {}];
-        }
-        newState.splice(action.payload.position, 1, action.payload);
-        return newState;
-      }
-      return state;
-    // Replacing the state trip with a new payload
-    case ACTIONS.REPLACE_TRIP:
-      if (action.payload) {
-        const newState = [...state];
-        newState.splice(action.payload.position, 1, action.payload);
+        newState[tripIndex].itinerary[dayIndex].events[eventIndex][field] =
+          payload;
+
         return newState;
       }
       return state;
@@ -89,10 +93,9 @@ function TripsReducer(state, action) {
 
 // UserDataProvider component for providing user data context
 export function UserDataProvider({ children }) {
-  const [userTripsInfo, dispatchUserTripsInfo] = useReducer(TripsInfoReducer);
   const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, []);
-
   const [selectedTrip, setSelectedTrip] = useState(0);
+
   // Initializing the selected trip from session storage or defaulting to 0
   useEffect(() => {
     if (sessionStorage.getItem("selected_trip")) {
@@ -104,9 +107,6 @@ export function UserDataProvider({ children }) {
 
   // Value object for the user data context
   const value = {
-    userTripsInfo,
-    dispatchUserTripsInfo,
-
     userTrips,
     dispatchUserTrips,
 

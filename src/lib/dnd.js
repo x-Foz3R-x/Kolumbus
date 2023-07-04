@@ -69,10 +69,8 @@ export function eventOverDay(
   });
 
   const newItinerary = produce(itinerary, (draft) => {
-    // Get the events array of the day being dragged over
-    const overEvents = draft?.[overIndex].events;
-    // Get the event being dragged
-    const activeEvent = getItem(itinerary, events, activeId);
+    const overEvents = draft?.[overIndex].events; // Get the events array of the day being dragged over
+    const activeEvent = getItem(itinerary, events, activeId); // Get the event being dragged
 
     // Add the active event to the events array of the day being dragged over
     overEvents.push(activeEvent);

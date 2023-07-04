@@ -8,9 +8,14 @@ import { Event } from "@/types";
 interface Props {
   event: Event;
   activeId: string | number | null;
+  handleOnChange?: Function;
 }
 
-const DndEvent = memo(function Event({ event, activeId }: Props) {
+const DndEvent = memo(function Event({
+  event,
+  activeId,
+  handleOnChange,
+}: Props) {
   const id = event.id;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -38,7 +43,12 @@ const DndEvent = memo(function Event({ event, activeId }: Props) {
       }
     >
       {id === activeId ? null : (
-        <DndEventContent event={event} {...listeners} {...attributes} />
+        <DndEventContent
+          event={event}
+          handleOnChange={handleOnChange}
+          {...listeners}
+          {...attributes}
+        />
       )}
     </li>
   );
@@ -47,11 +57,12 @@ const DndEvent = memo(function Event({ event, activeId }: Props) {
 interface ContentProps {
   event: Event;
   overlay?: boolean;
+  handleOnChange?: Function;
 }
 
 export const DndEventContent = memo(
   forwardRef(function EventContent(
-    { event, overlay, ...props }: ContentProps,
+    { event, overlay, handleOnChange, ...props }: ContentProps,
     ref: any
   ) {
     return (
@@ -74,7 +85,9 @@ export const DndEventContent = memo(
         <input
           type="text"
           value={event.name}
-          onChange={handleOnChange}
+          onChange={(e) => {
+            if (handleOnChange) handleOnChange(e, event.id, event.date);
+          }}
           className="h-[27px] w-full bg-transparent px-2 text-base"
         />
       </div>

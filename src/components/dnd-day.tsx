@@ -15,6 +15,7 @@ interface Props {
   index: number;
   startDate: string;
   day: Day;
+  handleEventNameChange?: Function;
 }
 
 const DndDay = memo(function Day({
@@ -22,6 +23,7 @@ const DndDay = memo(function Day({
   index,
   startDate,
   day,
+  handleEventNameChange,
   ...props
 }: Props) {
   const id = day.id;
@@ -66,6 +68,7 @@ const DndDay = memo(function Day({
           index={index}
           startDate={startDate}
           day={day}
+          handleEventNameChange={handleEventNameChange}
           {...attributes}
           {...listeners}
           {...props}
@@ -82,10 +85,11 @@ interface ContentProps {
   day: Day;
   overlay?: boolean;
   className?: string;
+  handleEventNameChange?: Function;
 }
 
 export const DndDayContent = memo(
-  forwardRef(function DayItem(
+  forwardRef(function DayContent(
     {
       activeId,
       index,
@@ -93,6 +97,7 @@ export const DndDayContent = memo(
       day,
       overlay,
       className,
+      handleEventNameChange,
       ...props
     }: ContentProps,
     ref: any
@@ -124,6 +129,7 @@ export const DndDayContent = memo(
                 key={eventId}
                 event={events.find((event: Event) => event.id === eventId)!}
                 activeId={activeId}
+                handleOnChange={handleEventNameChange}
               />
             ))}
           </SortableContext>

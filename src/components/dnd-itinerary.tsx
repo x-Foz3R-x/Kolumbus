@@ -22,15 +22,15 @@ import {
 } from "@dnd-kit/modifiers";
 
 import { getItem, getIndex, eventOverDay, eventOverEvent } from "@/lib/dnd";
-import { FormatDate, ACTIONS } from "@/lib/utils";
-import { Day } from "@/types";
+import { FormatDate } from "@/lib/utils";
+import { UT } from "@/config/actions";
+import { Day, Event } from "@/types";
 
 import DndDay, { DndDayContent } from "./dnd-day";
 import { DndEventContent } from "./dnd-event";
 import CalendarEnd from "./app/itinerary/calendar-end";
 
 export default function DndItinerary({
-  // userTripsInfo,
   userTrips,
   dispatchUserTrips,
   selectedTrip,
@@ -61,7 +61,7 @@ export default function DndItinerary({
   function handleDragEnd() {
     setActiveId(null);
     dispatchUserTrips({
-      type: ACTIONS.REPLACE_TRIP,
+      type: UT.REPLACE_TRIP,
       payload: activeTrip,
     });
     document.body.style.cursor = "";
@@ -133,6 +133,22 @@ export default function DndItinerary({
     setActiveTrip({ itinerary: newItinerary, ...tripInfo });
   }
 
+  function handleEventNameChange(e: any, id: string, date: string) {
+    const dayIndex = itinerary.findIndex((day: Day) => day.date === date);
+    const eventIndex = itinerary[dayIndex].events.findIndex(
+      (event: Event) => event.id === id
+    );
+
+    dispatchUserTrips({
+      type: UT.UPDATE_EVENT_FIELD,
+      tripIndex: selectedTrip,
+      dayIndex: dayIndex,
+      eventIndex: eventIndex,
+      field: "name",
+      payload: e.target.value,
+    });
+  }
+
   return (
     <section className="relative ml-5 flex w-[calc(100vw-17.75rem)] flex-col gap-10 ">
       <DndContext
@@ -150,6 +166,7 @@ export default function DndItinerary({
                   index={index}
                   startDate={userTrips?.[selectedTrip]?.start_date}
                   day={getItem(itinerary, events, dayId)}
+                  handleEventNameChange={handleEventNameChange}
                 />
               ))}
             </ul>

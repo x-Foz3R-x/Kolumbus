@@ -35,9 +35,14 @@ export default function SidebarMenu() {
         </TileLink>
       </section>
 
-      <AuthProvider LoadingIndicator="spinner">
-        <Trips />
-      </AuthProvider>
+      <section className="flex flex-col gap-2 px-3 pb-3">
+        <h1 className="font-adso text-2xl font-bold text-tintedGray-500">
+          Trips
+        </h1>
+        <AuthProvider LoadingIndicator="spinner">
+          <Trips />
+        </AuthProvider>
+      </section>
     </nav>
   );
 }

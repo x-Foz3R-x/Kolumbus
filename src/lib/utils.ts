@@ -1,31 +1,25 @@
 import { usePathname } from "next/navigation";
 
 /**
- * Converts date to string
- * @param date The Date to convert
- * @returns The Date in yyyy-mm-dd format
+ * Formats a date into the "yyyy-mm-dd" format.
+ * @param date The date object to be formatted.
+ * @returns The formatted date string in "yyyy-mm-dd" format.
  */
-export function FormatDate(date: Date) {
-  const DATE = new Date(date);
+export function FormatDate(date: Date): string {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear().toString();
 
-  let dd: string | number = DATE.getDate();
-  let mm: string | number = DATE.getMonth() + 1;
-  let yyyy: number = DATE.getFullYear();
-
-  if (dd < 10) dd = "0" + dd;
-  if (mm < 10) mm = "0" + mm;
-
-  return yyyy + "-" + mm + "-" + dd;
+  return `${year}-${month}-${day}`;
 }
 
 /**
- * Takes a numeric value representing the day of the week and returns the corresponding index in the week. The index values range from 0 to 6, where 0 represents Monday and 6 represents Sunday
- * @param dayOfWeek A numeric value representing the day of the week
- * @returns The corresponding index in the week
+ * Formats the day of the week to a different representation.
+ * Sunday is formatted as 6, Monday as 0, Tuesday as 1, and so on.
+ * @param dayOfWeek The day of the week represented as a number (0-6).
+ * @returns The formatted representation of the day of the week.
  */
-export function FormatDayOfWeek(dayOfWeek: number) {
-  // Convert the numeric representation of the day of the week to the corresponding index in the week
-  // 0 represents Sunday, 1 represents Monday, and so on
+export function FormatDayOfWeek(dayOfWeek: number): number {
   switch (dayOfWeek) {
     case 0:
       return 6;
@@ -42,8 +36,31 @@ export function FormatDayOfWeek(dayOfWeek: number) {
     case 6:
       return 5;
     default:
-      return NaN;
+      return 0;
   }
+}
+
+/**
+ * Calculates the number of days between a start date and an end date.
+ * @param startDate The start date.
+ * @param endDate The end date.
+ * @returns The number of days between the dates.
+ */
+export function CalculateDays(
+  startDate: string | Date,
+  endDate: string | Date
+): number {
+  // Calculate the difference between the end date and start date in milliseconds
+  const difference =
+    new Date(endDate).getTime() - new Date(startDate).getTime();
+  // Number of milliseconds in a day
+  const msInDay = 86400000;
+
+  // Calculate the number of days by dividing the difference by the number of milliseconds in a day,
+  // rounding the result to the nearest whole number, and adding 1 to include both the start and end dates
+  const totalDays = Math.round(difference / msInDay) + 1;
+
+  return totalDays;
 }
 
 /**
@@ -51,33 +68,6 @@ export function FormatDayOfWeek(dayOfWeek: number) {
  * @param link The link to compare with the current pathname
  * @returns A boolean value indicating whether the current pathname matches the link.
  */
-export function CheckCurrentPathname(link: string) {
+export function CheckCurrentPathname(link: string): boolean {
   return usePathname() === link ? true : false;
 }
-
-/**
- * @param ADD > { type: ACTION.ADD, payload: payload }
- * @param EMPTY > { type: ACTION.EMPTY }
- * @param REPLACE > { type: ACTION.REPLACE, payload: payload }
- * @param UPDATE > { type: ACTION.X_UPDATES, trip: selectedTrip, field: string, payload: data }
- * @param X_UPDATES > { type: ACTION.X_UPDATES, trip: selectedTrip, fields: string[], payload: data[] }
- */
-export const ACTIONS = {
-  // dispatch({ type: ACTION.ADD, payload: payload });
-  ADD: "add",
-
-  // dispatch({ type: ACTION.EMPTY });
-  EMPTY: "empty",
-
-  // dispatch({ type: ACTION.REPLACE, payload: payload });
-  REPLACE: "replace",
-
-  // dispatch({ type: ACTION.REPLACE_TRIP, payload: payload });
-  REPLACE_TRIP: "replace_trip",
-
-  // dispatch({ type: ACTION.X_UPDATES, trip: selectedTrip, field: string, payload: data, });
-  UPDATE: "update",
-
-  // dispatch({ type: ACTION.X_UPDATES, trip: selectedTrip, fields: string[], payload: data[], });
-  X_UPDATES: "x_updates",
-};
