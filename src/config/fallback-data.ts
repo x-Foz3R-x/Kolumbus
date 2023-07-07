@@ -10,6 +10,6 @@ export const fallbackTrip: Trip = {
   days: 0,
   position: 69,
   itinerary: [],
-  created_at: "",
-  updated_at: "",
+  created_at: Date.now(),
+  updated_at: Date.now(),
 };

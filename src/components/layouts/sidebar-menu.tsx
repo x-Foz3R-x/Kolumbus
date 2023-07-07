@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/context/auth";
 
-import TileLink from "../tile-link";
 import Trips from "../trips";
+import TileLink from "../tile-link";
 import Icon from "@/components/icons";
 
 export default function SidebarMenu() {

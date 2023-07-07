@@ -16,6 +16,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
 import ItinerarySkeleton from "@/components/loading/itinerary-skeleton";
+
 import Spinner from "@/components/loading/spinner";
 
 const AuthContext = createContext();
