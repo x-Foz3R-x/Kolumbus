@@ -14,12 +14,12 @@ export interface Trip {
   end_date: string;
   days: number;
   position: number;
-  itinerary: Days;
-  created_at: string;
-  updated_at: string;
+  itinerary: Itinerary;
+  created_at: number;
+  updated_at: number;
 }
 
-export type Days = Day[];
+export type Itinerary = Day[];
 export interface Day {
   id: string;
   date: string;

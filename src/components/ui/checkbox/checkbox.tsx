@@ -1,21 +1,21 @@
 import "./checkbox.css";
 
 interface Props {
-  children: React.ReactNode;
   isChecked?: boolean;
   setIsChecked?: Function;
   formObject?: { isChecked: boolean };
   setFormObject?: Function;
   formKey?: string;
+  children: React.ReactNode;
 }
 
 export default function Checkbox({
-  children,
   isChecked,
   setIsChecked,
   formObject,
   setFormObject,
   formKey = "",
+  children,
 }: Props) {
   const handleChange = () => {
     if (setIsChecked && isChecked) {

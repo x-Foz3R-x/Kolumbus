@@ -14,14 +14,17 @@ export default function ActionBar() {
   const handleTripNameChange = (e: any) => {
     dispatchUserTrips({
       type: UT.UPDATE_FIELD,
-      trip: selectedTrip,
-      field: "name",
-      payload: e.target.value,
+      payload: {
+        regenerate: false,
+        selectedTrip: selectedTrip,
+        field: "name",
+        value: e.target.value,
+      },
     });
   };
 
   return (
-    <section className="sticky top-5 z-20 mx-5 flex h-14 w-[calc(100%-2.5rem)] items-center justify-between gap-4 rounded-lg bg-white/70 px-4 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
+    <section className="sticky top-5 z-20 mx-5 flex h-14 w-[calc(100%-2.5rem)] items-center justify-between gap-4 rounded-lg bg-white/70 px-5 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
       {!loadingTrips &&
         typeof userTrips[selectedTrip]?.name !== "undefined" && (
           <>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -9,7 +10,7 @@ import {
   DateTime,
 } from "@easepick/bundle";
 import useUserTrips from "@/hooks/use-user-trips";
-import { CalculateDays } from "@/lib/utils";
+import { calculateDays } from "@/lib/utils";
 import { UT } from "@/config/actions";
 import Icon from "../icons";
 
@@ -26,11 +27,16 @@ export default function DatePicker() {
   useEffect(() => {
     if (!loadingTrips) {
       setDate({
-        start: new Date(userTrips[selectedTrip].start_date),
-        end: new Date(userTrips[selectedTrip].end_date),
+        start: new Date(userTrips[selectedTrip]?.start_date),
+        end: new Date(userTrips[selectedTrip]?.end_date),
       });
     }
-  }, [loadingTrips, userTrips, selectedTrip]);
+  }, [
+    userTrips[selectedTrip]?.start_date,
+    userTrips[selectedTrip]?.end_date,
+    selectedTrip,
+    loadingTrips,
+  ]);
 
   const DatePickerRef = useRef();
 
@@ -71,13 +77,16 @@ export default function DatePicker() {
 
       dispatchUserTrips({
         type: UT.UPDATE_FIELDS,
-        trip: selectedTrip,
-        fields: ["start_date", "end_date", "days"],
-        payload: [
-          picker.getStartDate().format("YYYY-MM-DD"),
-          picker.getEndDate().format("YYYY-MM-DD"),
-          CalculateDays(picker.getStartDate(), picker.getEndDate()),
-        ],
+        payload: {
+          regenerate: true,
+          selectedTrip: selectedTrip,
+          fields: ["start_date", "end_date", "days"],
+          values: [
+            picker.getStartDate().format("YYYY-MM-DD"),
+            picker.getEndDate().format("YYYY-MM-DD"),
+            calculateDays(picker.getStartDate(), picker.getEndDate()),
+          ],
+        },
       });
     });
     picker.on("hide", () => {

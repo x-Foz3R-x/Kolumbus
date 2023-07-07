@@ -1,16 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { produce } from "immer";
+import { createContext, useContext, useEffect, useState } from "react";
 
-import {
-  DndContext,
-  DragOverlay,
-  closestCenter,
-  pointerWithin,
-  getFirstCollision,
-  rectIntersection,
-} from "@dnd-kit/core";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
@@ -22,40 +15,79 @@ import {
 } from "@dnd-kit/modifiers";
 
 import { getItem, getIndex, eventOverDay, eventOverEvent } from "@/lib/dnd";
-import { FormatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { UT } from "@/config/actions";
-import { Day, Event } from "@/types";
+import { Day, Event, Events, Itinerary, Trip, Trips } from "@/types";
 
 import DndDay, { DndDayContent } from "./dnd-day";
 import { DndEventContent } from "./dnd-event";
-import CalendarEnd from "./app/itinerary/calendar-end";
+import { CalendarEnd } from "./app/itinerary/calendar";
+
+const DndDataContext = createContext<{
+  itinerary?: Itinerary;
+  tripInfo?: {
+    id?: string | undefined;
+    owner_id: string | number;
+    participants_id: string | number[];
+    name: string;
+    start_date: string;
+    end_date: string;
+    days: number;
+    position: number;
+    created_at: number;
+    updated_at: number;
+  };
+  events?: Events;
+  daysId?: string[];
+  eventsId?: string[];
+  activeId?: string | null;
+}>({});
+
+export function useDndData() {
+  return useContext(DndDataContext);
+}
+
+interface Props {
+  userTrips: Trips;
+  dispatchUserTrips: React.Dispatch<{ type: string; payload: any }>;
+  selectedTrip: number;
+}
 
 export default function DndItinerary({
   userTrips,
   dispatchUserTrips,
   selectedTrip,
-}: any) {
+}: Props) {
+  const UTsize =
+    ((JSON.stringify(userTrips).length * 2) / 1024).toFixed(2) + " KB";
+  // console.log(UTsize);
+
   const [activeTrip, setActiveTrip] = useState(userTrips[selectedTrip]);
 
+  useEffect(() => {
+    setActiveTrip(userTrips[selectedTrip]);
+  }, [userTrips]);
+
   const { itinerary, ...tripInfo } = activeTrip;
-  const events = itinerary?.map((day: Day) => day?.events).flat();
+  const events = itinerary?.flatMap((day) => day?.events) ?? [];
 
   const daysId = itinerary?.map((day: Day) => day?.id);
   const eventsId = events?.map((event: any) => event?.id);
 
   const [activeId, setActiveId] = useState<string | null>(null);
-  const lastOverId = useRef<string | null>(null);
-  const recentlyMovedToNewContainer = useRef(false);
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      recentlyMovedToNewContainer.current = false;
-    });
-  }, [daysId]);
 
   async function handleDragStart({ active }: any) {
     setActiveId(active?.id);
-    document.body.style.cursor = "grabbing";
+
+    if (active?.data.current?.item.drag_type === "day") {
+      const grabbing = document.createElement("div");
+      grabbing.id = "grabbing";
+      grabbing.setAttribute(
+        "style",
+        "position: fixed; top: 0; left: 0; right: 0; bottom: 0; cursor: grabbing; z-index: 999;"
+      );
+      document.body.appendChild(grabbing);
+    }
   }
 
   function handleDragEnd() {
@@ -64,7 +96,8 @@ export default function DndItinerary({
       type: UT.REPLACE_TRIP,
       payload: activeTrip,
     });
-    document.body.style.cursor = "";
+
+    document.getElementById("grabbing")?.remove();
   }
 
   function handleDragOver({ active, over }: any) {
@@ -113,23 +146,20 @@ export default function DndItinerary({
     }
 
     if (!newItinerary) return;
-    newItinerary = produce(newItinerary, (draft: any) => {
-      const iteratedDate = new Date(userTrips[selectedTrip].start_date);
-      draft.forEach((day: any) => {
-        const currentDate = FormatDate(iteratedDate);
+    const iteratedDate = new Date(tripInfo.start_date);
+    newItinerary.forEach((day: Day) => {
+      const currentDate = formatDate(iteratedDate);
 
-        day.date = currentDate;
+      day.date = currentDate;
 
-        day.events.forEach((event: any, index: number) => {
-          event.position = index;
-          event.date = currentDate;
-        });
-
-        iteratedDate.setDate(iteratedDate.getDate() + 1);
+      day.events.forEach((event: Event, index: number) => {
+        event.position = index;
+        event.date = currentDate;
       });
+
+      iteratedDate.setDate(iteratedDate.getDate() + 1);
     });
 
-    recentlyMovedToNewContainer.current = true;
     setActiveTrip({ itinerary: newItinerary, ...tripInfo });
   }
 
@@ -141,75 +171,101 @@ export default function DndItinerary({
 
     dispatchUserTrips({
       type: UT.UPDATE_EVENT_FIELD,
-      tripIndex: selectedTrip,
-      dayIndex: dayIndex,
-      eventIndex: eventIndex,
-      field: "name",
-      payload: e.target.value,
+      payload: {
+        selectedTrip: selectedTrip,
+        dayIndex: dayIndex,
+        eventIndex: eventIndex,
+        field: "name",
+        value: e.target.value,
+      },
     });
   }
 
+  function handleAddEvent(position: string, date?: string, dayIndex?: number) {
+    const index = itinerary.findIndex((day: Day) => day.date === date);
+
+    dispatchUserTrips({
+      type: UT.INSERT_EVENT,
+      payload: {
+        selectedTrip: selectedTrip,
+        dayIndex: index || dayIndex,
+        position: position,
+      },
+    });
+  }
+
+  const value = {
+    itinerary,
+    tripInfo,
+    events,
+    daysId,
+    eventsId,
+    activeId,
+  };
+
   return (
-    <section className="relative ml-5 flex w-[calc(100vw-17.75rem)] flex-col gap-10 ">
-      <DndContext
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
-          <div className="relative">
-            <ul className="flex w-full min-w-fit flex-col">
-              {daysId?.map((dayId: string, index: number) => (
-                <DndDay
-                  key={dayId}
-                  activeId={activeId}
-                  index={index}
-                  startDate={userTrips?.[selectedTrip]?.start_date}
-                  day={getItem(itinerary, events, dayId)}
-                  handleEventNameChange={handleEventNameChange}
-                />
-              ))}
-            </ul>
-            <CalendarEnd totalDays={tripInfo.days} />
-            <div
-              style={{ height: 128 * tripInfo.days + 20 + "px" }}
-              className="absolute top-0 w-32 flex-none rounded-xl shadow-kolumblue"
-            ></div>
-          </div>
-        </SortableContext>
-
-        {daysId?.includes(activeId) && typeof activeId === "string" ? (
-          <DragOverlay
-            modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-            dropAnimation={{
-              duration: 200,
-              easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
-            }}
+    <section className="relative flex w-[calc(100vw-19rem)] flex-col gap-10">
+      <DndDataContext.Provider value={value}>
+        <DndContext
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={daysId}
+            strategy={verticalListSortingStrategy}
           >
-            <DndDayContent
-              activeId={activeId}
-              index={getIndex(itinerary, "day", activeId)}
-              startDate={userTrips?.[selectedTrip].start_date}
-              day={getItem(itinerary, events, activeId)}
-              overlay={true}
-            />
-          </DragOverlay>
-        ) : null}
+            <div className="relative">
+              <ul className="flex w-full min-w-fit flex-col">
+                {daysId?.map((dayId: string, index: number) => (
+                  <DndDay
+                    key={dayId}
+                    activeId={activeId}
+                    index={index}
+                    startDate={userTrips?.[selectedTrip]?.start_date}
+                    day={getItem(itinerary, events, dayId)}
+                    handleEventNameChange={handleEventNameChange}
+                    handleAddEvent={handleAddEvent}
+                  />
+                ))}
+              </ul>
+              <CalendarEnd totalDays={tripInfo.days} />
+            </div>
+          </SortableContext>
 
-        {eventsId?.includes(activeId) && typeof activeId === "string" ? (
-          <DragOverlay
-            dropAnimation={{
-              duration: 250,
-              easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
-            }}
-          >
-            <DndEventContent
-              event={getItem(itinerary, events, activeId)}
-              overlay={true}
-            />
-          </DragOverlay>
-        ) : null}
-      </DndContext>
+          {typeof activeId === "string" && daysId?.includes(activeId) ? (
+            <DragOverlay
+              modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+              dropAnimation={{
+                duration: 200,
+                easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
+              }}
+            >
+              <DndDayContent
+                activeId={activeId}
+                index={getIndex(itinerary, "day", activeId)}
+                startDate={userTrips?.[selectedTrip].start_date}
+                day={getItem(itinerary, events, activeId)}
+                overlay={true}
+              />
+            </DragOverlay>
+          ) : null}
+
+          {typeof activeId === "string" && eventsId?.includes(activeId) ? (
+            <DragOverlay
+              dropAnimation={{
+                duration: 250,
+                easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
+              }}
+            >
+              <DndEventContent
+                event={getItem(itinerary, events, activeId)}
+                overlay={true}
+              />
+            </DragOverlay>
+          ) : null}
+        </DndContext>
+      </DndDataContext.Provider>
     </section>
   );
 }

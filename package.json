@@ -1,6 +1,6 @@
 {
   "name": "kolumbus",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -24,13 +24,13 @@
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "firebase": "^9.22.0",
-    "immer": "^10.0.2",
     "next": "13.4.2",
     "postcss": "8.4.23",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.2",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.0.1",

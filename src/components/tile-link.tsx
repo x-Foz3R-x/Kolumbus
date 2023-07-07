@@ -4,13 +4,13 @@ import Link from "next/link";
 import { CheckCurrentPathname } from "@/lib/utils";
 
 interface Props {
-  children: React.ReactNode;
   link: string;
   label: string;
   className?: string;
+  children: React.ReactNode;
 }
 
-export default function ToolLink({ children, link, label, className }: Props) {
+export default function ToolLink({ link, label, className, children }: Props) {
   return (
     <Link
       href={link}

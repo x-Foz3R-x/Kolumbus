@@ -8,7 +8,10 @@ import { CSS } from "@dnd-kit/utilities";
 import { Day, Event } from "@/types";
 
 import DndEvent from "./dnd-event";
-import Calendar from "./app/itinerary/calendar";
+import { Calendar } from "./app/itinerary/calendar";
+import Icon from "./icons";
+import { useDndData } from "./dnd-itinerary";
+import { getItem } from "@/lib/dnd";
 
 interface Props {
   activeId: string | number | null;
@@ -16,6 +19,7 @@ interface Props {
   startDate: string;
   day: Day;
   handleEventNameChange?: Function;
+  handleAddEvent?: Function;
 }
 
 const DndDay = memo(function Day({
@@ -24,6 +28,7 @@ const DndDay = memo(function Day({
   startDate,
   day,
   handleEventNameChange,
+  handleAddEvent,
   ...props
 }: Props) {
   const id = day.id;
@@ -69,6 +74,7 @@ const DndDay = memo(function Day({
           startDate={startDate}
           day={day}
           handleEventNameChange={handleEventNameChange}
+          handleAddEvent={handleAddEvent}
           {...attributes}
           {...listeners}
           {...props}
@@ -86,6 +92,7 @@ interface ContentProps {
   overlay?: boolean;
   className?: string;
   handleEventNameChange?: Function;
+  handleAddEvent?: Function;
 }
 
 export const DndDayContent = memo(
@@ -98,25 +105,33 @@ export const DndDayContent = memo(
       overlay,
       className,
       handleEventNameChange,
+      handleAddEvent,
       ...props
     }: ContentProps,
     ref: any
   ) {
-    const { id, events } = day;
+    // const { itinerary, events, daysId } = useDndData();
+
+    const { id, date, events } = day;
     const eventsId = events?.map((event: Event) => event.id);
 
+    // const day = getItem(itinerary, events, dayId)
+    // const dayIndex = itinerary?.findIndex((day: Day) => day.date === date);
+    // console.log(dayIndex);
+
     return (
-      <div ref={ref} className="z-10 flex w-full gap-5">
+      <div ref={ref} className="group/day z-10 flex w-full gap-5">
         <Calendar
           index={index}
           startDate={startDate}
           overlay={overlay}
           className={className}
+          handleAddEvent={handleAddEvent}
           {...props}
         />
         <ul
           className={
-            "flex h-[6.75rem] list-none gap-[0.625rem] pt-5 duration-700 ease-kolumb-flow " +
+            "flex h-32 list-none gap-[0.625rem] pt-5 duration-700 ease-kolumb-flow " +
             (id === activeId ? "scale-95 " : "scale-100")
           }
         >
@@ -133,6 +148,17 @@ export const DndDayContent = memo(
               />
             ))}
           </SortableContext>
+          <button
+            onClick={() => {
+              if (handleAddEvent) handleAddEvent("at_end", day.date);
+            }}
+            style={{
+              left: 144 * eventsId.length + 10 * eventsId.length,
+            }}
+            className="group/add absolute z-30 flex h-[6.75rem] w-8 flex-col items-center justify-center rounded-[0.625rem] bg-white/80 opacity-100 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-flow hover:shadow-kolumblue group-hover/day:opacity-100"
+          >
+            <Icon.plus className="h-4 w-4 fill-kolumbGray-300 group-hover/add:fill-kolumbGray-600" />
+          </button>
         </ul>
       </div>
     );

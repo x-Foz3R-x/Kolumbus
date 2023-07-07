@@ -34,7 +34,7 @@ const Trips = memo(function T() {
             handleTripClick(index);
           }}
           className={
-            "group/tripsSection flex items-center justify-start gap-3 rounded-md px-3 py-2 text-sm font-medium hover:z-10 hover:bg-kolumblue-100 hover:shadow-kolumblueHover " +
+            "group/tripsSection flex h-9 items-center justify-start gap-3 rounded-md px-3 py-2 text-sm font-medium hover:z-10 hover:bg-kolumblue-100 hover:shadow-kolumblueHover " +
             (index == selectedTrip
               ? "bg-kolumblue-200 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected "
               : " ")

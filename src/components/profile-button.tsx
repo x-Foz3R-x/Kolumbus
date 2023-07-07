@@ -6,10 +6,12 @@ import Image from "next/image";
 
 import { useAuth } from "@/context/auth";
 
-import Modal from "./ui/modal/Modal";
-import ModalButton from "./ui/modal/ModalButton";
-import ModalProfile from "./ui/modal/ModalProfile";
-import ModalSeparator from "./ui/modal/ModalSeparator";
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownProfile,
+  DropdownSeparator,
+} from "./ui/Dropdown";
 
 import SwitchAccountSVG from "@/assets/svg/SwitchAccount.svg";
 import AppearanceSVG from "@/assets/svg/Appearance.svg";
@@ -49,45 +51,45 @@ export default function ProfileButton() {
         />
       </button>
 
-      <Modal
+      <Dropdown
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         className="fixed right-4 top-11 w-60 p-2"
       >
-        <ModalProfile
+        <DropdownProfile
           username={currentUser?.displayName}
           email={currentUser?.email}
         />
 
-        <ModalSeparator />
+        <DropdownSeparator />
 
-        <ModalButton className="h-9 w-full px-4">
+        <DropdownButton className="h-9 w-full px-4">
           <SwitchAccountSVG className={className} />
           Switch account
-        </ModalButton>
+        </DropdownButton>
 
-        <ModalButton className="h-9 w-full px-4">
+        <DropdownButton className="h-9 w-full px-4">
           <AppearanceSVG className={className} />
           Light theme
-        </ModalButton>
+        </DropdownButton>
 
-        <ModalButton className="h-9 w-full px-4">
+        <DropdownButton className="h-9 w-full px-4">
           <GlobeSVG className={className} />
           English (us)
-        </ModalButton>
+        </DropdownButton>
 
-        <ModalSeparator />
+        <DropdownSeparator />
 
-        <ModalButton className="h-9 w-full px-4">
+        <DropdownButton className="h-9 w-full px-4">
           <AccountSettingsSVG className={className} />
           Account settings
-        </ModalButton>
+        </DropdownButton>
 
-        <ModalButton onClick={handleSignOut} className="h-9 w-full px-4">
+        <DropdownButton onClick={handleSignOut} className="h-9 w-full px-4">
           <SignOutSVG className={className} />
           Sign out
-        </ModalButton>
-      </Modal>
+        </DropdownButton>
+      </Dropdown>
     </div>
   ) : (
     <section className="flex h-14 w-fit flex-none items-center px-2 font-medium">

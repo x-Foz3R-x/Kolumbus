@@ -1,9 +1,9 @@
 interface Props {
-  children: React.ReactNode;
   className?: string;
+  children: React.ReactNode;
 }
 
-export default function Main({ children, className = "" }: Props) {
+export default function Main({ className, children }: Props) {
   return (
     <main
       style={
@@ -16,7 +16,7 @@ export default function Main({ children, className = "" }: Props) {
       //   className
       // }
       className={
-        "relative h-[calc(100vh-3.5rem)] w-[calc(100vw-14rem)] overflow-x-hidden overflow-y-scroll rounded-tl-lg bg-kolumblue-50 bg-gradient-to-r from-kolumblue-50 to-kolumblue-100 bg-cover bg-center bg-no-repeat shadow-kolumblueInsetSoft " +
+        "relative h-[calc(100vh-3.5rem)] w-[calc(100vw-14rem)] overflow-x-hidden overflow-y-scroll rounded-tl-lg bg-kolumblue-50 bg-gradient-to-r from-kolumblue-50 to-kolumblue-100 bg-cover bg-center bg-no-repeat shadow-kolumblueInset " +
         className
       }
     >

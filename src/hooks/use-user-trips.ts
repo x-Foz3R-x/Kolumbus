@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import { getDocs, collection, query, where, orderBy } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
-import { FormatDate } from "@/lib/utils";
+import { generateItinerary } from "@/lib/utils";
 import { UT } from "@/config/actions";
 
-import type { Trip, Days, Day, Events, Event } from "@/types";
+import type { Trip, Events, Event } from "@/types";
 
 import { useAuth } from "@/context/auth";
 import { useUserData } from "@/context/user-data";
@@ -14,8 +14,9 @@ import { fallbackTrip } from "@/config/fallback-data";
 
 export default function useUserTrips() {
   const { currentUser } = useAuth();
-  const { userTrips, dispatchUserTrips, selectedTrip, setSelectedTrip } =
-    useUserData();
+  const { userTrips, dispatchUserTrips, selectedTrip, setSelectedTrip } = <any>(
+    useUserData()
+  );
 
   const [loadingTrips, setLoadingTrips] = useState(true);
   const [tripsError, setTripsError] = useState<string | null>(null);
@@ -62,35 +63,14 @@ export default function useUserTrips() {
             const subDocSnap = await getDocs(subQ);
 
             // Store event data in an array
-            const TripEvents: Events = [];
+            const Events: Events = [];
             subDocSnap?.forEach((event) => {
               let Event: Event | any = event.data();
               Event.id = event.id;
-              TripEvents.push(Event);
+              Events.push(Event);
             });
 
-            const TripDays: Days = [];
-            let iteratedDate = new Date(Trip?.start_date);
-
-            // Generate the itinerary
-            for (let i = 0; i < Trip.days; i++) {
-              const currentDate = FormatDate(iteratedDate);
-              const currentDateEvents: Events = TripEvents.filter(
-                (event: Event) => event.date === currentDate
-              );
-
-              const Day: Day = {
-                id: `d${i}@` + Trip.id,
-                date: currentDate,
-                drag_type: "day",
-                events: currentDateEvents,
-              };
-
-              TripDays.push(Day);
-              iteratedDate.setDate(iteratedDate.getDate() + 1);
-            }
-
-            Trip.itinerary = TripDays;
+            Trip.itinerary = generateItinerary(Trip, Events);
           }
 
           dispatchUserTrips({

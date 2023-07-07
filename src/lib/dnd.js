@@ -1,7 +1,5 @@
-// Importing a function for array element reordering
 import { arrayMove } from "@dnd-kit/sortable";
-// Importing a library for immutable data manipulation
-import { produce } from "immer";
+import { Events, Itinerary } from "@/types";
 
 /**
  * Function to get an item (day or event) from the itinerary based on its ID
@@ -49,7 +47,15 @@ export function getIndex(itinerary, type, id) {
 }
 
 /**
- * @returns The updated itinerary
+ * Moves an event from one day to another in an itinerary.
+ * @param {Itinerary} itinerary - The itinerary containing all the days and events.
+ * @param {Events} events - The array of all events.
+ * @param {string} activeId - The ID of the event being moved.
+ * @param {number} activeIndex - The index of the event in the active day's event array.
+ * @param {string} activeDate - The date of the active day.
+ * @param {number} overIndex - The index of the day where the event is being moved to.
+ * @param {string} overDate - The date of the day where the event is being moved to.
+ * @returns {Array} - The updated itinerary after moving the event.
  */
 export function eventOverDay(
   itinerary,
@@ -62,28 +68,33 @@ export function eventOverDay(
 ) {
   if (activeDate === overDate) return;
 
-  let activeDayIndex;
-  itinerary?.map((day, index) => {
-    // Find the index of the active day in the itinerary
-    if (day.date === activeDate) activeDayIndex = index;
-  });
+  // Find the index of the active day in the itinerary
+  const activeDayIndex = itinerary.findIndex((day) => day.date === activeDate);
 
-  const newItinerary = produce(itinerary, (draft) => {
-    const overEvents = draft?.[overIndex].events; // Get the events array of the day being dragged over
-    const activeEvent = getItem(itinerary, events, activeId); // Get the event being dragged
+  const newItinerary = [...itinerary];
+  const activeEvent = getItem(itinerary, events, activeId); // Get the event being dragged
+  const pushIndex = newItinerary[overIndex].events.length; // Get the event push position in destination day
 
-    // Add the active event to the events array of the day being dragged over
-    overEvents.push(activeEvent);
+  // Insert the active event into the destination day's event array at the specified index
+  newItinerary[overIndex].events.splice(pushIndex, 0, activeEvent);
 
-    // Remove the active event from its original day's events array
-    draft?.[activeDayIndex]?.events.splice(activeIndex, 1);
-  });
+  // Remove the active event from the active day's event array
+  newItinerary[activeDayIndex].events.splice(activeIndex, 1);
 
   return newItinerary;
 }
 
 /**
- * @returns The updated itinerary
+ * Moves an event over another event within the itinerary.
+ * @param {Itinerary} itinerary - The itinerary containing all the days and events.
+ * @param {Events} events - The array of all events.
+ * @param {string} activeId - The ID of the event being moved.
+ * @param {number} activeIndex - The index of the event in the active day's event array.
+ * @param {string} activeDate - The date of the active day.
+ * @param {string} overId - The ID of the event being moved over.
+ * @param {number} overIndex - The index of the event being moved over in its day's event array.
+ * @param {string} overDate - The date of the day where the event is being moved over.
+ * @returns {Array} - The updated itinerary after moving the event.
  */
 export function eventOverEvent(
   itinerary,
@@ -95,53 +106,35 @@ export function eventOverEvent(
   overIndex,
   overDate
 ) {
-  // Find the index of the active day in the itinerary
-  let activeDayIndex;
-  itinerary?.map((day, index) => {
-    if (day.date === activeDate) activeDayIndex = index;
-  });
-  // Find the index of the day being dragged over in the itinerary
-  let overDayIndex;
-  itinerary?.map((day, index) => {
-    if (day.date === overDate) overDayIndex = index;
-  });
+  // Find the index of the active day and the day where the event is being moved over
+  const activeDayIndex = itinerary.findIndex((day) => day.date === activeDate);
+  const overDayIndex = itinerary.findIndex((day) => day.date === overDate);
 
-  // Skip if either day index is not found
-  if (activeDayIndex < 0 || overDayIndex < 0) return;
+  // Skip if the active day or the over day is not found, or the active and over IDs are the same
+  if (activeDayIndex < 0 || overDayIndex < 0 || activeId === overId) return;
 
   // Get the active event being dragged
   const activeEvent = getItem(itinerary, events, activeId);
 
-  let newItinerary;
-  if (activeId === overId) return;
+  const newItinerary = [...itinerary];
+
   // Move within the same day
   if (activeDate === overDate) {
-    newItinerary = produce(itinerary, (draft) => {
-      const currentDay = draft[activeDayIndex]; // Get the current day
-      const currentEvents = currentDay?.events; // Get the events array of the current day
-
-      // Reorder the events array within the current day
-      currentDay.events = arrayMove(currentEvents, activeIndex, overIndex);
-    });
+    // Move the active event within the same day by rearranging the event array
+    const currentEvents = newItinerary[activeDayIndex].events;
+    newItinerary[activeDayIndex].events = arrayMove(
+      currentEvents,
+      activeIndex,
+      overIndex
+    );
   }
   // Move to a different day
   else if (activeDate !== overDate) {
-    newItinerary = produce(itinerary, (draft) => {
-      const targetDay = draft[overDayIndex]; // Get the day being dragged over
-      const targetEvents = targetDay?.events; // Get the events array of the day being dragged over
+    // Insert the active event into the over day's event array at the specified index
+    newItinerary[overDayIndex].events.splice(overIndex, 0, activeEvent);
 
-      // Insert the active event at the over index in the day being dragged over
-      targetEvents.splice(overIndex, 0, activeEvent);
-
-      const currentDay = draft[activeDayIndex]; // Get the current day
-      const currentEvents = currentDay?.events; // Get the events array of the current day
-
-      // Filter out the active event from the current day's events array
-      const newEvents = currentEvents.filter((event) => event.id !== activeId);
-
-      // Update the events array of the current day in the draft itinerary
-      if (newEvents) draft[activeDayIndex].events = newEvents;
-    });
+    // Remove the active event from the active day's event array
+    newItinerary[activeDayIndex].events.splice(activeIndex, 1);
   }
 
   return newItinerary;

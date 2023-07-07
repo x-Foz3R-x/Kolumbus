@@ -14,20 +14,27 @@ module.exports = {
         inter: "var(--font-inter)",
         inconsolata: "var(--font-inconsolata)",
       },
+      animation: {
+        horizontalScaleIn:
+          "horizontalScaleIn 300ms cubic-bezier(0.175, 0.885, 0.32, 1)",
+      },
+      keyframes: {
+        horizontalScaleIn: {
+          "0%": { transform: "scale(0, 1)" },
+          "100%": { transform: "scale(1, 1)" },
+        },
+      },
       transitionTimingFunction: {
         "kolumb-overflow": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
         "kolumb-flow": "cubic-bezier(0.175, 0.885, 0.32, 1)",
+        "kolumb-leave": "cubic-bezier(0.885, 0.175, 0.5, 1)",
       },
       boxShadow: {
         default:
           "0px 0px 0px 1px rgba(15,15,15,.03), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
         kolumblue:
-          "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06),0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06)",
-        kolumblueSoft:
           "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06)",
         kolumblueInset:
-          "inset 0 1px 2px 1px hsla(210, 78%, 90%, 0.2),inset 0 2px 4px 0 rgba(15,15,15,.12),inset 0 1px 2px 1px hsla(210, 78%, 90%, 0.1),inset 0 2px 4px 0 rgba(15,15,15,.06)",
-        kolumblueInsetSoft:
           "inset 0 1px 2px 1px hsla(210, 78%, 90%, 0.1),inset 0 2px 4px 0 rgba(15,15,15,.06)",
         kolumblueSelected:
           "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
@@ -35,6 +42,10 @@ module.exports = {
           "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
         soft: "0px 1px 2px rgba(15, 15, 15, 0.05)",
         focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
+        button:
+          "0px 0px 0px 1px rgba(15,15,15,.02), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
+        modal:
+          "0 0px 1px rgba(15,15,15,0.05),0 1px 1px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.03)",
       },
     },
     colors: {
@@ -123,5 +134,5 @@ module.exports = {
     },
   },
   plugins: [],
-  darkMode: "class",
+  darkMode: "darkMode",
 };

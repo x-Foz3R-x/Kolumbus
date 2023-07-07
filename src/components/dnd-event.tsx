@@ -38,7 +38,7 @@ const DndEvent = memo(function Event({
       className={
         "h-[6.75rem] w-36 rounded-[0.625rem] " +
         (id === activeId
-          ? "z-20 border-2 border-dashed border-kolumblue-300 bg-kolumblue-100/70 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter "
+          ? "z-20 border-2 border-dashed border-kolumblue-300/70 bg-kolumblue-100/70 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter "
           : "z-10 ")
       }
     >
@@ -68,18 +68,18 @@ export const DndEventContent = memo(
     return (
       <div
         className={
-          "relative h-[6.75rem] w-36 flex-none rounded-[0.625rem] border-2 bg-white/80 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-200 ease-kolumb-overflow " +
+          "relative h-[6.75rem] w-36 flex-none origin-left rounded-[0.625rem] border-2 bg-white/80 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter " +
           (overlay ? "border-kolumblue-300" : "border-transparent")
         }
       >
-        <div ref={ref} className="z-10 cursor-move" {...props}>
+        <div ref={ref} className="z-10 h-[80px] cursor-move" {...props}>
           <Image
             src={"/images/Untitled.png"}
-            width={144}
-            height={81}
+            width={140}
+            height={80}
             alt="event image"
             priority={true}
-            className="rounded-t-lg after:absolute after:inset-0 after:z-50 after:rounded-t-[0.625rem] after:bg-black after:shadow-kolumblueInset"
+            className="h-full rounded-t-lg after:absolute after:inset-0 after:z-50 after:rounded-t-[0.625rem] after:bg-black after:shadow-kolumblueInset"
           />
         </div>
         <input
@@ -88,7 +88,7 @@ export const DndEventContent = memo(
           onChange={(e) => {
             if (handleOnChange) handleOnChange(e, event.id, event.date);
           }}
-          className="h-[27px] w-full bg-transparent px-2 text-base"
+          className="h-[28px] w-full bg-transparent px-2 text-base"
         />
       </div>
     );
