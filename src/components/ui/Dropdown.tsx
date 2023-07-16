@@ -53,7 +53,7 @@ export function Dropdown({
       aria-haspopup={true}
       aria-hidden={isModalOpen}
       className={
-        "modal flex-col rounded-xl bg-white shadow-default " +
+        "modal flex-col rounded-xl bg-white shadow-popup " +
         (isModalOpen ? "flex " : "hidden ") +
         className
       }

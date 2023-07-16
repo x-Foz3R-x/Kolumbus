@@ -28,7 +28,10 @@ export interface Day {
 }
 
 export type Events = Event[];
-export interface Event {
+interface EventsKeys {
+  [key: string]: string | number | undefined;
+}
+export interface Event extends EventsKeys {
   id: string;
   name: string;
   date: string;

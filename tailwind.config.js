@@ -15,10 +15,43 @@ module.exports = {
         inconsolata: "var(--font-inconsolata)",
       },
       animation: {
+        appear: "appear 500ms cubic-bezier(0.175, 0.75, 0.32, 1)",
+        fadeIn: "fadeIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
+        fadeOut: "fadeOut 300ms cubic-bezier(0.175, 0.885, 0.32, 1)",
+        verticalScaleIn:
+          "verticalScaleIn 300ms cubic-bezier(0.175, 0.885, 0.32, 1)",
         horizontalScaleIn:
           "horizontalScaleIn 300ms cubic-bezier(0.175, 0.885, 0.32, 1)",
       },
       keyframes: {
+        appear: {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(5rem)",
+            transformOrigin: "bottom",
+          },
+          "50%": {
+            opacity: "0.6",
+            transform: "matrix(1.02,0.02,0.08,1.00,0,0)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)",
+            transformOrigin: "bottom",
+          },
+        },
+        fadeIn: {
+          "0%": { opacity: "0%" },
+          "100%": { opacity: "100%" },
+        },
+        fadeOut: {
+          "0%": { opacity: "1" },
+          "100%": { opacity: "0" },
+        },
+        verticalScaleIn: {
+          "0%": { transform: "scale(1, 0)" },
+          "100%": { transform: "scale(1, 1)" },
+        },
         horizontalScaleIn: {
           "0%": { transform: "scale(0, 1)" },
           "100%": { transform: "scale(1, 1)" },
@@ -44,8 +77,16 @@ module.exports = {
         focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
         button:
           "0px 0px 0px 1px rgba(15,15,15,.02), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
-        modal:
-          "0 0px 1px rgba(15,15,15,0.05),0 1px 1px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.03)",
+        dropdown:
+          "0 0px 5px rgba(15,15,15,0.1),0 1px 1px rgba(15,15,15,0.03), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03)",
+        popup:
+          "0 0px 5px rgba(15,15,15,0.1),0 1px 1px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.03)",
+        container:
+          "0 0px 5px rgba(15,15,15,0.05),0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.01)",
+        comboInput:
+          "0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 3px 3px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02)",
+        comboInputInverted:
+          "0 -1px 1px rgba(15,15,15,0.01), 0 -2px 2px rgba(15,15,15,0.01), 0 -3px 3px rgba(15,15,15,0.01), 0 -4px 4px rgba(15,15,15,0.01)",
       },
     },
     colors: {

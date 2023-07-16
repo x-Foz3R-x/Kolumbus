@@ -1,15 +1,17 @@
+import useAppData from "@/context/app-data";
 import useUserTrips from "@/hooks/use-user-trips";
-import { UT } from "@/config/actions";
+import UT from "@/config/actions";
 
 import DatePicker from "@/components/app/date-picker";
 import DaysPicker from "@/components/app/days-picker";
 
 import SavedSVG from "@/assets/svg/Saved.svg";
 import SavingSVG from "@/assets/svg/Saving.svg";
+import GoogleMapsSearch from "@/components/google-maps-search";
 
 export default function ActionBar() {
-  const { userTrips, dispatchUserTrips, loadingTrips, selectedTrip } =
-    useUserTrips();
+  const { selectedTrip, setSelectedTrip } = useAppData();
+  const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
 
   const handleTripNameChange = (e: any) => {
     dispatchUserTrips({
@@ -24,7 +26,7 @@ export default function ActionBar() {
   };
 
   return (
-    <section className="sticky top-5 z-20 mx-5 flex h-14 w-[calc(100%-2.5rem)] items-center justify-between gap-4 rounded-lg bg-white/70 px-5 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
+    <section className="sticky top-5 z-20 mx-5 flex h-14 w-[calc(100%-2.5rem)] items-center justify-between gap-4 rounded-lg bg-white/80 px-5 shadow-container backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
       {!loadingTrips &&
         typeof userTrips[selectedTrip]?.name !== "undefined" && (
           <>

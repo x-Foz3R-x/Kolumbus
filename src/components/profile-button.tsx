@@ -11,7 +11,7 @@ import {
   DropdownButton,
   DropdownProfile,
   DropdownSeparator,
-} from "./ui/Dropdown";
+} from "./ui/dropdown";
 
 import SwitchAccountSVG from "@/assets/svg/SwitchAccount.svg";
 import AppearanceSVG from "@/assets/svg/Appearance.svg";

@@ -16,32 +16,31 @@ import {
 
 import { getItem, getIndex, eventOverDay, eventOverEvent } from "@/lib/dnd";
 import { formatDate } from "@/lib/utils";
-import { UT } from "@/config/actions";
-import { Day, Event, Events, Itinerary, Trip, Trips } from "@/types";
+import UT from "@/config/actions";
+import { Day, Event, Events, Trips } from "@/types";
 
-import DndDay, { DndDayContent } from "./dnd-day";
+import { DndDay, DndDayContent } from "./dnd-day";
 import { DndEventContent } from "./dnd-event";
 import { CalendarEnd } from "./app/itinerary/calendar";
+import CreateEvent from "./create-event";
 
 const DndDataContext = createContext<{
-  itinerary?: Itinerary;
-  tripInfo?: {
-    id?: string | undefined;
-    owner_id: string | number;
-    participants_id: string | number[];
-    name: string;
-    start_date: string;
-    end_date: string;
-    days: number;
-    position: number;
-    created_at: number;
-    updated_at: number;
-  };
-  events?: Events;
-  daysId?: string[];
-  eventsId?: string[];
-  activeId?: string | null;
-}>({});
+  dispatchUserTrips: any;
+  selectedTrip: number;
+  activeTrip: any;
+  events: Events;
+  daysId: string[];
+  eventsId: string[];
+  activeId: string | null;
+}>({
+  dispatchUserTrips: null,
+  selectedTrip: 0,
+  activeTrip: {},
+  events: [],
+  daysId: [],
+  eventsId: [],
+  activeId: "",
+});
 
 export function useDndData() {
   return useContext(DndDataContext);
@@ -163,40 +162,10 @@ export default function DndItinerary({
     setActiveTrip({ itinerary: newItinerary, ...tripInfo });
   }
 
-  function handleEventNameChange(e: any, id: string, date: string) {
-    const dayIndex = itinerary.findIndex((day: Day) => day.date === date);
-    const eventIndex = itinerary[dayIndex].events.findIndex(
-      (event: Event) => event.id === id
-    );
-
-    dispatchUserTrips({
-      type: UT.UPDATE_EVENT_FIELD,
-      payload: {
-        selectedTrip: selectedTrip,
-        dayIndex: dayIndex,
-        eventIndex: eventIndex,
-        field: "name",
-        value: e.target.value,
-      },
-    });
-  }
-
-  function handleAddEvent(position: string, date?: string, dayIndex?: number) {
-    const index = itinerary.findIndex((day: Day) => day.date === date);
-
-    dispatchUserTrips({
-      type: UT.INSERT_EVENT,
-      payload: {
-        selectedTrip: selectedTrip,
-        dayIndex: index || dayIndex,
-        position: position,
-      },
-    });
-  }
-
   const value = {
-    itinerary,
-    tripInfo,
+    dispatchUserTrips,
+    selectedTrip,
+    activeTrip,
     events,
     daysId,
     eventsId,
@@ -216,19 +185,14 @@ export default function DndItinerary({
             strategy={verticalListSortingStrategy}
           >
             <div className="relative">
+              <CreateEvent />
+
               <ul className="flex w-full min-w-fit flex-col">
-                {daysId?.map((dayId: string, index: number) => (
-                  <DndDay
-                    key={dayId}
-                    activeId={activeId}
-                    index={index}
-                    startDate={userTrips?.[selectedTrip]?.start_date}
-                    day={getItem(itinerary, events, dayId)}
-                    handleEventNameChange={handleEventNameChange}
-                    handleAddEvent={handleAddEvent}
-                  />
+                {daysId?.map((dayId: string) => (
+                  <DndDay key={dayId} day={getItem(itinerary, events, dayId)} />
                 ))}
               </ul>
+
               <CalendarEnd totalDays={tripInfo.days} />
             </div>
           </SortableContext>
@@ -237,16 +201,13 @@ export default function DndItinerary({
             <DragOverlay
               modifiers={[restrictToVerticalAxis, restrictToParentElement]}
               dropAnimation={{
-                duration: 200,
+                duration: 300,
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
               <DndDayContent
-                activeId={activeId}
-                index={getIndex(itinerary, "day", activeId)}
-                startDate={userTrips?.[selectedTrip].start_date}
                 day={getItem(itinerary, events, activeId)}
-                overlay={true}
+                dragOverlay={true}
               />
             </DragOverlay>
           ) : null}
@@ -254,13 +215,13 @@ export default function DndItinerary({
           {typeof activeId === "string" && eventsId?.includes(activeId) ? (
             <DragOverlay
               dropAnimation={{
-                duration: 250,
+                duration: 300,
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
               <DndEventContent
                 event={getItem(itinerary, events, activeId)}
-                overlay={true}
+                dragOverlay={true}
               />
             </DragOverlay>
           ) : null}

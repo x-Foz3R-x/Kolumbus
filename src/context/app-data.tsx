@@ -1,26 +1,28 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useReducer,
-  useContext,
+import React, {
   createContext,
+  useContext,
+  useEffect,
+  useState,
+  useReducer,
 } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { UT } from "@/config/actions";
+
 import { generateItinerary } from "@/lib/utils";
+import UT from "@/config/actions";
+import { Day, Event, Trips } from "@/types";
 
 // Creating a context for user data
-const UserDataContext = createContext([]);
+const appDataContext = createContext<any>({});
 
 // Custom hook to access user data context
-export function useUserData() {
-  return useContext(UserDataContext);
+export default function useAppData() {
+  return useContext(appDataContext);
 }
 
 // Reducer function for managing user trips state
-function TripsReducer(state, action) {
+function TripsReducer(state: Trips, action: { type: string; payload: any }) {
   switch (action.type) {
     // replacing the state with a new payload
     case UT.REPLACE:
@@ -68,7 +70,8 @@ function TripsReducer(state, action) {
         // Regenerate the itinerary if requested
         if (regenerate) {
           // Flatten the events array from the existing itinerary
-          const events = trip.itinerary?.flatMap((day) => day?.events) ?? [];
+          const events =
+            trip.itinerary?.flatMap((day: Day) => day?.events) ?? [];
 
           // Generate a new itinerary based on the updated state and events
           updatedState.itinerary = generateItinerary(updatedState, events);
@@ -90,7 +93,7 @@ function TripsReducer(state, action) {
         const updatedState = {
           ...trip,
           ...Object.fromEntries(
-            fields.map((field, index) => [field, values[index]])
+            fields.map((field: string, index: number) => [field, values[index]])
           ),
           updated_at: Date.now(),
         };
@@ -98,7 +101,8 @@ function TripsReducer(state, action) {
         // Regenerate the itinerary if requested
         if (regenerate) {
           // Flatten the events array from the existing itinerary
-          const events = trip.itinerary?.flatMap((day) => day?.events) ?? [];
+          const events =
+            trip.itinerary?.flatMap((day: Day) => day?.events) ?? [];
 
           // Generate a new itinerary based on the updated state and events
           updatedState.itinerary = generateItinerary(updatedState, events);
@@ -112,8 +116,15 @@ function TripsReducer(state, action) {
     // Updating a specific event field in the state
     case UT.UPDATE_EVENT_FIELD:
       if (action.payload) {
+        const typedPayload: {
+          selectedTrip: number;
+          dayIndex: number;
+          eventIndex: number;
+          field: string;
+          value: string;
+        } = action.payload;
         const { selectedTrip, dayIndex, eventIndex, field, value } =
-          action.payload;
+          typedPayload;
         const newState = [...state];
 
         newState[selectedTrip].updated_at = Date.now();
@@ -123,16 +134,16 @@ function TripsReducer(state, action) {
         return newState;
       }
       return state;
-    // Inserting empty event
+    // Inserting event to user trip
     case UT.INSERT_EVENT:
       if (action.payload) {
-        const { selectedTrip, dayIndex, position } = action.payload;
+        const { selectedTrip, dayIndex, placeAt } = action.payload;
         const newState = [...state];
 
         newState[selectedTrip].updated_at = Date.now();
 
         const pushIndex =
-          newState[selectedTrip].itinerary[dayIndex].events.length + 1;
+          newState[selectedTrip].itinerary[dayIndex].events.length;
         const event = {
           address: "",
           cost: 0,
@@ -141,15 +152,19 @@ function TripsReducer(state, action) {
           id: uuidv4(),
           link: "",
           name: "",
-          position: position === "at_start" ? 0 : pushIndex,
+          position: placeAt === "start" ? 0 : pushIndex,
           type: "",
         };
 
-        if (position === "at_start") {
+        if (placeAt === "start") {
           newState[selectedTrip].itinerary[dayIndex].events.splice(0, 0, event);
+          const dayEvents = newState[selectedTrip].itinerary[dayIndex].events;
+          dayEvents.forEach((event: Event, index: number) => {
+            event.position = index;
+          });
         }
 
-        if (position === "at_end") {
+        if (placeAt === "end") {
           newState[selectedTrip].itinerary[dayIndex].events.splice(
             pushIndex,
             0,
@@ -167,14 +182,17 @@ function TripsReducer(state, action) {
 }
 
 // UserDataProvider component for providing user data context
-export function UserDataProvider({ children }) {
+export function AppDataProvider({ children }: { children: React.ReactNode }) {
   const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, []);
   const [selectedTrip, setSelectedTrip] = useState(0);
+
+  const [isModalShown, setModalShown] = useState(false);
+  const [modalChildren, setModalChildren] = useState(null);
 
   // Initializing the selected trip from session storage or defaulting to 0
   useEffect(() => {
     if (sessionStorage.getItem("selected_trip")) {
-      setSelectedTrip(JSON.parse(sessionStorage.getItem("selected_trip")));
+      setSelectedTrip(JSON.parse(sessionStorage.getItem("selected_trip")!));
     } else {
       sessionStorage.setItem("selected_trip", "0");
     }
@@ -187,11 +205,14 @@ export function UserDataProvider({ children }) {
 
     selectedTrip,
     setSelectedTrip,
+
+    isModalShown,
+    setModalShown,
+    modalChildren,
+    setModalChildren,
   };
 
   return (
-    <UserDataContext.Provider value={value}>
-      {children}
-    </UserDataContext.Provider>
+    <appDataContext.Provider value={value}>{children}</appDataContext.Provider>
   );
 }

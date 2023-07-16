@@ -4,7 +4,7 @@ export const fallbackTrip: Trip = {
   id: "",
   owner_id: "",
   participants_id: [],
-  name: "ERROR",
+  name: "error",
   start_date: "",
   end_date: "",
   days: 0,

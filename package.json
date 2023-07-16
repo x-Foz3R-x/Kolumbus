@@ -1,6 +1,6 @@
 {
   "name": "kolumbus",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -20,6 +20,7 @@
     "@types/react-dom": "18.2.4",
     "@vercel/analytics": "^1.0.1",
     "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
     "encoding": "^0.1.13",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
@@ -30,10 +31,12 @@
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.2",
     "typescript": "5.0.4",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.0.1",
+    "@types/uuid": "^9.0.2",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8"
   }

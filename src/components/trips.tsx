@@ -3,15 +3,11 @@
 import useUserTrips from "@/hooks/use-user-trips";
 import Icon from "./icons";
 import { memo } from "react";
+import useAppData from "@/context/app-data";
 
 const Trips = memo(function T() {
-  const {
-    userTrips,
-    selectedTrip,
-    setSelectedTrip,
-    tripsError,
-    fetchMoreTrips,
-  } = useUserTrips();
+  const { selectedTrip, setSelectedTrip } = useAppData();
+  const { userTrips, tripsError, fetchMoreTrips } = useUserTrips();
 
   const handleTripClick = (index: number) => {
     sessionStorage.setItem("selected_trip", index.toString());
@@ -22,9 +18,9 @@ const Trips = memo(function T() {
   return (
     <section className="flex flex-col">
       {tripsError && (
-        <div className="rounded-md bg-red-100 px-3 pt-6 text-center text-sm text-red-600">
+        <p className="rounded-md bg-red-100 px-3 pt-6 text-center text-sm text-red-600">
           {tripsError}
-        </div>
+        </p>
       )}
 
       {userTrips?.map((trip: any, index: number) => (
@@ -48,9 +44,9 @@ const Trips = memo(function T() {
                 : "fill-kolumblue-500 ")
             }
           />
-          <span className="overflow-hidden text-ellipsis duration-200 ease-kolumb-overflow group-hover/tripsSection:translate-x-[0.375rem]">
+          <p className="overflow-hidden text-ellipsis duration-200 ease-kolumb-overflow group-hover/tripsSection:translate-x-[0.375rem]">
             {trip?.name}
-          </span>
+          </p>
         </button>
       ))}
     </section>

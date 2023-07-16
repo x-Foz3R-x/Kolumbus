@@ -4,19 +4,17 @@ import { getDocs, collection, query, where, orderBy } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
 import { generateItinerary } from "@/lib/utils";
-import { UT } from "@/config/actions";
+import UT from "@/config/actions";
 
 import type { Trip, Events, Event } from "@/types";
 
 import { useAuth } from "@/context/auth";
-import { useUserData } from "@/context/user-data";
+import useAppData from "@/context/app-data";
 import { fallbackTrip } from "@/config/fallback-data";
 
 export default function useUserTrips() {
   const { currentUser } = useAuth();
-  const { userTrips, dispatchUserTrips, selectedTrip, setSelectedTrip } = <any>(
-    useUserData()
-  );
+  const { userTrips, dispatchUserTrips, selectedTrip } = useAppData();
 
   const [loadingTrips, setLoadingTrips] = useState(true);
   const [tripsError, setTripsError] = useState<string | null>(null);
@@ -106,8 +104,5 @@ export default function useUserTrips() {
     loadingTrips,
     tripsError,
     fetchMoreTrips,
-
-    selectedTrip,
-    setSelectedTrip,
   };
 }

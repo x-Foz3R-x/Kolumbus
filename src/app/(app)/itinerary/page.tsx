@@ -1,21 +1,21 @@
 "use client";
 
-import useUserTrips from "@/hooks/use-user-trips";
+import { createPortal } from "react-dom";
 
-import Main from "../../../components/app/main";
-import ActionBar from "../../../components/app/itinerary/action-bar";
+import useUserTrips from "@/hooks/use-user-trips";
+import useAppData from "@/context/app-data";
 
 import DndItinerary from "@/components/dnd-itinerary";
+import ActionBar from "@/components/app/itinerary/action-bar";
+import Main from "@/components/app/main";
+import { Modal } from "@/components/ui/modal";
 import { ItinerarySkeleton } from "@/components/loading/itinerary-skeleton";
 
 export default function Itinerary() {
-  const {
-    userTrips,
-    dispatchUserTrips,
-    selectedTrip,
-    loadingTrips,
-    tripsError,
-  } = useUserTrips();
+  const { selectedTrip, isModalShown, modalChildren } = useAppData();
+  const { userTrips, dispatchUserTrips, loadingTrips, tripsError } =
+    useUserTrips();
+
   return (
     <Main>
       <ActionBar />
@@ -40,6 +40,11 @@ export default function Itinerary() {
           <ItinerarySkeleton />
         )}
       </section>
+
+      {createPortal(
+        <Modal showModal={isModalShown} modalChildren={modalChildren} />,
+        document.body
+      )}
     </Main>
   );
 }

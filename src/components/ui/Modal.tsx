@@ -1,12 +1,39 @@
-import React from "react";
+import useAppData from "@/context/app-data";
+import { Events } from "@/types";
 import Icon from "../icons";
 
+//#region Modal UI Props Interfaces
 interface ModalProps {
   showModal: boolean;
+  modalChildren: React.ReactNode;
+}
+
+interface ModalBodyProps {
+  type: string;
   children: React.ReactNode;
 }
 
-export function Modal({ showModal, children }: ModalProps) {
+interface ModalTextProps {
+  children: React.ReactNode;
+}
+
+interface ListItem {
+  [key: string]: any;
+}
+
+interface ModalGridListProps {
+  list: ListItem[];
+  sortBy: string;
+  printField: string;
+}
+
+interface ModalButtonsProps {
+  actionButtonText: string;
+  actionButtonOnClick: Function;
+}
+//#endregion
+
+export function Modal({ showModal, modalChildren }: ModalProps) {
   return (
     <div
       aria-labelledby="modal-title"
@@ -21,19 +48,14 @@ export function Modal({ showModal, children }: ModalProps) {
     >
       <div
         className={
-          "relative max-w-lg overflow-hidden rounded-lg bg-white text-left shadow-modal duration-300 ease-kolumb-flow " +
+          "relative max-w-lg overflow-hidden rounded-lg bg-white text-left shadow-popup duration-300 ease-kolumb-flow " +
           (showModal ? "opacity-100 " : "opacity-0")
         }
       >
-        {children}
+        {modalChildren}
       </div>
     </div>
   );
-}
-
-interface ModalBodyProps {
-  type?: string;
-  children: React.ReactNode;
 }
 
 export function ModalBody({ type, children }: ModalBodyProps) {
@@ -47,11 +69,7 @@ export function ModalBody({ type, children }: ModalBodyProps) {
   );
 }
 
-interface ModalHeadingProps {
-  children: React.ReactNode;
-}
-
-export function ModalTitle({ children }: ModalHeadingProps) {
+export function ModalTitle({ children }: ModalTextProps) {
   return (
     <h1 className="mb-3 text-base font-semibold text-kolumbGray-800">
       {children}
@@ -59,24 +77,10 @@ export function ModalTitle({ children }: ModalHeadingProps) {
   );
 }
 
-interface ModalTextProps {
-  children: React.ReactNode;
-}
-
-export function ModalText({ children }: ModalTextProps) {
+export function ModalMessage({ children }: ModalTextProps) {
   return (
     <p className="my-2 text-sm font-normal text-kolumbGray-500">{children}</p>
   );
-}
-
-interface ListItem {
-  [key: string]: any;
-}
-
-interface ModalGridListProps {
-  list: ListItem[];
-  sortBy: string;
-  printField: string;
 }
 
 export function ModalGridList({
@@ -121,44 +125,62 @@ export function ModalGridList({
   );
 }
 
-interface ModalButtonsProps {
-  cancel?: boolean;
-  actionButton?: boolean;
-  actionButtonText?: string;
-  actionButtonOnClick?: React.MouseEventHandler<HTMLButtonElement>;
-  setShowModal: any;
-}
-
-export function ModalButtons({
-  cancel,
-  actionButton,
+export function ModalCancelActionButtons({
   actionButtonText,
   actionButtonOnClick,
-  setShowModal,
 }: ModalButtonsProps) {
-  const handleOnCancel = () => {
-    setShowModal(false);
-  };
+  const { setModalShown, isModalShown } = useAppData();
 
   return (
     <section className="flex justify-end gap-3 bg-kolumbGray-50 px-5 py-3 text-sm font-medium">
-      {cancel && (
-        <button
-          onClick={handleOnCancel}
-          className="rounded-lg bg-kolumbGray-100 px-5 py-[6px] capitalize text-kolumbGray-800 shadow-button duration-200 ease-kolumb-overflow hover:scale-105"
-        >
-          Cancel
-        </button>
-      )}
+      <button
+        onClick={() => {
+          setModalShown(false);
+        }}
+        className="rounded-lg bg-kolumbGray-100 px-5 py-[6px] capitalize text-kolumbGray-800 shadow-button duration-200 ease-kolumb-overflow hover:scale-105"
+      >
+        Cancel
+      </button>
 
-      {actionButton && (
-        <button
-          onClick={actionButtonOnClick}
-          className="rounded-lg bg-red-500 px-3 py-[6px] capitalize text-white shadow-button duration-200 ease-kolumb-overflow hover:scale-105"
-        >
-          {actionButtonText}
-        </button>
-      )}
+      <button
+        onClick={() => {
+          if (isModalShown) actionButtonOnClick();
+        }}
+        className="rounded-lg bg-red-500 px-3 py-[6px] capitalize text-white shadow-button duration-200 ease-kolumb-overflow hover:scale-105"
+      >
+        {actionButtonText}
+      </button>
     </section>
   );
 }
+
+//#region Modal Presets
+export function EventsOnExcludedDaysModal(
+  eventsToDelete: Events,
+  handleExcludedDays: React.MouseEventHandler<HTMLButtonElement>
+) {
+  return (
+    <>
+      <ModalBody type="exclamation">
+        <ModalTitle>Events Scheduled on Excluded Days</ModalTitle>
+
+        <ModalMessage>
+          The following events are scheduled on the day(s) you are about to
+          remove:
+        </ModalMessage>
+
+        <ModalGridList list={eventsToDelete} sortBy="date" printField="name" />
+
+        <ModalMessage>
+          Are you sure you want to proceed and permanently delete the mentioned
+          events?
+        </ModalMessage>
+      </ModalBody>
+      <ModalCancelActionButtons
+        actionButtonText="delete events"
+        actionButtonOnClick={handleExcludedDays}
+      />
+    </>
+  );
+}
+//#endregion

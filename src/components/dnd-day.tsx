@@ -5,32 +5,22 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+
+import UT from "@/config/actions";
+import { getIndex } from "@/lib/dnd";
 import { Day, Event } from "@/types";
 
-import DndEvent from "./dnd-event";
-import { Calendar } from "./app/itinerary/calendar";
 import Icon from "./icons";
 import { useDndData } from "./dnd-itinerary";
-import { getItem } from "@/lib/dnd";
+import { DndEvent } from "./dnd-event";
+import { Calendar } from "./app/itinerary/calendar";
 
-interface Props {
-  activeId: string | number | null;
-  index: number;
-  startDate: string;
+interface DndDayProps {
   day: Day;
-  handleEventNameChange?: Function;
-  handleAddEvent?: Function;
 }
 
-const DndDay = memo(function Day({
-  activeId,
-  index,
-  startDate,
-  day,
-  handleEventNameChange,
-  handleAddEvent,
-  ...props
-}: Props) {
+export const DndDay = memo(function Day({ day, ...props }: DndDayProps) {
+  const { activeId } = useDndData();
   const id = day.id;
 
   const {
@@ -46,7 +36,7 @@ const DndDay = memo(function Day({
       item: day,
     },
     transition: {
-      duration: 200,
+      duration: 300,
       easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
     },
   });
@@ -59,22 +49,17 @@ const DndDay = memo(function Day({
         transform: CSS.Transform.toString(transform),
         transition,
       }}
-      className={
-        "group/calendar " +
-        (id === activeId
-          ? "z-20 h-32 rounded-r-[10px] border-2 border-dashed border-kolumblue-300 bg-kolumblue-100/70 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter "
-          : "z-10 ")
-      }
+      className={`group/calendar 
+        ${
+          id === activeId
+            ? "z-20 h-32 rounded-r-[10px] border-2 border-dashed border-kolumblue-300 bg-kolumblue-100/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter"
+            : "z-10"
+        }`}
     >
       {id === activeId ? null : (
         <DndDayContent
           ref={setActivatorNodeRef}
-          activeId={activeId}
-          index={index}
-          startDate={startDate}
           day={day}
-          handleEventNameChange={handleEventNameChange}
-          handleAddEvent={handleAddEvent}
           {...attributes}
           {...listeners}
           {...props}
@@ -84,85 +69,66 @@ const DndDay = memo(function Day({
   );
 });
 
-interface ContentProps {
-  activeId: string | number | null;
-  index: number;
-  startDate: string;
+interface DndDayContentProps {
   day: Day;
-  overlay?: boolean;
-  className?: string;
-  handleEventNameChange?: Function;
-  handleAddEvent?: Function;
+  dragOverlay?: boolean;
 }
 
 export const DndDayContent = memo(
-  forwardRef(function DayContent(
-    {
-      activeId,
-      index,
-      startDate,
-      day,
-      overlay,
-      className,
-      handleEventNameChange,
-      handleAddEvent,
-      ...props
-    }: ContentProps,
+  forwardRef(function DndDayContentComponent(
+    { day, dragOverlay, ...props }: DndDayContentProps,
     ref: any
   ) {
-    // const { itinerary, events, daysId } = useDndData();
+    const { dispatchUserTrips, selectedTrip, activeTrip, activeId } =
+      useDndData();
+    const { id, events } = day;
 
-    const { id, date, events } = day;
-    const eventsId = events?.map((event: Event) => event.id);
+    const dayEventsId = events?.map((event: Event) => event.id);
+    const dayIndex: number = getIndex(activeTrip.itinerary, "day", day.id);
 
-    // const day = getItem(itinerary, events, dayId)
-    // const dayIndex = itinerary?.findIndex((day: Day) => day.date === date);
-    // console.log(dayIndex);
+    const handleAddEvent = () => {
+      dispatchUserTrips({
+        type: UT.INSERT_EVENT,
+        payload: {
+          selectedTrip,
+          dayIndex,
+          placeAt: "end",
+        },
+      });
+    };
 
     return (
-      <div ref={ref} className="group/day z-10 flex w-full gap-5">
-        <Calendar
-          index={index}
-          startDate={startDate}
-          overlay={overlay}
-          className={className}
-          handleAddEvent={handleAddEvent}
-          {...props}
-        />
+      <div ref={ref} className="group/day flex w-full gap-5">
+        <Calendar dayIndex={dayIndex} dragOverlay={dragOverlay} {...props} />
+
         <ul
-          className={
-            "flex h-32 list-none gap-[0.625rem] pt-5 duration-700 ease-kolumb-flow " +
-            (id === activeId ? "scale-95 " : "scale-100")
-          }
+          className={`flex h-32 list-none gap-[0.625rem] pt-5 duration-700 ease-kolumb-flow ${
+            id === activeId ? "scale-95" : "scale-100"
+          }`}
         >
           <SortableContext
-            items={eventsId}
+            items={dayEventsId}
             strategy={horizontalListSortingStrategy}
           >
-            {eventsId?.map((eventId: string) => (
+            {dayEventsId?.map((eventId: string) => (
               <DndEvent
                 key={eventId}
                 event={events.find((event: Event) => event.id === eventId)!}
-                activeId={activeId}
-                handleOnChange={handleEventNameChange}
               />
             ))}
           </SortableContext>
+
           <button
-            onClick={() => {
-              if (handleAddEvent) handleAddEvent("at_end", day.date);
-            }}
+            onClick={handleAddEvent}
             style={{
-              left: 144 * eventsId.length + 10 * eventsId.length,
+              left: 144 * dayEventsId.length + 10 * dayEventsId.length,
             }}
-            className="group/add absolute z-30 flex h-[6.75rem] w-8 flex-col items-center justify-center rounded-[0.625rem] bg-white/80 opacity-100 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-flow hover:shadow-kolumblue group-hover/day:opacity-100"
+            className="group absolute z-30 flex h-[6.75rem] w-8 flex-col items-center justify-center rounded-[0.625rem] bg-white/80 shadow-kolumblue backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-flow hover:shadow-kolumblue"
           >
-            <Icon.plus className="h-4 w-4 fill-kolumbGray-300 group-hover/add:fill-kolumbGray-600" />
+            <Icon.plus className="h-4 w-4 fill-kolumbGray-300 duration-150 ease-kolumb-flow group-hover:fill-kolumbGray-600" />
           </button>
         </ul>
       </div>
     );
   })
 );
-
-export default DndDay;

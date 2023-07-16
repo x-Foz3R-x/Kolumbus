@@ -1,5 +1,5 @@
 // User Trips Actions
-export const UT = {
+const UT = {
   // dispatch({ type: UT.REPLACE, payload: any });
   REPLACE: "replace",
 
@@ -21,3 +21,5 @@ export const UT = {
   // dispatchUserTrips({ type: UT.INSERT_EVENT, payload: { selectedTrip: number, dayIndex: number, position: number } });
   INSERT_EVENT: "insert_event",
 };
+
+export default UT;
