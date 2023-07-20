@@ -1,5 +1,5 @@
+import Key from "@/config/keys";
 import React, { forwardRef, useRef, useState } from "react";
-import useKeyboardNavigation from "@/hooks/use-keyboard-navigation";
 
 let comboName: string;
 
@@ -8,22 +8,21 @@ interface ComboboxProps {
   className?: string;
   children: React.ReactNode;
 }
-export const Combobox = forwardRef<HTMLDivElement, ComboboxProps>(
-  function comboboxComponent(
-    { name, className, children },
-    ref: React.ForwardedRef<HTMLDivElement>
-  ) {
-    comboName = name;
-    return (
-      <div
-        ref={ref}
-        className={`relative w-full flex-shrink-0 bg-transparent ${className}`}
-      >
-        {children}
-      </div>
-    );
-  }
-);
+export const Combobox = forwardRef(function ComboboxComponent(
+  { name, className, children }: ComboboxProps,
+  ref: any
+) {
+  comboName = name;
+
+  return (
+    <div
+      ref={ref}
+      className={`relative w-full flex-shrink-0 bg-transparent ${className}`}
+    >
+      {children}
+    </div>
+  );
+});
 
 interface ComboboxInputProps {
   value: string | number | readonly string[] | undefined;
@@ -34,53 +33,7 @@ interface ComboboxInputProps {
   className?: string;
   children?: React.ReactNode;
 }
-export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
-  function comboboxComponent(
-    {
-      value,
-      placeholder,
-      onChange,
-      onFocus,
-      ariaExpanded,
-      className,
-      children,
-    },
-    ref: any
-    // ref: React.ForwardedRef<HTMLInputElement>
-  ) {
-    return (
-      <section className={`relative z-10 flex items-center ${className}`}>
-        <input
-          ref={ref}
-          type="text"
-          value={value}
-          placeholder={placeholder}
-          onChange={onChange}
-          onFocus={onFocus}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              ref.current?.blur();
-              console.log(ref);
-            }
-          }}
-          role="combobox"
-          aria-controls={comboName}
-          aria-autocomplete="list"
-          aria-expanded={ariaExpanded}
-          data-active-option=""
-          className={`w-full appearance-none bg-transparent py-[0.375rem] text-sm font-normal text-kolumbGray-900 outline-0 ${
-            React.Children.count(children) > 0 ? " pl-2" : "px-2"
-          }`}
-        />
-        <section className="relative z-10 flex items-center">
-          {children}
-        </section>
-      </section>
-    );
-  }
-);
-
-export function ComboboxInput2({
+export function ComboboxInput({
   value,
   placeholder,
   onChange,
@@ -101,18 +54,19 @@ export function ComboboxInput2({
         onChange={onChange}
         onFocus={onFocus}
         onKeyDown={(e) => {
-          if (e.key === "Escape") inputRef.current?.blur();
+          if (e.key === Key.escape || e.key === Key.enter)
+            inputRef.current?.blur();
         }}
         role="combobox"
         aria-controls={comboName}
         aria-autocomplete="list"
         aria-expanded={ariaExpanded}
-        data-active-option=""
+        spellCheck={false}
         className={`w-full appearance-none bg-transparent py-[0.375rem] text-sm font-normal text-kolumbGray-900 outline-0 ${
           React.Children.count(children) > 0 ? " pl-2" : "px-2"
         }`}
       />
-      <section className="relative z-10 flex items-center">{children}</section>
+      <span className="relative z-10 flex items-center">{children}</span>
     </section>
   );
 }
@@ -127,12 +81,15 @@ export function ComboboxList({
   length,
   children,
 }: ComboboxListProps) {
+  const optionHeight = 52;
+  const padding = 12;
+
   return (
     <div
       id={comboName}
       role="listbox"
       aria-label="combobox options list"
-      style={{ height: length * 52 + 12 }}
+      style={{ height: length * optionHeight + padding }}
       className={`absolute w-full origin-top overflow-hidden rounded-b-[0.625rem] bg-white p-[6px] shadow-container ${
         showWhen
           ? "scale-y-100 opacity-100 duration-300 ease-kolumb-flow"
@@ -145,18 +102,17 @@ export function ComboboxList({
 }
 
 interface ComboboxOptionProps {
-  id: string;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  isSelected: boolean;
   animationDelay?: string;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   children: React.ReactNode;
 }
-export const ComboboxOption = forwardRef<
-  HTMLButtonElement,
-  ComboboxOptionProps
->(function ComboboxOptionComponent(
-  { id, animationDelay, onClick, children },
-  ref
-) {
+export function ComboboxOption({
+  onClick,
+  isSelected,
+  animationDelay,
+  children,
+}: ComboboxOptionProps) {
   const [opacity, setOpacity] = useState("opacity-0");
   setTimeout(() => {
     setOpacity("opacity-100");
@@ -164,15 +120,17 @@ export const ComboboxOption = forwardRef<
 
   return (
     <button
-      ref={ref}
-      id={id}
       role="option"
-      aria-selected={false}
+      aria-selected={isSelected}
       style={{ animationDelay: animationDelay }}
       onClick={onClick}
-      className={`group flex w-full animate-appear items-center gap-4 rounded-md px-4 py-2 text-left text-sm hover:bg-kolumbGray-100 focus:bg-kolumblue-300 ${opacity}`}
+      className={`group flex w-full animate-appear items-center gap-4 rounded-md fill-kolumbGray-400 px-4 py-2 text-left text-sm hover:z-10 hover:fill-red-500 hover:shadow-select ${opacity} ${
+        isSelected
+          ? "bg-kolumbGray-100 fill-kolumbGray-700 shadow-select hover:bg-kolumbGray-200"
+          : "hover:bg-kolumbGray-100"
+      }`}
     >
       {children}
     </button>
   );
-});
+}

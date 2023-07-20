@@ -1,3 +1,4 @@
+import Key from "@/config/keys";
 import { useEffect } from "react";
 
 const useAccessibilityFeatures = (
@@ -12,7 +13,7 @@ const useAccessibilityFeatures = (
     };
 
     const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === Key.escape) {
         callback();
       }
     };

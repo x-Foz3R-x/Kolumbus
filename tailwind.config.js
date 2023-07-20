@@ -16,8 +16,6 @@ module.exports = {
       },
       animation: {
         appear: "appear 500ms cubic-bezier(0.175, 0.75, 0.32, 1)",
-        fadeIn: "fadeIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
-        fadeOut: "fadeOut 300ms cubic-bezier(0.175, 0.885, 0.32, 1)",
         verticalScaleIn:
           "verticalScaleIn 300ms cubic-bezier(0.175, 0.885, 0.32, 1)",
         horizontalScaleIn:
@@ -40,14 +38,6 @@ module.exports = {
             transformOrigin: "bottom",
           },
         },
-        fadeIn: {
-          "0%": { opacity: "0%" },
-          "100%": { opacity: "100%" },
-        },
-        fadeOut: {
-          "0%": { opacity: "1" },
-          "100%": { opacity: "0" },
-        },
         verticalScaleIn: {
           "0%": { transform: "scale(1, 0)" },
           "100%": { transform: "scale(1, 1)" },
@@ -67,25 +57,31 @@ module.exports = {
           "0px 0px 0px 1px rgba(15,15,15,.03), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
         kolumblue:
           "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06)",
-        kolumblueInset:
+        kolumblueInset2:
           "inset 0 1px 2px 1px hsla(210, 78%, 90%, 0.1),inset 0 2px 4px 0 rgba(15,15,15,.06)",
+        kolumblueInset:
+          "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px hsla(210, 78%, 75%, 0.1), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px hsla(210, 78%, 90%, 0.1)",
         kolumblueSelected:
           "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
         kolumblueHover:
           "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
         soft: "0px 1px 2px rgba(15, 15, 15, 0.05)",
         focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
+        select:
+          "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.01), 0 5px 6px rgba(15,15,15,0.01), 0 6px 8px rgba(15,15,15,0.01)",
+        select2:
+          "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 1px 2px rgba(15,15,15,0.02), 0 2px 4px rgba(15,15,15,0.01), 0 3px 6px rgba(15,15,15,0.01), 0 4px 8px rgba(15,15,15,0.01)",
         button:
           "0px 0px 0px 1px rgba(15,15,15,.02), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
         dropdown:
-          "0 0px 5px rgba(15,15,15,0.1),0 1px 1px rgba(15,15,15,0.03), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03)",
+          "0 0px 5px rgba(15,15,15,0.1), 0 1px 1px rgba(15,15,15,0.03), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03)",
         popup:
-          "0 0px 5px rgba(15,15,15,0.1),0 1px 1px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.03)",
+          "0 0px 5px rgba(15,15,15,0.1), 0 1px 1px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.03)",
         container:
-          "0 0px 5px rgba(15,15,15,0.05),0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.01)",
-        comboInput:
+          "0 0px 5px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.01)",
+        input:
           "0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 3px 3px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02)",
-        comboInputInverted:
+        inputInverted:
           "0 -1px 1px rgba(15,15,15,0.01), 0 -2px 2px rgba(15,15,15,0.01), 0 -3px 3px rgba(15,15,15,0.01), 0 -4px 4px rgba(15,15,15,0.01)",
       },
     },

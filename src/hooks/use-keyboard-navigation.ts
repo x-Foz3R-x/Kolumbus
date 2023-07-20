@@ -1,33 +1,34 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
+import useKeyPress from "./use-key-press";
 import Key from "@/config/keys";
 
-export default function useKeyboardNavigation(
-  itemsRef: React.RefObject<HTMLButtonElement | HTMLInputElement>[]
+export default function useArrowNavigation(
+  selectList: { value: string }[],
+  selectedIndex: number,
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>,
+  setValue: React.Dispatch<React.SetStateAction<string>>,
+  onEnter: Function
 ) {
+  const enterPressed = useKeyPress(Key.enter);
+  const arrowUpPressed = useKeyPress(Key.upArrow);
+  const arrowDownPressed = useKeyPress(Key.downArrow);
+
+  const handleArrowPress = (direction: "up" | "down") => {
+    const nextIndex =
+      (direction === "up"
+        ? -1 + selectedIndex + selectList.length
+        : 1 + selectedIndex) % selectList.length;
+    setSelectedIndex(nextIndex);
+    setValue(selectList[nextIndex].value);
+  };
+
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === Key.arrowDown || event.key === Key.arrowUp) {
-        event.preventDefault();
+    if (arrowUpPressed) handleArrowPress("up");
+    else if (arrowDownPressed) handleArrowPress("down");
+  }, [arrowUpPressed, arrowDownPressed]);
 
-        const currentIndex = itemsRef.findIndex(
-          (ref: any) => ref === document.activeElement
-        );
-        console.log(currentIndex);
-
-        if (currentIndex > -1) {
-          const direction = event.key === "ArrowDown" ? 1 : -1;
-          const nextIndex =
-            (currentIndex + direction + itemsRef.length) % itemsRef.length;
-
-          itemsRef[nextIndex]?.focus();
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [itemsRef]);
+  useEffect(() => {
+    if (enterPressed) onEnter(selectList[selectedIndex].value);
+  }, [enterPressed]);
 }

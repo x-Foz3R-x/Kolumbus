@@ -1,17 +1,16 @@
-"use client";
-
-import axios from "axios";
 import { useRef, useState } from "react";
+import axios from "axios";
+
+import useAccessibilityFeatures from "@/hooks/use-accessibility-features";
+import useArrowNavigation from "@/hooks/use-keyboard-navigation";
+
+import Icon from "./icons";
 import {
   Combobox,
   ComboboxInput,
   ComboboxOption,
   ComboboxList,
-  ComboboxInput2,
 } from "./ui/combobox";
-import Icon from "./icons";
-import useAccessibilityFeatures from "@/hooks/use-accessibility-features";
-import useKeyboardNavigation from "@/hooks/use-keyboard-navigation";
 
 interface PlacePrediction {
   description: string;
@@ -24,12 +23,16 @@ interface PlacePrediction {
 interface Props {
   placeholder: string;
 }
-
 export default function GoogleMapsSearch({ placeholder }: Props) {
   const [value, setValue] = useState<string>("");
   const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
   const [prevPredictions, setPrevPredictions] = useState<PlacePrediction[]>([]);
   const [arePredictionsShown, setPredictionsShown] = useState(false);
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectList, setSelectList] = useState<{ value: string }[]>([
+    { value: value },
+  ]);
 
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -40,13 +43,25 @@ export default function GoogleMapsSearch({ placeholder }: Props) {
     }
 
     try {
-      const { data } = await axios.post("/api/autocomplete", {
+      interface apiData {
+        data: { status: string; predictions: PlacePrediction[] };
+      }
+      const { data }: apiData = await axios.post("/api/autocomplete", {
         inputValue: e.target.value,
       });
 
       setPrevPredictions(predictions);
+
       if (data.status === "OK" && data.predictions.length > 0) {
         setPredictions([...data.predictions]);
+        setSelectList([
+          { value },
+          ...data.predictions.map((prediction) => ({
+            value: prediction.structured_formatting.main_text,
+          })),
+        ]);
+
+        setSelectedIndex(0);
         setPredictionsShown(true);
       }
     } catch (error) {
@@ -59,7 +74,12 @@ export default function GoogleMapsSearch({ placeholder }: Props) {
   };
 
   const handlePredictionSelect = (predictionValue: string) => {
+    const updatedSelectList = [...selectList];
+    updatedSelectList[0].value = predictionValue;
+    setSelectList(updatedSelectList);
+
     setValue(predictionValue);
+    setSelectedIndex(0);
     setPredictionsShown(false);
   };
 
@@ -74,20 +94,21 @@ export default function GoogleMapsSearch({ placeholder }: Props) {
   useAccessibilityFeatures(ref, () => {
     setPredictionsShown(false);
   });
-
-  const comboboxItemsRef = useRef<any>([]);
-  useKeyboardNavigation(comboboxItemsRef.current);
-
-  console.log(predictions);
+  useArrowNavigation(
+    selectList,
+    selectedIndex,
+    setSelectedIndex,
+    setValue,
+    handlePredictionSelect
+  );
 
   return (
     <Combobox
       ref={ref}
       name="GoogleMapsSearch"
-      className="shadow-comboInputInverted"
+      className="shadow-inputInverted"
     >
       <ComboboxInput
-        ref={(ref: HTMLInputElement) => (comboboxItemsRef.current[0] = ref)}
         value={value}
         placeholder={placeholder}
         onChange={handleSearchChange}
@@ -95,7 +116,7 @@ export default function GoogleMapsSearch({ placeholder }: Props) {
         ariaExpanded={arePredictionsShown}
         className={`bg-kolumbGray-50 fill-kolumbGray-400 text-kolumbGray-400 outline-0 ${
           arePredictionsShown
-            ? "shadow-comboInput duration-300 ease-kolumb-flow"
+            ? "shadow-input duration-300 ease-kolumb-flow"
             : "rounded-b-[0.625rem] duration-200 ease-kolumb-leave"
         }`}
       >
@@ -128,12 +149,11 @@ export default function GoogleMapsSearch({ placeholder }: Props) {
           return (
             <ComboboxOption
               key={key}
-              ref={(ref) => (comboboxItemsRef.current[index + 1] = ref)}
-              id={`prediction_${index}`}
-              animationDelay={animationDelay}
               onClick={handleClick}
+              isSelected={selectedIndex === index + 1}
+              animationDelay={animationDelay}
             >
-              <Icon.pin className="w-[0.625rem] flex-shrink-0 fill-kolumbGray-400 group-hover:fill-red-600" />
+              <Icon.pin className="w-[0.625rem] flex-shrink-0" />
 
               <section className="flex h-9 w-[10.625rem] flex-col justify-center">
                 <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-sm">
