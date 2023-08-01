@@ -1,24 +1,24 @@
+import Icon from "@/components/icons";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div>
-      <h2>HOME PAGE</h2>
-      <Link href="/signin" className="m2 rounded-md border p-2">
-        signin
-      </Link>
-      <Link href="/signup" className="m2 rounded-md border p-2">
-        signup
-      </Link>
-      <Link href="/start" className="m2 rounded-md border p-2">
-        start
-      </Link>
-      <Link href="/itinerary" className="m2 rounded-md border p-2">
-        itinerary
-      </Link>
-      <Link href="/structure" className="m2 rounded-md border p-2">
-        structure
-      </Link>
+    <div className="flex h-screen w-screen flex-col justify-between">
+      <div className="flex flex-col items-center gap-4">
+        <Icon.logo className="h-28" />
+        <h1 className="text-4xl font-bold">Adventure awaits</h1>
+      </div>
+      <div className="flex items-end justify-end gap-1 text-xs">
+        <Link href="/signin" className="hover:underline">
+          signin
+        </Link>
+        <Link href="/signup" className="hover:underline">
+          signup
+        </Link>
+        <Link href="/itinerary" className="hover:underline">
+          itinerary
+        </Link>
+      </div>
     </div>
   );
 }

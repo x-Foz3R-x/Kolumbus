@@ -1,6 +1,6 @@
 import useAppData from "@/context/app-data";
-import { Events } from "@/types";
 import Icon from "../icons";
+import { Event } from "@/types";
 
 //#region Modal UI Props Interfaces
 interface ModalProps {
@@ -39,18 +39,14 @@ export function Modal({ showModal, modalChildren }: ModalProps) {
       aria-labelledby="modal-title"
       aria-modal="true"
       role="dialog"
-      className={
-        "fixed inset-0 z-50 flex h-screen w-screen min-w-fit items-center justify-center p-10 duration-300 " +
-        (showModal
-          ? "scale-100 ease-kolumb-overflow "
-          : "scale-0 ease-kolumb-leave")
-      }
+      className={`fixed inset-0 z-50 flex h-screen w-screen min-w-fit items-center justify-center p-10 duration-300 
+        ${showModal ? "scale-100 ease-kolumb-overflow " : "scale-0 ease-kolumb-leave"}`}
     >
       <div
-        className={
-          "relative max-w-lg overflow-hidden rounded-lg bg-white text-left shadow-popup duration-300 ease-kolumb-flow " +
-          (showModal ? "opacity-100 " : "opacity-0")
-        }
+        className={`
+          "relative max-w-lg overflow-hidden rounded-lg bg-white text-left shadow-xxxl duration-300 ease-kolumb-flow ${
+            showModal ? "opacity-100 " : "opacity-0"
+          }`}
       >
         {modalChildren}
       </div>
@@ -70,24 +66,14 @@ export function ModalBody({ type, children }: ModalBodyProps) {
 }
 
 export function ModalTitle({ children }: ModalTextProps) {
-  return (
-    <h1 className="mb-3 text-base font-semibold text-kolumbGray-800">
-      {children}
-    </h1>
-  );
+  return <h1 className="mb-3 text-base font-semibold text-kolumbGray-800">{children}</h1>;
 }
 
 export function ModalMessage({ children }: ModalTextProps) {
-  return (
-    <p className="my-2 text-sm font-normal text-kolumbGray-500">{children}</p>
-  );
+  return <p className="my-2 text-sm font-normal text-kolumbGray-500">{children}</p>;
 }
 
-export function ModalGridList({
-  list,
-  sortBy,
-  printField,
-}: ModalGridListProps) {
+export function ModalGridList({ list, sortBy, printField }: ModalGridListProps) {
   const uniqueHeaders = Array.from(new Set(list.map((item) => item[sortBy])));
 
   const renderListItems = (header: any) => {
@@ -98,11 +84,7 @@ export function ModalGridList({
           key={`listItem${index}`}
           className="w-28 overflow-hidden text-ellipsis whitespace-nowrap rounded px-2 text-sm text-kolumbGray-500 [&:nth-child(odd)]:bg-kolumbGray-50"
         >
-          {item[printField] ? (
-            <span>{item[printField]}</span>
-          ) : (
-            <span>---</span>
-          )}
+          {item[printField] ? <span>{item[printField]}</span> : <span>---</span>}
         </li>
       ));
   };
@@ -125,10 +107,7 @@ export function ModalGridList({
   );
 }
 
-export function ModalCancelActionButtons({
-  actionButtonText,
-  actionButtonOnClick,
-}: ModalButtonsProps) {
+export function ModalCancelActionButtons({ actionButtonText, actionButtonOnClick }: ModalButtonsProps) {
   const { setModalShown, isModalShown } = useAppData();
 
   return (
@@ -137,7 +116,7 @@ export function ModalCancelActionButtons({
         onClick={() => {
           setModalShown(false);
         }}
-        className="rounded-lg bg-kolumbGray-100 px-5 py-[6px] capitalize text-kolumbGray-800 shadow-button duration-200 ease-kolumb-overflow hover:scale-105"
+        className="rounded-lg bg-kolumbGray-100 px-5 py-[6px] capitalize text-kolumbGray-800 shadow-btn duration-200 ease-kolumb-overflow hover:scale-105"
       >
         Cancel
       </button>
@@ -146,7 +125,7 @@ export function ModalCancelActionButtons({
         onClick={() => {
           if (isModalShown) actionButtonOnClick();
         }}
-        className="rounded-lg bg-red-500 px-3 py-[6px] capitalize text-white shadow-button duration-200 ease-kolumb-overflow hover:scale-105"
+        className="rounded-lg bg-red-500 px-3 py-[6px] capitalize text-white shadow-btn duration-200 ease-kolumb-overflow hover:scale-105"
       >
         {actionButtonText}
       </button>
@@ -156,7 +135,7 @@ export function ModalCancelActionButtons({
 
 //#region Modal Presets
 export function EventsOnExcludedDaysModal(
-  eventsToDelete: Events,
+  eventsToDelete: Event[],
   handleExcludedDays: React.MouseEventHandler<HTMLButtonElement>
 ) {
   return (
@@ -164,22 +143,15 @@ export function EventsOnExcludedDaysModal(
       <ModalBody type="exclamation">
         <ModalTitle>Events Scheduled on Excluded Days</ModalTitle>
 
-        <ModalMessage>
-          The following events are scheduled on the day(s) you are about to
-          remove:
-        </ModalMessage>
+        <ModalMessage>The following events are scheduled on the day(s) you are about to remove:</ModalMessage>
 
-        <ModalGridList list={eventsToDelete} sortBy="date" printField="name" />
+        <ModalGridList list={eventsToDelete} sortBy="date" printField="display_name" />
 
         <ModalMessage>
-          Are you sure you want to proceed and permanently delete the mentioned
-          events?
+          Are you sure you want to proceed and permanently delete the mentioned events?
         </ModalMessage>
       </ModalBody>
-      <ModalCancelActionButtons
-        actionButtonText="delete events"
-        actionButtonOnClick={handleExcludedDays}
-      />
+      <ModalCancelActionButtons actionButtonText="delete events" actionButtonOnClick={handleExcludedDays} />
     </>
   );
 }

@@ -4,11 +4,7 @@ import Header from "@/components/layouts/header";
 import SidebarMenu from "@/components/layouts/sidebar-menu";
 import App from "@/components/app/itinerary/app";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="overflow-hidden font-inter">
       <Header />
@@ -16,8 +12,7 @@ export default function RootLayout({
         <AppDataProvider>
           <SidebarMenu />
 
-          <div className="absolute left-[13.5rem] top-2 z-10 h-[calc(100vh-4rem)] w-2 shadow-kolumblue"></div>
-          <div className="absolute -top-2 left-[14.5rem] z-40 h-2 w-[calc(100vw-14.5rem)] shadow-kolumblue"></div>
+          <div className="pointer-events-none absolute left-[14rem] top-0 z-30 h-full w-full rounded-tl-lg shadow-kolumblueInset"></div>
 
           <App>{children}</App>
         </AppDataProvider>

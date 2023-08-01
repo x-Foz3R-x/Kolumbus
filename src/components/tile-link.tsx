@@ -15,10 +15,10 @@ export default function ToolLink({ link, label, className, children }: Props) {
     <Link
       href={link}
       className={
-        "h-[5.5rem] w-full rounded-lg hover:bg-kolumblue-100 hover:fill-kolumblue-500 hover:shadow-kolumblueHover " +
+        "h-[5.5rem] w-full rounded-lg hover:bg-kolumbGray-100 hover:shadow-kolumblueHover " +
         (CheckCurrentPathname(link)
-          ? "bg-kolumblue-200 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected "
-          : "bg-kolumblue-50 fill-tintedGray-500 shadow-kolumblueInset ") +
+          ? "bg-kolumblue-100 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected "
+          : "bg-kolumbGray-50 fill-tintedGray-400 text-kolumbGray-900 shadow-kolumblueInset hover:fill-tintedGray-500 ") +
         className
       }
     >
@@ -29,9 +29,7 @@ export default function ToolLink({ link, label, className, children }: Props) {
       >
         {children}
         <div className="flex h-full w-full items-center justify-center">
-          <div className="text-center text-sm font-medium leading-[0.875rem]">
-            {label}
-          </div>
+          <div className="text-center text-sm font-medium leading-[0.875rem]">{label}</div>
         </div>
       </div>
     </Link>

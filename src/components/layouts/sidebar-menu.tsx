@@ -26,19 +26,13 @@ export default function SidebarMenu() {
           <Icon.costs className={tileLinkStyle} />
         </TileLink>
 
-        <TileLink
-          link="/packingList"
-          label="Packing List"
-          className="col-span-2"
-        >
+        <TileLink link="/packingList" label="Packing List" className="col-span-2">
           <Icon.packingList className={tileLinkStyle} />
         </TileLink>
       </section>
 
       <section className="flex flex-col gap-2 px-3 pb-3">
-        <h1 className="font-adso text-2xl font-bold text-tintedGray-500">
-          Trips
-        </h1>
+        <h1 className="font-adso text-xl font-bold text-tintedGray-400">Trips</h1>
         <AuthProvider LoadingIndicator="spinner">
           <Trips />
         </AuthProvider>

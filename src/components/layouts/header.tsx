@@ -8,16 +8,13 @@ import Icon from "@/components/icons";
 
 export default function Header() {
   const linkStyle =
-    "flex h-9 flex-none items-center gap-3 rounded-lg fill-tintedGray-500 px-4 font-medium hover:bg-kolumblue-100 hover:fill-kolumblue-500 ";
+    "flex h-9 flex-none items-center gap-3 rounded-lg fill-tintedGray-400 px-4 font-medium hover:bg-kolumblue-100 hover:fill-kolumblue-500 ";
   const linkSvgStyle = "h-4 w-4 flex-none ";
 
   return (
-    <header className="relative z-50 flex h-14 w-full select-none items-center justify-between bg-white font-normal">
+    <header className="relative z-50 flex h-14 w-full select-none items-center justify-between  font-normal">
       <nav className="h-14 w-56 flex-none">
-        <Link
-          href="/"
-          className="m-auto my-4 flex w-fit justify-center hover:animate-bounce"
-        >
+        <Link href="/" className="m-auto my-4 flex w-fit justify-center hover:animate-bounce">
           <FullLogo className="h-6 fill-kolumblue-500" />
         </Link>
       </nav>

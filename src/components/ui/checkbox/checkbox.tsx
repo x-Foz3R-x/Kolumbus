@@ -3,7 +3,7 @@ import "./checkbox.css";
 interface Props {
   isChecked?: boolean;
   setIsChecked?: Function;
-  formObject?: { isChecked: boolean };
+  formObject?: { isAgreeChecked: boolean };
   setFormObject?: Function;
   formKey?: string;
   children: React.ReactNode;
@@ -24,7 +24,7 @@ export default function Checkbox({
     if (setFormObject && formObject) {
       setFormObject({
         ...formObject,
-        [formKey]: !formObject.isChecked,
+        [formKey]: !formObject.isAgreeChecked,
       });
     }
   };
@@ -38,7 +38,7 @@ export default function Checkbox({
         id="checkbox"
         name="checkbox"
         onChange={handleChange}
-        checked={formObject ? formObject.isChecked : isChecked}
+        checked={formObject ? formObject.isAgreeChecked : isChecked}
         className="absolute -z-10 opacity-0"
       ></input>
 

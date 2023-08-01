@@ -28,9 +28,8 @@ export async function POST(req: NextRequest) {
       return new Response("Something went wrong", { status: 500 });
     }
   } else {
-    return new Response(
-      "Invalid input length. Please provide a value with at least 3 characters.",
-      { status: 400 }
-    );
+    return new Response("Invalid input length. Please provide a value with at least 3 characters.", {
+      status: 400,
+    });
   }
 }

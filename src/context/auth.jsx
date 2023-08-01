@@ -10,16 +10,13 @@ import {
   onAuthStateChanged,
   browserSessionPersistence,
 } from "firebase/auth";
-
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
+import { firebaseCreateUser, createStarterTrip } from "@/hooks/use-firebase-operations";
 
 import ItinerarySkeleton from "@/components/loading/itinerary-skeleton";
-
 import Spinner from "@/components/loading/spinner";
 
 const AuthContext = createContext();
-
 export function useAuth() {
   return useContext(AuthContext);
 }
@@ -41,34 +38,24 @@ export function AuthProvider({ children, LoadingIndicator = "" }) {
 
   async function signin(email, password, isRememberChecked) {
     try {
-      if (!isRememberChecked)
-        await auth.setPersistence(browserSessionPersistence);
+      if (!isRememberChecked) await auth.setPersistence(browserSessionPersistence);
       return signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.log(error.code);
     }
   }
 
-  async function signup(email, password, username, country, sex) {
+  async function signup({ email, password, username, country, sex }) {
     try {
-      const userCredentials = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
+      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredentials.user;
-      const userRef = doc(db, "users", user.uid);
 
       await updateProfile(user, {
         displayName: username,
       });
 
-      await setDoc(userRef, {
-        username: username,
-        country: country,
-        sex: sex,
-      });
+      await firebaseCreateUser(user, username, country, sex);
+      await createStarterTrip(user);
 
       await sendEmailVerification(user);
 
@@ -76,9 +63,10 @@ export function AuthProvider({ children, LoadingIndicator = "" }) {
       setLoading(false);
 
       signout();
+
       return userCredentials;
     } catch (error) {
-      console.log(error.code);
+      console.log(error);
     }
   }
 

@@ -6,12 +6,7 @@ import Image from "next/image";
 
 import { useAuth } from "@/context/auth";
 
-import {
-  Dropdown,
-  DropdownButton,
-  DropdownProfile,
-  DropdownSeparator,
-} from "./ui/dropdown";
+import { Dropdown, DropdownButton, DropdownProfile, DropdownSeparator } from "./ui/dropdown";
 
 import SwitchAccountSVG from "@/assets/svg/SwitchAccount.svg";
 import AppearanceSVG from "@/assets/svg/Appearance.svg";
@@ -33,13 +28,12 @@ export default function ProfileButton() {
     router.push("/signin");
   };
 
-  const className =
-    "mr-4 w-4 fill-tintedGray-500 group-hover:fill-kolumblue-500";
+  const className = "mr-4 w-4 fill-tintedGray-400 group-hover:fill-kolumblue-500";
   return currentUser ? (
     <div className="relative w-fit">
       <button
         onClick={() => setIsModalOpen(true)}
-        className="relative h-14 w-14 rounded-full p-3 outline-none after:absolute after:left-3 after:top-3 after:hidden after:h-8 after:w-8 after:rounded-full after:border-2 after:border-kolumblue-500 focus:shadow-none focus:after:inline"
+        className="focus:shadow-none relative h-14 w-14 rounded-full p-3 outline-none after:absolute after:left-3 after:top-3 after:hidden after:h-8 after:w-8 after:rounded-full after:border-2 after:border-kolumblue-500 focus:after:inline"
       >
         <Image
           src="/images/default-avatar.png"
@@ -56,10 +50,7 @@ export default function ProfileButton() {
         setIsModalOpen={setIsModalOpen}
         className="fixed right-4 top-11 w-60 p-2"
       >
-        <DropdownProfile
-          username={currentUser?.displayName}
-          email={currentUser?.email}
-        />
+        <DropdownProfile username={currentUser?.displayName} email={currentUser?.email} />
 
         <DropdownSeparator />
 

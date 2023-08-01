@@ -57,31 +57,23 @@ export function getIndex(itinerary, type, id) {
  * @param {string} overDate - The date of the day where the event is being moved to.
  * @returns {Array} - The updated itinerary after moving the event.
  */
-export function eventOverDay(
-  itinerary,
-  events,
-  activeId,
-  activeIndex,
-  activeDate,
-  overIndex,
-  overDate
-) {
+export function eventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate) {
   if (activeDate === overDate) return;
 
   // Find the index of the active day in the itinerary
   const activeDayIndex = itinerary.findIndex((day) => day.date === activeDate);
 
-  const newItinerary = [...itinerary];
+  const _itinerary = [...itinerary];
   const activeEvent = getItem(itinerary, events, activeId); // Get the event being dragged
-  const pushIndex = newItinerary[overIndex].events.length; // Get the event push position in destination day
+  const pushIndex = _itinerary[overIndex].events.length; // Get the event push position in destination day
 
   // Insert the active event into the destination day's event array at the specified index
-  newItinerary[overIndex].events.splice(pushIndex, 0, activeEvent);
+  _itinerary[overIndex].events.splice(pushIndex, 0, activeEvent);
 
   // Remove the active event from the active day's event array
-  newItinerary[activeDayIndex].events.splice(activeIndex, 1);
+  _itinerary[activeDayIndex].events.splice(activeIndex, 1);
 
-  return newItinerary;
+  return _itinerary;
 }
 
 /**
@@ -116,26 +108,22 @@ export function eventOverEvent(
   // Get the active event being dragged
   const activeEvent = getItem(itinerary, events, activeId);
 
-  const newItinerary = [...itinerary];
+  const _itinerary = [...itinerary];
 
   // Move within the same day
   if (activeDate === overDate) {
     // Move the active event within the same day by rearranging the event array
-    const currentEvents = newItinerary[activeDayIndex].events;
-    newItinerary[activeDayIndex].events = arrayMove(
-      currentEvents,
-      activeIndex,
-      overIndex
-    );
+    const currentEvents = _itinerary[activeDayIndex].events;
+    _itinerary[activeDayIndex].events = arrayMove(currentEvents, activeIndex, overIndex);
   }
   // Move to a different day
   else if (activeDate !== overDate) {
     // Insert the active event into the over day's event array at the specified index
-    newItinerary[overDayIndex].events.splice(overIndex, 0, activeEvent);
+    _itinerary[overDayIndex].events.splice(overIndex, 0, activeEvent);
 
     // Remove the active event from the active day's event array
-    newItinerary[activeDayIndex].events.splice(activeIndex, 1);
+    _itinerary[activeDayIndex].events.splice(activeIndex, 1);
   }
 
-  return newItinerary;
+  return _itinerary;
 }

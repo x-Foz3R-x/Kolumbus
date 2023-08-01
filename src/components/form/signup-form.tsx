@@ -15,7 +15,7 @@ export default function SignupForm() {
     email: "",
     password: "",
     confirmPassword: "",
-    isChecked: false,
+    isAgreeChecked: false,
     error: "",
   };
 
@@ -25,16 +25,10 @@ export default function SignupForm() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      await signup(
-        form.email,
-        form.password,
-        form.username,
-        form.country,
-        form.sex
-      );
+      await signup(form);
       router.push("/signin");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -943,12 +937,7 @@ export default function SignupForm() {
           (false ? "border-kolumbGray-800 " : "border-kolumbGray-300 ")
         }
       >
-        <Icon.arrow
-          className={
-            "m-auto h-3 " +
-            (false ? "fill-kolumbGray-800 " : "fill-kolumbGray-300 ")
-          }
-        />
+        <Icon.arrow className={"m-auto h-3 " + (false ? "fill-kolumbGray-800 " : "fill-kolumbGray-300 ")} />
       </button>
     </form>
   );

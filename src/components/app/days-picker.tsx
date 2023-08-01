@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import useAppData from "@/context/app-data";
 import useUserTrips from "@/hooks/use-user-trips";
 import { calculateDays, formatDate } from "@/lib/utils";
-import UT from "@/config/actions";
-import { Event, Events } from "@/types";
+import { UT, Event } from "@/types";
 
 import Icon from "../icons";
 import { EventsOnExcludedDaysModal } from "../ui/modal";
 import { Dropdown, DropdownButton } from "@/components/ui/dropdown";
+import { firebaseUpdateTrip } from "@/hooks/use-firebase-operations";
 
 interface Props {
   maxTripsDays: number;
@@ -40,15 +40,21 @@ export default function DaysPicker({ maxTripsDays }: Props) {
     const newEndDate = new Date(startDate);
     newEndDate.setDate(startDate.getDate() + day - 1);
 
+    const trip = { ...userTrips[selectedTrip] };
+    trip.start_date = formatDate(startDate);
+    trip.end_date = formatDate(newEndDate);
+    trip.days = day;
+    trip.metadata.updated_at = Date.now();
+
     if (newEndDate > endDate) {
       setTripDays(day);
+      firebaseUpdateTrip(trip);
       dispatchUserTrips({
-        type: UT.UPDATE_FIELDS,
+        type: UT.UPDATE_TRIP,
         payload: {
+          trip,
+          selectedTrip,
           regenerate: true,
-          selectedTrip: selectedTrip,
-          fields: ["start_date", "end_date", "days"],
-          values: [startDate, formatDate(newEndDate), day],
         },
       });
       return;
@@ -57,7 +63,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
     const daysToDelete = calculateDays(newEndDate, endDate) - 1;
     const numberOfDays = activeTrip.itinerary.length - 1;
 
-    let eventsToDelete: Events = [];
+    let eventsToDelete: Event[] = [];
     for (let i = numberOfDays; i > numberOfDays - daysToDelete; i--) {
       const events = activeTrip.itinerary[i]?.events;
       events?.forEach((event: Event) => {
@@ -67,13 +73,13 @@ export default function DaysPicker({ maxTripsDays }: Props) {
 
     if (eventsToDelete.length === 0) {
       setTripDays(day);
+      firebaseUpdateTrip(trip);
       dispatchUserTrips({
-        type: UT.UPDATE_FIELDS,
+        type: UT.UPDATE_TRIP,
         payload: {
+          trip,
+          selectedTrip,
           regenerate: true,
-          selectedTrip: selectedTrip,
-          fields: ["start_date", "end_date", "days"],
-          values: [startDate, formatDate(newEndDate), day],
         },
       });
       return;
@@ -81,22 +87,20 @@ export default function DaysPicker({ maxTripsDays }: Props) {
 
     const handleExcludedDays = () => {
       setTripDays(day);
+      firebaseUpdateTrip(trip);
       dispatchUserTrips({
-        type: UT.UPDATE_FIELDS,
+        type: UT.UPDATE_TRIP,
         payload: {
+          trip,
+          selectedTrip,
           regenerate: true,
-          selectedTrip: selectedTrip,
-          fields: ["start_date", "end_date", "days"],
-          values: [startDate, formatDate(newEndDate), day],
         },
       });
       setModalShown(false);
     };
 
     setModalShown(true);
-    setModalChildren(
-      EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays)
-    );
+    setModalChildren(EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays));
   };
 
   return (
@@ -104,13 +108,9 @@ export default function DaysPicker({ maxTripsDays }: Props) {
       <button onClick={() => setDropdownOpen(true)} className="relative">
         <Icon.calendar className="h-9 fill-kolumblue-500" />
 
-        <div className="absolute top-1 w-9 text-[10px] font-medium uppercase text-white/75">
-          days
-        </div>
+        <div className="absolute top-1 w-9 text-[10px] font-medium uppercase text-white/75">days</div>
 
-        <div className="absolute bottom-0 m-auto w-9 text-sm font-medium">
-          {!loadingTrips && tripDays}
-        </div>
+        <div className="absolute bottom-0 m-auto w-9 text-sm font-medium">{!loadingTrips && tripDays}</div>
       </button>
 
       <Dropdown

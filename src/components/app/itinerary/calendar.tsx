@@ -1,5 +1,3 @@
-import UT from "@/config/actions";
-
 import Icon from "@/components/icons";
 import { useDndData } from "@/components/dnd-itinerary";
 import DayOfWeekIndicator from "./day-of-week-indicator";
@@ -7,10 +5,10 @@ import DayOfWeekIndicator from "./day-of-week-indicator";
 interface CalendarProps {
   dayIndex: number;
   dragOverlay?: boolean;
+  handleAddEvent: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
 }
-
-export function Calendar({ dayIndex, dragOverlay, ...props }: CalendarProps) {
+export function Calendar({ dayIndex, dragOverlay, handleAddEvent, ...props }: CalendarProps) {
   const { activeTrip } = useDndData();
   const date = new Date(activeTrip.start_date);
   date.setDate(date.getDate() + dayIndex);
@@ -20,18 +18,17 @@ export function Calendar({ dayIndex, dragOverlay, ...props }: CalendarProps) {
       <CalendarHeader
         dayIndex={dayIndex}
         dragOverlay={dragOverlay}
+        handleAddEvent={handleAddEvent}
         {...props}
       />
 
-      <div className="flex h-fit w-32 cursor-default flex-col items-center gap-1 bg-white/80 p-2 shadow-container backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
-        <p className="flex h-fit w-14 items-center justify-center text-5xl font-bold leading-9 text-kolumblue-500">
+      <div className="flex h-28 w-32 cursor-default flex-col items-center justify-between gap-1 bg-white/80 p-2 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
+        <p className="flex h-fit w-14 items-center justify-center text-5xl font-bold leading-10 text-kolumblue-500">
           {date.getDate()}
         </p>
 
-        <p className="mt-1 text-sm text-kolumbGray-600">
-          {date.toLocaleString("default", { month: "short" }) +
-            " • " +
-            date.getFullYear()}
+        <p className="text-sm text-kolumbGray-600">
+          {date.toLocaleString("default", { month: "short" }) + " • " + date.getFullYear()}
         </p>
 
         <DayOfWeekIndicator dayOfWeek={date.getDay()} />
@@ -43,32 +40,12 @@ export function Calendar({ dayIndex, dragOverlay, ...props }: CalendarProps) {
 interface CalendarHeaderProps {
   dayIndex: number;
   dragOverlay?: boolean;
+  handleAddEvent: React.MouseEventHandler<HTMLButtonElement>;
 }
-
-function CalendarHeader({
-  dayIndex,
-  dragOverlay,
-  ...props
-}: CalendarHeaderProps) {
-  const { dispatchUserTrips, selectedTrip } = useDndData();
-
-  const handleAddEvent = () => {
-    dispatchUserTrips({
-      type: UT.INSERT_EVENT,
-      payload: {
-        selectedTrip,
-        dayIndex,
-        placeAt: "start",
-      },
-    });
-  };
-
+function CalendarHeader({ dayIndex, dragOverlay, handleAddEvent, ...props }: CalendarHeaderProps) {
   return (
-    <header className="relative z-30 flex h-5 w-32 cursor-default items-center justify-center bg-kolumblue-500 text-xs font-medium text-white/75 shadow-container group-first/calendar:rounded-t-xl">
-      <button
-        className="group/move peer absolute left-0 h-5 w-7 cursor-grab"
-        {...props}
-      >
+    <header className="relative z-30 flex h-5 w-32 cursor-default items-center justify-center bg-kolumblue-500 text-xs font-medium text-white/75 shadow-xl group-first/calendar:rounded-t-xl">
+      <button className="group/move peer absolute left-0 h-5 w-7 cursor-grab" {...props}>
         <Icon.gripLines
           className={`absolute left-1 top-1 w-5 rounded fill-white/75 p-1 duration-500 ease-kolumb-flow ${
             dragOverlay
@@ -86,10 +63,7 @@ function CalendarHeader({
         </p>
       </button>
 
-      <button
-        onClick={handleAddEvent}
-        className="group/add peer absolute right-0 h-5 w-6"
-      >
+      <button onClick={handleAddEvent} className="group/add peer absolute right-0 h-5 w-6">
         <Icon.plus className="absolute right-2 top-[5px] h-[0.625rem] w-[0.625rem] fill-white/75" />
         <p
           className={`absolute right-0 top-[2px] h-4 w-20 origin-right scale-x-0 select-none capitalize opacity-0 duration-200 ease-kolumb-flow group-hover/add:right-6 group-hover/add:scale-x-100 ${
@@ -114,10 +88,9 @@ function CalendarHeader({
 interface CalendarEndProps {
   totalDays: number;
 }
-
 export function CalendarEnd({ totalDays }: CalendarEndProps) {
   return (
-    <div className="sticky left-0 z-20 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-white/75 shadow-container">
+    <div className="sticky left-0 z-20 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-white/75 shadow-xl">
       Total {totalDays} days
     </div>
   );

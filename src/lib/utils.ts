@@ -1,5 +1,5 @@
 import { usePathname } from "next/navigation";
-import { Itinerary, Trip, Day, Events, Event } from "@/types";
+import { Trip, Itinerary, Day, Event } from "@/types";
 
 /**
  * Formats a date into the "yyyy-mm-dd" format.
@@ -47,13 +47,9 @@ export function formatDayOfWeek(dayOfWeek: number): number {
  * @param endDate The end date as a string or Date object.
  * @returns The total number of days between the dates.
  */
-export function calculateDays(
-  startDate: string | Date,
-  endDate: string | Date
-): number {
+export function calculateDays(startDate: string | Date, endDate: string | Date): number {
   // Calculate the difference between the end date and start date in milliseconds
-  const difference =
-    new Date(endDate).getTime() - new Date(startDate).getTime();
+  const difference = new Date(endDate).getTime() - new Date(startDate).getTime();
   const msInDay = 86400000; // Number of milliseconds in a day
 
   // Calculate the number of days by dividing the difference by the number of milliseconds in a day,
@@ -69,23 +65,21 @@ export function calculateDays(
  * @param events - The list of events.
  * @returns An array representing the itinerary.
  */
-export function generateItinerary(trip: Trip, events: Events) {
+export function generateItinerary(trip: Trip, events: Event[] = []) {
   const itinerary: Itinerary = [];
   let iteratedDate = new Date(trip.start_date);
 
   // Generate the itinerary for each day of the trip
   for (let i = 0; i < trip.days; i++) {
     const currentDate = formatDate(iteratedDate);
-    const currentDateEvents: Events = events.filter(
-      (event: Event) => event.date === currentDate
-    );
+    const currentDateEvents: Event[] = events.filter((event: Event) => event.date === currentDate);
 
     // Create a day object with the current date and associated events
     const Day: Day = {
       id: `d${i}@${trip.id}`,
       date: currentDate,
       drag_type: "day",
-      events: currentDateEvents,
+      events: currentDateEvents ?? [],
     };
 
     itinerary.push(Day);

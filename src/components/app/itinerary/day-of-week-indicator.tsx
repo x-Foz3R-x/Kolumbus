@@ -3,17 +3,15 @@ import { formatDayOfWeek } from "@/lib/utils";
 interface Props {
   dayOfWeek: number;
 }
-
 /**
  * @param {number} dayOfWeek number 0-6 starting at monday
  */
 export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
-  dayOfWeek = formatDayOfWeek(dayOfWeek);
+  const day = formatDayOfWeek(dayOfWeek);
 
   const daysOfWeek = [];
   for (let i = 0; i < 7; i++) {
     let currentDayOfWeek;
-
     switch (i) {
       case 0:
         currentDayOfWeek = "M";
@@ -42,47 +40,42 @@ export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
     }
 
     daysOfWeek.push(
-      <div
+      <p
         key={currentDayOfWeek + i}
-        className={
-          "h-fit w-[0.875rem] rounded text-center " +
-          (dayOfWeek === i ? "font-extrabold " : "font-medium ") +
-          (i === 5 || i === 6 ? "text-red-400 " : "text-kolumbGray-500 ")
-        }
+        className={`flex w-[15px] flex-shrink-0 items-center justify-center duration-500 ease-kolumb-flow ${
+          day === i ? "font-extrabold" : "font-medium"
+        } ${i === 5 || i === 6 ? "text-red-500" : "text-kolumbGray-500"}`}
       >
         {currentDayOfWeek}
-      </div>
+      </p>
     );
   }
 
   return (
-    <div className="flex w-28 cursor-default select-none flex-col text-center text-sm">
-      <div className="flex justify-between px-1 text-center font-inconsolata text-xs ">
+    <div className="relative flex h-5 w-28 cursor-default select-none items-center justify-center rounded border-kolumbGray-100 text-center text-sm">
+      <section className="z-10 flex w-fit items-center justify-between font-inconsolata text-xs">
         {daysOfWeek}
-      </div>
+      </section>
 
-      <div className="relative flex h-2 rounded-md bg-kolumblue-500/20 px-1 shadow-kolumblueInset">
-        <span
-          className={
-            "absolute -top-px z-10 h-[0.625rem] w-4 rounded-[3px] border-x-2 border-y border-kolumblue-500 bg-white/30 shadow-kolumblue duration-500 ease-kolumb-flow " +
-            (dayOfWeek == 0
-              ? "left-[3px] "
-              : dayOfWeek == 1
-              ? "left-[18px] "
-              : dayOfWeek == 2
-              ? "left-[33px] "
-              : dayOfWeek == 3
-              ? "left-[48px] "
-              : dayOfWeek == 4
-              ? "left-[63px] "
-              : dayOfWeek == 5
-              ? "left-[78px] "
-              : dayOfWeek == 6
-              ? "left-[93px] "
-              : " ")
-          }
-        ></span>
-      </div>
+      <span
+        className={`absolute h-5 w-4 rounded bg-kolumbGray-100/30 shadow-inset duration-500 ease-kolumb-flow ${
+          day == 0
+            ? "left-[3px]"
+            : day == 1
+            ? "left-[18px]"
+            : day == 2
+            ? "left-[33px]"
+            : day == 3
+            ? "left-[48px]"
+            : day == 4
+            ? "left-[63px]"
+            : day == 5
+            ? "left-[78px]"
+            : day == 6
+            ? "left-[93px]"
+            : "left-[3px]"
+        }`}
+      ></span>
     </div>
   );
 }

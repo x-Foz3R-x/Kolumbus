@@ -2,19 +2,20 @@
 import { useState, useEffect } from "react";
 import { getDocs, collection, query, where, orderBy } from "firebase/firestore";
 
-import { db } from "@/lib/firebase";
-import { generateItinerary } from "@/lib/utils";
-import UT from "@/config/actions";
-
-import type { Trip, Events, Event } from "@/types";
-
 import { useAuth } from "@/context/auth";
 import useAppData from "@/context/app-data";
-import { fallbackTrip } from "@/config/fallback-data";
+
+import { db } from "@/lib/firebase";
+import { generateItinerary } from "@/lib/utils";
+import { tripTemplate } from "@/config/template-data";
+import { UT } from "@/types";
+import type { Trip, Event } from "@/types";
 
 export default function useUserTrips() {
   const { currentUser } = useAuth();
-  const { userTrips, dispatchUserTrips, selectedTrip } = useAppData();
+  const { userTrips, dispatchUserTrips, selectedTrip } = <
+    { userTrips: Trip[]; dispatchUserTrips: any; selectedTrip: number }
+  >useAppData();
 
   const [loadingTrips, setLoadingTrips] = useState(true);
   const [tripsError, setTripsError] = useState<string | null>(null);
@@ -40,47 +41,43 @@ export default function useUserTrips() {
 
         // Fetch trips from the Firestore collection based on the current user's ID and order them by position
         const colRef = collection(db, "trips");
-        const q = query(
-          colRef,
-          where("owner_id", "==", currentUser.uid),
-          orderBy("position")
-        );
+        const q = query(colRef, where("owner_id", "==", currentUser.uid), orderBy("position"));
         const docSnap = await getDocs(q);
 
         // Iterate over the fetched documents and dispatch them to the userTrips
         for (let i = 0; i < docSnap?.docs.length; i++) {
-          const trip = docSnap?.docs[i];
-          let Trip: Trip = <Trip>trip.data() || fallbackTrip;
-          Trip.id = trip.id;
+          const tripSnap = docSnap?.docs[i];
+          let trip: Trip = tripSnap.data() ? <Trip>tripSnap.data() : <Trip>{ ...tripTemplate };
+          trip.id = tripSnap.id;
 
           // Fetch selected trip itinerary
-          if (Trip.position === selectedTrip) {
+          if (trip.position === selectedTrip) {
             // Querying the events sub collection
-            const subColRef = collection(db, `trips/${trip.id}/events`);
+            const subColRef = collection(db, `trips/${tripSnap.id}/events`);
             const subQ = query(subColRef, orderBy("position"));
             const subDocSnap = await getDocs(subQ);
 
             // Store event data in an array
-            const Events: Events = [];
-            subDocSnap?.forEach((event) => {
-              let Event: Event | any = event.data();
-              Event.id = event.id;
-              Events.push(Event);
+            const events: Event[] = [];
+            subDocSnap?.forEach((eventSnap) => {
+              const event = <Event>eventSnap.data();
+              event.id = eventSnap.id;
+              event.drag_type = "event";
+              events.push(event);
             });
 
-            Trip.itinerary = generateItinerary(Trip, Events);
+            trip.itinerary = generateItinerary(trip, events);
           }
 
           dispatchUserTrips({
             type: UT.ADD_REPLACE_TRIP,
-            payload: Trip,
+            payload: trip,
           });
         }
       } catch (error) {
         setTripsError("Failed to fetch user trips");
         console.log(error);
       } finally {
-        setLoadingTrips(false);
         setFetchMore(false);
       }
     }
@@ -92,6 +89,10 @@ export default function useUserTrips() {
       fetchData();
     }
   }, [selectedTrip]);
+
+  useEffect(() => {
+    if (userTrips.length > selectedTrip) setLoadingTrips(false);
+  }, [userTrips]);
 
   // Function to trigger a refetch of trip events
   const fetchMoreTrips = () => {

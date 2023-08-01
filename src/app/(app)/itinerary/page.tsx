@@ -19,7 +19,7 @@ export default function Itinerary() {
   return (
     <Main>
       <ActionBar />
-      <section className="mt-10 overflow-scroll px-10">
+      <section className="mt-8 overflow-scroll px-8">
         {tripsError && (
           <div className="w-full rounded-md bg-red-100 px-3 pt-6 text-center text-sm text-red-600">
             {tripsError}

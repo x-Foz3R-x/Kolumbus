@@ -1,4 +1,4 @@
-import Key from "@/config/keys";
+import { Key } from "@/types";
 import { useEffect, useState } from "react";
 
 export default function useKeyPress(targetKey: string) {
@@ -6,7 +6,7 @@ export default function useKeyPress(targetKey: string) {
 
   useEffect(() => {
     const downHandler = (event: KeyboardEvent) => {
-      if (event.key === Key.downArrow || event.key === Key.upArrow)
+      if (event.key === Key.DownArrow || event.key === Key.UpArrow)
         event.preventDefault();
 
       if (event.key === targetKey) setKeyPressed(true);

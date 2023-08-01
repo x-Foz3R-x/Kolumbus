@@ -4,34 +4,32 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { DndContext, DragOverlay } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import {
-  restrictToVerticalAxis,
-  restrictToParentElement,
-} from "@dnd-kit/modifiers";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 
 import { getItem, getIndex, eventOverDay, eventOverEvent } from "@/lib/dnd";
 import { formatDate } from "@/lib/utils";
-import UT from "@/config/actions";
-import { Day, Event, Events, Trips } from "@/types";
+import { Trip, UT } from "@/types";
+import { Day, Event } from "@/types";
 
-import { DndDay, DndDayContent } from "./dnd-day";
-import { DndEventContent } from "./dnd-event";
+import { DndDay, DndDayComponent } from "./dnd-day";
+import { DndEventComponent } from "./dnd-event";
 import { CalendarEnd } from "./app/itinerary/calendar";
-import CreateEvent from "./create-event";
+import AddEvent from "./add-event";
+import { firebaseUpdateEvents } from "@/hooks/use-firebase-operations";
 
 const DndDataContext = createContext<{
   dispatchUserTrips: any;
   selectedTrip: number;
   activeTrip: any;
-  events: Events;
+  events: Event[];
   daysId: string[];
   eventsId: string[];
   activeId: string | null;
+  isAddEventShown: boolean;
+  setAddEventShown: any;
+  addEventDayIndex: number;
+  setAddEventDayIndex: any;
 }>({
   dispatchUserTrips: null,
   selectedTrip: 0,
@@ -40,42 +38,39 @@ const DndDataContext = createContext<{
   daysId: [],
   eventsId: [],
   activeId: "",
+  isAddEventShown: false,
+  setAddEventShown: null,
+  addEventDayIndex: 0,
+  setAddEventDayIndex: null,
 });
-
 export function useDndData() {
   return useContext(DndDataContext);
 }
 
 interface Props {
-  userTrips: Trips;
+  userTrips: Trip[];
   dispatchUserTrips: React.Dispatch<{ type: string; payload: any }>;
   selectedTrip: number;
 }
+export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTrip }: Props) {
+  const [isAddEventShown, setAddEventShown] = useState(false);
+  const [addEventDayIndex, setAddEventDayIndex] = useState(0);
 
-export default function DndItinerary({
-  userTrips,
-  dispatchUserTrips,
-  selectedTrip,
-}: Props) {
-  const UTsize =
-    ((JSON.stringify(userTrips).length * 2) / 1024).toFixed(2) + " KB";
-  // console.log(UTsize);
-
-  const [activeTrip, setActiveTrip] = useState(userTrips[selectedTrip]);
+  const [activeTrip, setActiveTrip] = useState<Trip>(userTrips[selectedTrip]);
 
   useEffect(() => {
     setActiveTrip(userTrips[selectedTrip]);
   }, [userTrips]);
 
   const { itinerary, ...tripInfo } = activeTrip;
-  const events = itinerary?.flatMap((day) => day?.events) ?? [];
+  const events = itinerary?.flatMap((day) => day.events);
 
-  const daysId = itinerary?.map((day: Day) => day?.id);
-  const eventsId = events?.map((event: any) => event?.id);
+  const daysId = itinerary?.map((day) => day.id);
+  const eventsId = events?.map((event) => event.id);
 
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  async function handleDragStart({ active }: any) {
+  function handleDragStart({ active }: any) {
     setActiveId(active?.id);
 
     if (active?.data.current?.item.drag_type === "day") {
@@ -91,6 +86,8 @@ export default function DndItinerary({
 
   function handleDragEnd() {
     setActiveId(null);
+
+    firebaseUpdateEvents(activeTrip);
     dispatchUserTrips({
       type: UT.REPLACE_TRIP,
       payload: activeTrip,
@@ -110,29 +107,20 @@ export default function DndItinerary({
     const activeIndex = getIndex(itinerary, activeType, activeId);
     if (typeof activeIndex !== "number" || activeIndex < 0) return;
     const activeDate = getItem(itinerary, events, activeId)?.date;
-    if (typeof activeDate !== "string" || typeof activeDate === undefined)
-      return;
+    if (typeof activeDate !== "string" || typeof activeDate === undefined) return;
 
     const overIndex = getIndex(itinerary, overType, overId);
     if (typeof overIndex !== "number" || overIndex < 0) return;
     const overDate = getItem(itinerary, events, overId)?.date;
     if (typeof overDate !== "string" || typeof overDate === undefined) return;
 
-    let newItinerary;
+    let _itinerary;
     if (activeType === "day" && overType === "day") {
-      newItinerary = arrayMove(itinerary, activeIndex, overIndex);
+      _itinerary = arrayMove(itinerary, activeIndex, overIndex);
     } else if (activeType === "event" && overType === "day") {
-      newItinerary = eventOverDay(
-        itinerary,
-        events,
-        activeId,
-        activeIndex,
-        activeDate,
-        overIndex,
-        overDate
-      );
+      _itinerary = eventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate);
     } else if (activeType === "event" && overType === "event") {
-      newItinerary = eventOverEvent(
+      _itinerary = eventOverEvent(
         itinerary,
         events,
         activeId,
@@ -144,14 +132,14 @@ export default function DndItinerary({
       );
     }
 
-    if (!newItinerary) return;
+    if (!_itinerary) return;
     const iteratedDate = new Date(tripInfo.start_date);
-    newItinerary.forEach((day: Day) => {
+    _itinerary.forEach((day: Day) => {
       const currentDate = formatDate(iteratedDate);
 
       day.date = currentDate;
 
-      day.events.forEach((event: Event, index: number) => {
+      day.events.forEach((event, index) => {
         event.position = index;
         event.date = currentDate;
       });
@@ -159,42 +147,37 @@ export default function DndItinerary({
       iteratedDate.setDate(iteratedDate.getDate() + 1);
     });
 
-    setActiveTrip({ itinerary: newItinerary, ...tripInfo });
+    setActiveTrip({ itinerary: _itinerary, ...tripInfo });
   }
 
   const value = {
     dispatchUserTrips,
     selectedTrip,
     activeTrip,
-    events,
+
+    activeId,
     daysId,
     eventsId,
-    activeId,
+    events,
+
+    isAddEventShown,
+    setAddEventShown,
+    addEventDayIndex,
+    setAddEventDayIndex,
   };
 
   return (
-    <section className="relative flex w-[calc(100vw-19rem)] flex-col gap-10">
+    <div className="flex w-[calc(100vw-19rem)] flex-col gap-10">
       <DndDataContext.Provider value={value}>
-        <DndContext
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={daysId}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="relative">
-              <CreateEvent />
-
-              <ul className="flex w-full min-w-fit flex-col">
-                {daysId?.map((dayId: string) => (
-                  <DndDay key={dayId} day={getItem(itinerary, events, dayId)} />
-                ))}
-              </ul>
-
+        <DndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+          <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
+            <AddEvent />
+            <ul className="flex w-full min-w-fit flex-col">
+              {daysId?.map((dayId: string) => (
+                <DndDay key={dayId} day={getItem(itinerary, events, dayId)} />
+              ))}
               <CalendarEnd totalDays={tripInfo.days} />
-            </div>
+            </ul>
           </SortableContext>
 
           {typeof activeId === "string" && daysId?.includes(activeId) ? (
@@ -205,10 +188,7 @@ export default function DndItinerary({
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
-              <DndDayContent
-                day={getItem(itinerary, events, activeId)}
-                dragOverlay={true}
-              />
+              <DndDayComponent day={getItem(itinerary, events, activeId)} dragOverlay={true} />
             </DragOverlay>
           ) : null}
 
@@ -219,14 +199,11 @@ export default function DndItinerary({
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
-              <DndEventContent
-                event={getItem(itinerary, events, activeId)}
-                dragOverlay={true}
-              />
+              <DndEventComponent event={getItem(itinerary, events, activeId)} dragOverlay={true} />
             </DragOverlay>
           ) : null}
         </DndContext>
       </DndDataContext.Provider>
-    </section>
+    </div>
   );
 }

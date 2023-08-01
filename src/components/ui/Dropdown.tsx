@@ -10,13 +10,7 @@ interface DropdownProps {
   className?: string;
   children: React.ReactNode;
 }
-
-export function Dropdown({
-  isModalOpen,
-  setIsModalOpen,
-  className,
-  children,
-}: DropdownProps) {
+export function Dropdown({ isModalOpen, setIsModalOpen, className, children }: DropdownProps) {
   const modalRef: any = useRef(null);
 
   useLayoutEffect(() => {
@@ -53,9 +47,7 @@ export function Dropdown({
       aria-haspopup={true}
       aria-hidden={isModalOpen}
       className={
-        "modal flex-col rounded-xl bg-white shadow-popup " +
-        (isModalOpen ? "flex " : "hidden ") +
-        className
+        "modal flex-col rounded-xl bg-white shadow-xxl " + (isModalOpen ? "flex " : "hidden ") + className
       }
     >
       {children}
@@ -68,12 +60,7 @@ interface DropdownButtonProps {
   className?: string;
   children: React.ReactNode;
 }
-
-export function DropdownButton({
-  onClick,
-  className,
-  children,
-}: DropdownButtonProps) {
+export function DropdownButton({ onClick, className, children }: DropdownButtonProps) {
   return (
     <button
       onClick={onClick}
@@ -91,7 +78,6 @@ interface DropdownProfileProps {
   username: string;
   email: string;
 }
-
 export function DropdownProfile({ username, email }: DropdownProfileProps) {
   return (
     <div className="flex w-full select-none flex-col items-center gap-1 p-3 pb-1">
@@ -104,12 +90,8 @@ export function DropdownProfile({ username, email }: DropdownProfileProps) {
         className="rounded-xl"
       />
       <div className="flex w-48 flex-none select-text flex-col justify-around text-center">
-        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-          {username}
-        </span>
-        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-          {email}
-        </span>
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap">{username}</span>
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap">{email}</span>
       </div>
     </div>
   );

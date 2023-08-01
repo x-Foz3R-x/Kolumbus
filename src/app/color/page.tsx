@@ -11,6 +11,34 @@ export default function ColorPallette() {
 
       <div className="grid grid-cols-[auto,auto,auto] gap-4">
         <section>
+          <div className="flex items-center justify-center p-1">kolumblue</div>
+          <Color value={50} className="bg-kolumblue-50" />
+          <Color value={100} className="bg-kolumblue-100" />
+          <Color value={200} className="bg-kolumblue-200" />
+          <Color value={300} className="bg-kolumblue-300" />
+          <Color value={400} className="bg-kolumblue-400" />
+          <Color value={500} className="bg-kolumblue-500" />
+          <Color value={600} className="bg-kolumblue-600" />
+          <Color value={700} className="bg-kolumblue-700" />
+          <Color value={800} className="bg-kolumblue-800" />
+          <Color value={900} className="bg-kolumblue-900" />
+          <Color value={950} className="bg-kolumblue-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">kolumbrown</div>
+          <Color value={50} className="bg-kolumbrown-50" />
+          <Color value={100} className="bg-kolumbrown-100" />
+          <Color value={200} className="bg-kolumbrown-200" />
+          <Color value={300} className="bg-kolumbrown-300" />
+          <Color value={400} className="bg-kolumbrown-400" />
+          <Color value={500} className="bg-kolumbrown-500" />
+          <Color value={600} className="bg-kolumbrown-600" />
+          <Color value={700} className="bg-kolumbrown-700" />
+          <Color value={800} className="bg-kolumbrown-800" />
+          <Color value={900} className="bg-kolumbrown-900" />
+          <Color value={950} className="bg-kolumbrown-950" />
+        </section>
+        <section>
           <div className="flex items-center justify-center p-1">kolumbGray</div>
           <Color value={50} className="bg-kolumbGray-50" />
           <Color value={100} className="bg-kolumbGray-100" />
@@ -37,20 +65,6 @@ export default function ColorPallette() {
           <Color value={800} className="bg-tintedGray-800" />
           <Color value={900} className="bg-tintedGray-900" />
           <Color value={950} className="bg-tintedGray-950" />
-        </section>
-        <section>
-          <div className="flex items-center justify-center p-1">kolumblue</div>
-          <Color value={50} className="bg-kolumblue-50" />
-          <Color value={100} className="bg-kolumblue-100" />
-          <Color value={200} className="bg-kolumblue-200" />
-          <Color value={300} className="bg-kolumblue-300" />
-          <Color value={400} className="bg-kolumblue-400" />
-          <Color value={500} className="bg-kolumblue-500" />
-          <Color value={600} className="bg-kolumblue-600" />
-          <Color value={700} className="bg-kolumblue-700" />
-          <Color value={800} className="bg-kolumblue-800" />
-          <Color value={900} className="bg-kolumblue-900" />
-          <Color value={950} className="bg-kolumblue-950" />
         </section>
         <section>
           <div className="flex items-center justify-center p-1">red</div>

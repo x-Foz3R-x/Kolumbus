@@ -2,10 +2,7 @@
 import colors from "tailwindcss/colors";
 
 module.exports = {
-  content: [
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       fontFamily: {
@@ -16,10 +13,8 @@ module.exports = {
       },
       animation: {
         appear: "appear 500ms cubic-bezier(0.175, 0.75, 0.32, 1)",
-        verticalScaleIn:
-          "verticalScaleIn 300ms cubic-bezier(0.175, 0.885, 0.32, 1)",
-        horizontalScaleIn:
-          "horizontalScaleIn 300ms cubic-bezier(0.175, 0.885, 0.32, 1)",
+        verticalScaleIn: "verticalScaleIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
+        horizontalScaleIn: "horizontalScaleIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
       },
       keyframes: {
         appear: {
@@ -52,38 +47,37 @@ module.exports = {
         "kolumb-flow": "cubic-bezier(0.175, 0.885, 0.32, 1)",
         "kolumb-leave": "cubic-bezier(0.885, 0.175, 0.5, 1)",
       },
-      boxShadow: {
-        default:
-          "0px 0px 0px 1px rgba(15,15,15,.03), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
-        kolumblue:
-          "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px 0 rgba(15,15,15,.06)",
-        kolumblueInset2:
-          "inset 0 1px 2px 1px hsla(210, 78%, 90%, 0.1),inset 0 2px 4px 0 rgba(15,15,15,.06)",
-        kolumblueInset:
-          "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px hsla(210, 78%, 75%, 0.1), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px hsla(210, 78%, 90%, 0.1)",
-        kolumblueSelected:
-          "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
-        kolumblueHover:
-          "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
-        soft: "0px 1px 2px rgba(15, 15, 15, 0.05)",
-        focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
-        select:
-          "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.01), 0 5px 6px rgba(15,15,15,0.01), 0 6px 8px rgba(15,15,15,0.01)",
-        select2:
-          "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 1px 2px rgba(15,15,15,0.02), 0 2px 4px rgba(15,15,15,0.01), 0 3px 6px rgba(15,15,15,0.01), 0 4px 8px rgba(15,15,15,0.01)",
-        button:
-          "0px 0px 0px 1px rgba(15,15,15,.02), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
-        dropdown:
-          "0 0px 5px rgba(15,15,15,0.1), 0 1px 1px rgba(15,15,15,0.03), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03)",
-        popup:
-          "0 0px 5px rgba(15,15,15,0.1), 0 1px 1px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.03)",
-        container:
-          "0 0px 5px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.01)",
-        input:
-          "0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 3px 3px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02)",
-        inputInverted:
-          "0 -1px 1px rgba(15,15,15,0.01), 0 -2px 2px rgba(15,15,15,0.01), 0 -3px 3px rgba(15,15,15,0.01), 0 -4px 4px rgba(15,15,15,0.01)",
-      },
+    },
+    boxShadow: {
+      soft: "0px 1px 2px rgba(15, 15, 15, 0.05)",
+      focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
+
+      xs: "0 1px 2px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.01), 0 2px 3px rgba(15,15,15,0.01)",
+      sm: "0 2px 2px rgba(15,15,15,0.02), 0 3px 3px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02)",
+      smI: "0 -2px 2px rgba(15,15,15,0.01), 0 -3px 3px rgba(15,15,15,0.02), 0 -4px 4px rgba(15,15,15,0.01)",
+      md: "0 0px 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 12px 12px rgba(15,15,15,0.01)",
+      lg: "0 0px 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 12px 12px rgba(15,15,15,0.01)",
+      xl: "0 0px 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.01), 0 4px 4px rgba(15,15,15,0.01), 0 8px 8px rgba(15,15,15,0.01), 0 16px 16px rgba(15,15,15,0.01)",
+      xxl: "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
+      xxxl: "0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02)",
+
+      btn: "0px 0px 0px 1px rgba(15,15,15,.02), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
+      select:
+        "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.01), 0 5px 6px rgba(15,15,15,0.01), 0 6px 8px rgba(15,15,15,0.01)",
+      insetSm:
+        "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px rgba(15,15,15,.02), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02)",
+      inset:
+        "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px rgba(15,15,15,.02), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px rgba(15,15,15,.02)",
+      splash:
+        "0 0 5px rgba(15,15,15,0.1), 0 0 1px rgba(15,15,15,0.03), 0 0 2px rgba(15,15,15,0.03), 0 0 4px rgba(15,15,15,0.03), 0 0 8px rgba(15,15,15,0.03), 0 0 12px rgba(15,15,15,0.03)",
+
+      kolumblue: "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px rgba(15,15,15,.06)",
+      kolumblueInset:
+        "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px hsla(210, 78%, 75%, 0.1), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px hsla(210, 78%, 90%, 0.1)",
+      kolumblueSelected:
+        "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
+      kolumblueHover:
+        "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
     },
     colors: {
       transparent: "transparent",
@@ -102,6 +96,19 @@ module.exports = {
         800: "hsl(210, 78%, 27%)",
         900: "hsl(210, 78%, 17%)",
         950: "hsl(210, 78%, 11%)",
+      },
+      kolumbrown: {
+        50: "hsl(24, 33%, 98%)",
+        100: "hsl(24, 33%, 94%)",
+        200: "hsl(24, 33%, 90%)",
+        300: "hsl(24, 33%, 84%)",
+        400: "hsl(24, 33%, 71%)",
+        500: "hsl(24, 33%, 60%)",
+        600: "hsl(24, 33%, 46%)",
+        700: "hsl(24, 33%, 34%)",
+        800: "hsl(24, 33%, 27%)",
+        900: "hsl(24, 33%, 17%)",
+        950: "hsl(24, 33%, 11%)",
       },
       kolumbGray: {
         50: "hsl(232, 9%, 98%)",
@@ -122,7 +129,7 @@ module.exports = {
         200: "hsl(48, 6%, 90%)",
         300: "hsl(48, 6%, 84%)",
         400: "hsl(48, 6%, 71%)",
-        500: "hsl(48, 6%, 67%)",
+        500: "hsl(48, 6%, 60%)",
         600: "hsl(48, 6%, 46%)",
         700: "hsl(48, 6%, 34%)",
         800: "hsl(48, 6%, 27%)",

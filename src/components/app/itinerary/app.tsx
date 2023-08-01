@@ -1,7 +1,7 @@
 "use client";
 
-import { AuthProvider } from "@/context/auth";
 import { usePathname } from "next/navigation";
+import { AuthProvider } from "@/context/auth";
 
 export default function App({ children }: { children: React.ReactNode }) {
   return (
