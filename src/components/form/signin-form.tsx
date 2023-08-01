@@ -13,7 +13,7 @@ export default function SigninForm() {
   const initialFormState = {
     email: "",
     password: "",
-    isChecked: false,
+    isAgreeChecked: false,
     error: "",
   };
 
@@ -23,7 +23,7 @@ export default function SigninForm() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      await signin(form.email, form.password, form.isChecked);
+      await signin(form.email, form.password, form.isAgreeChecked);
       router.push("/itinerary");
     } catch (err) {
       console.log(err);
@@ -79,12 +79,7 @@ export default function SigninForm() {
           (false ? "border-kolumbGray-800 " : "border-kolumbGray-300 ")
         }
       >
-        <Icon.arrow
-          className={
-            "m-auto h-3 " +
-            (false ? "fill-kolumbGray-800 " : "fill-kolumbGray-300 ")
-          }
-        />
+        <Icon.arrow className={"m-auto h-3 " + (false ? "fill-kolumbGray-800 " : "fill-kolumbGray-300 ")} />
       </button>
     </form>
   );

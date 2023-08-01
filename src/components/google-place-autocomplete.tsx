@@ -14,7 +14,9 @@ interface PlacePrediction {
   terms: { offset: number; value: string }[];
   types: string[];
 }
-type SelectList = [{ value: string }, ...predictions: PlacePrediction[]];
+// type SelectList = [{ value: string }, ...predictions: PlacePrediction[]];
+type SelectList = [{ value: string }, ...PlacePrediction[]];
+
 type SelectedItem = PlacePrediction | { value: string };
 
 interface Props {

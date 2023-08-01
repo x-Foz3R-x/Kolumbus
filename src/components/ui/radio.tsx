@@ -2,7 +2,7 @@ interface RadioListProps {
   title?: string;
   name: string;
   setValue: Function;
-  options: { name?: string; value?: any; element: React.ReactElement }[];
+  options: { display_name?: string; value?: any; element: React.ReactElement }[];
 }
 export function RadioIconsInline({ title, name, setValue, options }: RadioListProps) {
   return (

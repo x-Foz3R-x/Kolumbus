@@ -44,6 +44,7 @@ export default function AddEvent() {
 
     const docRef = await addEvent(event);
     if (docRef instanceof DocumentReference) {
+      event.id = docRef.id;
       // Successfully added the event
       dispatchUserTrips({
         type: UT.INSERT_EVENT,
@@ -51,7 +52,7 @@ export default function AddEvent() {
           selectedTrip,
           dayIndex: addEventDayIndex,
           placeAt: "end",
-          event: { id: docRef.id, ...event },
+          event,
         },
       });
     } else {
@@ -80,22 +81,22 @@ export default function AddEvent() {
           setValue={setSearchPlaceholder}
           options={[
             {
-              name: "explore",
+              display_name: "explore",
               value: "Find interesting places",
               element: <Icon.explore className="h-4 w-4 p-px" />,
             },
             {
-              name: "food",
+              display_name: "food",
               value: "Find a place to eat",
               element: <Icon.forkKnife className="h-4 w-4 py-px" />,
             },
             {
-              name: "accommodation",
+              display_name: "accommodation",
               value: "Find a place to stay",
               element: <Icon.bed className="h-4 w-4" />,
             },
             {
-              name: "transportation",
+              display_name: "transportation",
               value: "Find destination point",
               element: <Icon.carPlane className="h-4 w-[18px]" />,
             },
@@ -108,11 +109,11 @@ export default function AddEvent() {
           setValue={setPlaceAt}
           options={[
             {
-              name: "start",
+              display_name: "start",
               element: <Icon.x className="h-4 w-4 p-[2px]" />,
             },
             {
-              name: "end",
+              display_name: "end",
               element: <Icon.x className="h-4 w-4 p-[2px]" />,
             },
           ]}
