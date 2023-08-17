@@ -3,10 +3,7 @@ import { useEffect, useState } from "react";
 import { Key } from "@/types";
 import useKeyPress from "./use-key-press";
 
-export const useEscapeOrOutsideClose = (
-  ref: React.MutableRefObject<any>,
-  callback: Function
-) => {
+export const useAnyCloseActions = (ref: React.MutableRefObject<any>, callback: Function) => {
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target)) callback();
@@ -16,12 +13,18 @@ export const useEscapeOrOutsideClose = (
       if (event.key === Key.Escape) callback();
     };
 
+    const handleScroll = (event: Event) => {
+      if (ref.current && !ref.current.contains(event.target)) callback();
+    };
+
     document.addEventListener("mousedown", handleOutsideClick);
     document.addEventListener("keydown", handleEscapeKey);
+    window.addEventListener("scroll", handleScroll, true);
 
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("keydown", handleEscapeKey);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [ref, callback]);
 };
@@ -45,9 +48,7 @@ export function useArrowNavigation(
 
   const handleArrowPress = (direction: ArrowKey) => {
     const nextIndex =
-      (direction === ArrowKey.Up
-        ? -1 + selectedIndex + list.length
-        : 1 + selectedIndex) % list.length;
+      (direction === ArrowKey.Up ? -1 + selectedIndex + list.length : 1 + selectedIndex) % list.length;
     setSelectedIndex(nextIndex);
     onArrowPress(list[nextIndex]);
   };

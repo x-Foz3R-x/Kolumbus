@@ -17,16 +17,12 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body
         className={
-          "scroll-smooth fill-kolumbGray-900 text-kolumbGray-900 antialiased " +
+          "scroll-smooth fill-gray-900 text-gray-900 antialiased " +
           gordita.className +
           " " +
           gordita.variable +

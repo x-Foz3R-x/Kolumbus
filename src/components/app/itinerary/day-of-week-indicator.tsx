@@ -44,7 +44,7 @@ export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
         key={currentDayOfWeek + i}
         className={`flex w-[15px] flex-shrink-0 items-center justify-center duration-500 ease-kolumb-flow ${
           day === i ? "font-extrabold" : "font-medium"
-        } ${i === 5 || i === 6 ? "text-red-500" : "text-kolumbGray-500"}`}
+        } ${i === 5 || i === 6 ? "text-red-500" : "text-gray-500"}`}
       >
         {currentDayOfWeek}
       </p>
@@ -52,13 +52,13 @@ export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
   }
 
   return (
-    <div className="relative flex h-5 w-28 cursor-default select-none items-center justify-center rounded border-kolumbGray-100 text-center text-sm">
+    <div className="relative flex h-5 w-28 cursor-default select-none items-center justify-center rounded border-gray-100 text-center text-sm">
       <section className="z-10 flex w-fit items-center justify-between font-inconsolata text-xs">
         {daysOfWeek}
       </section>
 
       <span
-        className={`absolute h-5 w-4 rounded bg-kolumbGray-100/30 shadow-inset duration-500 ease-kolumb-flow ${
+        className={`absolute h-5 w-4 rounded bg-gray-100/30 shadow-inset duration-500 ease-kolumb-flow ${
           day == 0
             ? "left-[3px]"
             : day == 1

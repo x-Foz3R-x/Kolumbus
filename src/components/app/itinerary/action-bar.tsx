@@ -5,11 +5,12 @@ import { Key, UT } from "@/types";
 import DatePicker from "@/components/app/date-picker";
 import DaysPicker from "@/components/app/days-picker";
 
-import SavedSVG from "@/assets/svg/Saved.svg";
-import SavingSVG from "@/assets/svg/Saving.svg";
+// import SavedSVG from "@/assets/svg/Saved.svg";
+// import SavingSVG from "@/assets/svg/Saving.svg";
 import useKeyPress from "@/hooks/use-key-press";
 import { useEffect, useRef, useState } from "react";
 import { firebaseUpdateTrip } from "@/hooks/use-firebase-operations";
+import Icon from "@/components/icons";
 
 export default function ActionBar() {
   const { selectedTrip } = useAppData();
@@ -32,9 +33,7 @@ export default function ActionBar() {
     if (enterPressed && document.activeElement === ref.current) ref.current!.blur();
   }, [enterPressed]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDisplayName(e.target.value);
-  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setDisplayName(e.target.value);
 
   const handleInputUpdate = async (e: React.FocusEvent<HTMLInputElement>) => {
     const trip = userTrips[selectedTrip];
@@ -54,7 +53,7 @@ export default function ActionBar() {
   };
 
   return (
-    <section className="sticky top-3 z-30 mx-3 flex h-14 w-[calc(100%-1.5rem)] items-center justify-between gap-5 rounded-lg border border-kolumbGray-100 bg-white/80 px-5 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
+    <section className="sticky top-3 z-30 mx-3 flex h-14 w-[calc(100%-1.5rem)] items-center justify-between gap-5 rounded-lg border border-gray-100 bg-white/80 px-5 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
       {!loadingTrips && (
         <>
           <input
@@ -72,7 +71,7 @@ export default function ActionBar() {
             <p className="w-fit whitespace-nowrap text-sm">{tripSize} KB</p>
             <DatePicker />
             <DaysPicker maxTripsDays={90} />
-            <SavedSVG className="h-9 w-9 fill-kolumblue-500" />
+            <Icon.x className="h-9 w-9 fill-kolumblue-500" />
           </section>
         </>
       )}

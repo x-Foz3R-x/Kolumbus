@@ -15,10 +15,10 @@ export default function ToolLink({ link, label, className, children }: Props) {
     <Link
       href={link}
       className={
-        "h-[5.5rem] w-full rounded-lg hover:bg-kolumbGray-100 hover:shadow-kolumblueHover " +
+        "h-[5.5rem] w-full rounded-lg hover:bg-gray-100 hover:shadow-kolumblueHover " +
         (CheckCurrentPathname(link)
           ? "bg-kolumblue-100 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected "
-          : "bg-kolumbGray-50 fill-tintedGray-400 text-kolumbGray-900 shadow-kolumblueInset hover:fill-tintedGray-500 ") +
+          : "bg-gray-50 fill-tintedGray-400 text-gray-900 shadow-kolumblueInset hover:fill-tintedGray-500 ") +
         className
       }
     >

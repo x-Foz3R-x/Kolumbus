@@ -2,8 +2,8 @@
 
 import { createPortal } from "react-dom";
 
-import useUserTrips from "@/hooks/use-user-trips";
 import useAppData from "@/context/app-data";
+import useUserTrips from "@/hooks/use-user-trips";
 
 import DndItinerary from "@/components/dnd-itinerary";
 import ActionBar from "@/components/app/itinerary/action-bar";
@@ -13,13 +13,12 @@ import { ItinerarySkeleton } from "@/components/loading/itinerary-skeleton";
 
 export default function Itinerary() {
   const { selectedTrip, isModalShown, modalChildren } = useAppData();
-  const { userTrips, dispatchUserTrips, loadingTrips, tripsError } =
-    useUserTrips();
+  const { userTrips, dispatchUserTrips, loadingTrips, tripsError } = useUserTrips();
 
   return (
     <Main>
       <ActionBar />
-      <section className="mt-8 overflow-scroll px-8">
+      <section className="ml-6 mt-6 overflow-scroll pr-6">
         {tripsError && (
           <div className="w-full rounded-md bg-red-100 px-3 pt-6 text-center text-sm text-red-600">
             {tripsError}
@@ -41,10 +40,7 @@ export default function Itinerary() {
         )}
       </section>
 
-      {createPortal(
-        <Modal showModal={isModalShown} modalChildren={modalChildren} />,
-        document.body
-      )}
+      {createPortal(<Modal showModal={isModalShown} modalChildren={modalChildren} />, document.body)}
     </Main>
   );
 }

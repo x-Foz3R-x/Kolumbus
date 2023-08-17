@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AuthProvider } from "@/context/auth";
 
 import ProfileButton from "@/components/profile-button";
-import FullLogo from "@/assets/kolumbus/full-logo.svg";
+// import FullLogo from "@/assets/kolumbus/full-logo.svg";
 import Icon from "@/components/icons";
 
 export default function Header() {
@@ -15,7 +15,7 @@ export default function Header() {
     <header className="relative z-50 flex h-14 w-full select-none items-center justify-between  font-normal">
       <nav className="h-14 w-56 flex-none">
         <Link href="/" className="m-auto my-4 flex w-fit justify-center hover:animate-bounce">
-          <FullLogo className="h-6 fill-kolumblue-500" />
+          <Icon.logo className="h-6 fill-kolumblue-500" />
         </Link>
       </nav>
 
@@ -25,21 +25,21 @@ export default function Header() {
           <p>Explore</p>
         </Link>
 
-        <div className="m-3 h-5 border-r border-kolumbGray-200"></div>
+        <div className="m-3 h-5 border-r border-gray-200"></div>
 
         <Link href={"/start"} className={linkStyle}>
           <Icon.library className={linkSvgStyle} />
           <p>Library</p>
         </Link>
 
-        <div className="m-3 h-5 border-r border-kolumbGray-200"></div>
+        <div className="m-3 h-5 border-r border-gray-200"></div>
 
         <Link href={"/start"} className={linkStyle}>
           <Icon.market className={linkSvgStyle} />
           <p>Market</p>
         </Link>
 
-        <div className="m-3 h-5 border-r border-kolumbGray-200"></div>
+        <div className="m-3 h-5 border-r border-gray-200"></div>
 
         <Link href={"/start"} className={linkStyle}>
           <Icon.showcase className={linkSvgStyle} />

@@ -1,3 +1,5 @@
+import { Geometry, PlaceOpeningHours } from "./google";
+
 export interface Trip {
   [key: string]: any;
   id: string;
@@ -29,12 +31,37 @@ export interface Event {
   position: number;
   address?: string;
   cost?: number;
-  link?: string;
+  phone_number?: string;
+  website?: string;
   type?: string;
-  google_place?: GooglePlace;
+  google?: Google;
   drag_type: "event";
 }
 
-export interface GooglePlace {
+export interface Google {
   place_id: string;
+  photo_reference?: string;
+  url?: string;
+  types?: string[];
+  geometry?: Geometry;
+  current_opening_hours?: PlaceOpeningHours;
+
+  price_level?: number;
+  rating?: number;
+  utc_offset?: number;
+  vicinity?: string;
+
+  curbside_pickup?: boolean;
+  delivery?: boolean;
+  dine_in?: boolean;
+  reservable?: boolean;
+  serves_beer?: boolean;
+  serves_breakfast?: boolean;
+  serves_brunch?: boolean;
+  serves_dinner?: boolean;
+  serves_lunch?: boolean;
+  serves_vegetarian_food?: boolean;
+  serves_wine?: boolean;
+  takeout?: boolean;
+  wheelchair_accessible_entrance?: boolean;
 }

@@ -934,10 +934,10 @@ export default function SignupForm() {
         onClick={handleSubmit}
         className={
           "absolute bottom-14 right-2 z-20 h-7 w-7 rounded-full border " +
-          (false ? "border-kolumbGray-800 " : "border-kolumbGray-300 ")
+          (false ? "border-gray-800 " : "border-gray-300 ")
         }
       >
-        <Icon.arrow className={"m-auto h-3 " + (false ? "fill-kolumbGray-800 " : "fill-kolumbGray-300 ")} />
+        <Icon.arrowRight className={"m-auto h-3 " + (false ? "fill-gray-800 " : "fill-gray-300 ")} />
       </button>
     </form>
   );

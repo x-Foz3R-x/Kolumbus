@@ -3,9 +3,8 @@ import { db } from "@/lib/firebase";
 import { Event } from "@/types";
 
 export default function useEventOperations(tripId: string) {
-  const collectionRef = collection(db, `trips/${tripId}/events`);
-
   const addEvent = async (newEventData: Event) => {
+    const collectionRef = collection(db, `trips/${tripId}/events`);
     try {
       return (await addDoc(collectionRef, newEventData)) as DocumentReference;
     } catch (error) {

@@ -8,7 +8,10 @@ interface ComboboxProps {
   className?: string;
   children: React.ReactNode;
 }
-export const Combobox = forwardRef(function ComboboxComponent({ name, className, children }: ComboboxProps, ref: any) {
+export const Combobox = forwardRef(function ComboboxComponent(
+  { name, className, children }: ComboboxProps,
+  ref: any
+) {
   comboName = name;
 
   return (
@@ -55,7 +58,7 @@ export function ComboboxInput({
         aria-autocomplete="list"
         aria-expanded={ariaExpanded}
         spellCheck={false}
-        className={`w-full appearance-none bg-transparent py-[0.375rem] text-sm font-normal text-kolumbGray-900 outline-0 ${
+        className={`w-full appearance-none bg-transparent py-[0.375rem] text-sm font-normal text-gray-900 outline-0 ${
           React.Children.count(children) > 0 ? " pl-2" : "px-2"
         }`}
       />
@@ -77,7 +80,7 @@ export function ComboboxList({ showList, length, children }: ComboboxListProps) 
     <div
       id={comboName}
       role="listbox"
-      aria-label="combobox options list"
+      aria-label="Options list"
       style={{ height: length * optionHeight + padding }}
       className={`absolute w-full origin-top overflow-hidden rounded-b-[0.625rem] bg-white p-[6px] shadow-xl ${
         showList
@@ -91,12 +94,12 @@ export function ComboboxList({ showList, length, children }: ComboboxListProps) 
 }
 
 interface ComboboxOptionProps {
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
   isSelected: boolean;
   animationDelay?: string;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
   children: React.ReactNode;
 }
-export function ComboboxOption({ onClick, isSelected, animationDelay, children }: ComboboxOptionProps) {
+export function ComboboxOption({ isSelected, animationDelay, onClick, children }: ComboboxOptionProps) {
   const [opacity, setOpacity] = useState("opacity-0");
   setTimeout(() => {
     setOpacity("opacity-100");
@@ -104,13 +107,13 @@ export function ComboboxOption({ onClick, isSelected, animationDelay, children }
 
   return (
     <button
+      style={{ animationDelay: animationDelay }}
+      className={`group flex w-full animate-appear items-center gap-4 rounded fill-gray-400 px-4 py-2 text-left text-sm hover:z-10 hover:fill-red-500 hover:shadow-select ${opacity} ${
+        isSelected ? "bg-gray-100 shadow-select hover:bg-gray-200" : "hover:bg-gray-100"
+      }`}
       role="option"
       aria-selected={isSelected}
-      style={{ animationDelay: animationDelay }}
       onClick={onClick}
-      className={`group flex w-full animate-appear items-center gap-4 rounded fill-kolumbGray-400 px-4 py-2 text-left text-sm hover:z-10 hover:fill-red-500 hover:shadow-select ${opacity} ${
-        isSelected ? "bg-kolumbGray-100 shadow-select hover:bg-kolumbGray-200" : "hover:bg-kolumbGray-100"
-      }`}
     >
       {children}
     </button>

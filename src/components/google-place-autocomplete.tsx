@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
 
-import { useEscapeOrOutsideClose, useArrowNavigation } from "@/hooks/use-accessibility-features";
-import { PlacesAutocompleteStatus } from "@/types";
+import { useAnyCloseActions, useArrowNavigation } from "@/hooks/use-accessibility-features";
+import { Language, PlacesAutocompleteStatus } from "@/types";
 
 import Icon from "./icons";
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxList } from "./ui/combobox";
@@ -22,8 +22,9 @@ type SelectedItem = PlacePrediction | { value: string };
 interface Props {
   onAdd: Function;
   placeholder: string;
+  sessionToken: string;
 }
-export default function GooglePlaceAutocomplete({ onAdd, placeholder }: Props) {
+export default function GooglePlaceAutocomplete({ onAdd, placeholder, sessionToken }: Props) {
   const [value, setValue] = useState("");
 
   const [selectList, setSelectList] = useState<SelectList>([{ value: value }]);
@@ -44,7 +45,9 @@ export default function GooglePlaceAutocomplete({ onAdd, placeholder }: Props) {
         data: { status: string; predictions: PlacePrediction[] };
       }
       const { data }: apiData = await axios.post("/api/autocomplete", {
-        inputValue: e.target.value,
+        input: e.target.value,
+        language: Language.English,
+        sessionToken,
       });
 
       setPrevSelectListLength(selectList.length);
@@ -99,7 +102,7 @@ export default function GooglePlaceAutocomplete({ onAdd, placeholder }: Props) {
   };
 
   const ref = useRef<any>(null);
-  useEscapeOrOutsideClose(ref, () => {
+  useAnyCloseActions(ref, () => {
     setSelectListShown(false);
   });
   const { selectedIndex, setSelectedIndex } = useArrowNavigation(
@@ -118,7 +121,7 @@ export default function GooglePlaceAutocomplete({ onAdd, placeholder }: Props) {
         onChange={handleInputChange}
         onFocus={handleInputFocus}
         ariaExpanded={itSelectListShown}
-        className={`bg-kolumbGray-50 fill-kolumbGray-400 text-kolumbGray-400 outline-0 ${
+        className={`bg-gray-50 fill-gray-400 text-gray-400 outline-0 ${
           itSelectListShown
             ? "shadow-sm duration-300 ease-kolumb-flow"
             : "rounded-b-[0.625rem] duration-200 ease-kolumb-leave"
@@ -129,16 +132,16 @@ export default function GooglePlaceAutocomplete({ onAdd, placeholder }: Props) {
             setValue("");
             ClearPredictions();
           }}
-          className="h-8 w-6 px-2 duration-100 hover:fill-kolumbGray-700"
+          className="h-8 w-6 px-2 duration-100 hover:fill-gray-700"
         >
           <Icon.x className="w-2 " />
         </button>
 
-        <div className="absolute left-6 top-2 h-4 border-r border-kolumbGray-200"></div>
+        <div className="absolute left-6 top-2 h-4 border-r border-gray-200"></div>
 
         <button
           onClick={() => onAdd(selectedItem)}
-          className="flex h-8 items-center justify-center gap-1 px-2 duration-100 hover:fill-kolumbGray-700 hover:text-kolumbGray-700"
+          className="flex h-8 items-center justify-center gap-1 px-2 duration-100 hover:fill-gray-700 hover:text-gray-700"
         >
           <Icon.plus className="w-[10px]" />
           <p className="text-xs font-medium capitalize">add</p>
@@ -181,7 +184,7 @@ function predictionsComponent(
           <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-sm">
             {predictions[i].structured_formatting.main_text}
           </p>
-          <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs text-kolumbGray-500">
+          <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs text-gray-500">
             {predictions[i].structured_formatting.secondary_text}
           </p>
         </section>

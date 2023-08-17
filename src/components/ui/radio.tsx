@@ -7,9 +7,9 @@ interface RadioListProps {
 export function RadioIconsInline({ title, name, setValue, options }: RadioListProps) {
   return (
     <section className="flex flex-col items-center justify-between">
-      <h2 className="cursor-default text-xs font-medium capitalize text-kolumbGray-500">{title && title}</h2>
+      <h2 className="cursor-default text-xs font-medium capitalize text-gray-500">{title && title}</h2>
 
-      <ul className="flex items-center rounded-md bg-kolumbGray-50 px-1 shadow-sm">
+      <ul className="flex items-center rounded-md bg-gray-50 px-1 shadow-sm">
         {options.map((option, index) => (
           <li
             key={`option_${index}`}
@@ -28,10 +28,10 @@ export function RadioIconsInline({ title, name, setValue, options }: RadioListPr
 
             <label
               htmlFor={`${name}-${index}`}
-              className={`group relative flex-1 cursor-pointer select-none rounded-[0.625rem] fill-kolumbGray-400 p-1 capitalize text-kolumbGray-500 duration-200 ease-kolumb-flow hover:scale-110 hover:fill-kolumbGray-500 peer-checked:fill-kolumblue-500`}
+              className={`group relative flex-1 cursor-pointer select-none rounded-[0.625rem] fill-gray-400 p-1 capitalize text-gray-500 duration-200 ease-kolumb-flow hover:scale-110 hover:fill-gray-500 peer-checked:fill-kolumblue-500`}
             >
               {option.element}
-              <span className="pointer-events-none absolute bottom-[26px] left-1/2 z-20 -translate-x-1/2 scale-90 rounded bg-kolumbGray-50/70 px-1 py-[2px] text-center text-kolumbGray-500 opacity-0 shadow-xl backdrop-blur-[2px] backdrop-saturate-[180%] backdrop-filter duration-150 ease-kolumb-flow group-hover:opacity-100">
+              <span className="pointer-events-none absolute bottom-[26px] left-1/2 z-20 -translate-x-1/2 scale-90 rounded bg-gray-50/70 px-1 py-[2px] text-center text-sm text-gray-500 opacity-0 shadow-xl backdrop-blur-[2px] backdrop-saturate-[180%] backdrop-filter duration-150 ease-kolumb-flow group-hover:opacity-100">
                 {option?.display_name}
               </span>
             </label>
@@ -64,7 +64,7 @@ export function RadioGridCards({ title, options }: radioGridCardsProps) {
 
             <label
               htmlFor={option}
-              className="flex-1 select-none rounded-lg bg-kolumbGray-100 px-2 py-1 capitalize text-kolumbGray-800 shadow-btn peer-checked:bg-kolumblue-300 "
+              className="flex-1 select-none rounded-lg bg-gray-100 px-2 py-1 capitalize text-gray-800 shadow-btn peer-checked:bg-kolumblue-300 "
             >
               {option}
             </label>

@@ -14,7 +14,7 @@ export default function useAppData() {
 }
 
 // Reducer function for managing user trips state
-function TripsReducer(state: Trip[], action: { type: string; payload: any }) {
+function TripsReducer(state: Trip[], action: { type: UT; payload: any }) {
   const _state = [...state];
 
   switch (action.type) {
@@ -137,7 +137,7 @@ function TripsReducer(state: Trip[], action: { type: string; payload: any }) {
         return _state;
       }
       return state;
-    // Inserting event to user trip
+    // Inserting trip to user trip
     case UT.INSERT_TRIP:
       if (!action.payload) return state;
 

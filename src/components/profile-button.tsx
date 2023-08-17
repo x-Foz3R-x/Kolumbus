@@ -8,12 +8,13 @@ import { useAuth } from "@/context/auth";
 
 import { Dropdown, DropdownButton, DropdownProfile, DropdownSeparator } from "./ui/dropdown";
 
-import SwitchAccountSVG from "@/assets/svg/SwitchAccount.svg";
-import AppearanceSVG from "@/assets/svg/Appearance.svg";
-import GlobeSVG from "@/assets/svg/Globe.svg";
-import AccountSettingsSVG from "@/assets/svg/AccountSettings.svg";
-import SignOutSVG from "@/assets/svg/SignOut.svg";
-import UserSVG from "@/assets/svg/User.svg";
+// import SwitchAccountSVG from "@/assets/svg/SwitchAccount.svg";
+// import AppearanceSVG from "@/assets/svg/Appearance.svg";
+// import GlobeSVG from "@/assets/svg/Globe.svg";
+// import AccountSettingsSVG from "@/assets/svg/AccountSettings.svg";
+// import SignOutSVG from "@/assets/svg/SignOut.svg";
+// import UserSVG from "@/assets/svg/User.svg";
+import Icon from "./icons";
 
 export default function ProfileButton() {
   const { currentUser, signout } = useAuth();
@@ -55,29 +56,29 @@ export default function ProfileButton() {
         <DropdownSeparator />
 
         <DropdownButton className="h-9 w-full px-4">
-          <SwitchAccountSVG className={className} />
+          <Icon.x className={className} />
           Switch account
         </DropdownButton>
 
         <DropdownButton className="h-9 w-full px-4">
-          <AppearanceSVG className={className} />
+          <Icon.x className={className} />
           Light theme
         </DropdownButton>
 
         <DropdownButton className="h-9 w-full px-4">
-          <GlobeSVG className={className} />
+          <Icon.x className={className} />
           English (us)
         </DropdownButton>
 
         <DropdownSeparator />
 
         <DropdownButton className="h-9 w-full px-4">
-          <AccountSettingsSVG className={className} />
+          <Icon.x className={className} />
           Account settings
         </DropdownButton>
 
         <DropdownButton onClick={handleSignOut} className="h-9 w-full px-4">
-          <SignOutSVG className={className} />
+          <Icon.x className={className} />
           Sign out
         </DropdownButton>
       </Dropdown>
@@ -85,11 +86,11 @@ export default function ProfileButton() {
   ) : (
     <section className="flex h-14 w-fit flex-none items-center px-2 font-medium">
       <span className="flex flex-none cursor-default items-center gap-1 px-2">
-        <UserSVG className="h-4 w-4" />
+        <Icon.x className="h-4 w-4" />
         <span className="w-10 text-center text-xs leading-3">Guest Mode</span>
       </span>
 
-      <div className="m-2 h-5 border-r border-kolumbGray-200"></div>
+      <div className="m-2 h-5 border-r border-gray-200"></div>
 
       <button
         onClick={handleSignOut}

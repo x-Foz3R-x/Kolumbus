@@ -27,7 +27,7 @@ export function Calendar({ dayIndex, dragOverlay, handleAddEvent, ...props }: Ca
           {date.getDate()}
         </p>
 
-        <p className="text-sm text-kolumbGray-600">
+        <p className="text-sm text-gray-600">
           {date.toLocaleString("default", { month: "short" }) + " • " + date.getFullYear()}
         </p>
 

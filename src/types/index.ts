@@ -2,9 +2,11 @@ export * from "./app-data";
 export * from "./actions";
 export * from "./google";
 
-export interface IconProps {
-  key?: string | number;
-  className?: string;
+export interface SvgProps extends React.SVGAttributes<HTMLOrSVGElement> {}
+
+export enum Language {
+  English = "en",
+  Polish = "pl",
 }
 
 export enum Key {

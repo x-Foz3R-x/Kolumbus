@@ -4,18 +4,14 @@ import { z } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
-    const { input, language, sessionToken } = await req.json();
+    const { place_id, fields, language, sessionToken } = await req.json();
 
-    if (!input || !language || !sessionToken)
-      return new Response("Missing input, language, or session token in request", { status: 400 });
-    if (input?.length < 3) return new Response("Input value must be at least 3 characters.", { status: 400 });
+    if (!place_id || !fields || !language || !sessionToken) {
+      return new Response("Missing place_id, fields, language, or session token in request", { status: 400 });
+    }
 
     const { data } = await axios.get(
-      `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-        input
-      )}&radius=5000&language=${language}&sessiontoken=${sessionToken}&key=${
-        process.env.NEXT_PUBLIC_GOOGLE_KEY
-      }`
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place_id}&fields=${fields}&language=${language}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}&sessiontoken=${sessionToken}`
     );
 
     return new Response(JSON.stringify(data), { status: 200 });

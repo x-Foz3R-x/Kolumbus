@@ -52,7 +52,7 @@ const Trips = memo(function T() {
         <p className="rounded-md bg-red-100 px-3 pt-6 text-center text-sm text-red-600">{tripsError}</p>
       )}
 
-      <p className="absolute -top-8 right-0 text-sm text-kolumbGray-400">{userTripSize}</p>
+      <p className="absolute -top-8 right-0 text-sm text-gray-400">{userTripSize}</p>
 
       {userTrips?.map((trip: any, index: number) => (
         <button
@@ -81,7 +81,7 @@ const Trips = memo(function T() {
 
       <button
         onClick={handleAddTrip}
-        className="mt-1 flex h-9 items-center justify-center gap-1 rounded-md fill-kolumbGray-400 text-sm font-medium capitalize text-kolumbGray-400 duration-300 ease-kolumb-flow hover:bg-kolumbGray-100 hover:fill-kolumbGray-600 hover:text-kolumbGray-600"
+        className="mt-1 flex h-9 items-center justify-center gap-1 rounded-md fill-gray-400 text-sm font-medium capitalize text-gray-400 duration-300 ease-kolumb-flow hover:bg-gray-100 hover:fill-gray-600 hover:text-gray-600"
       >
         <Icon.plus className="h-3 w-3" />
         <p>add trip</p>

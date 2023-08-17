@@ -1,6 +1,9 @@
 import { User } from "firebase/auth";
 import {
+  DocumentReference,
+  FirestoreError,
   Transaction,
+  addDoc,
   collection,
   doc,
   runTransaction,
@@ -71,7 +74,7 @@ export const firebaseCreateTrip = async (user: User, trip: Trip, events?: Event[
     }
 
     // Commit the batched write
-    await batch.commit();
+    // await batch.commit();
   } catch (error) {
     // Handle specific error types
     if (error instanceof FirebaseError) {
@@ -91,7 +94,17 @@ export const firebaseCreateTrip = async (user: User, trip: Trip, events?: Event[
 export const firebaseUpdateTrip = async (trip: Trip) => {
   const { id, itinerary, ..._trip } = trip;
   const tripRef = doc(db, "trips", id);
-  await updateDoc(tripRef, _trip);
+  // await updateDoc(tripRef, _trip);
+};
+
+export const firebaseAddEvent = async (tripId: string, event: Event) => {
+  const collectionRef = collection(db, `trips/${tripId}/events`);
+  const { id, drag_type, ...eventData } = event;
+  try {
+    return (await addDoc(collectionRef, eventData)) as DocumentReference;
+  } catch (error) {
+    return error as FirestoreError;
+  }
 };
 
 export const firebaseUpdateEvents = async (trip: Trip) => {
@@ -107,7 +120,7 @@ export const firebaseUpdateEvents = async (trip: Trip) => {
     });
 
     // Commit the batched write
-    await batch.commit();
+    // await batch.commit();
   } catch (error) {
     console.error("Error updating events in batch:", error);
   }

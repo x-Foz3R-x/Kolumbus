@@ -128,7 +128,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
                 >
                   {index + 1}
                 </DropdownButton>
-                <div className="border-b border-kolumbGray-200"></div>
+                <div className="border-b border-gray-200"></div>
               </div>
             ))}
         </div>

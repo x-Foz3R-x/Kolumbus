@@ -55,7 +55,12 @@ interface DndDayComponentProps {
 }
 export const DndDayComponent = memo(
   forwardRef(function DndDayContentComponent({ day, dragOverlay, ...props }: DndDayComponentProps, ref: any) {
-    const { activeTrip, activeId, setAddEventShown, setAddEventDayIndex } = useDndData();
+    const {
+      activeTrip,
+      activeId,
+      setEventComposerShown: setAddEventShown,
+      setAddEventDayIndex,
+    } = useDndData();
     const { id, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
@@ -66,13 +71,13 @@ export const DndDayComponent = memo(
       setAddEventDayIndex(dayIndex);
     };
 
-    const eventWidthAndGap = 160;
+    const eventWidthAndGap = 168;
     return (
       <div ref={ref} className="group/day flex w-full gap-5">
         <Calendar dayIndex={dayIndex} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
 
         <ul
-          className={`flex h-32 list-none gap-2 pt-5 duration-300 ease-kolumb-flow ${
+          className={`flex h-32 origin-left list-none gap-2 pt-5 duration-300 ease-kolumb-flow ${
             id === activeId ? "scale-95" : "scale-100"
           }`}
         >
@@ -89,7 +94,7 @@ export const DndDayComponent = memo(
             }}
             className="group absolute z-30 flex h-28 w-8 flex-col items-center justify-center rounded-[0.625rem] bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-flow hover:shadow-xxl"
           >
-            <Icon.plus className="h-4 w-4 fill-kolumbGray-300 duration-150 ease-kolumb-flow group-hover:fill-kolumbGray-600" />
+            <Icon.plus className="h-4 w-4 fill-gray-300 duration-150 ease-kolumb-flow group-hover:fill-gray-600" />
           </button>
         </ul>
       </div>
