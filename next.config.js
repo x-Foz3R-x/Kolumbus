@@ -3,6 +3,6 @@
 module.exports = {
   reactStrictMode: false,
   images: {
-    domains: ["maps.googleapis.com"],
+    domains: ["maps.googleapis.com", "img.clerk.com"],
   },
 };

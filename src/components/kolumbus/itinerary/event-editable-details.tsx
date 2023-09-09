@@ -1,7 +1,7 @@
 import Dialog from "@/components/ui/dialog";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Input } from "@/components/ui/input";
+import { Input2 } from "@/components/ui/input";
 import { useDndData } from "@/components/dnd-itinerary";
 import { currencyList } from "@/config/currency";
 import { DropdownSelect } from "@/components/ui/dropdown";
@@ -42,8 +42,8 @@ export default function EventEditableDetails() {
       },
     });
   }
-  console.log(activeTrip);
-  console.log(activeEvent);
+  // console.log(activeTrip);
+  // console.log(activeEvent);
 
   return eventEditableDetailsState !== "hidden" ? (
     <Dialog.Root
@@ -89,7 +89,7 @@ export default function EventEditableDetails() {
           className="h-28 rounded-t-lg object-cover object-center shadow-border"
         />
 
-        <Input.Unstyled
+        <Input2.Unstyled
           type="text"
           value={activeEvent?.display_name}
           placeholder="Name your event"
@@ -128,7 +128,7 @@ export default function EventEditableDetails() {
 
         <div className="mb-3"></div>
 
-        <Input.WithInsetLabel
+        <Input2.WithInsetLabel
           type="text"
           value=""
           label="Address"
@@ -136,7 +136,7 @@ export default function EventEditableDetails() {
           onChange={() => {}}
           className="mb-px rounded-t-md"
         />
-        <Input.WithInsetLabel
+        <Input2.WithInsetLabel
           type="text"
           value=""
           label="Website"

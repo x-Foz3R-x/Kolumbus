@@ -1,5 +1,6 @@
-import { Analytics } from "@vercel/analytics/react";
 import { inter, gordita, adso, inconsolata } from "../assets/fonts/fonts";
+import { Analytics } from "@vercel/analytics/react";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./tailwind.css";
 
 export const metadata = {
@@ -17,26 +18,20 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+type RootLayoutProps = { children: React.ReactNode };
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
-      <body
-        className={
-          "scroll-smooth fill-gray-900 text-gray-900 antialiased " +
-          gordita.className +
-          " " +
-          gordita.variable +
-          " " +
-          adso.variable +
-          " " +
-          inter.variable +
-          " " +
-          inconsolata.variable
-        }
-      >
-        {children}
-        <Analytics />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`scroll-smooth fill-gray-900 text-gray-900 antialiased ${gordita.className} ${gordita.variable} ${adso.variable} ${inter.variable} ${inconsolata.variable}
+          `}
+        >
+          {children}
+          <Analytics />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

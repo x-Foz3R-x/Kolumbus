@@ -4,41 +4,34 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-import { useAuth } from "@/context/auth";
-
+import { useClerk, useUser } from "@clerk/nextjs";
 import { Dropdown, DropdownButton, DropdownProfile, DropdownSeparator } from "./ui/dropdown";
-
-// import SwitchAccountSVG from "@/assets/svg/SwitchAccount.svg";
-// import AppearanceSVG from "@/assets/svg/Appearance.svg";
-// import GlobeSVG from "@/assets/svg/Globe.svg";
-// import AccountSettingsSVG from "@/assets/svg/AccountSettings.svg";
-// import SignOutSVG from "@/assets/svg/SignOut.svg";
-// import UserSVG from "@/assets/svg/User.svg";
 import Icon from "./icons";
 
 export default function ProfileButton() {
-  const { currentUser, signout } = useAuth();
-
-  const isUser: boolean = currentUser == null ? true : false;
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { signOut } = useClerk();
+  const { user } = useUser();
 
   const router = useRouter();
   const handleSignOut = () => {
-    signout();
-    router.push("/signin");
+    signOut();
+    router.push("/");
   };
 
   const className = "mr-4 w-4 fill-tintedGray-400 group-hover:fill-kolumblue-500";
-  return currentUser ? (
+  return true ? (
     <div className="relative w-fit">
       <button
         onClick={() => setIsModalOpen(true)}
-        className="focus:shadow-none relative h-14 w-14 rounded-full p-3 outline-none after:absolute after:left-3 after:top-3 after:hidden after:h-8 after:w-8 after:rounded-full after:border-2 after:border-kolumblue-500 focus:after:inline"
+        className="group relative m-3 h-8 w-8 overflow-hidden rounded-full shadow-xs outline-none duration-500 ease-kolumb-flow after:absolute after:inset-0 after:z-10 after:rounded-full after:border after:border-gray-200 hover:shadow-lg focus:after:border-kolumblue-500"
       >
+        <span className="pointer-events-none absolute h-10 w-1 -translate-x-4 -translate-y-4 rotate-45 rounded-full bg-white/30 duration-200 ease-in-out group-hover:translate-x-4 group-hover:translate-y-4"></span>
+        <span className="pointer-events-none absolute h-5 w-0.5 -translate-x-5 -translate-y-5 rotate-45 rounded-full bg-white/30 duration-300 ease-in-out group-hover:translate-x-5 group-hover:translate-y-5"></span>
+
         <Image
-          src="/images/default-avatar.png"
-          alt="default avatar picture"
+          src={user ? user?.imageUrl : "/images/default-avatar.png"}
+          alt="Avatar"
           width={32}
           height={32}
           draggable={false}
@@ -49,36 +42,39 @@ export default function ProfileButton() {
       <Dropdown
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        className="fixed right-4 top-11 w-60 p-2"
+        className="fixed right-4 top-11 w-56 p-2"
       >
-        <DropdownProfile username={currentUser?.displayName} email={currentUser?.email} />
+        <DropdownProfile
+          username={user?.username || "Guest"}
+          email={user?.primaryEmailAddress?.emailAddress || ""}
+        />
 
         <DropdownSeparator />
 
-        <DropdownButton className="h-9 w-full px-4">
+        <DropdownButton className="h-8 w-full px-3">
           <Icon.x className={className} />
           Switch account
         </DropdownButton>
 
-        <DropdownButton className="h-9 w-full px-4">
+        <DropdownButton className="h-8 w-full px-3">
           <Icon.x className={className} />
           Light theme
         </DropdownButton>
 
-        <DropdownButton className="h-9 w-full px-4">
+        <DropdownButton className="h-8 w-full px-3">
           <Icon.x className={className} />
           English (us)
         </DropdownButton>
 
         <DropdownSeparator />
 
-        <DropdownButton className="h-9 w-full px-4">
+        <DropdownButton className="h-8 w-full px-3">
           <Icon.x className={className} />
           Account settings
         </DropdownButton>
 
-        <DropdownButton onClick={handleSignOut} className="h-9 w-full px-4">
-          <Icon.x className={className} />
+        <DropdownButton onClick={handleSignOut} className="h-8 w-full px-3">
+          <Icon.signOut className={className} />
           Sign out
         </DropdownButton>
       </Dropdown>

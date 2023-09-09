@@ -89,8 +89,6 @@ export function AuthProvider({ children, LoadingIndicator = "" }) {
     signout,
   };
 
-  console.log(currentUser);
-
   return (
     <AuthContext.Provider value={value}>
       {!loading ? children : LoadingIndicatorComponent()}

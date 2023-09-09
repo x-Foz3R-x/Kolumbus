@@ -2,8 +2,8 @@ import useAppData from "@/context/app-data";
 import useUserTrips from "@/hooks/use-user-trips";
 import { Key, UT } from "@/types";
 
-import DatePicker from "@/components/app/date-picker";
-import DaysPicker from "@/components/app/days-picker";
+import DatePicker from "@/components/kolumbus/date-picker";
+import DaysPicker from "@/components/kolumbus/days-picker";
 
 // import SavedSVG from "@/assets/svg/Saved.svg";
 // import SavingSVG from "@/assets/svg/Saving.svg";

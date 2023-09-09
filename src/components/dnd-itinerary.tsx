@@ -16,9 +16,9 @@ import { Day, Event } from "@/types";
 
 import { DndDay, DndDayComponent } from "./dnd-day";
 import { DndEventComponent } from "./dnd-event";
-import { CalendarEnd } from "./app/itinerary/calendar";
-import EventComposer from "./app/itinerary/event-composer";
-import EventEditableDetails from "./app/itinerary/event-editable-details";
+import { CalendarEnd } from "./kolumbus/itinerary/calendar";
+import EventComposer from "./kolumbus/itinerary/event-composer";
+import EventEditableDetails from "./kolumbus/itinerary/event-editable-details";
 
 const DndDataContext = createContext<{
   dispatchUserTrips: any;

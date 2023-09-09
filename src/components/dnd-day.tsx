@@ -8,7 +8,7 @@ import { Day, Event } from "@/types";
 import Icon from "./icons";
 import { useDndData } from "./dnd-itinerary";
 import { DndEvent } from "./dnd-event";
-import { Calendar } from "./app/itinerary/calendar";
+import { Calendar } from "./kolumbus/itinerary/calendar";
 
 interface DndDayProps {
   day: Day;

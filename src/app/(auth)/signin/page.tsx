@@ -1,48 +1,119 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useClerk } from "@clerk/clerk-react";
+import { useSignIn } from "@clerk/nextjs";
 
-import Icon from "@/components/icons";
-import SigninForm from "@/components/form/signin-form";
 import AuthProviders from "@/components/auth-providers";
-
-import "@/components/form/input.css";
+import Checkbox from "@/components/ui/checkbox/checkbox";
+import Input from "@/components/ui/input";
+import Icon from "@/components/icons";
 
 export default function SignUp() {
-  const initialFormState = {
-    email: "",
-    password: "",
-    isChecked: false,
-    error: "",
-  };
+  const { isLoaded, signIn, setActive } = useSignIn();
+  const { signOut } = useClerk();
 
-  const [form, setForm] = useState(initialFormState);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    if (!isLoaded) {
+      return;
+    }
+
+    try {
+      signOut();
+
+      const result = await signIn.create({
+        identifier: email,
+        password,
+      });
+
+      if (result.status === "complete") {
+        console.log(result);
+        await setActive({ session: result.createdSessionId });
+        router.push("/itinerary");
+      } else {
+        console.log(result);
+      }
+    } catch (error: any) {
+      console.error("error", error.errors[0].longMessage);
+    }
+  };
 
   return (
     <>
+      <Link href="/">
+        <Icon.logo className="h-8" />
+      </Link>
       <h1 className="my-6 text-2xl font-medium">Sign in to Kolumbus</h1>
 
-      {form.error && (
-        <div className="mb-2 rounded-md bg-red-100 px-4 py-1 text-red-600">
-          {form.error}
+      <form className="relative flex w-80 flex-col gap-6">
+        <div className="rounded-lg shadow-soft">
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            autoCorrect="off"
+            spellCheck="false"
+            Size="lg"
+            className="mb-px rounded-b-none"
+            placeholder="E-mail"
+            onChange={(e) => {
+              setEmail(e.target.value);
+              console.log("validate email");
+            }}
+          />
+
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            autoCorrect="off"
+            spellCheck="false"
+            Size="lg"
+            className="mb-px rounded-t-none pr-12"
+            placeholder="Password"
+            onChange={(e) => {
+              setPassword(e.target.value);
+              console.log("validate password");
+            }}
+          />
         </div>
-      )}
 
-      <SigninForm />
+        <Checkbox isChecked={rememberMe} setIsChecked={setRememberMe}>
+          Remember me
+        </Checkbox>
 
-      <Icon.separator className="my-6 h-px scale-x-[3.2]" />
+        <button
+          onClick={handleSubmit}
+          className={`absolute bottom-[3.625rem] right-4 z-40 flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 shadow-soft duration-150 ease-in focus:shadow-focus`}
+        >
+          <Icon.arrowRight className={`h-full w-4 fill-gray-700`} />
+        </button>
+      </form>
 
+      <Icon.separator className="my-6 mt-4 w-80" />
       <AuthProviders />
-
-      <Icon.separator className="my-6 h-px scale-x-[3.2]" />
-
-      <div className="flex flex-col items-center justify-center text-xs">
-        <Link href="/">Forgot password?</Link>
+      <div className="mt-6 flex flex-col items-center justify-center text-xs">
+        <Link href="/" className="text-kolumblue-600 hover:underline">
+          Forgot password?
+          <Icon.chevron className="mb-px ml-[3px] inline h-1 -rotate-90 fill-kolumblue-600" />
+        </Link>
 
         <div>
           <span>Don&apos;t have an account? </span>
-          <Link href="/signup">Create yours now.</Link>
+          <Link href="/signup" className="text-kolumblue-600 hover:underline">
+            Create yours now
+            <Icon.chevron className="mb-px ml-[3px] inline h-1 -rotate-90 fill-kolumblue-600" />
+          </Link>
         </div>
       </div>
     </>

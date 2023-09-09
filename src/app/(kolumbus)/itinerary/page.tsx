@@ -1,19 +1,22 @@
 "use client";
 
 import { createPortal } from "react-dom";
+import { useUser } from "@clerk/nextjs";
 
 import useAppData from "@/context/app-data";
 import useUserTrips from "@/hooks/use-user-trips";
 
 import DndItinerary from "@/components/dnd-itinerary";
-import ActionBar from "@/components/app/itinerary/action-bar";
-import Main from "@/components/app/main";
+import ActionBar from "@/components/kolumbus/itinerary/action-bar";
+import Main from "@/components/kolumbus/main";
 import { Modal } from "@/components/ui/modal";
 import { ItinerarySkeleton } from "@/components/loading/itinerary-skeleton";
 
 export default function Itinerary() {
   const { selectedTrip, isModalShown, modalChildren } = useAppData();
   const { userTrips, dispatchUserTrips, loadingTrips, tripsError } = useUserTrips();
+
+  const user = useUser();
 
   return (
     <Main>

@@ -3,11 +3,107 @@ import { DropdownSelect } from "./dropdown";
 import useKeyPress from "@/hooks/use-key-press";
 import { Key } from "@/types";
 
+import { cva, VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
+
+const inputVariants = cva(
+  "w-full appearance-none outline-0 disabled:pointer-events-none placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:z-10 focus:outline-none",
+  {
+    variants: {
+      variant: {
+        default: "shadow-border focus:shadow-focus peer",
+        unstyled: "",
+      },
+      Size: {
+        default: "px-3 py-2 text-sm rounded-md",
+        lg: "px-4 py-3 text-base rounded-lg",
+        insetLabel: "rounded-md text-sm px-3 pb-1 pt-5",
+        insetLabelLg: "rounded-lg text-base px-4 pb-1.5 pt-6",
+      },
+    },
+    defaultVariants: { variant: "default", Size: "default" },
+  }
+);
+
+type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
+  VariantProps<typeof inputVariants> & {
+    value?: string | number;
+    label?: string;
+    width?: number;
+    onChange: (e: React.FocusEvent<HTMLInputElement>) => void;
+  };
+
+export default function Input({
+  type = "text",
+  value = "",
+  label,
+  width,
+  onChange,
+  variant,
+  Size,
+  className,
+  ...props
+}: InputProps) {
+  const [inputValue, setInputValue] = useState(value);
+  const [prevInputValue, setPrevInputValue] = useState(inputValue);
+
+  useEffect(() => setInputValue(value), [value]);
+
+  const ref = useRef<HTMLInputElement | null>(null);
+  const enterPressed = useKeyPress(Key.Enter);
+  useEffect(() => {
+    if (enterPressed && ref.current && document.activeElement === ref.current) ref.current.blur();
+  }, [enterPressed]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value);
+  const handleUpdate = async (e: React.FocusEvent<HTMLInputElement>) => {
+    if (e.target.value === prevInputValue) return;
+    setPrevInputValue(e.target.value);
+    onChange(e);
+  };
+
+  let labelStyle =
+    "pointer-events-none select-none absolute inset-0 flex origin-top-left items-center overflow-hidden text-sm text-gray-700 duration-[125ms] ease-in ";
+  switch (Size) {
+    case "insetLabel":
+      labelStyle += `ml-3 peer-focus:-translate-y-1.5 peer-focus:scale-[0.84] ${
+        inputValue.toString().length > 0 && "-translate-y-1.5 scale-[0.84]"
+      }`;
+      break;
+    case "insetLabelLg":
+      labelStyle += `ml-4 peer-focus:-translate-y-2.5 peer-focus:scale-90 ${
+        inputValue.toString().length > 0 && "-translate-y-2.5 scale-90"
+      }`;
+      break;
+    default:
+      labelStyle = "";
+      break;
+  }
+
+  return (
+    <div style={{ width: width ? `${width}px` : "100%" }} className="relative focus-within:z-30">
+      <input
+        ref={ref}
+        type={type}
+        value={inputValue}
+        onChange={handleChange}
+        onBlur={handleUpdate}
+        className={cn(inputVariants({ variant, Size, className }))}
+        {...props}
+      />
+      {label && <label className={labelStyle}>{label}</label>}
+    </div>
+  );
+}
+
+//
+//  OLD
+//
+
 interface InputDefaultProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onValueChange: Function;
   width?: number;
 }
-
 interface WithLabelProps extends React.InputHTMLAttributes<HTMLInputElement> {
   type: "text" | "number" | "email" | "password";
   value: string;
@@ -29,7 +125,8 @@ interface withInsetLabelAndDropdownProps extends React.InputHTMLAttributes<HTMLI
   selectedIndex: number;
   setSelectedIndex: React.Dispatch<number>;
 }
-export const Input = {
+
+export const Input2 = {
   Unstyled: ({ onValueChange, width, value, className, ...props }: InputDefaultProps) => {
     const [inputValue, setInputValue] = useState(value);
 

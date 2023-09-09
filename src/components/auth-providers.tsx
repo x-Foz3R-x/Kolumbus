@@ -5,20 +5,20 @@ import Icon from "./icons";
 
 export default function AuthProviders() {
   const className =
-    "flex h-9 w-80 select-none items-center justify-center gap-2 rounded-md border border-gray-200 px-4 shadow-soft hover:bg-gray-200";
+    "flex h-9 w-80 select-none items-center justify-center gap-2 rounded-md border border-gray-200 px-4 shadow-softSm hover:bg-gray-200";
 
   return (
-    <section className="relative flex flex-col items-center justify-center gap-3 text-[13px]">
+    <section className="relative flex flex-col items-center justify-center gap-2 text-[0.8125rem]">
       <p className="absolute -top-9 z-10 w-14 cursor-default select-none bg-white text-center">or</p>
       <button className={className}>
-        <Icon.x className="h-[13px] w-[13px]" />
+        <Icon.user className="h-3 w-3" />
         Try kolumbus as a Guest
       </button>
+
       <button className={className}>
-        <Icon.x className="h-[13px] w-[13px]" />
+        <Icon.google className="h-3 w-3" />
         Continue with Google
       </button>
     </section>
   );
 }
-// box-shadow: rgba(15, 15, 15, 0.05) 0px 1px 2px;

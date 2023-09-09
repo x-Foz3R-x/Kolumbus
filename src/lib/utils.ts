@@ -1,5 +1,7 @@
 import { usePathname } from "next/navigation";
 import { Trip, Itinerary, Day, Event } from "@/types";
+import clsx, { ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 /**
  * Formats a date into the "yyyy-mm-dd" format.
@@ -96,4 +98,8 @@ export function generateItinerary(trip: Trip, events: Event[] = []) {
  */
 export function CheckCurrentPathname(link: string): boolean {
   return usePathname() === link ? true : false;
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }

@@ -49,10 +49,10 @@ module.exports = {
       },
     },
     boxShadow: {
-      soft: "0px 1px 2px rgba(15, 15, 15, 0.05)",
-      focus: "0 0 0 1px hsla(210, 78%, 60%), 0 0 0 2px hsla(210, 78%, 60%, 0.3)",
-
       border: "0 0 0 1px hsl(232, 9%, 90%)",
+      focus: "0 0 0 1px hsla(210, 78%, 60%), 0 0 0 3px hsla(210, 78%, 60%, 0.3)",
+      softSm: "0px 1px 2px rgba(15, 15, 15, 0.1)",
+      soft: "0px 1px 4px rgba(15, 15, 15, 0.1)",
 
       xs: "0 1px 2px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.01), 0 2px 3px rgba(15,15,15,0.01)",
       sm: "0 2px 2px rgba(15,15,15,0.02), 0 3px 3px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02)",
@@ -79,6 +79,7 @@ module.exports = {
       btn: "0px 0px 0px 1px rgba(15,15,15,.02), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
       select:
         "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.01), 0 5px 6px rgba(15,15,15,0.01), 0 6px 8px rgba(15,15,15,0.01)",
+
       insetSm:
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px rgba(15,15,15,.02), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02)",
       inset:

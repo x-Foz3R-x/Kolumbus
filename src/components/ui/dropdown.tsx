@@ -67,7 +67,7 @@ export function DropdownButton({ onClick, className, children }: DropdownButtonP
     <button
       onClick={onClick}
       className={
-        "group flex flex-none select-none items-center rounded-[3px] first:rounded-t-lg last:rounded-b-lg hover:bg-kolumblue-100 focus:z-10 " +
+        "group flex flex-none select-none items-center rounded-[3px] text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-kolumblue-100 focus:z-10 " +
         className
       }
     >
@@ -93,7 +93,7 @@ export function DropdownProfile({ username, email }: DropdownProfileProps) {
       />
       <div className="flex w-48 flex-none select-text flex-col justify-around text-center">
         <span className="overflow-hidden text-ellipsis whitespace-nowrap">{username}</span>
-        <span className="overflow-hidden text-ellipsis whitespace-nowrap">{email}</span>
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap text-xs">{email}</span>
       </div>
     </div>
   );
@@ -186,7 +186,7 @@ export function DropdownSelect({
         {...props}
       >
         <p className="">{selectList[selectedIndex].text}</p>
-        <Icon.chevronDown
+        <Icon.chevron
           className={`h-full w-2.5 flex-shrink-0 duration-150 ease-in-out ${isDropdownShown && "rotate-180"}`}
         />
       </label>
