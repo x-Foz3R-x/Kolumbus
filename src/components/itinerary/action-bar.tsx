@@ -1,8 +1,8 @@
 import useAppdata from "@/context/appdata";
 
 import Input from "@/components/ui/input";
-import DatePicker from "@/components/kolumbus/date-picker";
-import DaysPicker from "@/components/kolumbus/days-picker";
+import DatePicker from "@/components/ui/date-picker";
+import DaysPicker from "@/components/ui/days-picker";
 import Icon from "@/components/icons";
 
 import { UT } from "@/types";
@@ -34,7 +34,7 @@ export default function ActionBar() {
                 Size="lg"
                 textWidth
                 preventEmpty
-                className="h-8 cursor-pointer rounded px-2 py-1 duration-300 ease-kolumb-flow hover:bg-black/5 hover:shadow-soft focus:cursor-text focus:bg-white focus:shadow-focus"
+                className="h-8 cursor-pointer rounded bg-transparent px-2 py-1 duration-300 ease-kolumb-flow hover:bg-black/5 hover:shadow-soft focus:cursor-text focus:bg-white focus:shadow-focus"
               />
               <Icon.x className="h-3 shrink-0" />
               <p className="shrink-0">view / edit</p>

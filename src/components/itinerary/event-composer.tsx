@@ -1,18 +1,16 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { DocumentReference } from "firebase/firestore";
-import { v4 as uuid } from "uuid";
 
-import { firebaseAddEvent } from "@/hooks/use-firebase-operations";
+import cuid2 from "@paralleldrive/cuid2";
 import { useAnyCloseActions } from "@/hooks/use-accessibility-features";
-import { useDndData } from "../../dnd-itinerary";
+import { useDndData } from "../dnd-itinerary";
 import { eventTemplate } from "@/config/template-data";
 import { Event, Language, Place, PlaceFieldsGroup, PlacesDetailsStatus, UT } from "@/types";
 
-import Icon from "../../icons";
-import GooglePlaceAutocomplete from "../../google-place-autocomplete";
-import { RadioIconsInline } from "../../ui/radio";
+import Icon from "../icons";
+import GooglePlaceAutocomplete from "../google-place-autocomplete";
+import { RadioIconsInline } from "../ui/radio";
 
 export default function EventComposer() {
   const {
@@ -24,13 +22,13 @@ export default function EventComposer() {
     addEventDayIndex,
   } = useDndData();
 
-  const [sessionToken, setSessionToken] = useState(uuid());
+  const [sessionToken, setSessionToken] = useState(cuid2.createId());
   const [searchPlaceholder, setSearchPlaceholder] = useState("Find interesting places");
   const [eventType, setEventType] = useState("explore");
   const [placeAt, setPlaceAt] = useState("start");
 
   useEffect(() => {
-    setSessionToken(uuid());
+    setSessionToken(cuid2.createId());
   }, [isEventComposerShown]);
 
   const ref = useRef<any>(null);

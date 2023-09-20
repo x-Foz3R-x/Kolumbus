@@ -8,7 +8,7 @@ import { CalculateDays, FormatDate } from "@/lib/utils";
 import { UT } from "@/types";
 
 import Icon from "../icons";
-import { EventsOnExcludedDaysModal } from "../ui/modal";
+import { EventsOnExcludedDaysModal } from "./modal";
 
 export default function DatePicker() {
   const { userTrips, dispatchUserTrips, selectedTrip, isLoading, setModalShown, setModalChildren } =

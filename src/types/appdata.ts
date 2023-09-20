@@ -70,7 +70,6 @@ export type Trip = {
 
 export type Itinerary = Day[];
 export type Day = {
-  [key: string]: any;
   id: string;
   date: string;
   events: Event[];
@@ -79,7 +78,6 @@ export type Day = {
 
 export type EventDB = PrismaEvent;
 export type Event = {
-  [key: string]: any;
   id: string;
   tripId: string;
   position: number;

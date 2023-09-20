@@ -7,7 +7,7 @@ import { CalculateDays, FormatDate } from "@/lib/utils";
 import { UT, Event } from "@/types";
 
 import Icon from "../icons";
-import { EventsOnExcludedDaysModal } from "../ui/modal";
+import { EventsOnExcludedDaysModal } from "./modal";
 import { Dropdown, DropdownButton } from "@/components/ui/dropdown";
 
 interface Props {

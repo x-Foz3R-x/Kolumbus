@@ -12,7 +12,16 @@ export default function Layout({ params: { tripId }, children }: LayoutProps) {
 
       <div className="pointer-events-none absolute left-[14rem] top-0 z-30 h-full w-full rounded-tl-lg shadow-kolumblueInset"></div>
 
-      {children}
+      <main
+        style={
+          {
+            // backgroundImage: `url("https://png.pngtree.com/background/20230414/original/pngtree-sea-%E2%80%8B%E2%80%8Bsunrise-scenery-blue-sky-clouds-beautiful-sky-background-picture-image_2424890.jpg")`,
+          }
+        }
+        className="relative h-[calc(100vh-3.5rem)] w-[calc(100vw-14rem)] overflow-x-hidden overflow-y-scroll rounded-tl-lg border-l border-t border-gray-100 bg-cover bg-center bg-no-repeat"
+      >
+        {children}
+      </main>
     </div>
   );
 }

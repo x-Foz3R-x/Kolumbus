@@ -83,32 +83,3 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
       return trips;
   }
 }
-
-//
-// 1
-//
-
-// const { data: trips, isLoading: areTripsLoading } = api.trip.getAll.useQuery();
-// const { data: events, isLoading: areEventsLoading } = api.event.getAll.useQuery({ tripId });
-
-// useEffect(() => {
-//   if (areTripsLoading || typeof trips === "undefined") return;
-//   dispatchUserTrips({ type: UT.REPLACE, userTrips: trips });
-// }, [trips, areTripsLoading]);
-
-// useEffect(() => {
-//   if (
-//     typeof trips === "undefined" ||
-//     typeof events === "undefined" ||
-//     areTripsLoading ||
-//     areEventsLoading ||
-//     typeof trips[selectedTrip] === "undefined"
-//   )
-//     return;
-
-//   events.forEach((event) => (event.dragType = "event"));
-
-//   trips[selectedTrip].itinerary = GenerateItinerary(trips[selectedTrip], events);
-//   dispatchUserTrips({ type: UT.REPLACE, userTrips: trips });
-//   setLoaded(true);
-// }, [trips, events, selectedTrip, areTripsLoading, areEventsLoading]);

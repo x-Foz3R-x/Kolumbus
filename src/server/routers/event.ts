@@ -21,21 +21,6 @@ const event = router({
 
     return events;
   }),
-  // update: protectedProcedure
-  //   .input(z.object({ tripId: z.string(), data: tripDataSchema }))
-  //   .mutation(async ({ ctx, input }) => {
-  //     if (!ctx.user.id) return;
-
-  //     const updatedTrips = await prisma.trip.update({
-  //       where: {
-  //         id: input.tripId,
-  //         userId: ctx.user.id,
-  //       },
-  //       data: input.data,
-  //     });
-
-  //     console.log(updatedTrips.updatedAt);
-  //   }),
 });
 
 export default event;
