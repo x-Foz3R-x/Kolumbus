@@ -12,7 +12,7 @@ const Icon = {
     <div
       className={`h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent ${className}`}
       {...props}
-    ></div>
+    />
   ),
   defaultTrip: ({ ...props }: SvgProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" {...props}>

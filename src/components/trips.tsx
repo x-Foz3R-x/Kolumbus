@@ -1,80 +1,38 @@
 "use client";
 
-import useUserTrips from "@/hooks/use-user-trips";
+import { useRouter } from "next/navigation";
+import useAppdata from "@/context/appdata";
 import Icon from "./icons";
-import { memo } from "react";
-import useAppData from "@/context/app-data";
-import { tripTemplate } from "@/config/template-data";
-import { firebaseCreateTrip } from "@/hooks/use-firebase-operations";
-import { useAuth } from "@/context/auth";
-import { DocumentReference } from "firebase/firestore";
-import { Trip, UT } from "@/types";
-import { generateItinerary } from "@/lib/utils";
+import { Trip } from "@/types";
 
-const Trips = memo(function T() {
-  const { currentUser } = useAuth();
-  const { selectedTrip, setSelectedTrip } = useAppData();
-  const { dispatchUserTrips, userTrips, tripsError, fetchMoreTrips } = useUserTrips();
+export default function Trips({ tripId }: { tripId: string }) {
+  const { userTrips } = useAppdata();
+  const router = useRouter();
 
-  const userTripSize = ((JSON.stringify(userTrips)?.length * 2) / 1024).toFixed(2) + " KB";
-
-  const handleTripSelect = (index: number) => {
-    sessionStorage.setItem("selected_trip", index.toString());
-    setSelectedTrip(index);
-    fetchMoreTrips();
-  };
-
-  const handleAddTrip = async () => {
-    const _tripTemplate: Trip = { ...tripTemplate };
-    _tripTemplate.position = userTrips.length;
-
-    const { trip } = await firebaseCreateTrip(currentUser, _tripTemplate);
-    trip.itinerary = generateItinerary(trip);
-
-    if ("id" in trip) {
-      // Successfully added the event
-      dispatchUserTrips({
-        type: UT.INSERT_TRIP,
-        payload: { trip },
-      });
-      console.log(trip);
-    } else {
-      // Handle FirestoreError
-      // todo toast error message here
-      console.log("Error while adding trip");
-      return;
-    }
-  };
+  const handleAddTrip = async () => {};
 
   return (
     <section className="relative flex flex-col">
-      {tripsError && (
-        <p className="rounded-md bg-red-100 px-3 pt-6 text-center text-sm text-red-600">{tripsError}</p>
-      )}
+      <p className="absolute -top-8 right-0 text-sm text-gray-400">[disk size in KB]</p>
 
-      <p className="absolute -top-8 right-0 text-sm text-gray-400">{userTripSize}</p>
-
-      {userTrips?.map((trip: any, index: number) => (
+      {userTrips?.map((trip: Trip, index: number) => (
         <button
           key={index}
-          onClick={() => {
-            handleTripSelect(index);
-          }}
+          onClick={() => router.push(`/t/${trip.id}`)}
           className={
             "group/tripsSection flex h-9 items-center justify-start gap-3 rounded-md px-3 py-2 text-sm font-medium hover:z-10 hover:bg-kolumblue-100 hover:shadow-kolumblueHover " +
-            (index === selectedTrip
-              ? "bg-kolumblue-200 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected "
-              : " ")
+            (trip.id === tripId &&
+              "bg-kolumblue-200 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected")
           }
         >
           <Icon.defaultTrip
             className={
               "h-4 w-4 flex-none duration-200 ease-kolumb-overflow group-hover/tripsSection:translate-x-[0.375rem] group-hover/tripsSection:fill-kolumblue-500 " +
-              (index !== selectedTrip ? "fill-tintedGray-400 " : "fill-kolumblue-500 ")
+              (trip.id !== tripId ? "fill-tintedGray-400 " : "fill-kolumblue-500 ")
             }
           />
           <p className="overflow-hidden text-ellipsis whitespace-nowrap duration-200 ease-kolumb-overflow group-hover/tripsSection:translate-x-[0.375rem]">
-            {trip?.display_name}
+            {trip.name}
           </p>
         </button>
       ))}
@@ -88,6 +46,4 @@ const Trips = memo(function T() {
       </button>
     </section>
   );
-});
-
-export default Trips;
+}

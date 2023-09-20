@@ -8,7 +8,7 @@ import { Events, Itinerary } from "@/types";
  * @param {string | null} id
  * @returns The day if found, the event if found, or undefined if neither found
  */
-export function getItem(itinerary, events, id) {
+export function GetItem(itinerary, events, id) {
   if (typeof id === null) return;
 
   // Find the day with the matching ID
@@ -27,7 +27,7 @@ export function getItem(itinerary, events, id) {
  * @param {string | number} id
  * @returns The event index or undefined if not found
  */
-export function getIndex(itinerary, type, id) {
+export function GetIndex(itinerary, type, id) {
   if (type === "day") {
     // Find the index of the day with the matching ID
     return itinerary.findIndex((day) => day.id === id);
@@ -57,14 +57,14 @@ export function getIndex(itinerary, type, id) {
  * @param {string} overDate - The date of the day where the event is being moved to.
  * @returns {Array} - The updated itinerary after moving the event.
  */
-export function eventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate) {
+export function EventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate) {
   if (activeDate === overDate) return;
 
   // Find the index of the active day in the itinerary
   const activeDayIndex = itinerary.findIndex((day) => day.date === activeDate);
 
   const _itinerary = [...itinerary];
-  const activeEvent = getItem(itinerary, events, activeId); // Get the event being dragged
+  const activeEvent = GetItem(itinerary, events, activeId); // Get the event being dragged
   const pushIndex = _itinerary[overIndex].events.length; // Get the event push position in destination day
 
   // Insert the active event into the destination day's event array at the specified index
@@ -88,7 +88,7 @@ export function eventOverDay(itinerary, events, activeId, activeIndex, activeDat
  * @param {string} overDate - The date of the day where the event is being moved over.
  * @returns {Array} - The updated itinerary after moving the event.
  */
-export function eventOverEvent(
+export function EventOverEvent(
   itinerary,
   events,
   activeId,
@@ -106,7 +106,7 @@ export function eventOverEvent(
   if (activeDayIndex < 0 || overDayIndex < 0 || activeId === overId) return;
 
   // Get the active event being dragged
-  const activeEvent = getItem(itinerary, events, activeId);
+  const activeEvent = GetItem(itinerary, events, activeId);
 
   const _itinerary = [...itinerary];
 

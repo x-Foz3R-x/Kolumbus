@@ -10,7 +10,7 @@ interface CalendarProps {
 }
 export function Calendar({ dayIndex, dragOverlay, handleAddEvent, ...props }: CalendarProps) {
   const { activeTrip } = useDndData();
-  const date = new Date(activeTrip.start_date);
+  const date = new Date(activeTrip.startDate);
   date.setDate(date.getDate() + dayIndex);
 
   return (

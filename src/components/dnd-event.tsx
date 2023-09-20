@@ -94,12 +94,13 @@ export const DndEventComponent = memo(
 
           <input
             type="text"
-            value={event.display_name}
+            value={event.name}
             placeholder="-"
-            onClick={() => navigator.clipboard.writeText(event.display_name)}
+            onClick={() => navigator.clipboard.writeText(event.name)}
             readOnly
             className="mt-0.5 flex-shrink-0 cursor-pointer text-ellipsis bg-transparent px-1 py-[3px] text-sm text-gray-900 placeholder:text-center hover:bg-gray-400/25"
           />
+          <Icon.google className="h-3" />
         </div>
       );
     }

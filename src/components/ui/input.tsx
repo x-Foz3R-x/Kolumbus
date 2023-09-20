@@ -17,6 +17,7 @@ const inputVariants = cva(
       Size: {
         default: "px-3 py-2 text-sm rounded-md",
         lg: "px-4 py-3 text-base rounded-lg",
+        xl: "px-5 py-3 text-lg rounded-lg",
         insetLabel: "rounded-md text-sm px-3 pb-1 pt-5",
         insetLabelLg: "rounded-lg text-base px-4 pb-1.5 pt-6",
       },
@@ -29,7 +30,10 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof inputVariants> & {
     value?: string | number;
     label?: string;
-    width?: number;
+    fullWidth?: boolean;
+    fullHeight?: boolean;
+    textWidth?: boolean;
+    preventEmpty?: boolean;
     onChange: (e: React.FocusEvent<HTMLInputElement>) => void;
   };
 
@@ -37,17 +41,24 @@ export default function Input({
   type = "text",
   value = "",
   label,
-  width,
   onChange,
   variant,
   Size,
+  fullWidth,
+  fullHeight,
+  textWidth,
+  preventEmpty,
+  style,
   className,
   ...props
 }: InputProps) {
   const [inputValue, setInputValue] = useState(value);
-  const [prevInputValue, setPrevInputValue] = useState(inputValue);
+  const [prevInputValue, setPrevInputValue] = useState(value);
 
-  useEffect(() => setInputValue(value), [value]);
+  useEffect(() => {
+    setInputValue(value);
+    setPrevInputValue(value);
+  }, [value]);
 
   const ref = useRef<HTMLInputElement | null>(null);
   const enterPressed = useKeyPress(Key.Enter);
@@ -58,6 +69,11 @@ export default function Input({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value);
   const handleUpdate = async (e: React.FocusEvent<HTMLInputElement>) => {
     if (e.target.value === prevInputValue) return;
+    if (preventEmpty && e.target.value.length < 1) {
+      setInputValue(prevInputValue);
+      return;
+    }
+
     setPrevInputValue(e.target.value);
     onChange(e);
   };
@@ -80,14 +96,31 @@ export default function Input({
       break;
   }
 
+  const divStyle = {
+    ...(fullWidth ? { width: "100%" } : {}),
+    ...(fullHeight ? { height: "100%" } : {}),
+  };
+
   return (
-    <div style={{ width: width ? `${width}px` : "100%" }} className="relative focus-within:z-30">
+    <div style={divStyle} className="relative focus-within:z-30">
+      {textWidth && (
+        <h1
+          className={cn(
+            inputVariants({ variant, Size, className }),
+            "invisible w-fit whitespace-pre border-r"
+          )}
+        >
+          {inputValue}
+        </h1>
+      )}
+
       <input
         ref={ref}
         type={type}
         value={inputValue}
         onChange={handleChange}
         onBlur={handleUpdate}
+        style={!textWidth ? style : { position: "absolute", inset: 0, textAlign: "center", ...style }}
         className={cn(inputVariants({ variant, Size, className }))}
         {...props}
       />

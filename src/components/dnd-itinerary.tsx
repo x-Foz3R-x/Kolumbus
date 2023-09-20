@@ -1,17 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 
-import { firebaseUpdateEvents } from "@/hooks/use-firebase-operations";
-
-import { getItem, getIndex, eventOverDay, eventOverEvent } from "@/lib/dnd";
-import { formatDate } from "@/lib/utils";
-import { Trip, UT } from "@/types";
+import { GetItem, GetIndex, EventOverDay, EventOverEvent } from "@/lib/dnd";
+import { FormatDate } from "@/lib/utils";
+import { DispatchAction, Trip, UT } from "@/types";
 import { Day, Event } from "@/types";
 
 import { DndDay, DndDayComponent } from "./dnd-day";
@@ -21,61 +18,47 @@ import EventComposer from "./kolumbus/itinerary/event-composer";
 import EventEditableDetails from "./kolumbus/itinerary/event-editable-details";
 
 const DndDataContext = createContext<{
-  dispatchUserTrips: any;
+  dispatchUserTrips: React.Dispatch<DispatchAction>;
   selectedTrip: number;
-  activeTrip: any;
-  activeEvent: any;
-  setActiveEvent: any;
+
+  activeTrip: Trip;
+  activeEvent: Event;
+  setActiveEvent: React.Dispatch<React.SetStateAction<Event>>;
   activeId: string | null;
+
   daysId: string[];
   eventsId: string[];
   events: Event[];
+
   isEventComposerShown: boolean;
-  setEventComposerShown: any;
+  setEventComposerShown: React.Dispatch<React.SetStateAction<boolean>>;
   addEventDayIndex: number;
-  setAddEventDayIndex: any;
-}>({
-  dispatchUserTrips: null,
-  selectedTrip: 0,
-  activeTrip: {},
-  activeEvent: {},
-  setActiveEvent: null,
-  activeId: "",
-  daysId: [],
-  eventsId: [],
-  events: [],
-  isEventComposerShown: false,
-  setEventComposerShown: null,
-  addEventDayIndex: 0,
-  setAddEventDayIndex: null,
-});
+  setAddEventDayIndex: React.Dispatch<React.SetStateAction<number>>;
+} | null>(null);
 export function useDndData() {
-  return useContext(DndDataContext);
+  const context = useContext(DndDataContext);
+  if (!context) throw new Error("useDndData must be used within a DndDataContext.Provider");
+  return context;
 }
 
-interface Props {
+type DndItineraryProps = {
   userTrips: Trip[];
-  dispatchUserTrips: React.Dispatch<{ type: string; payload: any }>;
+  dispatchUserTrips: React.Dispatch<DispatchAction>;
   selectedTrip: number;
-}
-export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTrip }: Props) {
-  const [isEventComposerShown, setEventComposerShown] = useState(false);
-  const [addEventDayIndex, setAddEventDayIndex] = useState(0);
-
+};
+export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTrip }: DndItineraryProps) {
   const [activeTrip, setActiveTrip] = useState<Trip>(userTrips[selectedTrip]);
   const [activeEvent, setActiveEvent] = useState<Event>();
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-  useEffect(() => {
-    setActiveTrip(userTrips[selectedTrip]);
-  }, [userTrips]);
+  const [isEventComposerShown, setEventComposerShown] = useState(false);
+  const [addEventDayIndex, setAddEventDayIndex] = useState(0);
 
   const { itinerary, ...tripInfo } = activeTrip;
   const events = itinerary?.flatMap((day) => day.events);
 
   const daysId = itinerary?.map((day) => day.id);
   const eventsId = events?.map((event) => event.id);
-
-  const [activeId, setActiveId] = useState<string | null>(null);
 
   function handleDragStart({ active }: any) {
     setActiveId(active?.id);
@@ -94,12 +77,6 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   function handleDragEnd() {
     setActiveId(null);
 
-    firebaseUpdateEvents(activeTrip);
-    dispatchUserTrips({
-      type: UT.REPLACE_TRIP,
-      payload: activeTrip,
-    });
-
     document.getElementById("grabbing")?.remove();
   }
 
@@ -111,23 +88,23 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     const activeType = active?.data.current?.item.drag_type;
     const overType = over?.data.current?.item.drag_type;
 
-    const activeIndex = getIndex(itinerary, activeType, activeId);
+    const activeIndex = GetIndex(itinerary, activeType, activeId);
     if (typeof activeIndex !== "number" || activeIndex < 0) return;
-    const activeDate = getItem(itinerary, events, activeId)?.date;
+    const activeDate = GetItem(itinerary, events, activeId)?.date;
     if (typeof activeDate !== "string" || typeof activeDate === undefined) return;
 
-    const overIndex = getIndex(itinerary, overType, overId);
+    const overIndex = GetIndex(itinerary, overType, overId);
     if (typeof overIndex !== "number" || overIndex < 0) return;
-    const overDate = getItem(itinerary, events, overId)?.date;
+    const overDate = GetItem(itinerary, events, overId)?.date;
     if (typeof overDate !== "string" || typeof overDate === undefined) return;
 
     let _itinerary;
     if (activeType === "day" && overType === "day") {
       _itinerary = arrayMove(itinerary, activeIndex, overIndex);
     } else if (activeType === "event" && overType === "day") {
-      _itinerary = eventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate);
+      _itinerary = EventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate);
     } else if (activeType === "event" && overType === "event") {
-      _itinerary = eventOverEvent(
+      _itinerary = EventOverEvent(
         itinerary,
         events,
         activeId,
@@ -140,9 +117,9 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     }
 
     if (!_itinerary) return;
-    const iteratedDate = new Date(tripInfo.start_date);
+    const iteratedDate = new Date(tripInfo.startDate);
     _itinerary.forEach((day: Day) => {
-      const currentDate = formatDate(iteratedDate);
+      const currentDate = FormatDate(iteratedDate);
 
       day.date = currentDate;
 
@@ -186,7 +163,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
 
             <ul className="flex w-full min-w-fit flex-col">
               {daysId?.map((dayId: string) => (
-                <DndDay key={dayId} day={getItem(itinerary, events, dayId)} />
+                <DndDay key={dayId} day={GetItem(itinerary, events, dayId)} />
               ))}
               <CalendarEnd totalDays={tripInfo.days} />
             </ul>
@@ -200,7 +177,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
-              <DndDayComponent day={getItem(itinerary, events, activeId)} dragOverlay={true} />
+              <DndDayComponent day={GetItem(itinerary, events, activeId)} dragOverlay={true} />
             </DragOverlay>
           ) : null}
 
@@ -211,7 +188,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
-              <DndEventComponent event={getItem(itinerary, events, activeId)} dragOverlay={true} />
+              <DndEventComponent event={GetItem(itinerary, events, activeId)} dragOverlay={true} />
             </DragOverlay>
           ) : null}
         </DndContext>

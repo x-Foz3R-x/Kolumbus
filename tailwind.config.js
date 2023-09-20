@@ -49,6 +49,7 @@ module.exports = {
       },
     },
     boxShadow: {
+      none: "0 0 #000000",
       border: "0 0 0 1px hsl(232, 9%, 90%)",
       focus: "0 0 0 1px hsla(210, 78%, 60%), 0 0 0 3px hsla(210, 78%, 60%, 0.3)",
       softSm: "0px 1px 2px rgba(15, 15, 15, 0.1)",
@@ -85,6 +86,9 @@ module.exports = {
       inset:
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px rgba(15,15,15,.02), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px rgba(15,15,15,.02)",
 
+      //
+      // TO REMOVE
+      //
       kolumblue: "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px rgba(15,15,15,.06)",
       kolumblueInset:
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px hsla(210, 78%, 75%, 0.1), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px hsla(210, 78%, 90%, 0.1)",

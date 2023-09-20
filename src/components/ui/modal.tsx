@@ -1,4 +1,4 @@
-import useAppData from "@/context/app-data";
+import useAppdata from "@/context/appdata";
 import Icon from "../icons";
 import { Event } from "@/types";
 
@@ -108,7 +108,7 @@ export function ModalGridList({ list, sortBy, printField }: ModalGridListProps) 
 }
 
 export function ModalCancelActionButtons({ actionButtonText, actionButtonOnClick }: ModalButtonsProps) {
-  const { setModalShown, isModalShown } = useAppData();
+  const { setModalShown, isModalShown } = useAppdata();
 
   return (
     <section className="flex justify-end gap-3 bg-gray-50 px-5 py-3 text-sm font-medium">

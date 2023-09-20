@@ -156,12 +156,12 @@ export default function SignUp() {
             I accept the{" "}
             <Link href="/" target="_blank" className="text-kolumblue-600 hover:underline">
               Terms of Use
-              <Icon.arrowTopRight className="ml-[3px] inline h-2 fill-kolumblue-600" />
+              <Icon.arrowTopRight className="mb-3 ml-1 inline h-1.5 fill-kolumblue-600" />
             </Link>{" "}
             &{" "}
             <Link href="/" target="_blank" className="text-kolumblue-600 hover:underline">
               Privacy Policy
-              <Icon.arrowTopRight className="ml-[3px] inline h-2 fill-kolumblue-600" />
+              <Icon.arrowTopRight className="mb-3 ml-1 inline h-1.5 fill-kolumblue-600" />
             </Link>{" "}
             *
           </Checkbox>
@@ -181,7 +181,7 @@ export default function SignUp() {
             <span>Already have an account? </span>
             <Link href="/signin" className="text-kolumblue-600 hover:underline">
               Sign in here
-              <Icon.chevron className="mb-px ml-[3px] inline h-1 -rotate-90 fill-kolumblue-600" />
+              <Icon.chevron className="mb-[0.0625rem] ml-0.5 inline h-1 -rotate-90 fill-kolumblue-600" />
             </Link>
           </div>
         </div>
@@ -220,7 +220,7 @@ export default function SignUp() {
             <span>Already have an account? </span>
             <Link href="/signin" className="text-kolumblue-600 hover:underline">
               Sign in here
-              <Icon.chevron className="mb-px ml-[3px] inline h-1 -rotate-90 fill-kolumblue-600" />
+              <Icon.chevron className="mb-[0.0625rem] ml-0.5 inline h-1 -rotate-90 fill-kolumblue-600" />
             </Link>
           </div>
         </div>

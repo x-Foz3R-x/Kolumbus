@@ -1,5 +1,4 @@
-export * from "./app-data";
-export * from "./actions";
+export * from "./appdata";
 export * from "./google";
 
 export interface SvgProps extends React.SVGAttributes<HTMLOrSVGElement> {}
@@ -7,6 +6,13 @@ export interface SvgProps extends React.SVGAttributes<HTMLOrSVGElement> {}
 export enum Language {
   English = "en",
   Polish = "pl",
+}
+
+export enum UserRole {
+  ADMIN = "admin",
+  TESTER = "tester",
+  PREMIUM = "premium",
+  USER = "user",
 }
 
 export enum Key {

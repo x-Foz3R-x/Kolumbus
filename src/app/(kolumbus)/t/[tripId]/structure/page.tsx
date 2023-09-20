@@ -1,4 +1,4 @@
-import Main from "../../../components/kolumbus/main";
+import Main from "../../../../../components/kolumbus/main";
 
 export default function Structure() {
   return (

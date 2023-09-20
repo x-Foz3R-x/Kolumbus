@@ -1,7 +1,7 @@
 import { inter, gordita, adso, inconsolata } from "../assets/fonts/fonts";
-import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./tailwind.css";
+import TrpcProvider from "./_trpc/Provider";
 
 export const metadata = {
   title: {
@@ -28,8 +28,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           className={`scroll-smooth fill-gray-900 text-gray-900 antialiased ${gordita.className} ${gordita.variable} ${adso.variable} ${inter.variable} ${inconsolata.variable}
           `}
         >
-          {children}
-          <Analytics />
+          <TrpcProvider>{children}</TrpcProvider>
         </body>
       </html>
     </ClerkProvider>

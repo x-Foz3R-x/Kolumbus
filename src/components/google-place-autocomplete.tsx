@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import axios from "axios";
 
 import { useAnyCloseActions, useArrowNavigation } from "@/hooks/use-accessibility-features";
 import { Language, PlacesAutocompleteStatus } from "@/types";
@@ -32,44 +31,44 @@ export default function GooglePlaceAutocomplete({ onAdd, placeholder, sessionTok
   const [prevSelectListLength, setPrevSelectListLength] = useState(1);
   const [itSelectListShown, setSelectListShown] = useState(false);
 
-  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
+  // const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setValue(e.target.value);
 
-    if (e.target.value.length < 3) {
-      ClearPredictions();
-      return;
-    }
+  //   if (e.target.value.length < 3) {
+  //     ClearPredictions();
+  //     return;
+  //   }
 
-    try {
-      interface apiData {
-        data: { status: string; predictions: PlacePrediction[] };
-      }
-      const { data }: apiData = await axios.post("/api/autocomplete", {
-        input: e.target.value,
-        language: Language.English,
-        sessionToken,
-      });
+  //   try {
+  //     interface apiData {
+  //       data: { status: string; predictions: PlacePrediction[] };
+  //     }
+  //     const { data }: apiData = await axios.post("/api/autocomplete", {
+  //       input: e.target.value,
+  //       language: Language.English,
+  //       sessionToken,
+  //     });
 
-      setPrevSelectListLength(selectList.length);
+  //     setPrevSelectListLength(selectList.length);
 
-      if (data.status === PlacesAutocompleteStatus.OK && data.predictions.length > 0) {
-        setSelectList([{ value: e.target.value }, ...data.predictions]);
-        setSelectedItem({ value: e.target.value });
+  //     if (data.status === PlacesAutocompleteStatus.OK && data.predictions.length > 0) {
+  //       setSelectList([{ value: e.target.value }, ...data.predictions]);
+  //       setSelectedItem({ value: e.target.value });
 
-        setSelectedIndex(0);
-        setSelectListShown(true);
-      }
+  //       setSelectedIndex(0);
+  //       setSelectListShown(true);
+  //     }
 
-      // todo handling all data status
-      // else if(data.status === PlacesAutocompleteStatus.ZERO_RESULTS){}
-      // else if(data.status === PlacesAutocompleteStatus.INVALID_REQUEST){}
-      // else if(data.status === PlacesAutocompleteStatus.OVER_QUERY_LIMIT){}
-      // else if(data.status === PlacesAutocompleteStatus.REQUEST_DENIED){}
-      // else if(data.status === PlacesAutocompleteStatus.UNKNOWN_ERROR){}
-    } catch (error) {
-      console.log("An error occurred: ", error);
-    }
-  };
+  //     // todo handling all data status
+  //     // else if(data.status === PlacesAutocompleteStatus.ZERO_RESULTS){}
+  //     // else if(data.status === PlacesAutocompleteStatus.INVALID_REQUEST){}
+  //     // else if(data.status === PlacesAutocompleteStatus.OVER_QUERY_LIMIT){}
+  //     // else if(data.status === PlacesAutocompleteStatus.REQUEST_DENIED){}
+  //     // else if(data.status === PlacesAutocompleteStatus.UNKNOWN_ERROR){}
+  //   } catch (error) {
+  //     console.log("An error occurred: ", error);
+  //   }
+  // };
 
   const handleInputFocus = () => {
     if (selectList.length > 1) setSelectListShown(true);
@@ -118,7 +117,7 @@ export default function GooglePlaceAutocomplete({ onAdd, placeholder, sessionTok
       <ComboboxInput
         value={value}
         placeholder={placeholder}
-        onChange={handleInputChange}
+        onChange={() => {}}
         onFocus={handleInputFocus}
         ariaExpanded={itSelectListShown}
         className={`bg-gray-50 fill-gray-400 text-gray-400 outline-0 ${

@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DocumentReference } from "firebase/firestore";
 import { v4 as uuid } from "uuid";
-import axios from "axios";
 
 import { firebaseAddEvent } from "@/hooks/use-firebase-operations";
 import { useAnyCloseActions } from "@/hooks/use-accessibility-features";
@@ -46,65 +45,65 @@ export default function EventComposer() {
     terms: { offset: number; value: string }[];
     types: string[];
   }
-  async function onAddEvent(item: { value: string } | PlacePrediction) {
-    const event: Event = { ...eventTemplate };
-    event.date = activeTrip.itinerary[addEventDayIndex].date;
+  // async function onAddEvent(item: { value: string } | PlacePrediction) {
+  //   const event: Event = { ...eventTemplate };
+  //   event.date = activeTrip.itinerary[addEventDayIndex].date;
 
-    if ("value" in item) {
-      event.display_name = item.value;
-    } else if ("place_id" in item) {
-      event.display_name = item.structured_formatting.main_text;
-      event.google = { place_id: item.place_id };
+  //   if ("value" in item) {
+  //     event.display_name = item.value;
+  //   } else if ("place_id" in item) {
+  //     event.display_name = item.structured_formatting.main_text;
+  //     event.google = { place_id: item.place_id };
 
-      interface apiData {
-        data: {
-          result: Place;
-          status: string;
-        };
-      }
-      const {
-        data: { status, result },
-      }: apiData = await axios.post("/api/details", {
-        place_id: item.place_id,
-        fields: PlaceFieldsGroup.Basic,
-        language: Language.English,
-        sessionToken,
-      });
+  //     interface apiData {
+  //       data: {
+  //         result: Place;
+  //         status: string;
+  //       };
+  //     }
+  //     const {
+  //       data: { status, result },
+  //     }: apiData = await axios.post("/api/details", {
+  //       place_id: item.place_id,
+  //       fields: PlaceFieldsGroup.Basic,
+  //       language: Language.English,
+  //       sessionToken,
+  //     });
 
-      if (status === PlacesDetailsStatus.OK && result) {
-        if (result?.formatted_address) event.address = result.formatted_address;
-        if (result?.website) event.website = result.website;
-        if (result?.formatted_phone_number) event.phone_number = result.formatted_phone_number;
-        if (result?.photos) event.google.photo_reference = result.photos[0].photo_reference;
-        if (result?.geometry) event.google.geometry = result.geometry;
-        if (result?.current_opening_hours) event.google.current_opening_hours = result.current_opening_hours;
-        if (result?.url) event.google.url = result.url;
-        if (result?.types) event.google.types = result.types;
-      }
-    }
+  //     if (status === PlacesDetailsStatus.OK && result) {
+  //       if (result?.formatted_address) event.address = result.formatted_address;
+  //       if (result?.website) event.website = result.website;
+  //       if (result?.formatted_phone_number) event.phone_number = result.formatted_phone_number;
+  //       if (result?.photos) event.google.photo_reference = result.photos[0].photo_reference;
+  //       if (result?.geometry) event.google.geometry = result.geometry;
+  //       if (result?.current_opening_hours) event.google.current_opening_hours = result.current_opening_hours;
+  //       if (result?.url) event.google.url = result.url;
+  //       if (result?.types) event.google.types = result.types;
+  //     }
+  //   }
 
-    const docRef = await firebaseAddEvent(activeTrip.id, event);
-    if (docRef instanceof DocumentReference) {
-      // Successfully added the event
-      event.id = docRef.id;
-      dispatchUserTrips({
-        type: UT.INSERT_EVENT,
-        payload: {
-          selectedTrip,
-          dayIndex: addEventDayIndex,
-          placeAt: "end",
-          event,
-        },
-      });
-    } else {
-      // Handle FirestoreError
-      // todo toast error message here
-      console.log("Error adding event:", docRef.message);
-      return;
-    }
+  //   const docRef = await firebaseAddEvent(activeTrip.id, event);
+  //   if (docRef instanceof DocumentReference) {
+  //     // Successfully added the event
+  //     event.id = docRef.id;
+  //     dispatchUserTrips({
+  //       type: UT.INSERT_EVENT,
+  //       payload: {
+  //         selectedTrip,
+  //         dayIndex: addEventDayIndex,
+  //         placeAt: "end",
+  //         event,
+  //       },
+  //     });
+  //   } else {
+  //     // Handle FirestoreError
+  //     // todo toast error message here
+  //     console.log("Error adding event:", docRef.message);
+  //     return;
+  //   }
 
-    setEventComposerShown(false);
-  }
+  //   setEventComposerShown(false);
+  // }
 
   return isEventComposerShown ? (
     <div
@@ -161,11 +160,7 @@ export default function EventComposer() {
         />
       </section>
 
-      <GooglePlaceAutocomplete
-        onAdd={onAddEvent}
-        placeholder={searchPlaceholder}
-        sessionToken={sessionToken}
-      />
+      <GooglePlaceAutocomplete onAdd={() => {}} placeholder={searchPlaceholder} sessionToken={sessionToken} />
     </div>
   ) : (
     <></>

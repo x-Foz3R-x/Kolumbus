@@ -37,7 +37,7 @@ export default function SignUp() {
       if (result.status === "complete") {
         console.log(result);
         await setActive({ session: result.createdSessionId });
-        router.push("/itinerary");
+        router.push("/");
       } else {
         console.log(result);
       }
@@ -105,14 +105,13 @@ export default function SignUp() {
       <div className="mt-6 flex flex-col items-center justify-center text-xs">
         <Link href="/" className="text-kolumblue-600 hover:underline">
           Forgot password?
-          <Icon.chevron className="mb-px ml-[3px] inline h-1 -rotate-90 fill-kolumblue-600" />
         </Link>
 
         <div>
           <span>Don&apos;t have an account? </span>
           <Link href="/signup" className="text-kolumblue-600 hover:underline">
             Create yours now
-            <Icon.chevron className="mb-px ml-[3px] inline h-1 -rotate-90 fill-kolumblue-600" />
+            <Icon.chevron className="mb-[0.0625rem] ml-0.5 inline h-1 -rotate-90 fill-kolumblue-600" />
           </Link>
         </div>
       </div>

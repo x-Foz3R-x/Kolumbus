@@ -1,5 +1,5 @@
 import { Trip, Event } from "@/types";
-import { formatDate } from "@/lib/utils";
+import { FormatDate } from "@/lib/utils";
 
 interface StarterTripData {
   trip: Trip;
@@ -11,18 +11,18 @@ export const getFirebaseStarterTrip = (): StarterTripData => {
   endDate.setDate(endDate.getDate() + 2);
 
   const events: Event[] = [
-    { id: "e0", display_name: "Eiffel Tower", date: formatDate(startDate), position: 0, drag_type: "event" },
+    { id: "e0", display_name: "Eiffel Tower", date: FormatDate(startDate), position: 0, drag_type: "event" },
     {
       id: "e1",
       display_name: "Statue of Liberty",
-      date: formatDate(endDate),
+      date: FormatDate(endDate),
       position: 0,
       drag_type: "event",
     },
     {
       id: "e2",
       display_name: "Palace of Culture and Science",
-      date: formatDate(endDate),
+      date: FormatDate(endDate),
       position: 1,
       drag_type: "event",
     },
@@ -31,8 +31,8 @@ export const getFirebaseStarterTrip = (): StarterTripData => {
     id: "",
     owner_id: "",
     display_name: "Welcome to Kolumbus!",
-    start_date: formatDate(startDate),
-    end_date: formatDate(endDate),
+    startDate: FormatDate(startDate),
+    end_date: FormatDate(endDate),
     days: 3,
     position: 0,
     itinerary: [],
@@ -49,8 +49,8 @@ export const tripTemplate: Trip = {
   id: "",
   owner_id: "",
   display_name: "",
-  start_date: formatDate(new Date()),
-  end_date: formatDate(new Date()),
+  startDate: FormatDate(new Date()),
+  end_date: FormatDate(new Date()),
   days: 1,
   position: 0,
   itinerary: [],
@@ -63,7 +63,7 @@ export const tripTemplate: Trip = {
 export const eventTemplate: Event = {
   id: "",
   display_name: "",
-  date: formatDate(new Date()),
+  date: FormatDate(new Date()),
   position: 0,
   drag_type: "event",
 };

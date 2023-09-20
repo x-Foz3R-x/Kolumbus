@@ -1,127 +1,103 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useEffect, useState } from "react";
 
-import useAppData from "@/context/app-data";
-import useUserTrips from "@/hooks/use-user-trips";
-import { calculateDays, formatDate } from "@/lib/utils";
+import useAppdata from "@/context/appdata";
+import { CalculateDays, FormatDate } from "@/lib/utils";
 import { UT, Event } from "@/types";
 
 import Icon from "../icons";
 import { EventsOnExcludedDaysModal } from "../ui/modal";
 import { Dropdown, DropdownButton } from "@/components/ui/dropdown";
-import { firebaseUpdateTrip } from "@/hooks/use-firebase-operations";
 
 interface Props {
   maxTripsDays: number;
 }
 
 export default function DaysPicker({ maxTripsDays }: Props) {
-  const { selectedTrip, setModalShown, setModalChildren } = useAppData();
-  const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
+  const { userTrips, dispatchUserTrips, selectedTrip, isLoading, setModalShown, setModalChildren } =
+    useAppdata();
 
-  const [tripDays, setTripDays] = useState(userTrips[selectedTrip]?.days || 1);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isDisplayed, setDisplay] = useState(false);
+  const [tripDays, setTripDays] = useState(1);
 
   useEffect(() => {
-    if (!loadingTrips) setTripDays(userTrips[selectedTrip]?.days || 1);
-  }, [userTrips[selectedTrip]?.days, selectedTrip]);
+    if (isLoading || selectedTrip === -1 || !userTrips) return;
 
-  const handleDaySelect = (day: number) => {
-    setDropdownOpen(false);
-    if (day === tripDays) return;
+    setTripDays(userTrips[selectedTrip]?.days);
+  }, [userTrips, selectedTrip, isLoading]);
 
-    const activeTrip = userTrips[selectedTrip];
-    if (!activeTrip || !activeTrip.start_date || !activeTrip.end_date) return;
+  const handleDaySelect = (days: number) => {
+    setDisplay(false);
 
-    const startDate = new Date(activeTrip.start_date);
-    const endDate = new Date(activeTrip.end_date);
-    const newEndDate = new Date(startDate);
-    newEndDate.setDate(startDate.getDate() + day - 1);
+    if (days === tripDays) return;
 
-    const trip = { ...userTrips[selectedTrip] };
-    trip.start_date = formatDate(startDate);
-    trip.end_date = formatDate(newEndDate);
-    trip.days = day;
-    trip.metadata.updated_at = Date.now();
+    const currentTrip = userTrips[selectedTrip];
+    if (!currentTrip || !currentTrip.startDate || !currentTrip.endDate) return;
 
-    if (newEndDate > endDate) {
-      setTripDays(day);
-      firebaseUpdateTrip(trip);
-      dispatchUserTrips({
-        type: UT.UPDATE_TRIP,
-        payload: {
-          trip,
-          selectedTrip,
-          regenerate: true,
-        },
-      });
+    const startDate = new Date(currentTrip.startDate);
+    const endDate = new Date(currentTrip.endDate);
+
+    const pickedEndDate = new Date(startDate);
+    pickedEndDate.setDate(startDate.getDate() + days - 1);
+
+    currentTrip.endDate = FormatDate(pickedEndDate);
+    currentTrip.days = days;
+
+    if (pickedEndDate > endDate) {
+      setTripDays(days);
+      dispatchUserTrips({ type: UT.REPLACE, userTrips });
       return;
     }
 
-    const daysToDelete = calculateDays(newEndDate, endDate) - 1;
-    const numberOfDays = activeTrip.itinerary.length - 1;
+    const daysToDelete = CalculateDays(pickedEndDate, endDate) - 1;
+
+    const currentItinerary = userTrips[selectedTrip]?.itinerary;
+    if (currentItinerary === undefined) return;
+    const numberOfDays = currentItinerary.length - 1;
 
     let eventsToDelete: Event[] = [];
     for (let i = numberOfDays; i > numberOfDays - daysToDelete; i--) {
-      const events = activeTrip.itinerary[i]?.events;
+      const events = currentItinerary[i]?.events;
       events?.forEach((event: Event) => {
         eventsToDelete.push(event);
       });
     }
 
     if (eventsToDelete.length === 0) {
-      setTripDays(day);
-      firebaseUpdateTrip(trip);
-      dispatchUserTrips({
-        type: UT.UPDATE_TRIP,
-        payload: {
-          trip,
-          selectedTrip,
-          regenerate: true,
-        },
-      });
+      setTripDays(days);
+      dispatchUserTrips({ type: UT.REPLACE, userTrips });
       return;
     }
 
     const handleExcludedDays = () => {
-      setTripDays(day);
-      firebaseUpdateTrip(trip);
-      dispatchUserTrips({
-        type: UT.UPDATE_TRIP,
-        payload: {
-          trip,
-          selectedTrip,
-          regenerate: true,
-        },
-      });
+      setTripDays(days);
+      dispatchUserTrips({ type: UT.REPLACE, userTrips });
       setModalShown(false);
     };
 
-    setModalShown(true);
-    setModalChildren(EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays));
+    // setModalShown(true);
+    // setModalChildren(EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays));
   };
 
   return (
     <div className="relative h-9 w-9 select-none">
-      <button onClick={() => setDropdownOpen(true)} className="relative">
+      <button onClick={() => setDisplay(true)} className="relative">
         <Icon.calendar className="h-9 fill-kolumblue-500" />
 
         <div className="absolute top-1 w-9 text-[10px] font-medium uppercase text-white/75">days</div>
-
-        <div className="absolute bottom-0 m-auto w-9 text-sm font-medium">{!loadingTrips && tripDays}</div>
+        <div className="absolute bottom-0 m-auto w-9 text-sm font-medium">{!isLoading && tripDays}</div>
       </button>
 
       <Dropdown
-        isModalOpen={isDropdownOpen}
-        setIsModalOpen={setDropdownOpen}
+        isModalOpen={isDisplayed}
+        setIsModalOpen={setDisplay}
         className="relative max-h-56 w-9 gap-1 rounded-sm"
       >
         <div className="flex snap-y snap-mandatory flex-col overflow-y-scroll rounded-sm bg-kolumblue-50">
-          {!loadingTrips &&
+          {!isLoading &&
             [...Array(maxTripsDays)].map((el, index) => (
-              <div key={"day " + (index + 1)}>
+              <div key={`day-${index + 1}`}>
                 <DropdownButton
                   onClick={() => handleDaySelect(index + 1)}
                   className="h-6 w-full snap-start justify-center rounded-none text-xs hover:rounded-none"

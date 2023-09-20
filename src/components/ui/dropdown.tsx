@@ -86,13 +86,13 @@ export function DropdownProfile({ username, email }: DropdownProfileProps) {
       <Image
         src="/images/default-avatar.png"
         alt="default avatar picture"
-        width={64}
-        height={64}
+        width={48}
+        height={48}
         draggable={false}
         className="rounded-xl"
       />
       <div className="flex w-48 flex-none select-text flex-col justify-around text-center">
-        <span className="overflow-hidden text-ellipsis whitespace-nowrap">{username}</span>
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap font-medium">{username}</span>
         <span className="overflow-hidden text-ellipsis whitespace-nowrap text-xs">{email}</span>
       </div>
     </div>

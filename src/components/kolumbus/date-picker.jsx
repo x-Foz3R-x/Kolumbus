@@ -1,153 +1,114 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import { easepick, AmpPlugin, RangePlugin, LockPlugin, DateTime } from "@easepick/bundle";
 
-import useAppData from "@/context/app-data";
-import useUserTrips from "@/hooks/use-user-trips";
-import { calculateDays, formatDate } from "@/lib/utils";
+import useAppdata from "@/context/appdata";
+import { CalculateDays, FormatDate } from "@/lib/utils";
 import { UT } from "@/types";
 
 import Icon from "../icons";
 import { EventsOnExcludedDaysModal } from "../ui/modal";
-import { firebaseUpdateTrip } from "@/hooks/use-firebase-operations";
 
 export default function DatePicker() {
-  const { selectedTrip, setModalShown, setModalChildren } = useAppData();
-  const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
+  const { userTrips, dispatchUserTrips, selectedTrip, isLoading, setModalShown, setModalChildren } =
+    useAppdata();
 
-  const [isPickerOpen, setPickerOpen] = useState(false);
-  const [date, setDate] = useState({
-    start: new DateTime(),
-    end: new DateTime(),
-  });
+  const [isDisplayed, setDisplay] = useState(false);
+  const [startDate, setStartDate] = useState(new DateTime());
+  const [endDate, setEndDate] = useState(new DateTime());
 
   useEffect(() => {
-    if (!loadingTrips) {
-      setDate({
-        start: new Date(userTrips[selectedTrip]?.start_date),
-        end: new Date(userTrips[selectedTrip]?.end_date),
-      });
-    }
-  }, [loadingTrips]);
+    if (isLoading || selectedTrip === -1 || !userTrips) return;
+
+    setStartDate(new DateTime(userTrips[selectedTrip]?.startDate));
+    setEndDate(new DateTime(userTrips[selectedTrip]?.endDate));
+  }, [userTrips, selectedTrip, isLoading]);
 
   const DatePickerRef = useRef();
 
   const handlePicker = () => {
-    if (isPickerOpen) return;
-    if (!isPickerOpen) setPickerOpen(true);
+    if (isDisplayed) return;
+    if (!isDisplayed) setDisplay(true);
 
     const picker = new easepick.create({
       element: DatePickerRef.current,
       css: ["/easepick.css"],
       autoApply: false,
       zIndex: 10,
-      format: "",
+      plugins: [AmpPlugin, RangePlugin, LockPlugin],
       AmpPlugin: {
         dropdown: {
           months: true,
           years: true,
-          minYear: 2020,
+          minYear: new Date().getFullYear() - 5,
           maxYear: new Date().getFullYear() + 10,
         },
       },
       RangePlugin: {
-        startDate: date.start,
-        endDate: date.end,
+        startDate: startDate,
+        endDate: endDate,
       },
       LockPlugin: {
-        // maxDays: 30,
+        maxDays: 30,
       },
-      plugins: [AmpPlugin, RangePlugin, LockPlugin],
     });
 
     picker.show();
     picker.on("select", async () => {
-      const startDate = picker.getStartDate();
-      const endDate = picker.getEndDate();
+      const pickedStartDate = picker.getStartDate();
+      const pickedEndDate = picker.getEndDate();
 
-      if (date.start === startDate && date.end === endDate) return;
+      if (startDate === pickedStartDate && endDate === pickedEndDate) return;
 
-      const trip = { ...userTrips[selectedTrip] };
-      trip.start_date = formatDate(startDate);
-      trip.end_date = formatDate(endDate);
-      trip.days = calculateDays(startDate, endDate);
-      trip.metadata.updated_at = Date.now();
+      const currentTrip = userTrips[selectedTrip];
+      currentTrip.startDate = FormatDate(pickedStartDate);
+      currentTrip.endDate = FormatDate(pickedEndDate);
+      currentTrip.days = CalculateDays(pickedStartDate, pickedEndDate);
 
-      if (date.start >= startDate && date.end <= endDate) {
-        setDate({
-          start: startDate,
-          end: endDate,
-        });
+      if (startDate >= pickedStartDate && endDate <= pickedEndDate) {
+        setStartDate(pickedStartDate);
+        setEndDate(pickedEndDate);
 
-        firebaseUpdateTrip(trip);
-        dispatchUserTrips({
-          type: UT.UPDATE_TRIP,
-          payload: {
-            trip,
-            selectedTrip,
-            regenerate: true,
-          },
-        });
+        dispatchUserTrips({ type: UT.REPLACE, userTrips });
         return;
       }
 
-      const activeItinerary = userTrips[selectedTrip]?.itinerary;
-      if (activeItinerary === undefined) return;
-      const startDaysToDelete = date.start >= startDate ? 0 : calculateDays(date.start, startDate) - 1;
-      if (startDaysToDelete === undefined) return;
-      const endDaysToDelete = date.end <= endDate ? 0 : calculateDays(endDate, date.end) - 1;
-      if (endDaysToDelete === undefined) return;
-      const numberOfDays = activeItinerary.length - 1;
+      const currentItinerary = userTrips[selectedTrip]?.itinerary;
+      if (currentItinerary === undefined) return;
+      const numberOfDays = currentItinerary.length - 1;
+
+      const startDaysToDelete =
+        startDate < pickedStartDate ? CalculateDays(startDate, pickedStartDate) - 1 : 0;
+      const endDaysToDelete = endDate > pickedEndDate ? CalculateDays(pickedEndDate, endDate) - 1 : 0;
 
       let eventsToDelete = [];
       for (let i = 0; i < startDaysToDelete; i++) {
-        const events = activeItinerary[i]?.events;
+        const events = currentItinerary[i]?.events;
         events?.forEach((event) => {
           eventsToDelete.push(event);
         });
       }
       for (let i = numberOfDays; i > numberOfDays - endDaysToDelete; i--) {
-        const events = activeItinerary[i]?.events;
+        const events = currentItinerary[i]?.events;
         events?.forEach((event) => {
           eventsToDelete.push(event);
         });
       }
 
       if (eventsToDelete.length === 0) {
-        setDate({
-          start: startDate,
-          end: endDate,
-        });
+        setStartDate(pickedStartDate);
+        setEndDate(pickedEndDate);
 
-        firebaseUpdateTrip(trip);
-        dispatchUserTrips({
-          type: UT.UPDATE_TRIP,
-          payload: {
-            trip,
-            selectedTrip,
-            regenerate: true,
-          },
-        });
+        dispatchUserTrips({ type: UT.REPLACE, userTrips });
         return;
       }
 
       const handleExcludedDays = () => {
-        setDate({
-          start: startDate,
-          end: endDate,
-        });
+        setStartDate(pickedStartDate);
+        setEndDate(pickedEndDate);
 
-        firebaseUpdateTrip(trip);
-        dispatchUserTrips({
-          type: UT.UPDATE_TRIP,
-          payload: {
-            trip,
-            selectedTrip,
-            regenerate: true,
-          },
-        });
+        dispatchUserTrips({ type: UT.REPLACE, userTrips });
         setModalShown(false);
       };
 
@@ -155,7 +116,7 @@ export default function DatePicker() {
       setModalChildren(EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays));
     });
     picker.on("hide", () => {
-      setPickerOpen(false);
+      setDisplay(false);
       picker.destroy();
     });
   };
@@ -166,16 +127,16 @@ export default function DatePicker() {
 
       <section className="absolute h-9 w-[5.0625rem] text-center text-[10px] font-medium text-white/75">
         <div className="absolute left-[-0.125rem] top-1 w-10">
-          {!loadingTrips && date.start.toLocaleString("default", { month: "short" }).toUpperCase()}
+          {!isLoading && startDate?.toLocaleString("default", { month: "short" }).toUpperCase()}
         </div>
         <div className="absolute right-[-0.125rem] top-1 w-10">
-          {!loadingTrips && date.end.toLocaleString("default", { month: "short" }).toUpperCase()}
+          {!isLoading && endDate?.toLocaleString("default", { month: "short" }).toUpperCase()}
         </div>
       </section>
 
       <section className="absolute h-9 w-[5.0625rem] text-center text-sm font-medium">
-        <div className="absolute bottom-0 left-[-0.125rem] w-10">{!loadingTrips && date.start.getDate()}</div>
-        <div className="absolute bottom-0 right-[-0.125rem] w-10">{!loadingTrips && date.end.getDate()}</div>
+        <div className="absolute bottom-0 left-[-0.125rem] w-10">{!isLoading && startDate?.getDate()}</div>
+        <div className="absolute bottom-0 right-[-0.125rem] w-10">{!isLoading && endDate?.getDate()}</div>
       </section>
 
       <input

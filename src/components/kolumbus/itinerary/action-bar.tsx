@@ -1,80 +1,52 @@
-import useAppData from "@/context/app-data";
-import useUserTrips from "@/hooks/use-user-trips";
-import { Key, UT } from "@/types";
+import useAppdata from "@/context/appdata";
 
+import Input from "@/components/ui/input";
 import DatePicker from "@/components/kolumbus/date-picker";
 import DaysPicker from "@/components/kolumbus/days-picker";
-
-// import SavedSVG from "@/assets/svg/Saved.svg";
-// import SavingSVG from "@/assets/svg/Saving.svg";
-import useKeyPress from "@/hooks/use-key-press";
-import { useEffect, useRef, useState } from "react";
-import { firebaseUpdateTrip } from "@/hooks/use-firebase-operations";
 import Icon from "@/components/icons";
 
+import { UT } from "@/types";
+import api from "@/app/_trpc/client";
+
 export default function ActionBar() {
-  const { selectedTrip } = useAppData();
-  const { userTrips, dispatchUserTrips, loadingTrips } = useUserTrips();
+  const { userTrips, dispatchUserTrips, selectedTrip, isLoading } = useAppdata();
+  const updateTrip = api.trip.update.useMutation({});
 
-  const [displayName, setDisplayName] = useState<string>("");
-  const [tripSize, setTripSize] = useState(0);
-
-  useEffect(() => {
-    if (!loadingTrips) setDisplayName(userTrips[selectedTrip]?.display_name || "");
-  }, [selectedTrip, userTrips, loadingTrips]);
-
-  useEffect(() => {
-    setTripSize(Number(((JSON.stringify(userTrips[selectedTrip])?.length * 2) / 1024).toFixed(2)));
-  }, [userTrips, selectedTrip]);
-
-  const ref = useRef<HTMLInputElement | null>(null);
-  const enterPressed = useKeyPress(Key.Enter);
-  useEffect(() => {
-    if (enterPressed && document.activeElement === ref.current) ref.current!.blur();
-  }, [enterPressed]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setDisplayName(e.target.value);
-
-  const handleInputUpdate = async (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.FocusEvent<HTMLInputElement>) => {
     const trip = userTrips[selectedTrip];
-    trip.display_name = e.target.value;
-    trip.metadata.updated_at = Date.now();
+    trip.name = e.target.value;
 
-    firebaseUpdateTrip(trip);
-    dispatchUserTrips({
-      type: UT.UPDATE_FIELD,
-      payload: {
-        regenerate: false,
-        selectedTrip: selectedTrip,
-        field: "display_name",
-        value: e.target.value,
-      },
-    });
+    updateTrip.mutate({ tripId: userTrips[selectedTrip].id, data: { name: e.target.value } });
+    dispatchUserTrips({ type: UT.REPLACE, userTrips: [...userTrips] });
   };
 
   return (
-    <section className="sticky top-3 z-30 mx-3 flex h-14 w-[calc(100%-1.5rem)] items-center justify-between gap-5 rounded-lg border border-gray-100 bg-white/80 px-5 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
-      {!loadingTrips && (
-        <>
-          <input
-            ref={ref}
-            type="text"
-            value={displayName}
-            onChange={handleInputChange}
-            onBlur={handleInputUpdate}
-            placeholder="Untitled"
-            spellCheck="false"
-            className="w-full bg-transparent px-2 py-1"
-          />
+    <section className="sticky top-0 z-30 flex w-full p-3">
+      <div className="flex h-14 w-full items-center justify-between gap-5 rounded-lg border border-gray-100 bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
+        {!isLoading && (
+          <>
+            <section className="flex h-full w-full flex-grow items-center gap-2 overflow-scroll pl-3">
+              <Input
+                value={userTrips[selectedTrip]?.name}
+                onChange={handleChange}
+                spellCheck="false"
+                variant="unstyled"
+                Size="lg"
+                textWidth
+                preventEmpty
+                className="h-8 cursor-pointer rounded px-2 py-1 duration-300 ease-kolumb-flow hover:bg-black/5 hover:shadow-soft focus:cursor-text focus:bg-white focus:shadow-focus"
+              />
+              <Icon.x className="h-3 shrink-0" />
+              <p className="shrink-0">view / edit</p>
+            </section>
 
-          <section className="flex items-center gap-2">
-            <p className="w-fit whitespace-nowrap text-sm">{tripSize} KB</p>
-            <DatePicker />
-            <DaysPicker maxTripsDays={90} />
-            <Icon.x className="h-9 w-9 fill-kolumblue-500" />
-          </section>
-        </>
-      )}
+            <section className="flex flex-shrink-0 items-center gap-2 pr-5">
+              <DatePicker />
+              <DaysPicker maxTripsDays={90} />
+            </section>
+          </>
+        )}
+      </div>
     </section>
   );
 }

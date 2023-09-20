@@ -2,7 +2,7 @@ import React, { forwardRef, memo } from "react";
 import { SortableContext, horizontalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { getIndex } from "@/lib/dnd";
+import { GetIndex } from "@/lib/dnd";
 import { Day, Event } from "@/types";
 
 import Icon from "./icons";
@@ -64,7 +64,7 @@ export const DndDayComponent = memo(
     const { id, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
-    const dayIndex: number = getIndex(activeTrip.itinerary, "day", day.id);
+    const dayIndex: number = GetIndex(activeTrip.itinerary, "day", day.id);
 
     const handleAddEvent = () => {
       setAddEventShown(true);

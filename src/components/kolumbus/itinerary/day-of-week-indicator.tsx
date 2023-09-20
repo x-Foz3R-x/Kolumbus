@@ -1,4 +1,4 @@
-import { formatDayOfWeek } from "@/lib/utils";
+import { FormatDayOfWeek } from "@/lib/utils";
 
 interface Props {
   dayOfWeek: number;
@@ -7,7 +7,7 @@ interface Props {
  * @param {number} dayOfWeek number 0-6 starting at monday
  */
 export default function DayOfWeekIndicator({ dayOfWeek }: Props) {
-  const day = formatDayOfWeek(dayOfWeek);
+  const day = FormatDayOfWeek(dayOfWeek);
 
   const daysOfWeek = [];
   for (let i = 0; i < 7; i++) {
