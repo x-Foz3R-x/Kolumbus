@@ -140,6 +140,7 @@ export default function DatePicker() {
       </section>
 
       <input
+        id="datepicker"
         className="relative z-10 h-9 w-[5.0625rem] cursor-pointer appearance-none border-none bg-transparent text-xs font-thin text-transparent outline-0"
         onClick={handlePicker}
         ref={DatePickerRef}

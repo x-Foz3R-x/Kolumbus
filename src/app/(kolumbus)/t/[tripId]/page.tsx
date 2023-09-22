@@ -33,7 +33,7 @@ export default function Itinerary({ params: { tripId } }: ItineraryProps) {
     <>
       <ActionBar />
 
-      <section className="ml-6 overflow-scroll pr-6">
+      <div className="overflow-scroll px-6">
         {!isLoading &&
         userTrips?.length !== 0 &&
         typeof userTrips[selectedTrip]?.itinerary !== "undefined" ? (
@@ -45,7 +45,7 @@ export default function Itinerary({ params: { tripId } }: ItineraryProps) {
         ) : (
           <ItinerarySkeleton />
         )}
-      </section>
+      </div>
 
       {/* {createPortal(<Modal showModal={isModalShown} modalChildren={modalChildren} />, document.body)} */}
     </>

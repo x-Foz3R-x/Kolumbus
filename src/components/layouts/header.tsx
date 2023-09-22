@@ -10,7 +10,12 @@ export default function Header() {
   return (
     <header className="relative z-50 flex h-14 w-full items-center justify-between">
       <nav className="h-14 w-56 flex-none">
-        <Link href="/" className="m-auto my-4 flex w-fit justify-center">
+        <Link
+          href="/"
+          title="Home page"
+          aria-label="Home page"
+          className="m-auto my-4 flex w-fit justify-center"
+        >
           <Icon.logo className="h-6" />
         </Link>
       </nav>

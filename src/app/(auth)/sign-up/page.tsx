@@ -179,7 +179,7 @@ export default function SignUp() {
 
           <div>
             <span>Already have an account? </span>
-            <Link href="/signin" className="text-kolumblue-600 hover:underline">
+            <Link href="/sign-in" className="text-kolumblue-600 hover:underline">
               Sign in here
               <Icon.chevron className="mb-[0.0625rem] ml-0.5 inline h-1 -rotate-90 fill-kolumblue-600" />
             </Link>
@@ -218,7 +218,7 @@ export default function SignUp() {
         <div className="mt-5 flex flex-col items-center justify-center text-xs">
           <div>
             <span>Already have an account? </span>
-            <Link href="/signin" className="text-kolumblue-600 hover:underline">
+            <Link href="/sign-in" className="text-kolumblue-600 hover:underline">
               Sign in here
               <Icon.chevron className="mb-[0.0625rem] ml-0.5 inline h-1 -rotate-90 fill-kolumblue-600" />
             </Link>

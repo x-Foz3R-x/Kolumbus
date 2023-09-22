@@ -10,7 +10,7 @@ import api from "@/app/_trpc/client";
 
 export default function ActionBar() {
   const { userTrips, dispatchUserTrips, selectedTrip, isLoading } = useAppdata();
-  const updateTrip = api.trip.update.useMutation({});
+  const updateTrip = api.trip.update.useMutation();
 
   const handleChange = (e: React.FocusEvent<HTMLInputElement>) => {
     const trip = userTrips[selectedTrip];
@@ -25,8 +25,9 @@ export default function ActionBar() {
       <div className="flex h-14 w-full items-center justify-between gap-5 rounded-lg border border-gray-100 bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
         {!isLoading && (
           <>
-            <section className="flex h-full w-full flex-grow items-center gap-2 overflow-scroll pl-3">
+            <section className="flex h-full w-full items-center gap-2 overflow-x-scroll pl-3">
               <Input
+                id="Trip-name"
                 value={userTrips[selectedTrip]?.name}
                 onChange={handleChange}
                 spellCheck="false"

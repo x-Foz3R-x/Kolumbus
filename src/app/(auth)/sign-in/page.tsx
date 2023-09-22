@@ -109,7 +109,7 @@ export default function SignUp() {
 
         <div>
           <span>Don&apos;t have an account? </span>
-          <Link href="/signup" className="text-kolumblue-600 hover:underline">
+          <Link href="/sign-up" className="text-kolumblue-600 hover:underline">
             Create yours now
             <Icon.chevron className="mb-[0.0625rem] ml-0.5 inline h-1 -rotate-90 fill-kolumblue-600" />
           </Link>

@@ -46,7 +46,7 @@ export function AppdataProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, [data, areTripsLoading]);
 
-  console.log("userTrips", userTrips);
+  // console.log("userTrips", userTrips);
 
   const value = {
     userTrips,

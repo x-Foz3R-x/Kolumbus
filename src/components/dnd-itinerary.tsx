@@ -1,6 +1,6 @@
 "use client";
 
-import { ForwardedRef, createContext, forwardRef, memo, useContext, useState } from "react";
+import { ForwardedRef, createContext, forwardRef, memo, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 
 import { DndContext, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
@@ -14,7 +14,7 @@ import {
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 
-import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent } from "@/lib/dnd";
+import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType } from "@/lib/dnd";
 import { FormatDate } from "@/lib/utils";
 
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
@@ -23,14 +23,15 @@ import EventEditableDetails from "./itinerary/event-editable-details";
 import Icon from "./icons";
 
 import type { DispatchAction, Trip, Day, Event } from "@/types";
+import api from "@/app/_trpc/client";
 
 const DndDataContext = createContext<{
   dispatchUserTrips: React.Dispatch<DispatchAction>;
   selectedTrip: number;
 
   activeTrip: Trip;
-  activeEvent: Event | undefined;
-  setActiveEvent: React.Dispatch<React.SetStateAction<Event | undefined>>;
+  activeEvent: Event | null;
+  setActiveEvent: React.Dispatch<React.SetStateAction<Event | null>>;
   activeId: string | null;
 
   daysId: string[];
@@ -56,22 +57,24 @@ type DndItineraryProps = {
 };
 export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTrip }: DndItineraryProps) {
   const [activeTrip, setActiveTrip] = useState<Trip>(userTrips[selectedTrip]);
-  const [activeEvent, setActiveEvent] = useState<Event>();
+  const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const [isEventComposerShown, setEventComposerShown] = useState(false);
   const [addEventDayIndex, setAddEventDayIndex] = useState(0);
 
-  const { itinerary, ...tripInfo } = activeTrip;
-  const events = itinerary?.flatMap((day) => day.events);
+  const updateEvent = api.event.update.useMutation();
 
-  const daysId = itinerary?.map((day) => day.id);
-  const eventsId = events?.map((event) => event.id);
+  const { itinerary, ...tripInfo } = activeTrip;
+  const events = itinerary.flatMap((day) => day.events);
+
+  const daysId = itinerary.map((day) => day.id);
+  const eventsId = events.map((event) => event.id);
 
   function handleDragStart({ active }: DragStartEvent) {
     setActiveId(active?.id as string);
 
-    if (active?.data.current?.item.drag_type === "day") {
+    if (GetDragType(active) === "day") {
       const grabbing = document.createElement("div");
       grabbing.id = "grabbing";
       grabbing.setAttribute(
@@ -85,69 +88,83 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   function handleDragEnd() {
     setActiveId(null);
 
-    document.getElementById("grabbing")?.remove();
-  }
-
-  function handleDragOver({ active, over }: DragOverEvent) {
-    const activeId = active?.id;
-    const overId = over?.id;
-    if (!activeId || !overId || activeId === overId) return;
-
-    const activeType = typeof active?.data.current?.item?.events === "object" ? "day" : "event";
-    const overType = over?.data.current?.item?.events === "object" ? "day" : "event";
-
-    const activeIndex = GetIndex(itinerary, events, activeType, activeId as string);
-    if (typeof activeIndex !== "number" || activeIndex < 0) return;
-    const activeDate = GetItem(itinerary, events, activeId as string)?.date;
-    if (typeof activeDate !== "string" || typeof activeDate === undefined) return;
-
-    const overIndex = GetIndex(itinerary, events, overType, overId as string);
-    if (typeof overIndex !== "number" || overIndex < 0) return;
-    const overDate = GetItem(itinerary, events, overId as string)?.date;
-    if (typeof overDate !== "string" || typeof overDate === undefined) return;
-
-    let _itinerary;
-    if (activeType === "day" && overType === "day") {
-      _itinerary = arrayMove(itinerary, activeIndex, overIndex);
-    } else if (activeType === "event" && overType === "day") {
-      _itinerary = EventOverDay(
-        itinerary,
-        events,
-        activeId as string,
-        activeIndex,
-        activeDate,
-        overIndex,
-        overDate
-      );
-    } else if (activeType === "event" && overType === "event") {
-      _itinerary = EventOverEvent(
-        itinerary,
-        events,
-        activeId as string,
-        activeIndex,
-        activeDate,
-        overId as string,
-        overIndex,
-        overDate
-      );
-    }
-
-    if (!_itinerary) return;
     const iteratedDate = new Date(tripInfo.startDate);
-    _itinerary.forEach((day: Day) => {
-      const currentDate = FormatDate(iteratedDate);
-
-      day.date = currentDate;
-
+    itinerary.forEach((day: Day) => {
       day.events.forEach((event, index) => {
+        event.date = FormatDate(iteratedDate);
         event.position = index;
-        event.date = currentDate;
+        updateEvent.mutate({ eventId: event.id, event: { date: event.date, position: event.position } });
       });
 
       iteratedDate.setDate(iteratedDate.getDate() + 1);
     });
 
-    setActiveTrip({ itinerary: _itinerary, ...tripInfo });
+    document.getElementById("grabbing")?.remove();
+  }
+
+  function handleDragOver({ active, over }: DragOverEvent) {
+    if (over === null) return;
+
+    const activeId = active?.id as string;
+    const overId = over?.id as string;
+    if (!activeId || !overId || activeId === overId) return;
+
+    const activeType = GetDragType(active);
+    const overType = GetDragType(over);
+
+    const activeIndex = GetIndex(itinerary, events, activeType, activeId);
+    if (activeIndex < 0) return;
+    const activeDate = GetItem(itinerary, events, activeId)?.date;
+    if (typeof activeDate === "undefined") return;
+
+    const overIndex = GetIndex(itinerary, events, overType, overId);
+    if (overIndex < 0) return;
+    const overDate = GetItem(itinerary, events, overId)?.date;
+    if (typeof overDate === "undefined") return;
+
+    let newItinerary;
+    if (activeType === "day" && overType === "day") {
+      newItinerary = arrayMove(itinerary, activeIndex, overIndex);
+    } else if (activeType === "event" && overType === "day") {
+      newItinerary = EventOverDay(
+        itinerary,
+        events,
+        activeId,
+        activeIndex,
+        FormatDate(activeDate),
+        overIndex,
+        FormatDate(overDate)
+      );
+    } else if (activeType === "event" && overType === "event") {
+      newItinerary = EventOverEvent(
+        itinerary,
+        events,
+        activeId,
+        activeIndex,
+        FormatDate(activeDate),
+        overId,
+        overIndex,
+        FormatDate(overDate)
+      );
+    }
+
+    if (!newItinerary) return;
+
+    const iteratedDate = new Date(tripInfo.startDate);
+    newItinerary.forEach((day: Day) => {
+      const currentDate = FormatDate(iteratedDate);
+
+      day.date = currentDate;
+
+      day.events.forEach((event, index) => {
+        event.date = currentDate;
+        event.position = index;
+      });
+
+      iteratedDate.setDate(iteratedDate.getDate() + 1);
+    });
+
+    setActiveTrip({ itinerary: newItinerary, ...tripInfo });
   }
 
   const value = {
@@ -169,7 +186,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   };
 
   return (
-    <div className="flex w-[calc(100vw-19rem)] flex-col gap-10">
+    <div className="flex flex-col gap-10">
       <DndDataContext.Provider value={value}>
         <DndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
           <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
@@ -178,14 +195,14 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
             <EventEditableDetails />
 
             <ul className="flex w-full min-w-fit flex-col">
-              {daysId?.map((dayId: string) => (
+              {daysId?.map((dayId) => (
                 <DndDay key={dayId} day={GetDay(itinerary, dayId)} />
               ))}
               <CalendarEnd totalDays={tripInfo.days} />
             </ul>
           </SortableContext>
 
-          {typeof activeId === "string" && daysId?.includes(activeId) ? (
+          {typeof activeId === "string" && daysId.includes(activeId) ? (
             <DragOverlay
               modifiers={[restrictToVerticalAxis, restrictToParentElement]}
               dropAnimation={{
@@ -193,7 +210,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
-              <DndDayComponent day={GetDay(itinerary, activeId)} dragOverlay={true} />
+              <DayComponent day={GetDay(itinerary, activeId)} dragOverlay={true} />
             </DragOverlay>
           ) : null}
 
@@ -204,7 +221,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
-              <DndEventComponent event={GetEvent(events, activeId)} dragOverlay={true} />
+              <EventComponent event={GetEvent(events, activeId)} dragOverlay={true} />
             </DragOverlay>
           ) : null}
         </DndContext>
@@ -239,25 +256,25 @@ const DndDay = memo(function Day({ day, ...props }: { day: Day }) {
         transition,
       }}
       className={`group/calendar ${
-        id === activeId
-          ? "h-[8.25rem] rounded-r-[0.625rem] border-2 border-dashed border-kolumblue-300 bg-kolumblue-100/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter"
-          : "z-10"
+        id !== activeId
+          ? "z-10"
+          : "h-[8.25rem] rounded-r-[0.625rem] border-2 border-dashed border-kolumblue-300 bg-kolumblue-100/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter first:rounded-tl-[0.625rem]"
       }`}
     >
-      {id === activeId ? null : (
-        <DndDayComponent ref={setActivatorNodeRef} day={day} {...attributes} {...listeners} {...props} />
-      )}
+      {id !== activeId ? (
+        <DayComponent ref={setActivatorNodeRef} day={day} {...attributes} {...listeners} {...props} />
+      ) : null}
     </li>
   );
 });
 
-type DndDayComponentProps = {
+type DayComponentProps = {
   day: Day;
   dragOverlay?: boolean;
 };
-const DndDayComponent = memo(
+const DayComponent = memo(
   forwardRef(function DndDayContentComponent(
-    { day, dragOverlay, ...props }: DndDayComponentProps,
+    { day, dragOverlay, ...props }: DayComponentProps,
     ref: ForwardedRef<HTMLDivElement>
   ) {
     const {
@@ -269,7 +286,7 @@ const DndDayComponent = memo(
     const { id, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
-    const dayIndex: number = GetIndex(activeTrip.itinerary, events, "day", day.id);
+    const dayIndex = GetIndex(activeTrip.itinerary, events, "day", day.id);
 
     const handleAddEvent = () => {
       setAddEventShown(true);
@@ -287,7 +304,7 @@ const DndDayComponent = memo(
           }`}
         >
           <SortableContext items={dayEventsId} strategy={horizontalListSortingStrategy}>
-            {dayEventsId?.map((eventId: string) => (
+            {dayEventsId?.map((eventId) => (
               <DndEvent key={eventId} event={events.find((event: Event) => event.id === eventId)!} />
             ))}
           </SortableContext>
@@ -309,7 +326,7 @@ const DndDayComponent = memo(
 //#endregion
 
 //#region Event
-export const DndEvent = memo(function DndEvent({ event }: { event: Event }) {
+const DndEvent = memo(function DndEvent({ event }: { event: Event }) {
   const { activeId } = useDndData();
   const id = event.id;
 
@@ -333,17 +350,17 @@ export const DndEvent = memo(function DndEvent({ event }: { event: Event }) {
         id !== activeId ? "z-10" : "z-20 border-2 border-dashed border-gray-300 bg-gray-50"
       }`}
     >
-      {id !== activeId && <DndEventComponent event={event} {...listeners} {...attributes} />}
+      {id !== activeId && <EventComponent event={event} {...listeners} {...attributes} />}
     </li>
   );
 });
 
-type DndEventComponentProps = {
+type EventComponentProps = {
   event: Event;
   dragOverlay?: boolean;
 };
-export const DndEventComponent = memo(
-  forwardRef<HTMLDivElement, DndEventComponentProps>(
+const EventComponent = memo(
+  forwardRef<HTMLDivElement, EventComponentProps>(
     ({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
       const { dispatchUserTrips, selectedTrip, activeTrip, setActiveEvent } = useDndData();
 
@@ -391,6 +408,7 @@ export const DndEventComponent = memo(
 
           <input
             type="text"
+            name="event-name"
             value={event.name}
             placeholder="-"
             onClick={() => navigator.clipboard.writeText(event.name)}
