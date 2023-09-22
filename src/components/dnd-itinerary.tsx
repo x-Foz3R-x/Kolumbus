@@ -3,7 +3,7 @@
 import { ForwardedRef, createContext, forwardRef, memo, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 
-import { DndContext, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import {
   arrayMove,
   horizontalListSortingStrategy,
@@ -63,6 +63,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   const [isEventComposerShown, setEventComposerShown] = useState(false);
   const [addEventDayIndex, setAddEventDayIndex] = useState(0);
 
+  const [apiUpdate, setApiUpdate] = useState<{ type: "day^day" | "event^day" | "event^event" } | null>(null);
   const updateEvent = api.event.update.useMutation();
 
   const { itinerary, ...tripInfo } = activeTrip;
@@ -85,21 +86,68 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     }
   }
 
-  function handleDragEnd() {
+  function handleDragEnd({ collisions }: DragEndEvent) {
     setActiveId(null);
-
-    const iteratedDate = new Date(tripInfo.startDate);
-    itinerary.forEach((day: Day) => {
-      day.events.forEach((event, index) => {
-        event.date = FormatDate(iteratedDate);
-        event.position = index;
-        updateEvent.mutate({ eventId: event.id, event: { date: event.date, position: event.position } });
-      });
-
-      iteratedDate.setDate(iteratedDate.getDate() + 1);
-    });
-
     document.getElementById("grabbing")?.remove();
+
+    if (apiUpdate === null) return;
+    const { type } = apiUpdate;
+    console.log(type);
+
+    // console.log("collisions", collisions);
+    // console.log("active", active);
+    // console.log("over", over);
+    if (apiUpdate.type === "day^day") {
+      if (collisions === null) return;
+      const newActiveIndex = collisions[0].data?.droppableContainer.data.current.sortable.index;
+      const newOverIndex = collisions[1].data?.droppableContainer.data.current.sortable.index;
+
+      itinerary[newActiveIndex].events.forEach((event) => {
+        updateEvent.mutate({
+          eventId: event.id,
+          event: { date: FormatDate(event.date), position: event.position },
+        });
+      });
+      itinerary[newOverIndex].events.forEach((event) => {
+        updateEvent.mutate({
+          eventId: event.id,
+          event: { date: FormatDate(event.date), position: event.position },
+        });
+      });
+    } else {
+      const iteratedDate = new Date(tripInfo.startDate);
+      itinerary.forEach((day: Day) => {
+        day.events.forEach((event, index) => {
+          event.date = FormatDate(iteratedDate);
+          event.position = index;
+          updateEvent.mutate({ eventId: event.id, event: { date: event.date, position: event.position } });
+        });
+
+        iteratedDate.setDate(iteratedDate.getDate() + 1);
+      });
+    }
+    // if (apiUpdate?.type === "event^day") {
+    //   if (collisions === null) return;
+
+    //   let activeEventDayIndex;
+    //   if (collisions.length > 2) {
+    //     activeEventDayIndex = collisions[1].data?.droppableContainer.data.current.sortable.index;
+    //   } else {
+    //     activeEventDayIndex = over?.data.current?.sortable.index;
+    //   }
+
+    //   console.log(activatorEvent);
+    //   // const newOverIndex = collisions[1].data?.droppableContainer.data.current.sortable.index;
+    //   // console.log(newOverIndex);
+
+    //   itinerary[activeEventDayIndex].events.forEach((event) => {
+    //     updateEvent.mutate({
+    //       eventId: event.id,
+    //       event: { date: FormatDate(event.date), position: event.position },
+    //     });
+    //   });
+    // }
+    setApiUpdate(null);
   }
 
   function handleDragOver({ active, over }: DragOverEvent) {
@@ -125,6 +173,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     let newItinerary;
     if (activeType === "day" && overType === "day") {
       newItinerary = arrayMove(itinerary, activeIndex, overIndex);
+      setApiUpdate({ type: "day^day" });
     } else if (activeType === "event" && overType === "day") {
       newItinerary = EventOverDay(
         itinerary,
@@ -135,6 +184,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
         overIndex,
         FormatDate(overDate)
       );
+      setApiUpdate({ type: "event^day" });
     } else if (activeType === "event" && overType === "event") {
       newItinerary = EventOverEvent(
         itinerary,
@@ -146,6 +196,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
         overIndex,
         FormatDate(overDate)
       );
+      setApiUpdate({ type: "event^event" });
     }
 
     if (!newItinerary) return;
@@ -155,7 +206,6 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
       const currentDate = FormatDate(iteratedDate);
 
       day.date = currentDate;
-
       day.events.forEach((event, index) => {
         event.date = currentDate;
         event.position = index;
