@@ -44,7 +44,7 @@ export function Modal({ showModal, modalChildren }: ModalProps) {
     >
       <div
         className={`
-          "relative max-w-lg overflow-hidden rounded-lg bg-white text-left shadow-xxxl duration-300 ease-kolumb-flow ${
+          "relative shadow-3xl max-w-lg overflow-hidden rounded-lg bg-white text-left duration-300 ease-kolumb-flow ${
             showModal ? "opacity-100 " : "opacity-0"
           }`}
       >

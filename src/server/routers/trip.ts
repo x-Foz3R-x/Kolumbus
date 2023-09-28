@@ -8,11 +8,10 @@ import type { Trip, Event } from "@/types";
 
 // Define a schema for the Trip model
 const tripSchema = z.object({
-  id: z.string().optional(),
   userId: z.string().optional(),
   name: z.string().optional(),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
   days: z.number().optional(),
   position: z.number().optional(),
 });
@@ -65,7 +64,7 @@ const trip = router({
     return trips as Trip[];
   }),
   update: protectedProcedure
-    .input(z.object({ tripId: z.string(), data: tripSchema }))
+    .input(z.object({ tripId: z.string().cuid2("Invalid trip id"), data: tripSchema }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.id) return;
 

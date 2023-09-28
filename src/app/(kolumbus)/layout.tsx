@@ -1,14 +1,18 @@
 import { AppdataProvider } from "@/context/appdata";
 
 import Header from "@/components/layouts/header";
+import UnsupportedWidth from "@/components/layouts/unsupportedWidth";
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="overflow-hidden font-inter">
-      <AppdataProvider>
-        <Header />
-        {children}
-      </AppdataProvider>
-    </div>
+    <>
+      <div className="supported-width overflow-hidden font-inter">
+        <AppdataProvider>
+          <Header />
+          {children}
+        </AppdataProvider>
+      </div>
+      <UnsupportedWidth />
+    </>
   );
 }

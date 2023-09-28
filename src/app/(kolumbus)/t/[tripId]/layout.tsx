@@ -7,10 +7,10 @@ type LayoutProps = {
 
 export default function Layout({ params: { tripId }, children }: LayoutProps) {
   return (
-    <div className="relative flex bg-white">
+    <div className="relative flex h-full bg-white">
       <SidebarMenu tripId={tripId} />
 
-      <div className="pointer-events-none absolute left-[14rem] top-0 z-30 h-full rounded-tl-lg shadow-kolumblueInset"></div>
+      <div className="pointer-events-none absolute left-56 top-0 z-30 h-full w-[calc(100vw-14rem)] rounded-tl-lg shadow-kolumblueInset"></div>
 
       <main
         style={

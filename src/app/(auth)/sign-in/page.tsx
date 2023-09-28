@@ -10,8 +10,9 @@ import AuthProviders from "@/components/auth-providers";
 import Checkbox from "@/components/ui/checkbox/checkbox";
 import Input from "@/components/ui/input";
 import Icon from "@/components/icons";
+import Divider from "@/components/ui/divider";
 
-export default function SignUp() {
+export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const { signOut } = useClerk();
 
@@ -59,32 +60,30 @@ export default function SignUp() {
             id="email"
             name="email"
             type="email"
-            autoComplete="email"
-            autoCorrect="off"
-            spellCheck="false"
-            Size="lg"
-            className="mb-px rounded-b-none"
             placeholder="E-mail"
             onChange={(e) => {
               setEmail(e.target.value);
               console.log("validate email");
             }}
+            autoComplete="email"
+            autoCorrect="off"
+            spellCheck="false"
+            className="mb-px rounded-lg rounded-b-none px-4 py-3 text-base"
           />
 
           <Input
             id="password"
             name="password"
             type="password"
-            autoComplete="current-password"
-            autoCorrect="off"
-            spellCheck="false"
-            Size="lg"
-            className="mb-px rounded-t-none pr-12"
             placeholder="Password"
             onChange={(e) => {
               setPassword(e.target.value);
               console.log("validate password");
             }}
+            autoComplete="current-password"
+            autoCorrect="off"
+            spellCheck="false"
+            className="mb-px rounded-lg rounded-t-none px-4 py-3 pr-12 text-base"
           />
         </div>
 
@@ -100,7 +99,8 @@ export default function SignUp() {
         </button>
       </form>
 
-      <Icon.separator className="my-6 mt-4 w-80" />
+      <Divider gradient className="my-6 mt-4 w-80" />
+
       <AuthProviders />
       <div className="mt-6 flex flex-col items-center justify-center text-xs">
         <Link href="/" className="text-kolumblue-600 hover:underline">

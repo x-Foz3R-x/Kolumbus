@@ -26,3 +26,17 @@ input:-webkit-autofill:focus {
   box-shadow: 0 0 0px 1000px hsla(210, 78%, 60%, 0.1) inset, 0 0 0 1px hsla(210, 78%, 60%),
     0 0 0 3px hsla(210, 78%, 60%, 0.3);
 }
+
+/* Any component with className .sm-screen below 850px screen width will not be displayed */
+@media (max-width: 850px) {
+  .supported-width {
+    display: none;
+  }
+}
+
+/* Any component with className .unsupported-width abowe 850px screen width will not be displayed */
+@media (min-width: 850px) {
+  .unsupported-width {
+    display: none;
+  }
+}

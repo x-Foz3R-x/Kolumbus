@@ -6,8 +6,7 @@ export default function useKeyPress(targetKey: string) {
 
   useEffect(() => {
     const downHandler = (event: KeyboardEvent) => {
-      if (event.key === Key.DownArrow || event.key === Key.UpArrow)
-        event.preventDefault();
+      if (event.key === Key.ArrowDown || event.key === Key.ArrowUp) event.preventDefault();
 
       if (event.key === targetKey) setKeyPressed(true);
     };

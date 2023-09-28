@@ -1,7 +1,7 @@
 export * from "./appdata";
 export * from "./google";
 
-export interface SvgProps extends React.SVGAttributes<HTMLOrSVGElement> {}
+export type SvgProps = React.SVGAttributes<HTMLOrSVGElement>;
 
 export enum Language {
   English = "en",
@@ -9,10 +9,10 @@ export enum Language {
 }
 
 export enum UserRole {
-  ADMIN = "admin",
-  TESTER = "tester",
-  PREMIUM = "premium",
-  USER = "user",
+  ADMIN = "ADMIN",
+  TESTER = "TESTER",
+  PREMIUM = "PREMIUM",
+  USER = "USER",
 }
 
 export enum Key {
@@ -24,13 +24,13 @@ export enum Key {
   Alt_Option = "Alt",
   CapsLock = "CapsLock",
   Escape = "Escape",
-  Space = "",
+  Space = "Space",
   End = "End",
   Home = "Home",
-  LeftArrow = "ArrowLeft",
-  UpArrow = "ArrowUp",
-  RightArrow = "ArrowRight",
-  DownArrow = "ArrowDown",
+  ArrowLeft = "ArrowLeft",
+  ArrowUp = "ArrowUp",
+  ArrowRight = "ArrowRight",
+  ArrowDown = "ArrowDown",
   Insert = "Insert",
   Delete = "Delete",
 }

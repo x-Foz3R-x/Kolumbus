@@ -6,7 +6,7 @@ import { protectedProcedure, router } from "../trpc";
 // Define a schema for the Event model
 const eventSchema = z.object({
   name: z.string().optional(),
-  date: z.string().optional(),
+  date: z.string().datetime().optional(),
   address: z.string().optional(),
   cost: z.number().optional(),
   phoneNumber: z.string().optional(),
@@ -19,29 +19,29 @@ const eventSchema = z.object({
 });
 
 const event = router({
-  getAll: protectedProcedure.input(z.object({ tripId: z.string() })).query(async ({ ctx, input }) => {
-    if (!ctx.user.id) return;
-
-    const events = await prisma.event.findMany({
-      where: {
-        tripId: input.tripId,
-      },
-      orderBy: [
-        {
-          date: "asc",
-        },
-        { position: "asc" },
-      ],
-    });
-
-    return events;
-  }),
-  update: protectedProcedure
-    .input(z.object({ eventId: z.string(), event: eventSchema }))
-    .mutation(async ({ ctx, input }) => {
+  getAll: protectedProcedure
+    .input(z.object({ tripId: z.string().cuid2("Invalid trip id") }))
+    .query(async ({ ctx, input }) => {
       if (!ctx.user.id) return;
 
-      console.log("update");
+      const events = await prisma.event.findMany({
+        where: {
+          tripId: input.tripId,
+        },
+        orderBy: [
+          {
+            date: "asc",
+          },
+          { position: "asc" },
+        ],
+      });
+
+      return events;
+    }),
+  update: protectedProcedure
+    .input(z.object({ eventId: z.string().uuid("Invalid event id"), event: eventSchema }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.user.id) return;
 
       await prisma.event.update({
         where: {

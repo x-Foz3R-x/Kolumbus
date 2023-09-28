@@ -49,7 +49,7 @@ export function Dropdown({ isModalOpen, setIsModalOpen, className, children }: D
       aria-haspopup={true}
       aria-hidden={isModalOpen}
       className={
-        "modal flex-col rounded-xl bg-white shadow-xxl " + (isModalOpen ? "flex " : "hidden ") + className
+        "modal flex-col rounded-xl bg-white shadow-2xl " + (isModalOpen ? "flex " : "hidden ") + className
       }
     >
       {children}
@@ -120,7 +120,7 @@ export const Dropdown2 = {
       role="listbox"
       aria-label="Dropdown List"
       style={{ height: height + 12 }}
-      className={`absolute left-1/2 mt-1 origin-top -translate-x-1/2 overflow-scroll rounded-lg bg-white p-1.5 shadow-borderXxl ${
+      className={`shadow-border2xl absolute left-1/2 mt-1 origin-top -translate-x-1/2 overflow-scroll rounded-lg bg-white p-1.5 ${
         showList
           ? "scale-y-100 opacity-100 duration-300 ease-kolumb-flow"
           : "pointer-events-none scale-y-50 opacity-0 duration-200 ease-kolumb-leave"

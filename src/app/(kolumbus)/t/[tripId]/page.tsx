@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect } from "react";
-// import { createPortal } from "react-dom";
+import { createPortal } from "react-dom";
 
 import useAppdata from "@/context/appdata";
 
 import DndItinerary from "@/components/dnd-itinerary";
 import ActionBar from "@/components/itinerary/action-bar";
-// import { Modal } from "@/components/ui/modal";
+import { Modal } from "@/components/ui/modal";
 import { FindTripIndex } from "@/lib/utils";
 import { ItinerarySkeleton } from "@/components/loading/itinerary-skeleton";
 

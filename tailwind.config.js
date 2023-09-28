@@ -12,7 +12,8 @@ module.exports = {
         inconsolata: "var(--font-inconsolata)",
       },
       animation: {
-        appear: "appear 500ms cubic-bezier(0.175, 0.75, 0.32, 1)",
+        appear: "appear 700ms cubic-bezier(0.175, 0.75, 0.32, 1)",
+        slideIn: "slideIn 400ms cubic-bezier(0.175, 0.5, 0.32, 1.275)",
         verticalScaleIn: "verticalScaleIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
         horizontalScaleIn: "horizontalScaleIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
       },
@@ -31,6 +32,18 @@ module.exports = {
             opacity: "1",
             transform: "translateY(0)",
             transformOrigin: "bottom",
+          },
+        },
+        slideIn: {
+          "0%": {
+            opacity: "0",
+            transformOrigin: "left",
+            transform: "translate(-1.5rem, -0.5rem) skew(3deg, 6deg) scale(0.75, 1)",
+          },
+          "100%": {
+            opacity: "1",
+            transformOrigin: "left",
+            transform: "translate(0, 0) skew(0deg, 0deg) scale(1, 1)",
           },
         },
         verticalScaleIn: {
@@ -61,17 +74,19 @@ module.exports = {
       md: "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 12px 12px rgba(15,15,15,0.01)",
       lg: "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 12px 12px rgba(15,15,15,0.01)",
       xl: "0 0 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.02)",
-      xxl: "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
-      xxxl: "0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02)",
+      "2xl":
+        "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
+      "3xl":
+        "0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02)",
 
       splashXl:
         "0 0 5px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02), 4px 0 4px rgba(15,15,15,0.02), 8px 0 8px rgba(15,15,15,0.02), -4px 0 4px rgba(15,15,15,0.02), -8px 0 8px rgba(15,15,15,0.02)",
 
       borderXl:
         "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.02)",
-      borderXxl:
+      border2xl:
         "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.03), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
-      borderXxxl:
+      border3xl:
         "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 12px 12px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.05)",
 
       borderSplashXl:

@@ -8,7 +8,7 @@ const Dialog = {
     return (
       <div
         ref={ref}
-        className={`absolute z-20 rounded-xl bg-white shadow-borderXxxl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter ${className}`}
+        className={`shadow-border3xl absolute z-20 rounded-xl bg-white backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter ${className}`}
         {...props}
       >
         {children}

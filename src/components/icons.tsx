@@ -8,12 +8,6 @@ import { SvgProps } from "@/types";
 // name: ({ ...props }: SvgProps) => (),
 
 const Icon = {
-  separator: ({ className, ...props }: SvgProps) => (
-    <div
-      className={`h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent ${className}`}
-      {...props}
-    />
-  ),
   defaultTrip: ({ ...props }: SvgProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" {...props}>
       <path d="M10.5,2L8,0V14l2.5-2h3.5V2h-3.5Zm1.5,8h-1.5V4h1.5v6ZM4,2.6667V11.3333l-2-.5833V3.25l2-.5833M6,0L0,1.75V12.25l6,1.75V0h0Z" />

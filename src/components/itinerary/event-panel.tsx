@@ -1,7 +1,6 @@
 import Dialog from "@/components/ui/dialog";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Input2 } from "@/components/ui/input";
 import { useDndData } from "@/components/dnd-itinerary";
 import { currencyList } from "@/config/currency";
 import { DropdownSelect } from "@/components/ui/dropdown";
@@ -89,14 +88,14 @@ export default function EventEditableDetails() {
           className="h-28 rounded-t-lg object-cover object-center shadow-border"
         />
 
-        <Input2.Unstyled
+        {/* <Input2.Unstyled
           type="text"
           value={activeEvent?.display_name}
           placeholder="Name your event"
           width={218}
           onValueChange={handleDisplayNameChange}
           className="mt-1 p-1 text-sm focus:border-kolumblue-500"
-        />
+        /> */}
       </div>
 
       <div className="p-2">
@@ -128,22 +127,22 @@ export default function EventEditableDetails() {
 
         <div className="mb-3"></div>
 
-        <Input2.WithInsetLabel
+        {/* <Input2.WithInsetLabel
           type="text"
           value=""
           label="Address"
           width={210}
           onChange={() => {}}
           className="mb-px rounded-t-md"
-        />
-        <Input2.WithInsetLabel
+        /> */}
+        {/* <Input2.WithInsetLabel
           type="text"
           value=""
           label="Website"
           width={210}
           onChange={() => {}}
           className="rounded-b-md"
-        />
+        /> */}
         {/* <br />
         <div>start/end time: | </div>
         <div>duration (in hrs):</div> */}

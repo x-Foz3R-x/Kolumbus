@@ -23,7 +23,7 @@ type RootLayoutProps = { children: React.ReactNode };
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" style={{ fontSize: "16px" }}>
         <body
           className={`scroll-smooth fill-gray-900 text-gray-900 antialiased ${gordita.className} ${gordita.variable} ${adso.variable} ${inter.variable} ${inconsolata.variable}
           `}

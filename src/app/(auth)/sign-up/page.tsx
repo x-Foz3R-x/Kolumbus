@@ -91,64 +91,65 @@ export default function SignUp() {
             <Input
               id="username"
               name="username"
-              autoComplete="username"
-              autoCorrect="off"
-              spellCheck="false"
-              Size="insetLabelLg"
-              className="mb-px rounded-b-none"
+              type="text"
               label="Username *"
               onChange={(e) => {
                 setUsername(e.target.value);
                 console.log("validate username");
               }}
+              variant="insetLabel"
+              className="mb-px rounded-b-none"
+              autoComplete="username"
+              autoCorrect="off"
+              spellCheck="false"
             />
 
             <Input
               id="email"
               name="email"
               type="email"
-              autoComplete="email"
-              autoCorrect="off"
-              spellCheck="false"
-              Size="insetLabelLg"
-              className="mb-px rounded-none"
               label="E-mail *"
               onChange={(e) => {
                 setEmail(e.target.value);
                 console.log("validate email");
               }}
+              variant="insetLabel"
+              className="mb-px rounded-none"
+              autoComplete="email"
+              autoCorrect="off"
+              spellCheck="false"
             />
 
             <Input
               id="password"
               name="password"
               type="password"
-              autoComplete="new-password"
-              autoCorrect="off"
-              spellCheck="false"
-              Size="insetLabelLg"
-              className="mb-px rounded-none"
               label="Password *"
               onChange={(e) => {
                 setPassword(e.target.value);
                 console.log("validate password");
               }}
+              variant="insetLabel"
+              className="mb-px rounded-none"
+              autoComplete="new-password"
+              autoCorrect="off"
+              spellCheck="false"
             />
 
             <Input
               id="confirm-password"
               name="confirm-password"
               type="password"
-              autoComplete="new-password"
-              autoCorrect="off"
-              spellCheck="false"
-              Size="insetLabelLg"
-              className="rounded-t-none pr-12"
               label="Confirm Password *"
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
                 console.log("validate confirm password");
               }}
+              variant="insetLabel"
+              className="rounded-t-none pr-12"
+              autoComplete="new-password"
+              autoCorrect="off"
+              spellCheck="false"
             />
           </div>
 
@@ -200,10 +201,10 @@ export default function SignUp() {
         <form className="relative flex w-[22rem] flex-shrink-0 flex-col gap-6">
           <div className="rounded-lg shadow-soft">
             <Input
-              Size="insetLabelLg"
               value={code}
               label="Verification code"
               onChange={(e) => setCode(e.target.value)}
+              variant="insetLabel"
             />
           </div>
 

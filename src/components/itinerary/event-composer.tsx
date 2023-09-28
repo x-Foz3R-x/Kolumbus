@@ -1,16 +1,14 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-
 import cuid2 from "@paralleldrive/cuid2";
+
 import { useAnyCloseActions } from "@/hooks/use-accessibility-features";
 import { useDndData } from "../dnd-itinerary";
-import { eventTemplate } from "@/config/template-data";
-import { Event, Language, Place, PlaceFieldsGroup, PlacesDetailsStatus, UT } from "@/types";
 
-import Icon from "../icons";
-import GooglePlaceAutocomplete from "../google-place-autocomplete";
+import LocationSearchBox from "../location-search-box";
 import { RadioIconsInline } from "../ui/radio";
+import Icon from "../icons";
 
 export default function EventComposer() {
   const {
@@ -43,7 +41,7 @@ export default function EventComposer() {
     terms: { offset: number; value: string }[];
     types: string[];
   }
-  // async function onAddEvent(item: { value: string } | PlacePrediction) {
+  // async function handleAddEvent(item: { value: string } | PlacePrediction) {
   //   const event: Event = { ...eventTemplate };
   //   event.date = activeTrip.itinerary[addEventDayIndex].date;
 
@@ -103,17 +101,19 @@ export default function EventComposer() {
   //   setEventComposerShown(false);
   // }
 
-  return isEventComposerShown ? (
-    <div
+  return (
+    <section
       ref={ref}
       style={{
         top: addEventDayIndex * 132 + 108,
-        left: 180,
+        left: 172,
       }}
-      className="absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-xl duration-300 ease-kolumb-flow"
+      className={`absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-borderXl duration-300 ease-kolumb-flow ${
+        isEventComposerShown ? "opacity-100" : "hidden select-none opacity-0"
+      }`}
     >
       <section className={`flex flex-1 items-end justify-between p-2 pb-[10px] text-center text-sm`}>
-        <RadioIconsInline
+        {/* <RadioIconsInline
           title="type"
           name="event_type"
           setValue={setSearchPlaceholder}
@@ -139,9 +139,9 @@ export default function EventComposer() {
               element: <Icon.carPlane className="h-4 w-[18px]" />,
             },
           ]}
-        />
+        /> */}
 
-        <RadioIconsInline
+        {/* <RadioIconsInline
           title="place at"
           name="event_placement"
           setValue={setPlaceAt}
@@ -155,12 +155,10 @@ export default function EventComposer() {
               element: <Icon.x className="h-4 w-4 p-[2px]" />,
             },
           ]}
-        />
+        /> */}
       </section>
 
-      <GooglePlaceAutocomplete onAdd={() => {}} placeholder={searchPlaceholder} sessionToken={sessionToken} />
-    </div>
-  ) : (
-    <></>
+      <LocationSearchBox onAdd={() => {}} placeholder={searchPlaceholder} sessionToken={sessionToken} />
+    </section>
   );
 }

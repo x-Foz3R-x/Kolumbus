@@ -14,16 +14,16 @@ import {
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 
+import api from "@/app/_trpc/client";
 import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType } from "@/lib/dnd";
 import { FormatDate } from "@/lib/utils";
 
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
-import EventEditableDetails from "./itinerary/event-editable-details";
+import EventEditableDetails from "./itinerary/event-panel";
 import Icon from "./icons";
 
 import type { DispatchAction, Trip, Day, Event } from "@/types";
-import api from "@/app/_trpc/client";
 
 const DndDataContext = createContext<{
   dispatchUserTrips: React.Dispatch<DispatchAction>;
@@ -91,62 +91,36 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     document.getElementById("grabbing")?.remove();
 
     if (apiUpdate === null) return;
-    const { type } = apiUpdate;
-    console.log(type);
 
-    // console.log("collisions", collisions);
-    // console.log("active", active);
-    // console.log("over", over);
-    if (apiUpdate.type === "day^day") {
-      if (collisions === null) return;
-      const newActiveIndex = collisions[0].data?.droppableContainer.data.current.sortable.index;
-      const newOverIndex = collisions[1].data?.droppableContainer.data.current.sortable.index;
-
-      itinerary[newActiveIndex].events.forEach((event) => {
-        updateEvent.mutate({
-          eventId: event.id,
-          event: { date: FormatDate(event.date), position: event.position },
-        });
-      });
-      itinerary[newOverIndex].events.forEach((event) => {
-        updateEvent.mutate({
-          eventId: event.id,
-          event: { date: FormatDate(event.date), position: event.position },
-        });
-      });
-    } else {
-      const iteratedDate = new Date(tripInfo.startDate);
-      itinerary.forEach((day: Day) => {
-        day.events.forEach((event, index) => {
-          event.date = FormatDate(iteratedDate);
-          event.position = index;
-          updateEvent.mutate({ eventId: event.id, event: { date: event.date, position: event.position } });
-        });
-
-        iteratedDate.setDate(iteratedDate.getDate() + 1);
-      });
-    }
-    // if (apiUpdate?.type === "event^day") {
+    // if (apiUpdate.type === "day^day") {
     //   if (collisions === null) return;
+    //   const newActiveIndex = collisions[0].data?.droppableContainer.data.current.sortable.index;
+    //   const newOverIndex = collisions[1].data?.droppableContainer.data.current.sortable.index;
 
-    //   let activeEventDayIndex;
-    //   if (collisions.length > 2) {
-    //     activeEventDayIndex = collisions[1].data?.droppableContainer.data.current.sortable.index;
-    //   } else {
-    //     activeEventDayIndex = over?.data.current?.sortable.index;
-    //   }
-
-    //   console.log(activatorEvent);
-    //   // const newOverIndex = collisions[1].data?.droppableContainer.data.current.sortable.index;
-    //   // console.log(newOverIndex);
-
-    //   itinerary[activeEventDayIndex].events.forEach((event) => {
+    //   itinerary[newActiveIndex].events.forEach((event) => {
     //     updateEvent.mutate({
     //       eventId: event.id,
     //       event: { date: FormatDate(event.date), position: event.position },
     //     });
     //   });
+    //   itinerary[newOverIndex].events.forEach((event) => {
+    //     updateEvent.mutate({
+    //       eventId: event.id,
+    //       event: { date: FormatDate(event.date), position: event.position },
+    //     });
+    //   });
+    // } else {
     // }
+    const iteratedDate = new Date(tripInfo.startDate);
+    itinerary.forEach((day: Day) => {
+      day.events.forEach((event, index) => {
+        event.date = FormatDate(iteratedDate);
+        event.position = index;
+        updateEvent.mutate({ eventId: event.id, event: { date: event.date, position: event.position } });
+      });
+
+      iteratedDate.setDate(iteratedDate.getDate() + 1);
+    });
     setApiUpdate(null);
   }
 
@@ -364,7 +338,7 @@ const DayComponent = memo(
             style={{
               left: eventWidthAndGap * dayEventsId.length,
             }}
-            className="group absolute z-30 flex h-28 w-8 flex-col items-center justify-center rounded-[0.625rem] bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-flow hover:shadow-xxl"
+            className="group absolute z-30 flex h-28 w-8 flex-col items-center justify-center rounded-[0.625rem] bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-flow hover:shadow-2xl"
           >
             <Icon.plus className="h-4 w-4 fill-gray-300 duration-150 ease-kolumb-flow group-hover:fill-gray-600" />
           </button>
