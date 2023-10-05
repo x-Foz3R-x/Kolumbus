@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { easepick, AmpPlugin, RangePlugin, LockPlugin, DateTime } from "@easepick/bundle";
 
 import useAppdata from "@/context/appdata";
-import { CalculateDays, FormatDate } from "@/lib/utils";
+import { CalculateDays } from "@/lib/utils";
 import { UT } from "@/types";
 
 import Icon from "../icons";
@@ -62,8 +62,8 @@ export default function DatePicker() {
       if (startDate === pickedStartDate && endDate === pickedEndDate) return;
 
       const currentTrip = userTrips[selectedTrip];
-      currentTrip.startDate = FormatDate(pickedStartDate);
-      currentTrip.endDate = FormatDate(pickedEndDate);
+      currentTrip.startDate = pickedStartDate.toISOString();
+      currentTrip.endDate = pickedEndDate.toISOString();
       currentTrip.days = CalculateDays(pickedStartDate, pickedEndDate);
 
       if (startDate >= pickedStartDate && endDate <= pickedEndDate) {

@@ -1,13 +1,10 @@
 import { z } from "zod";
-
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { GenerateItinerary } from "@/lib/utils";
+import { ItinerarySchema } from "@/types";
 
-import type { Trip, Event } from "@/types";
-
-// Define a schema for the Trip model
-const tripSchema = z.object({
+const TripSchema = z.object({
   userId: z.string().optional(),
   name: z.string().optional(),
   startDate: z.string().datetime().optional(),
@@ -16,7 +13,35 @@ const tripSchema = z.object({
   position: z.number().optional(),
 });
 
+type ServerTrip = z.infer<typeof ServerTrip>;
+const ServerTrip = z.object({
+  id: z.string().cuid2("Not a cuid2"),
+  userId: z.string(),
+
+  name: z.string(),
+  startDate: z.date(),
+  endDate: z.date(),
+  days: z.number(),
+  position: z.number(),
+  itinerary: ItinerarySchema,
+
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
 const trip = router({
+  find: protectedProcedure.input(z.object({ tripId: z.string() })).query(async ({ ctx, input }) => {
+    if (!ctx.user.id) return;
+
+    const trips = await prisma.trip.findFirst({
+      where: {
+        id: input.tripId,
+        userId: ctx.user.id,
+      },
+    });
+
+    return trips;
+  }),
   getAll: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.user.id) return;
 
@@ -46,7 +71,7 @@ const trip = router({
     for (let i = 0; i < trips.length; i++) {
       const trip = trips[i];
 
-      const events: Event[] = await prisma.event.findMany({
+      const events = await prisma.event.findMany({
         where: {
           tripId: trip.id,
         },
@@ -56,15 +81,18 @@ const trip = router({
           },
           { position: "asc" },
         ],
+        include: {
+          place: true,
+        },
       });
 
-      (trip as Trip).itinerary = GenerateItinerary(trip, events);
+      (trip as ServerTrip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.days, events);
     }
 
-    return trips as Trip[];
+    return trips as ServerTrip[];
   }),
   update: protectedProcedure
-    .input(z.object({ tripId: z.string().cuid2("Invalid trip id"), data: tripSchema }))
+    .input(z.object({ tripId: z.string().cuid2("Invalid trip id"), data: TripSchema }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.id) return;
 

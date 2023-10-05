@@ -78,6 +78,20 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
         return newTrips;
       }
       return trips;
+    case UT.ADD_EVENT:
+      if (action.event) {
+        const { selectedTrip, dayIndex, placeAt, event } = action;
+
+        const newTrips = [...trips];
+        const dayEvents = newTrips[selectedTrip].itinerary[dayIndex].events;
+
+        if (placeAt === "start") dayEvents.unshift(event);
+        else if (placeAt === "end") dayEvents.push(event);
+
+        dayEvents.forEach((event, index) => (event.position = index));
+        return trips;
+      }
+      return trips;
     /** Return unchanged state */
     default:
       return trips;

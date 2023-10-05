@@ -19,7 +19,10 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
   const getAutocomplete = api.google.autocomplete.useMutation();
 
   const [searchValue, setSearchValue] = useState("");
-  const [list, setList] = useState<List>([{ searchValue }]);
+  const [predictionList, setPredictionList] = useState<List>([{ searchValue }]);
+  const [selectedPrediction, setSelectedPrediction] = useState<
+    { searchValue: string } | PlaceAutocompletePrediction
+  >({ searchValue });
   const [isListDisplayed, setListDisplay] = useState(false);
 
   //#region Handlers
@@ -43,7 +46,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
           if (typeof data === "undefined") return;
 
           if (data.status === "OK" && data.predictions.length > 0) {
-            setList([{ searchValue: e.target.value }, ...data.predictions]);
+            setPredictionList([{ searchValue: e.target.value }, ...data.predictions]);
             setSelectedIndex(0);
             setListDisplay(true);
           }
@@ -58,27 +61,32 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
   };
 
   const handleInputFocus = () => {
-    if (list.length > 1) setListDisplay(true);
+    if (predictionList.length > 1) setListDisplay(true);
   };
 
-  const handleIndexChange = (selectedItem: { searchValue: string } | PlaceAutocompletePrediction) => {
-    if ("searchValue" in selectedItem) setSearchValue(selectedItem.searchValue);
-    else setSearchValue(selectedItem.structured_formatting.main_text);
+  const handleIndexChange = (selectedPrediction: { searchValue: string } | PlaceAutocompletePrediction) => {
+    setSelectedPrediction(selectedPrediction);
+
+    if ("searchValue" in selectedPrediction) setSearchValue(selectedPrediction.searchValue);
+    else setSearchValue(selectedPrediction.structured_formatting.main_text);
   };
 
-  const handlePredictionSelect = (selectedItem: { searchValue: string } | PlaceAutocompletePrediction) => {
+  const handlePredictionSelect = (
+    selectedPrediction: { searchValue: string } | PlaceAutocompletePrediction
+  ) => {
+    setSelectedPrediction(selectedPrediction);
     setListDisplay(false);
 
-    if ("searchValue" in selectedItem) return;
+    if ("searchValue" in selectedPrediction) return;
 
-    setSearchValue(selectedItem.structured_formatting.main_text);
-    setList([{ searchValue: selectedItem.structured_formatting.main_text }]);
+    setSearchValue(selectedPrediction.structured_formatting.main_text);
+    setPredictionList([{ searchValue: selectedPrediction.structured_formatting.main_text }]);
     setSelectedIndex(0);
   };
   //#endregion
 
   const ClearPredictions = () => {
-    setList([{ searchValue }]);
+    setPredictionList([{ searchValue }]);
     setListDisplay(false);
     setSelectedIndex(0);
   };
@@ -88,7 +96,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
     setListDisplay(false);
   });
   const { selectedIndex, setSelectedIndex } = useListNavigation(
-    list,
+    predictionList,
     isListDisplayed,
     handleIndexChange,
     handlePredictionSelect
@@ -120,7 +128,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
         <Divider orientation="vertical" className="absolute left-6 h-4" />
 
         <button
-          onClick={() => onAdd(list[selectedIndex])}
+          onClick={() => onAdd(selectedPrediction)}
           className="flex h-8 items-center justify-center gap-1 px-2 duration-100 hover:fill-gray-700 hover:text-gray-700"
         >
           <Icon.plus className="w-[10px]" />
@@ -132,7 +140,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
         // todo: correct animations when using arrows (when index = 0 and arrow up is pressed div should show up from bottom)
       }
       <Combobox.List
-        listHeight={(list.length - 1) * 52 + 12} // numberOfPredictions * comboboxOptionHeight + padding
+        listHeight={(predictionList.length - 1) * 52 + 12} // numberOfPredictions * comboboxOptionHeight + padding
         className={`rounded-b-[0.625rem] p-1.5 shadow-borderXl ${
           isListDisplayed
             ? "scale-y-100 duration-[375ms] ease-kolumb-flow"
@@ -140,14 +148,14 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
         }`}
       >
         <Predictions
-          selectList={list}
+          predictionList={predictionList}
           selectedIndex={selectedIndex}
           setSelectedIndex={setSelectedIndex}
           handleClick={handlePredictionSelect}
         />
         <div
           style={{ top: (selectedIndex - 1) * 52 + 6 }}
-          className={`absolute left-1.5 right-1.5 -z-10 h-[3.25rem] rounded bg-gray-100 shadow-select duration-300 ease-kolumb-flow ${
+          className={`absolute left-1.5 right-1.5 -z-10 h-[3.25rem] rounded bg-gray-100 shadow-select duration-200 ease-kolumb-flow ${
             selectedIndex === 0 && "opacity-0 duration-0"
           }`}
         ></div>
@@ -158,13 +166,13 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
 
 // todo: include flags countries
 type PredictionsProps = {
-  selectList: List;
+  predictionList: List;
   selectedIndex: number;
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
   handleClick: (prediction: PlaceAutocompletePrediction) => void;
 };
-function Predictions({ selectList, selectedIndex, setSelectedIndex, handleClick }: PredictionsProps) {
-  const predictions = selectList.slice(1) as PlaceAutocompletePrediction[];
+function Predictions({ predictionList, selectedIndex, setSelectedIndex, handleClick }: PredictionsProps) {
+  const predictions = predictionList.slice(1) as PlaceAutocompletePrediction[];
 
   return (
     <>

@@ -26,44 +26,61 @@ model Trip {
 }
 
 model Event {
-  id     String @id @default(uuid())
+  id     String @id
   trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
   tripId String
 
   name        String
   date        DateTime
+  position    Int
   address     String?
   cost        Float?
   phoneNumber String?
   website     String?
   note        String?
+  photo       String?
+  photoAlbum  Json?
 
-  type          EventType?
-  googlePlace   GooglePlace? @relation(fields: [googlePlaceId], references: [placeId])
-  googlePlaceId String?
+  type    EventType @default(DEFAULT)
+  place   Place?    @relation(fields: [placeId], references: [placeId])
+  placeId String?
 
-  position  Int
   createdBy String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([tripId])
-  @@index([googlePlaceId])
+  @@index([placeId])
 }
 
-model GooglePlace {
-  placeId             String            @id
-  photoReference      String?           @unique
-  url                 String?           @unique
-  type                String?
-  types               GooglePlaceType[]
-  geometry            Json?
-  currentOpeningHours Json?
+model Place {
+  placeId String      @id
+  events  Event[]
+  types   PlaceType[]
 
-  priceLevel Int?
-  rating     Float?
-  utcOffset  Float?
-  vicinity   String?
+  name                     String?
+  address                  String?
+  addressComponents        Json?
+  photoReference           String?
+  photos                   Json?
+  url                      String?
+  website                  String?
+  phoneNumber              String?
+  internationalPhoneNumber String?
+  rating                   Float?
+  userRatingsTotal         Int?
+  priceLevel               Int?
+
+  businessStatus        String?
+  currentOpeningHours   Json?
+  openingHours          Json?
+  secondaryOpeningHours Json?
+  editorialSummary      Json?
+  reviews               Json?
+
+  vicinity  String?
+  geometry  Json?
+  utcOffset Float?
 
   curbsidePickup               Boolean?
   delivery                     Boolean?
@@ -78,13 +95,11 @@ model GooglePlace {
   servesWine                   Boolean?
   takeout                      Boolean?
   wheelchairAccessibleEntrance Boolean?
-
-  events Event[]
 }
 
-model GooglePlaceType {
-  typeName String        @id
-  places   GooglePlace[]
+model PlaceType {
+  name   String  @id
+  places Place[]
 }
 
 enum EventType {

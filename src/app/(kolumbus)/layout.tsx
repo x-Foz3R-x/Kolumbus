@@ -5,14 +5,13 @@ import UnsupportedWidth from "@/components/layouts/unsupportedWidth";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <div className="supported-width overflow-hidden font-inter">
-        <AppdataProvider>
-          <Header />
-          {children}
-        </AppdataProvider>
+    <AppdataProvider>
+      {/* <div className="supported-width bg-white font-inter"> */}
+      <div className="bg-white font-inter">
+        <Header />
+        {children}
       </div>
-      <UnsupportedWidth />
-    </>
+      {/* <UnsupportedWidth /> */}
+    </AppdataProvider>
   );
 }

@@ -1,5 +1,5 @@
-import { Key } from "@/types";
 import { useEffect, useState } from "react";
+import { Key } from "@/types";
 
 export default function useKeyPress(targetKey: string) {
   const [keyPressed, setKeyPressed] = useState(false);

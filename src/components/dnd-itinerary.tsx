@@ -16,7 +16,6 @@ import { CSS } from "@dnd-kit/utilities";
 
 import api from "@/app/_trpc/client";
 import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType } from "@/lib/dnd";
-import { FormatDate } from "@/lib/utils";
 
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
@@ -92,31 +91,17 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
 
     if (apiUpdate === null) return;
 
-    // if (apiUpdate.type === "day^day") {
-    //   if (collisions === null) return;
-    //   const newActiveIndex = collisions[0].data?.droppableContainer.data.current.sortable.index;
-    //   const newOverIndex = collisions[1].data?.droppableContainer.data.current.sortable.index;
-
-    //   itinerary[newActiveIndex].events.forEach((event) => {
-    //     updateEvent.mutate({
-    //       eventId: event.id,
-    //       event: { date: FormatDate(event.date), position: event.position },
-    //     });
-    //   });
-    //   itinerary[newOverIndex].events.forEach((event) => {
-    //     updateEvent.mutate({
-    //       eventId: event.id,
-    //       event: { date: FormatDate(event.date), position: event.position },
-    //     });
-    //   });
-    // } else {
-    // }
+    // todo: optimize not to update all events, only the changed ones
     const iteratedDate = new Date(tripInfo.startDate);
-    itinerary.forEach((day: Day) => {
+    itinerary.forEach((day) => {
       day.events.forEach((event, index) => {
-        event.date = FormatDate(iteratedDate);
+        event.date = iteratedDate.toISOString();
         event.position = index;
-        updateEvent.mutate({ eventId: event.id, event: { date: event.date, position: event.position } });
+
+        updateEvent.mutate({
+          eventId: event.id,
+          event: { date: event.date, position: event.position },
+        });
       });
 
       iteratedDate.setDate(iteratedDate.getDate() + 1);
@@ -149,15 +134,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
       newItinerary = arrayMove(itinerary, activeIndex, overIndex);
       setApiUpdate({ type: "day^day" });
     } else if (activeType === "event" && overType === "day") {
-      newItinerary = EventOverDay(
-        itinerary,
-        events,
-        activeId,
-        activeIndex,
-        FormatDate(activeDate),
-        overIndex,
-        FormatDate(overDate)
-      );
+      newItinerary = EventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate);
       setApiUpdate({ type: "event^day" });
     } else if (activeType === "event" && overType === "event") {
       newItinerary = EventOverEvent(
@@ -165,10 +142,10 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
         events,
         activeId,
         activeIndex,
-        FormatDate(activeDate),
+        activeDate,
         overId,
         overIndex,
-        FormatDate(overDate)
+        overDate
       );
       setApiUpdate({ type: "event^event" });
     }
@@ -176,8 +153,8 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     if (!newItinerary) return;
 
     const iteratedDate = new Date(tripInfo.startDate);
-    newItinerary.forEach((day: Day) => {
-      const currentDate = FormatDate(iteratedDate);
+    newItinerary.forEach((day) => {
+      const currentDate = iteratedDate.toISOString();
 
       day.date = currentDate;
       day.events.forEach((event, index) => {
@@ -301,19 +278,14 @@ const DayComponent = memo(
     { day, dragOverlay, ...props }: DayComponentProps,
     ref: ForwardedRef<HTMLDivElement>
   ) {
-    const {
-      activeTrip,
-      activeId,
-      setEventComposerShown: setAddEventShown,
-      setAddEventDayIndex,
-    } = useDndData();
+    const { activeTrip, activeId, setEventComposerShown, setAddEventDayIndex } = useDndData();
     const { id, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
     const dayIndex = GetIndex(activeTrip.itinerary, events, "day", day.id);
 
     const handleAddEvent = () => {
-      setAddEventShown(true);
+      setEventComposerShown(true);
       setAddEventDayIndex(dayIndex);
     };
 
@@ -329,7 +301,7 @@ const DayComponent = memo(
         >
           <SortableContext items={dayEventsId} strategy={horizontalListSortingStrategy}>
             {dayEventsId?.map((eventId) => (
-              <DndEvent key={eventId} event={events.find((event: Event) => event.id === eventId)!} />
+              <DndEvent key={eventId} event={events.find((event) => event.id === eventId)!} />
             ))}
           </SortableContext>
 
@@ -389,12 +361,17 @@ const EventComponent = memo(
       const { dispatchUserTrips, selectedTrip, activeTrip, setActiveEvent } = useDndData();
 
       const getImage = (): string => {
-        if (event.google?.photo_reference) {
+        console.log(event)
+        if (event.photo) return event.photo;
+        if (event.place?.photoReference) {
           const maxWidth = 312;
           const maxHeight = 160;
 
-          return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&maxheight=${maxHeight}&photo_reference=${event.google.photo_reference}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
+          return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&maxheight=${maxHeight}&photo_reference=${event.place.photoReference}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
         }
+        console.log(event.name, "no image")
+        console.log(event.photo, "no photo")
+        console.log(event.place?.photoReference, "no photoReference")
         return "/images/Untitled.png";
       };
 
@@ -421,7 +398,7 @@ const EventComponent = memo(
 
           <div ref={ref} onClick={() => setActiveEvent(event)} className="flex-1 cursor-pointer" {...props}>
             <Image
-              src={getImage() ?? "/images/Untitled.png"}
+              src={getImage()}
               alt="Event Image"
               width={156}
               height={80}
@@ -439,7 +416,6 @@ const EventComponent = memo(
             readOnly
             className="mt-0.5 flex-shrink-0 cursor-pointer text-ellipsis bg-transparent px-1 py-[3px] text-sm text-gray-900 placeholder:text-center hover:bg-gray-400/25"
           />
-          <Icon.google className="h-3" />
         </div>
       );
     }

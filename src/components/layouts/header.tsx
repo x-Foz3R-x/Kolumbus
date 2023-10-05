@@ -8,8 +8,8 @@ export default function Header() {
   const linkSvgStyle = "h-4 w-4 flex-none";
 
   return (
-    <header className="relative z-50 flex h-14 w-full items-center justify-between">
-      <nav className="h-14 w-56 flex-none">
+    <nav className="fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-between bg-white">
+      <div className="h-14 w-56 flex-none">
         <Link
           href="/"
           title="Home page"
@@ -18,9 +18,9 @@ export default function Header() {
         >
           <Icon.logo className="h-6" />
         </Link>
-      </nav>
+      </div>
 
-      <nav className="flex h-full w-full items-center justify-center px-3">
+      <div className="flex h-full w-full items-center justify-center px-3">
         {/* <Link href="/start" className={linkStyle}>
           <Icon.explore className={linkSvgStyle} />
           Home
@@ -40,11 +40,11 @@ export default function Header() {
           <Icon.showcase className={linkSvgStyle} />
           Showcase
         </Link>
-      </nav>
+      </div>
 
       <section className="mr-4 flex h-14 w-56 flex-none justify-end">
         <ProfileButton />
       </section>
-    </header>
+    </nav>
   );
 }

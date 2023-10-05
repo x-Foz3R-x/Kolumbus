@@ -3,30 +3,7 @@ import clsx, { ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
-import type { Trip, TripDB, Itinerary, Day, Event } from "@/types";
-
-/**
- * Formats a given date into a db safe string.
- * @param date The date object to format.
- * @param includeDateTime Whether to include date with time in the formatted string (default is false).
- * @returns The formatted date string.
- */
-export function FormatDate(date: Date | string, includeDateTime: boolean = false): string {
-  if (typeof date === "string") date = new Date(date);
-
-  const year = date.getUTCFullYear();
-  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-  const day = date.getUTCDate().toString().padStart(2, "0");
-
-  if (!includeDateTime) return `${year}-${month}-${day}T00:00:00.000Z`;
-
-  const hours = date.getUTCHours().toString().padStart(2, "0");
-  const minutes = date.getUTCMinutes().toString().padStart(2, "0");
-  const seconds = date.getUTCSeconds().toString().padStart(2, "0");
-  const milliseconds = date.getUTCMilliseconds().toString().padStart(3, "0");
-
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
-}
+import type { Trip, TripDB, Itinerary, Day, Event, EventDB } from "@/types";
 
 /**
  * Formats the day of the week to a different representation.
@@ -84,31 +61,43 @@ export function FindTripIndex(trips: Trip[] | TripDB[], tripId: string): number 
 }
 
 /**
- * Generates an itinerary for a trip based on the provided trip details and events.
- * @param trip - The trip details.
- * @param events - The list of events.
- * @returns An array representing the itinerary.
+ * Generates an itinerary for a trip.
+ *
+ * @param tripId - The ID of the trip.
+ * @param startDate - The start date of the trip. Can be a string or Date object.
+ * @param days - The number of days in the trip.
+ * @param events - An array of events for the trip. Defaults to an empty array.
+ * @returns An array representing the itinerary for the trip.
  */
-export function GenerateItinerary(trip: Omit<Trip, "itinerary">, events: Event[] = []) {
+export function GenerateItinerary(
+  tripId: string,
+  startDate: string | Date,
+  days: number,
+  events: Event[] | EventDB[] = []
+) {
   const itinerary: Itinerary = [];
-  let iteratedDate = new Date(trip.startDate);
+  const iteratedDate = new Date(startDate);
 
-  // events.forEach((event) => (event.dragType = "event"));
+  // Convert date properties of events to ISO strings if they are Date objects.
+  events = events.map((event) => {
+    if (event.date instanceof Date) event.date = event.date.toISOString();
+    if (event.createdAt instanceof Date) event.createdAt = event.createdAt.toISOString();
+    if (event.updatedAt instanceof Date) event.updatedAt = event.updatedAt.toISOString();
 
-  // Generate the itinerary for each day of the trip
-  for (let i = 0; i < trip.days; i++) {
-    const currentDate = FormatDate(iteratedDate);
-    const currentDateEvents: Event[] = events.filter((event) => FormatDate(event.date) === currentDate);
+    return event as Event;
+  });
 
-    // Create a day object with the current date and associated events
-    const Day: Day = {
-      id: `d${i}@${trip.id}`,
+  for (let i = 0; i < days; i++) {
+    const currentDate = iteratedDate.toISOString();
+    const currentEvents = events.filter((event) => event.date === currentDate);
+
+    const day: Day = {
+      id: `D${i}_@${tripId}`,
       date: currentDate,
-      dragType: "day",
-      events: currentDateEvents ?? [],
+      events: currentEvents ?? [],
     };
 
-    itinerary.push(Day);
+    itinerary.push(day);
     iteratedDate.setDate(iteratedDate.getDate() + 1);
   }
 

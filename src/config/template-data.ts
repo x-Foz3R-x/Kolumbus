@@ -1,17 +1,16 @@
 import { Trip, Event } from "@/types";
-import { FormatDate } from "@/lib/utils";
 
 export const tripTemplate: Trip = {
   id: "",
   userId: "",
   name: "",
-  startDate: FormatDate(new Date()),
-  endDate: FormatDate(new Date()),
+  startDate: new Date().toISOString(),
+  endDate: new Date().toISOString(),
   days: 1,
   position: 0,
   itinerary: [],
-  createdAt: FormatDate(new Date()),
-  updatedAt: FormatDate(new Date()),
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 };
 
 export const eventTemplate: Event = {
@@ -19,7 +18,17 @@ export const eventTemplate: Event = {
   tripId: "",
 
   name: "",
-  date: FormatDate(new Date()),
+  date: new Date().toISOString(),
+  address: null,
+  cost: null,
+  phoneNumber: null,
+  website: null,
+  note: null,
+  photo: null,
+
+  type: "DEFAULT",
+  place: null,
+  placeId: null,
 
   position: 0,
   createdBy: "",

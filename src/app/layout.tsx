@@ -1,21 +1,14 @@
 import { inter, gordita, adso, inconsolata } from "../assets/fonts/fonts";
 import { ClerkProvider } from "@clerk/nextjs";
-import "./tailwind.css";
 import TrpcProvider from "./_trpc/Provider";
+import "./tailwind.css";
 
 export const metadata = {
   title: {
     default: "Kolumbus",
-    template: "%s | Kolumbus",
   },
-  description: "Trip planning app | Adventure awaits",
-  openGraph: {
-    title: "Kolumbus",
-    description: "TOP 1 trip planning app",
-    url: "https://kolumbus.app",
-    siteName: "Kolumbus",
-    type: "website",
-  },
+  description:
+    "Discover the ultimate travel experience with our Trip Planning App. Craft personalized itineraries effortlessly. Seamlessly plan your adventures and explore the world like never before.",
 };
 
 type RootLayoutProps = { children: React.ReactNode };

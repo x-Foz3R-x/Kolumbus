@@ -67,6 +67,7 @@ const Combobox = {
     return (
       <div className={cn("relative z-10 flex", className)}>
         <BasicInput
+          type="text"
           name="combobox-input"
           placeholder={placeholder}
           value={value}
@@ -79,6 +80,8 @@ const Combobox = {
           aria-controls={name}
           aria-expanded={isExpanded}
           aria-autocomplete="list"
+          autoComplete="false"
+          autoCorrect="false"
           spellCheck="false"
           variant="unstyled"
           className={`flex-grow bg-transparent ${React.Children.count(children) > 0 ? "pl-2" : "px-2"}`}

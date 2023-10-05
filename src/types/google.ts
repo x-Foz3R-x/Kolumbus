@@ -157,18 +157,18 @@ export enum FieldsGroup {
   Atmosphere = ",curbside_pickup,delivery,dine_in,editorial_summary,price_level,rating,reservable,reviews,serves_beer,serves_breakfast,serves_brunch,serves_dinner,serves_lunch,serves_vegetarian_food,serves_wine,takeout,user_ratings_total",
 }
 
-const AddressComponent = z.object({
+export const AddressComponent = z.object({
   long_name: z.string(),
   short_name: z.string(),
   types: z.array(z.string()),
 });
 
-const PlaceEditorialSummary = z.object({
+export const PlaceEditorialSummary = z.object({
   language: z.string().optional(),
   overview: z.string().optional(),
 });
 
-const PlacePhoto = z.object({
+export const PlacePhoto = z.object({
   height: z.number(),
   html_attributions: z.array(z.string()),
   photo_reference: z.string(),
@@ -180,7 +180,7 @@ const PlusCode = z.object({
   compound_code: z.string().optional(),
 });
 
-const PlaceReview = z.object({
+export const PlaceReview = z.object({
   author_name: z.string(),
   rating: z.number(),
   relative_time_description: z.string(),
@@ -211,7 +211,7 @@ const PlaceOpeningHoursPeriod = z.object({
   close: PlaceOpeningHoursPeriodDetail.optional(),
 });
 
-const PlaceOpeningHours = z.object({
+export const PlaceOpeningHours = z.object({
   open_now: z.boolean().optional(),
   periods: z.array(PlaceOpeningHoursPeriod).optional(),
   special_days: z.array(PlaceSpecialDay).optional(),
@@ -231,15 +231,14 @@ const Bounds = z.object({
   southwest: LatLngLiteral,
 });
 
-const Geometry = z.object({
+export const Geometry = z.object({
   location: LatLngLiteral,
   viewport: Bounds,
 });
 //#endregion
 
-export type Place = z.infer<typeof Place>;
 const Place = z.object({
-  address_components: AddressComponent.optional(),
+  address_components: z.array(AddressComponent).optional(),
   adr_address: z.string().optional(),
   business_status: z.string().optional(),
   curbside_pickup: z.boolean().optional(),

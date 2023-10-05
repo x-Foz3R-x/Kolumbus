@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import useAppdata from "@/context/appdata";
-import { CalculateDays, FormatDate } from "@/lib/utils";
+import { CalculateDays } from "@/lib/utils";
 import { UT, Event } from "@/types";
 
 import Icon from "../icons";
@@ -41,7 +41,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
     const pickedEndDate = new Date(startDate);
     pickedEndDate.setDate(startDate.getDate() + days - 1);
 
-    currentTrip.endDate = FormatDate(pickedEndDate);
+    currentTrip.endDate = pickedEndDate.toISOString();
     currentTrip.days = days;
 
     if (pickedEndDate > endDate) {

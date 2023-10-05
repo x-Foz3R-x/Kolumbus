@@ -49,18 +49,10 @@ export function useListNavigation<T>(
     onArrowPressCallback(list[nextIndex]);
   };
 
-  const handleCursor = () => {
-    document.body.style.cursor = "";
-  };
-
   useEffect(() => {
     if (!isNavigationEnabled) return;
     if (arrowUpPressed) handleArrowPress(Key.ArrowUp);
     else if (arrowDownPressed) handleArrowPress(Key.ArrowDown);
-
-    document.body.style.cursor = "none";
-    document.addEventListener("mousemove", handleCursor);
-    return () => document.removeEventListener("mousemove", handleCursor);
   }, [arrowUpPressed, arrowDownPressed]);
 
   useEffect(() => {

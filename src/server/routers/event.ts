@@ -7,15 +7,15 @@ import { protectedProcedure, router } from "../trpc";
 const eventSchema = z.object({
   name: z.string().optional(),
   date: z.string().datetime().optional(),
+  position: z.number().optional(),
   address: z.string().optional(),
   cost: z.number().optional(),
   phoneNumber: z.string().optional(),
   website: z.string().optional(),
   note: z.string().optional(),
+
   type: z.nativeEnum(EventType).optional(),
-  googlePlaceId: z.string().optional(),
-  position: z.number().optional(),
-  createdBy: z.string().optional(),
+  placeId: z.string().optional(),
 });
 
 const event = router({
