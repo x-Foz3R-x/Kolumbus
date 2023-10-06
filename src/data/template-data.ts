@@ -1,4 +1,5 @@
 import { Trip, Event } from "@/types";
+import { Currency, EventType } from "@prisma/client";
 
 export const tripTemplate: Trip = {
   id: "",
@@ -9,29 +10,27 @@ export const tripTemplate: Trip = {
   days: 1,
   position: 0,
   itinerary: [],
-  createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
 };
 
-export const eventTemplate: Event = {
-  id: "",
-  tripId: "",
-
-  name: "",
-  date: new Date().toISOString(),
-  address: null,
-  cost: null,
-  phoneNumber: null,
-  website: null,
-  note: null,
-  photo: null,
-
-  type: "DEFAULT",
-  place: null,
+export const eventTemplate = {
   placeId: null,
 
-  position: 0,
-  createdBy: "",
-  createdAt: "",
+  name: "",
+  cost: 0,
+  currency: Currency.USD,
+  note: null,
+  photo: null,
+  photoAlbum: [],
+
+  address: null,
+  phoneNumber: null,
+  url: null,
+  website: null,
+  openingHours: {},
+
+  type: EventType.DEFAULT,
   updatedAt: "",
+  createdAt: "",
 };

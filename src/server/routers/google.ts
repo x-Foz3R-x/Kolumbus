@@ -1,14 +1,6 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import {
-  FieldsGroup,
-  Language,
-  PlaceSchema,
-  PlacesAutocompleteResponse,
-  PlacesDetailsResponse,
-} from "@/types";
-import { prisma } from "@/lib/prisma";
-import api from "@/app/_trpc/client";
+import { FieldsGroup, Language, PlacesAutocompleteResponse, PlacesDetailsResponse } from "@/types";
 
 const google = router({
   autocomplete: publicProcedure
@@ -42,7 +34,7 @@ const google = router({
         sessionToken: z.string().cuid2("Invalid session token"),
       })
     )
-    .output(PlacesDetailsResponse.or(PlaceSchema))
+    .output(PlacesDetailsResponse)
     .mutation(async ({ input }) => {
       const response = await (
         await fetch(
@@ -50,16 +42,6 @@ const google = router({
         )
       ).json();
 
-      const place = await prisma.place.findFirst({
-        where: {
-          placeId: response.result.place_id,
-        },
-        include: {
-          types: true,
-        },
-      });
-
-      if (place) return place;
       return response;
     }),
 });

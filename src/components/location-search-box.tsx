@@ -50,11 +50,11 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
             setSelectedIndex(0);
             setListDisplay(true);
           }
-          // else if(data.status === PlacesAutocompleteStatus.ZERO_RESULTS){}
-          // else if(data.status === PlacesAutocompleteStatus.INVALID_REQUEST){}
-          // else if(data.status === PlacesAutocompleteStatus.OVER_QUERY_LIMIT){}
-          // else if(data.status === PlacesAutocompleteStatus.REQUEST_DENIED){}
-          // else if(data.status === PlacesAutocompleteStatus.UNKNOWN_ERROR){}
+          // else if(data.status === .ZERO_RESULTS){}
+          // else if(data.status === .INVALID_REQUEST){}
+          // else if(data.status === .OVER_QUERY_LIMIT){}
+          // else if(data.status === .REQUEST_DENIED){}
+          // else if(data.status === .UNKNOWN_ERROR){}
         },
       }
     );

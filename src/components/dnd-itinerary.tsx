@@ -100,7 +100,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
 
         updateEvent.mutate({
           eventId: event.id,
-          event: { date: event.date, position: event.position },
+          data: { date: event.date, position: event.position },
         });
       });
 
@@ -358,21 +358,13 @@ type EventComponentProps = {
 const EventComponent = memo(
   forwardRef<HTMLDivElement, EventComponentProps>(
     ({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
-      const { dispatchUserTrips, selectedTrip, activeTrip, setActiveEvent } = useDndData();
+      const { setActiveEvent } = useDndData();
 
-      const getImage = (): string => {
-        console.log(event)
-        if (event.photo) return event.photo;
-        if (event.place?.photoReference) {
-          const maxWidth = 312;
-          const maxHeight = 160;
+      const getImageUrl = (): string => {
+        if (!event.photo) return "/images/event-placeholder.png";
+        if (event.photo.startsWith("http")) return event.photo;
 
-          return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&maxheight=${maxHeight}&photo_reference=${event.place.photoReference}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
-        }
-        console.log(event.name, "no image")
-        console.log(event.photo, "no photo")
-        console.log(event.place?.photoReference, "no photoReference")
-        return "/images/Untitled.png";
+        return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=312&maxheight=160&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
       };
 
       return (
@@ -398,7 +390,7 @@ const EventComponent = memo(
 
           <div ref={ref} onClick={() => setActiveEvent(event)} className="flex-1 cursor-pointer" {...props}>
             <Image
-              src={getImage()}
+              src={getImageUrl()}
               alt="Event Image"
               width={156}
               height={80}

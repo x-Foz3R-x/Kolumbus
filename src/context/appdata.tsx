@@ -89,7 +89,7 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
         else if (placeAt === "end") dayEvents.push(event);
 
         dayEvents.forEach((event, index) => (event.position = index));
-        return trips;
+        return newTrips;
       }
       return trips;
     /** Return unchanged state */

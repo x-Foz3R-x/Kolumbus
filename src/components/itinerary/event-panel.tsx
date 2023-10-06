@@ -2,7 +2,7 @@ import Dialog from "@/components/ui/dialog";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useDndData } from "@/components/dnd-itinerary";
-import { currencyList } from "@/config/currency";
+import { currencyList } from "@/data/currency";
 import { DropdownSelect } from "@/components/ui/dropdown";
 import Icon from "@/components/icons";
 import { RadioIconsInline } from "@/components/ui/radio";

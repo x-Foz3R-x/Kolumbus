@@ -81,9 +81,6 @@ const trip = router({
           },
           { position: "asc" },
         ],
-        include: {
-          place: true,
-        },
       });
 
       (trip as ServerTrip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.days, events);
