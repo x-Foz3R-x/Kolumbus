@@ -19,8 +19,8 @@ export default function EventComposer() {
     dispatchUserTrips,
     selectedTrip,
     activeTrip,
-    isEventComposerShown,
-    setEventComposerShown,
+    isEventComposerDisplayed,
+    setEventComposerDisplay,
     addEventDayIndex,
   } = useDndData();
 
@@ -33,7 +33,7 @@ export default function EventComposer() {
 
   const ref = useRef<any>(null);
   useAnyCloseActions(ref, () => {
-    if (isEventComposerShown) setEventComposerShown(false);
+    if (isEventComposerDisplayed) setEventComposerDisplay(false);
   });
 
   const handleAddEvent = (eventData: { searchValue: string } | PlaceAutocompletePrediction) => {
@@ -102,7 +102,7 @@ export default function EventComposer() {
       });
     }
 
-    setEventComposerShown(false);
+    setEventComposerDisplay(false);
     setSessionToken(cuid2.createId());
   };
 
@@ -114,7 +114,7 @@ export default function EventComposer() {
         transform: `translate(0,${addEventDayIndex * 132 + 20}px)`,
       }}
       className={`absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-borderXl transition-opacity duration-300 ease-kolumb-flow  ${
-        isEventComposerShown ? "opacity-100" : "select-none opacity-0"
+        isEventComposerDisplayed ? "opacity-100" : "select-none opacity-0"
       } 
       `}
     >

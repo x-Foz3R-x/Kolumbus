@@ -1,20 +1,26 @@
-import { forwardRef } from "react";
+"use client";
 
-const Dialog = {
-  Root: forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(function Root(
-    { className, children, ...props },
-    ref
-  ) {
+import { cn } from "@/lib/utils";
+import { forwardRef, useState } from "react";
+
+type DialogProps = React.HTMLAttributes<HTMLDialogElement> & {
+  isDisplayed: boolean;
+};
+export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
+  ({ isDisplayed, className, children, ...props }, ref) => {
     return (
-      <div
+      <dialog
         ref={ref}
-        className={`shadow-border3xl absolute z-20 rounded-xl bg-white backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter ${className}`}
+        className={cn(
+          "absolute z-20 rounded-xl bg-white shadow-border3xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
+          className
+        )}
         {...props}
       >
         {children}
-      </div>
+      </dialog>
     );
-  }),
-};
+  }
+);
 
-export default Dialog;
+Dialog.displayName = "Dialog";

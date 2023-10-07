@@ -19,7 +19,7 @@ import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetD
 
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
-import EventEditableDetails from "./itinerary/event-panel";
+import EventPanel from "./itinerary/event-panel";
 import Icon from "./icons";
 
 import type { DispatchAction, Trip, Day, Event } from "@/types";
@@ -37,8 +37,14 @@ const DndDataContext = createContext<{
   eventsId: string[];
   events: Event[];
 
-  isEventComposerShown: boolean;
-  setEventComposerShown: React.Dispatch<React.SetStateAction<boolean>>;
+  isEventComposerDisplayed: boolean;
+  setEventComposerDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+  isEventPanelDisplayed: boolean;
+  setEventPanelDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+
+  dialogIndexPosition: { x: number; y: number };
+  setDialogIndexPosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>;
+
   addEventDayIndex: number;
   setAddEventDayIndex: React.Dispatch<React.SetStateAction<number>>;
 } | null>(null);
@@ -59,7 +65,9 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const [isEventComposerShown, setEventComposerShown] = useState(false);
+  const [isEventComposerDisplayed, setEventComposerDisplay] = useState(false);
+  const [isEventPanelDisplayed, setEventPanelDisplay] = useState(false);
+  const [dialogIndexPosition, setDialogIndexPosition] = useState({ x: 0, y: 0 });
   const [addEventDayIndex, setAddEventDayIndex] = useState(0);
 
   const [apiUpdate, setApiUpdate] = useState<{ type: "day^day" | "event^day" | "event^event" } | null>(null);
@@ -168,6 +176,8 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     setActiveTrip({ itinerary: newItinerary, ...tripInfo });
   }
 
+  console.log(dialogIndexPosition);
+
   const value = {
     dispatchUserTrips,
     selectedTrip,
@@ -180,20 +190,25 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     eventsId,
     events,
 
-    isEventComposerShown,
-    setEventComposerShown,
+    isEventComposerDisplayed,
+    setEventComposerDisplay,
+    isEventPanelDisplayed,
+    setEventPanelDisplay,
+
+    dialogIndexPosition,
+    setDialogIndexPosition,
+
     addEventDayIndex,
     setAddEventDayIndex,
   };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="relative flex flex-col gap-10">
       <DndDataContext.Provider value={value}>
         <DndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
           <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
             <EventComposer />
-
-            <EventEditableDetails />
+            <EventPanel />
 
             <ul className="flex w-full min-w-fit flex-col">
               {daysId?.map((dayId) => (
@@ -278,14 +293,14 @@ const DayComponent = memo(
     { day, dragOverlay, ...props }: DayComponentProps,
     ref: ForwardedRef<HTMLDivElement>
   ) {
-    const { activeTrip, activeId, setEventComposerShown, setAddEventDayIndex } = useDndData();
+    const { activeTrip, activeId, setEventComposerDisplay, setAddEventDayIndex } = useDndData();
     const { id, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
     const dayIndex = GetIndex(activeTrip.itinerary, events, "day", day.id);
 
     const handleAddEvent = () => {
-      setEventComposerShown(true);
+      setEventComposerDisplay(true);
       setAddEventDayIndex(dayIndex);
     };
 
@@ -322,8 +337,8 @@ const DayComponent = memo(
 //#endregion
 
 //#region Event
-const DndEvent = memo(function DndEvent({ event }: { event: Event }) {
-  const { activeId } = useDndData();
+const DndEvent = memo(({ event }: { event: Event }) => {
+  const { activeId, activeEvent, isEventPanelDisplayed } = useDndData();
   const id = event.id;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
@@ -342,14 +357,17 @@ const DndEvent = memo(function DndEvent({ event }: { event: Event }) {
       id={id}
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`h-28 w-40 rounded-lg ${
+      className={`h-28 rounded-lg duration-500 ease-kolumb-flow ${
         id !== activeId ? "z-10" : "z-20 border-2 border-dashed border-gray-300 bg-gray-50"
-      }`}
+      }
+      ${isEventPanelDisplayed && activeEvent?.id === id ? "w-80 opacity-0" : "w-40 opacity-100"}
+      `}
     >
       {id !== activeId && <EventComponent event={event} {...listeners} {...attributes} />}
     </li>
   );
 });
+DndEvent.displayName = "DndEvent";
 
 type EventComponentProps = {
   event: Event;
@@ -358,7 +376,13 @@ type EventComponentProps = {
 const EventComponent = memo(
   forwardRef<HTMLDivElement, EventComponentProps>(
     ({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
-      const { setActiveEvent } = useDndData();
+      const {
+        activeTrip,
+        setActiveEvent,
+        isEventPanelDisplayed,
+        setEventPanelDisplay,
+        setDialogIndexPosition,
+      } = useDndData();
 
       const getImageUrl = (): string => {
         if (!event.photo) return "/images/event-placeholder.png";
@@ -367,16 +391,24 @@ const EventComponent = memo(
         return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=312&maxheight=160&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
       };
 
+      // find index of the day that the event belongs to by comparing the date
+      const dayIndex = activeTrip.itinerary.findIndex((day: Day) => day.date === event.date);
+
       return (
         <div
-          className={`group relative flex h-28 w-40 flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-lg border-2 border-white/80 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-leave hover:shadow-borderSplashXl hover:ease-kolumb-flow ${
+          className={`group relative flex h-28 flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-lg border-2 border-white/80 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-leave hover:shadow-borderSplashXl hover:ease-kolumb-flow ${
             dragOverlay ? "shadow-borderSplashXl" : "shadow-borderXl"
           }`}
         >
           {!dragOverlay && (
             <span className="absolute right-1 top-1 z-20 flex h-6 w-14 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 opacity-0 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow">
               <button
-                onClick={() => setActiveEvent(event)}
+                onClick={() => {
+                  setEventPanelDisplay(false);
+                  setActiveEvent(event);
+                  setDialogIndexPosition({ x: event.position, y: dayIndex });
+                  setTimeout(() => setEventPanelDisplay(true), 350);
+                }}
                 className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100"
               >
                 <Icon.pinPen className="m-auto h-3" />
