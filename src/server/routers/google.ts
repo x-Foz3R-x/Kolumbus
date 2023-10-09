@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { FieldsGroup, Language, PlacesAutocompleteResponse, PlacesDetailsResponse } from "@/types";
+import { Language, PlacesAutocompleteResponse, PlacesDetailsResponse } from "@/types";
 
 const google = router({
   autocomplete: publicProcedure
@@ -17,9 +17,7 @@ const google = router({
         await fetch(
           `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
             input.searchValue
-          )}&radius=5000&language=${input.language}&sessiontoken=${input.sessionToken}&key=${
-            process.env.GOOGLE_KEY
-          }`
+          )}&radius=5000&language=${input.language}&sessiontoken=${input.sessionToken}&key=${process.env.GOOGLE_KEY}`
         )
       ).json();
 
@@ -29,7 +27,7 @@ const google = router({
     .input(
       z.object({
         place_id: z.string(),
-        fields: z.nativeEnum(FieldsGroup),
+        fields: z.string(),
         language: z.nativeEnum(Language),
         sessionToken: z.string().cuid2("Invalid session token"),
       })

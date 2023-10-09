@@ -79,8 +79,8 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
       }
       return trips;
     case UT.ADD_EVENT:
-      if (action.event) {
-        const { selectedTrip, dayIndex, placeAt, event } = action;
+      if (action.payload) {
+        const { selectedTrip, dayIndex, placeAt, event } = action.payload;
 
         const newTrips = [...trips];
         const dayEvents = newTrips[selectedTrip].itinerary[dayIndex].events;
@@ -89,6 +89,27 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
         else if (placeAt === "end") dayEvents.push(event);
 
         dayEvents.forEach((event, index) => (event.position = index));
+        return newTrips;
+      }
+      return trips;
+    case UT.UPDATE_EVENT:
+      if (action.payload) {
+        const { selectedTrip, dayIndex, event } = action.payload;
+        const newTrips = [...trips];
+
+        newTrips[selectedTrip].itinerary[dayIndex].events[event.position] = event;
+
+        return newTrips;
+      }
+      return trips;
+    case UT.DELETE_EVENT:
+      if (action.payload) {
+        const { selectedTrip, dayIndex, event } = action.payload;
+        const newTrips = [...trips];
+
+        newTrips[selectedTrip].itinerary[dayIndex].events.splice(event.position, 1);
+        newTrips[selectedTrip].itinerary[dayIndex].events.forEach((event, index) => (event.position = index));
+
         return newTrips;
       }
       return trips;

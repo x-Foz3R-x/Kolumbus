@@ -31,14 +31,7 @@ const PlaceAutocompletePrediction = z.object({
 
 export const PlacesAutocompleteResponse = z.object({
   predictions: z.array(PlaceAutocompletePrediction),
-  status: z.enum([
-    "OK",
-    "ZERO_RESULTS",
-    "INVALID_REQUEST",
-    "OVER_QUERY_LIMIT",
-    "REQUEST_DENIED",
-    "UNKNOWN_ERROR",
-  ]),
+  status: z.enum(["OK", "ZERO_RESULTS", "INVALID_REQUEST", "OVER_QUERY_LIMIT", "REQUEST_DENIED", "UNKNOWN_ERROR"]),
   error_message: z.string().optional(),
   info_messages: z.array(z.string()).optional(),
 });
@@ -109,8 +102,8 @@ export const PlaceOpeningHours = z.object({
   open_now: z.boolean().optional(),
   periods: z.array(PlaceOpeningHoursPeriod).optional(),
   special_days: z.array(PlaceSpecialDay).optional(),
-  type: z.string(),
-  weekday_text: z.array(z.string()),
+  type: z.string().optional(),
+  weekday_text: z.array(z.string()).optional(),
 });
 //#endregion
 

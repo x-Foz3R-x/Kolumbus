@@ -34,10 +34,7 @@ const trip = router({
     if (!ctx.user.id) return;
 
     const trips = await prisma.trip.findFirst({
-      where: {
-        id: input.tripId,
-        userId: ctx.user.id,
-      },
+      where: { id: input.tripId },
     });
 
     return trips;
@@ -46,12 +43,8 @@ const trip = router({
     if (!ctx.user.id) return;
 
     const trips = await prisma.trip.findMany({
-      where: {
-        userId: ctx.user.id,
-      },
-      orderBy: {
-        position: "asc",
-      },
+      where: { userId: ctx.user.id },
+      orderBy: { position: "asc" },
     });
 
     return trips;
@@ -60,27 +53,16 @@ const trip = router({
     if (!ctx.user.id) return;
 
     const trips = await prisma.trip.findMany({
-      where: {
-        userId: ctx.user.id,
-      },
-      orderBy: {
-        position: "asc",
-      },
+      where: { userId: ctx.user.id },
+      orderBy: { position: "asc" },
     });
 
     for (let i = 0; i < trips.length; i++) {
       const trip = trips[i];
 
       const events = await prisma.event.findMany({
-        where: {
-          tripId: trip.id,
-        },
-        orderBy: [
-          {
-            date: "asc",
-          },
-          { position: "asc" },
-        ],
+        where: { tripId: trip.id },
+        orderBy: [{ position: "asc" }],
       });
 
       (trip as ServerTrip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.days, events);
@@ -94,10 +76,7 @@ const trip = router({
       if (!ctx.user.id) return;
 
       await prisma.trip.update({
-        where: {
-          id: input.tripId,
-          userId: ctx.user.id,
-        },
+        where: { userId: ctx.user.id, id: input.tripId },
         data: input.data,
       });
     }),

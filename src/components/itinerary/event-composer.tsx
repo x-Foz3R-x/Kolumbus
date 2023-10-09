@@ -15,14 +15,7 @@ import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@
 
 export default function EventComposer() {
   const { user } = useUser();
-  const {
-    dispatchUserTrips,
-    selectedTrip,
-    activeTrip,
-    isEventComposerDisplayed,
-    setEventComposerDisplay,
-    addEventDayIndex,
-  } = useDndData();
+  const { dispatchUserTrips, selectedTrip, activeTrip, isEventComposerDisplayed, setEventComposerDisplay, addEventDayIndex } = useDndData();
 
   const createEvent = api.event.create.useMutation();
   const getPlaceDetails = api.google.details.useMutation();
@@ -51,10 +44,7 @@ export default function EventComposer() {
 
       dispatchUserTrips({
         type: UT.ADD_EVENT,
-        selectedTrip,
-        dayIndex: addEventDayIndex,
-        placeAt: "end",
-        event: newEvent,
+        payload: { selectedTrip, dayIndex: addEventDayIndex, placeAt: "end", event: newEvent },
       });
     } else if (eventData.place_id) {
       newEvent.placeId = eventData.place_id;
@@ -62,30 +52,26 @@ export default function EventComposer() {
       getPlaceDetails.mutate(
         {
           place_id: eventData.place_id,
-          fields: FieldsGroup.Basic,
+          fields: FieldsGroup.Basic + FieldsGroup.Contact,
           language: Language.English,
           sessionToken,
         },
         {
           onSettled(data) {
-            const place = data?.result || {};
+            const place = data?.result ?? {};
 
-            newEvent.name = place.name || newEvent.name;
-            newEvent.photo = place.photos?.[0]?.photo_reference || newEvent.photo;
-            newEvent.address = place.formatted_address || newEvent.address;
-            newEvent.phoneNumber =
-              place.formatted_phone_number || place.international_phone_number || newEvent.phoneNumber;
-            newEvent.url = place.url || newEvent.url;
-            newEvent.website = place.website || newEvent.website;
-            newEvent.openingHours = place.opening_hours || newEvent.openingHours;
+            newEvent.name = place.name ?? newEvent.name;
+            newEvent.photo = place.photos?.[0]?.photo_reference ?? newEvent.photo;
+            newEvent.address = place.formatted_address ?? newEvent.address;
+            newEvent.phoneNumber = place.formatted_phone_number ?? place.international_phone_number ?? newEvent.phoneNumber;
+            newEvent.url = place.url ?? newEvent.url;
+            newEvent.website = place.website ?? newEvent.website;
+            newEvent.openingHours = place.opening_hours ?? newEvent.openingHours;
 
             createEvent.mutate(newEvent);
             dispatchUserTrips({
               type: UT.ADD_EVENT,
-              selectedTrip,
-              dayIndex: addEventDayIndex,
-              placeAt: "end",
-              event: newEvent,
+              payload: { selectedTrip, dayIndex: addEventDayIndex, placeAt: "end", event: newEvent },
             });
           },
         }
@@ -95,10 +81,7 @@ export default function EventComposer() {
 
       dispatchUserTrips({
         type: UT.ADD_EVENT,
-        selectedTrip,
-        dayIndex: addEventDayIndex,
-        placeAt: "end",
-        event: newEvent,
+        payload: { selectedTrip, dayIndex: addEventDayIndex, placeAt: "end", event: newEvent },
       });
     }
 
@@ -118,15 +101,9 @@ export default function EventComposer() {
       } 
       `}
     >
-      <section className={`flex flex-1 items-end justify-between p-2 pb-[10px] text-center text-sm`}>
-        Event Composer
-      </section>
+      <section className={`flex flex-1 items-end justify-between p-2 pb-[10px] text-center text-sm`}>Event Composer</section>
 
-      <LocationSearchBox
-        onAdd={handleAddEvent}
-        placeholder="Find interesting places"
-        sessionToken={sessionToken}
-      />
+      <LocationSearchBox onAdd={handleAddEvent} placeholder="Find interesting places" sessionToken={sessionToken} />
     </section>
   );
 }

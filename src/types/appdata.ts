@@ -8,18 +8,17 @@ export const EventSchema = z.object({
   tripId: z.string().cuid2("Invalid trip id"),
   placeId: z.string().nullable(),
 
-  name: z.string(),
-  cost: z.number(),
-  currency: z.nativeEnum(Currency),
-  note: z.string().nullable(),
-  photo: z.string().nullable(),
-  photoAlbum: z.array(z.string()),
-
+  name: z.string().nullable(),
   address: z.string().nullable(),
   phoneNumber: z.string().nullable(),
-  url: z.string().nullable(),
+  cost: z.number().nullable(),
+  currency: z.nativeEnum(Currency),
   website: z.string().nullable(),
-  openingHours: PlaceOpeningHours.or(z.object({})),
+  url: z.string().nullable(),
+  note: z.string().nullable(),
+  openingHours: PlaceOpeningHours,
+  photoAlbum: z.array(z.string()),
+  photo: z.string().nullable(),
 
   type: z.nativeEnum(EventType),
   position: z.number(),
@@ -57,9 +56,14 @@ export type TripDB = PrismaTrip;
 export type EventDB = PrismaEvent;
 
 export enum UT {
+  // TRIP
   REPLACE = "replace_trips_state",
   ADD = "add_trip_to_state",
+
+  // EVENT
   ADD_EVENT = "add_event_to_state",
+  UPDATE_EVENT = "update_event_in_state",
+  DELETE_EVENT = "delete_event_in_state",
 }
 
 export type DispatchAction =
@@ -73,8 +77,13 @@ export type DispatchAction =
     }
   | {
       type: UT.ADD_EVENT;
-      selectedTrip: number;
-      dayIndex: number;
-      placeAt: "start" | "end";
-      event: Event;
+      payload: { selectedTrip: number; dayIndex: number; placeAt: "start" | "end"; event: Event };
+    }
+  | {
+      type: UT.UPDATE_EVENT;
+      payload: { selectedTrip: number; dayIndex: number; event: Event };
+    }
+  | {
+      type: UT.DELETE_EVENT;
+      payload: { selectedTrip: number; dayIndex: number; event: Event };
     };

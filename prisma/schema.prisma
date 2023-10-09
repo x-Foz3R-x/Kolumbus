@@ -20,7 +20,9 @@ model Trip {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 
+  @@index([id])
   @@index([userId])
+  @@index([userId, id])
 }
 
 model Event {
@@ -29,18 +31,17 @@ model Event {
   tripId  String
   placeId String?
 
-  name       String
-  cost       Float    @default(0)
-  currency   Currency @default(USD)
-  note       String?
-  photo      String?
-  photoAlbum Json
-
+  name         String?
   address      String?
   phoneNumber  String?
-  url          String?
+  cost         Float?
+  currency     Currency @default(USD)
   website      String?
+  url          String?
+  note         String?
   openingHours Json
+  photoAlbum   Json
+  photo        String?
 
   type      EventType @default(DEFAULT)
   position  Int

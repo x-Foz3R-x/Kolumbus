@@ -17,8 +17,8 @@ export const tripTemplate: Trip = {
 export const eventTemplate = {
   placeId: null,
 
-  name: "",
-  cost: 0,
+  name: null,
+  cost: null,
   currency: Currency.USD,
   note: null,
   photo: null,

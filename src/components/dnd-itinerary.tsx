@@ -4,25 +4,19 @@ import { ForwardedRef, createContext, forwardRef, memo, useContext, useEffect, u
 import Image from "next/image";
 
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
-import {
-  arrayMove,
-  horizontalListSortingStrategy,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { arrayMove, horizontalListSortingStrategy, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 
 import api from "@/app/_trpc/client";
-import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType } from "@/lib/dnd";
+import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayIndex } from "@/lib/dnd";
 
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
 import EventPanel from "./itinerary/event-panel";
 import Icon from "./icons";
 
-import type { DispatchAction, Trip, Day, Event } from "@/types";
+import { type DispatchAction, type Trip, type Day, type Event, UT } from "@/types";
 
 const DndDataContext = createContext<{
   dispatchUserTrips: React.Dispatch<DispatchAction>;
@@ -61,6 +55,8 @@ type DndItineraryProps = {
   selectedTrip: number;
 };
 export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTrip }: DndItineraryProps) {
+  const updateEvent = api.event.update.useMutation();
+
   const [activeTrip, setActiveTrip] = useState<Trip>(userTrips[selectedTrip]);
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -68,10 +64,11 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   const [isEventComposerDisplayed, setEventComposerDisplay] = useState(false);
   const [isEventPanelDisplayed, setEventPanelDisplay] = useState(false);
   const [dialogIndexPosition, setDialogIndexPosition] = useState({ x: 0, y: 0 });
-  const [addEventDayIndex, setAddEventDayIndex] = useState(0);
 
+  // to delete
+  const [addEventDayIndex, setAddEventDayIndex] = useState(0);
   const [apiUpdate, setApiUpdate] = useState<{ type: "day^day" | "event^day" | "event^event" } | null>(null);
-  const updateEvent = api.event.update.useMutation();
+  //
 
   const { itinerary, ...tripInfo } = activeTrip;
   const events = itinerary.flatMap((day) => day.events);
@@ -79,33 +76,34 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   const daysId = itinerary.map((day) => day.id);
   const eventsId = events.map((event) => event.id);
 
-  function handleDragStart({ active }: DragStartEvent) {
+  const handleDragStart = ({ active }: DragStartEvent) => {
     setActiveId(active?.id as string);
 
     if (GetDragType(active) === "day") {
       const grabbing = document.createElement("div");
       grabbing.id = "grabbing";
-      grabbing.setAttribute(
-        "style",
-        "position: fixed; top: 0; left: 0; right: 0; bottom: 0; cursor: grabbing; z-index: 999;"
-      );
+      grabbing.setAttribute("style", "position: fixed; top: 0; left: 0; right: 0; bottom: 0; cursor: grabbing; z-index: 999;");
       document.body.appendChild(grabbing);
     }
-  }
-
-  function handleDragEnd({ collisions }: DragEndEvent) {
+  };
+  const handleDragEnd = ({ collisions }: DragEndEvent) => {
     setActiveId(null);
     document.getElementById("grabbing")?.remove();
 
     if (apiUpdate === null) return;
 
     // todo: optimize not to update all events, only the changed ones
+    // todo: sync with db, if update fails, revert to previous state
     const iteratedDate = new Date(tripInfo.startDate);
-    itinerary.forEach((day) => {
+    itinerary.forEach((day, dayIndex) => {
       day.events.forEach((event, index) => {
         event.date = iteratedDate.toISOString();
         event.position = index;
 
+        dispatchUserTrips({
+          type: UT.UPDATE_EVENT,
+          payload: { selectedTrip, dayIndex, event },
+        });
         updateEvent.mutate({
           eventId: event.id,
           data: { date: event.date, position: event.position },
@@ -115,9 +113,8 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
       iteratedDate.setDate(iteratedDate.getDate() + 1);
     });
     setApiUpdate(null);
-  }
-
-  function handleDragOver({ active, over }: DragOverEvent) {
+  };
+  const handleDragOver = ({ active, over }: DragOverEvent) => {
     if (over === null) return;
 
     const activeId = active?.id as string;
@@ -145,16 +142,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
       newItinerary = EventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate);
       setApiUpdate({ type: "event^day" });
     } else if (activeType === "event" && overType === "event") {
-      newItinerary = EventOverEvent(
-        itinerary,
-        events,
-        activeId,
-        activeIndex,
-        activeDate,
-        overId,
-        overIndex,
-        overDate
-      );
+      newItinerary = EventOverEvent(itinerary, events, activeId, activeIndex, activeDate, overId, overIndex, overDate);
       setApiUpdate({ type: "event^event" });
     }
 
@@ -174,9 +162,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     });
 
     setActiveTrip({ itinerary: newItinerary, ...tripInfo });
-  }
-
-  console.log(dialogIndexPosition);
+  };
 
   const value = {
     dispatchUserTrips,
@@ -277,9 +263,7 @@ const DndDay = memo(function Day({ day, ...props }: { day: Day }) {
           : "h-[8.25rem] rounded-r-[0.625rem] border-2 border-dashed border-kolumblue-300 bg-kolumblue-100/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter first:rounded-tl-[0.625rem]"
       }`}
     >
-      {id !== activeId ? (
-        <DayComponent ref={setActivatorNodeRef} day={day} {...attributes} {...listeners} {...props} />
-      ) : null}
+      {id !== activeId ? <DayComponent ref={setActivatorNodeRef} day={day} {...attributes} {...listeners} {...props} /> : null}
     </li>
   );
 });
@@ -289,15 +273,12 @@ type DayComponentProps = {
   dragOverlay?: boolean;
 };
 const DayComponent = memo(
-  forwardRef(function DndDayContentComponent(
-    { day, dragOverlay, ...props }: DayComponentProps,
-    ref: ForwardedRef<HTMLDivElement>
-  ) {
+  forwardRef(function DndDayContentComponent({ day, dragOverlay, ...props }: DayComponentProps, ref: ForwardedRef<HTMLDivElement>) {
     const { activeTrip, activeId, setEventComposerDisplay, setAddEventDayIndex } = useDndData();
-    const { id, events } = day;
+    const { id, date, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
-    const dayIndex = GetIndex(activeTrip.itinerary, events, "day", day.id);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, date);
 
     const handleAddEvent = () => {
       setEventComposerDisplay(true);
@@ -374,75 +355,62 @@ type EventComponentProps = {
   dragOverlay?: boolean;
 };
 const EventComponent = memo(
-  forwardRef<HTMLDivElement, EventComponentProps>(
-    ({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
-      const {
-        activeTrip,
-        setActiveEvent,
-        isEventPanelDisplayed,
-        setEventPanelDisplay,
-        setDialogIndexPosition,
-      } = useDndData();
+  forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
+    const { activeTrip, setActiveEvent, isEventPanelDisplayed, setEventPanelDisplay, setDialogIndexPosition } = useDndData();
+    const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
 
-      const getImageUrl = (): string => {
-        if (!event.photo) return "/images/event-placeholder.png";
-        if (event.photo.startsWith("http")) return event.photo;
+    const getImageUrl = (): string => {
+      if (!event.photo) return "/images/event-placeholder.png";
+      if (event.photo.startsWith("http")) return event.photo;
 
-        return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=312&maxheight=160&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
-      };
+      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=312&maxheight=160&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
+    };
 
-      // find index of the day that the event belongs to by comparing the date
-      const dayIndex = activeTrip.itinerary.findIndex((day: Day) => day.date === event.date);
+    return (
+      <div
+        className={`group relative flex h-28 flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-lg border-2 border-white/80 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-leave hover:shadow-borderSplashXl hover:ease-kolumb-flow ${
+          dragOverlay ? "shadow-borderSplashXl" : "shadow-borderXl"
+        }`}
+      >
+        {!dragOverlay && (
+          <span className="absolute right-1 top-1 z-20 flex h-6 w-14 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 opacity-0 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow">
+            <button
+              onClick={() => {
+                setActiveEvent(event);
+                setDialogIndexPosition({ x: event.position, y: dayIndex });
 
-      return (
-        <div
-          className={`group relative flex h-28 flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-lg border-2 border-white/80 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-leave hover:shadow-borderSplashXl hover:ease-kolumb-flow ${
-            dragOverlay ? "shadow-borderSplashXl" : "shadow-borderXl"
-          }`}
-        >
-          {!dragOverlay && (
-            <span className="absolute right-1 top-1 z-20 flex h-6 w-14 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 opacity-0 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow">
-              <button
-                onClick={() => {
+                if (isEventPanelDisplayed) {
                   setEventPanelDisplay(false);
-                  setActiveEvent(event);
-                  setDialogIndexPosition({ x: event.position, y: dayIndex });
                   setTimeout(() => setEventPanelDisplay(true), 350);
-                }}
-                className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100"
-              >
-                <Icon.pinPen className="m-auto h-3" />
-              </button>
+                } else setEventPanelDisplay(true);
+              }}
+              className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100"
+            >
+              <Icon.pinPen className="m-auto h-3" />
+            </button>
 
-              <button className="w-full duration-200 ease-kolumb-flow hover:bg-gray-100">
-                <Icon.horizontalDots className="m-auto w-4" />
-              </button>
-            </span>
-          )}
+            <button className="w-full duration-200 ease-kolumb-flow hover:bg-gray-100">
+              <Icon.horizontalDots className="m-auto w-4" />
+            </button>
+          </span>
+        )}
 
-          <div ref={ref} onClick={() => setActiveEvent(event)} className="flex-1 cursor-pointer" {...props}>
-            <Image
-              src={getImageUrl()}
-              alt="Event Image"
-              width={156}
-              height={80}
-              priority
-              className="h-20 object-cover object-center"
-            />
-          </div>
-
-          <input
-            type="text"
-            name="event-name"
-            value={event.name}
-            placeholder="-"
-            onClick={() => navigator.clipboard.writeText(event.name)}
-            readOnly
-            className="mt-0.5 flex-shrink-0 cursor-pointer text-ellipsis bg-transparent px-1 py-[3px] text-sm text-gray-900 placeholder:text-center hover:bg-gray-400/25"
-          />
+        <div ref={ref} onClick={() => setActiveEvent(event)} className="flex-1 cursor-pointer" {...props}>
+          <Image src={getImageUrl()} alt="Event Image" width={156} height={80} priority className="h-20 object-cover object-center" />
         </div>
-      );
-    }
-  )
+
+        <input
+          type="text"
+          name="event-name"
+          placeholder="-"
+          value={event.name ?? ""}
+          onClick={() => event.name && navigator.clipboard.writeText(event.name)}
+          readOnly
+          className="mt-0.5 flex-shrink-0 cursor-pointer text-ellipsis bg-transparent px-1 py-[3px] text-sm text-gray-900 placeholder:text-center hover:bg-gray-400/25"
+        />
+      </div>
+    );
+  })
 );
+
 //#endregion

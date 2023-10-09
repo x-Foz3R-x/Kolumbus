@@ -17,7 +17,7 @@
     "@easepick/bundle": "^1.2.1",
     "@next/font": "^13.4.2",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "^5.4.1",
+    "@prisma/client": "^5.4.2",
     "@tanstack/react-query": "^4.35.3",
     "@trpc/client": "^10.38.3",
     "@trpc/react-query": "^10.38.3",
@@ -44,6 +44,6 @@
   "devDependencies": {
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.2.8",
-    "prisma": "^5.4.1"
+    "prisma": "^5.4.2"
   }
 }

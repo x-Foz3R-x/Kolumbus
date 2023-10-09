@@ -34,7 +34,7 @@ export default function ActionBar() {
                 onChange={handleChange}
                 spellCheck="false"
                 variant="unstyled"
-                textWidth
+                dynamicWidth
                 preventEmpty
                 className="h-8 cursor-pointer rounded bg-transparent px-2 py-1 duration-300 ease-kolumb-flow hover:bg-black/5 hover:shadow-soft focus:cursor-text focus:bg-white focus:shadow-focus"
               />
