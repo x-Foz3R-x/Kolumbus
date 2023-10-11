@@ -10,12 +10,7 @@ export default function Header() {
   return (
     <nav className="fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-between bg-white">
       <div className="h-14 w-56 flex-none">
-        <Link
-          href="/"
-          title="Home page"
-          aria-label="Home page"
-          className="m-auto my-4 flex w-fit justify-center"
-        >
+        <Link href="/" title="Home page" aria-label="Home page" className="m-auto my-4 flex w-fit justify-center">
           <Icon.logo className="h-6" />
         </Link>
       </div>
@@ -26,20 +21,20 @@ export default function Header() {
           Home
         </Link> */}
 
-        <Link href="/start" className={linkStyle}>
+        <Link href="/library" className={linkStyle}>
           <Icon.library className={linkSvgStyle} />
           Library
         </Link>
 
-        <Link href="/start" className={linkStyle}>
+        {/* <Link href="/start" className={linkStyle}>
           <Icon.market className={linkSvgStyle} />
           Market
-        </Link>
+        </Link> */}
 
-        <Link href="/start" className={linkStyle}>
+        {/* <Link href="/start" className={linkStyle}>
           <Icon.showcase className={linkSvgStyle} />
           Showcase
-        </Link>
+        </Link> */}
       </div>
 
       <section className="mr-4 flex h-14 w-56 flex-none justify-end">
