@@ -69,6 +69,9 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   const [addEventDayIndex, setAddEventDayIndex] = useState(0);
   const [apiUpdate, setApiUpdate] = useState<{ type: "day^day" | "event^day" | "event^event" } | null>(null);
   //
+  useEffect(() => {
+    setActiveTrip(userTrips[selectedTrip]);
+  }, [userTrips, selectedTrip]);
 
   const { itinerary, ...tripInfo } = activeTrip;
   const events = itinerary.flatMap((day) => day.events);
@@ -200,7 +203,7 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
               {daysId?.map((dayId) => (
                 <DndDay key={dayId} day={GetDay(itinerary, dayId)} />
               ))}
-              <CalendarEnd totalDays={tripInfo.days} />
+              <CalendarEnd totalDays={daysId.length} />
             </ul>
           </SortableContext>
 

@@ -4,12 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { GenerateItinerary } from "@/lib/utils";
 import { ItinerarySchema } from "@/types";
 
-const TripSchema = z.object({
-  userId: z.string().optional(),
+const updateSchema = z.object({
   name: z.string().optional(),
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
-  days: z.number().optional(),
   position: z.number().optional(),
 });
 
@@ -21,7 +19,6 @@ const ServerTrip = z.object({
   name: z.string(),
   startDate: z.date(),
   endDate: z.date(),
-  days: z.number(),
   position: z.number(),
   itinerary: ItinerarySchema,
 
@@ -30,6 +27,7 @@ const ServerTrip = z.object({
 });
 
 const trip = router({
+  //#region Read
   find: protectedProcedure.input(z.object({ tripId: z.string() })).query(async ({ ctx, input }) => {
     if (!ctx.user.id) return;
 
@@ -65,13 +63,14 @@ const trip = router({
         orderBy: [{ position: "asc" }],
       });
 
-      (trip as ServerTrip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.days, events);
+      (trip as ServerTrip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, events);
     }
 
     return trips as ServerTrip[];
   }),
+  //#endregion
   update: protectedProcedure
-    .input(z.object({ tripId: z.string().cuid2("Invalid trip id"), data: TripSchema }))
+    .input(z.object({ tripId: z.string().cuid2("Invalid trip id"), data: updateSchema }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.id) return;
 

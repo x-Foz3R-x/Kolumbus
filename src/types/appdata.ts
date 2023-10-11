@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Trip as PrismaTrip, Event as PrismaEvent, EventType, Currency } from "@prisma/client";
+import { Trip as PrismaTrip, Event as PrismaEvent, Currency } from "@prisma/client";
 import { PlaceOpeningHours } from "./google";
 
 export type Event = z.infer<typeof EventSchema>;
@@ -20,9 +20,8 @@ export const EventSchema = z.object({
   photoAlbum: z.array(z.string()),
   photo: z.string().nullable(),
 
-  type: z.nativeEnum(EventType),
-  position: z.number(),
   date: z.string().datetime(),
+  position: z.number(),
   updatedAt: z.string().datetime(),
   createdAt: z.string().datetime(),
   createdBy: z.string(),
@@ -45,7 +44,6 @@ const TripSchema = z.object({
   name: z.string(),
   startDate: z.string().datetime(),
   endDate: z.string().datetime(),
-  days: z.number(),
   position: z.number(),
   itinerary: ItinerarySchema,
   updatedAt: z.string().datetime(),
@@ -56,9 +54,11 @@ export type TripDB = PrismaTrip;
 export type EventDB = PrismaEvent;
 
 export enum UT {
-  // TRIP
+  // TRIPS
   REPLACE = "replace_trips_state",
-  ADD = "add_trip_to_state",
+
+  // TRIP
+  UPDATE_TRIP = "update_trip_in_state",
 
   // EVENT
   ADD_EVENT = "add_event_to_state",
@@ -72,8 +72,8 @@ export type DispatchAction =
       userTrips: Trip[];
     }
   | {
-      type: UT.ADD;
-      trip: Trip;
+      type: UT.UPDATE_TRIP;
+      payload: { trip: Trip };
     }
   | {
       type: UT.ADD_EVENT;

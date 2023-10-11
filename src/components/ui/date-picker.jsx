@@ -1,29 +1,23 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { easepick, AmpPlugin, RangePlugin, LockPlugin, DateTime } from "@easepick/bundle";
 
+import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
-import { CalculateDays } from "@/lib/utils";
+import { useActionBarContext } from "../itinerary/action-bar";
+import { CalculateDays, GenerateItinerary } from "@/lib/utils";
 import { UT } from "@/types";
 
 import Icon from "../icons";
 import { EventsOnExcludedDaysModal } from "./modal";
 
 export default function DatePicker() {
-  const { userTrips, dispatchUserTrips, selectedTrip, isLoading, setModalShown, setModalChildren } =
-    useAppdata();
+  const updateTrip = api.trip.update.useMutation();
+  const { dispatchUserTrips, setModalShown, setModalChildren } = useAppdata();
+  const { activeTrip } = useActionBarContext();
 
   const [isDisplayed, setDisplay] = useState(false);
-  const [startDate, setStartDate] = useState(new DateTime());
-  const [endDate, setEndDate] = useState(new DateTime());
-
-  useEffect(() => {
-    if (isLoading || selectedTrip === -1 || !userTrips) return;
-
-    setStartDate(new DateTime(userTrips[selectedTrip]?.startDate));
-    setEndDate(new DateTime(userTrips[selectedTrip]?.endDate));
-  }, [userTrips, selectedTrip, isLoading]);
 
   const DatePickerRef = useRef();
 
@@ -37,83 +31,70 @@ export default function DatePicker() {
       autoApply: false,
       zIndex: 10,
       plugins: [AmpPlugin, RangePlugin, LockPlugin],
-      AmpPlugin: {
-        dropdown: {
-          months: true,
-          years: true,
-          minYear: new Date().getFullYear() - 5,
-          maxYear: new Date().getFullYear() + 10,
-        },
-      },
-      RangePlugin: {
-        startDate: startDate,
-        endDate: endDate,
-      },
-      LockPlugin: {
-        maxDays: 30,
-      },
+      AmpPlugin: { dropdown: { months: true, years: true } },
+      RangePlugin: { startDate: new Date(activeTrip.startDate), endDate: new Date(activeTrip.endDate) },
+      LockPlugin: { maxDays: 30 },
     });
+
+    const formatPickerDate = (date) => {
+      return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    };
 
     picker.show();
     picker.on("select", async () => {
-      const pickedStartDate = picker.getStartDate();
-      const pickedEndDate = picker.getEndDate();
+      const pickedStartDate = formatPickerDate(picker.getStartDate());
+      const pickedEndDate = formatPickerDate(picker.getEndDate());
+      const startDate = new Date(activeTrip.startDate);
+      const endDate = new Date(activeTrip.endDate);
 
       if (startDate === pickedStartDate && endDate === pickedEndDate) return;
 
-      const currentTrip = userTrips[selectedTrip];
-      currentTrip.startDate = pickedStartDate.toISOString();
-      currentTrip.endDate = pickedEndDate.toISOString();
-      currentTrip.days = CalculateDays(pickedStartDate, pickedEndDate);
+      const trip = { ...activeTrip };
+      const events = trip.itinerary.flatMap((day) => day.events) ?? [];
 
+      trip.startDate = pickedStartDate.toISOString();
+      trip.endDate = pickedEndDate.toISOString();
+      trip.itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, events);
+
+      // Apply changes when there are no conflicting dates.
       if (startDate >= pickedStartDate && endDate <= pickedEndDate) {
-        setStartDate(pickedStartDate);
-        setEndDate(pickedEndDate);
-
-        dispatchUserTrips({ type: UT.REPLACE, userTrips });
+        dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
+        updateTrip.mutate({ tripId: trip.id, data: { startDate: trip.startDate, endDate: trip.endDate } });
         return;
       }
 
-      const currentItinerary = userTrips[selectedTrip]?.itinerary;
-      if (currentItinerary === undefined) return;
-      const numberOfDays = currentItinerary.length - 1;
+      const eventsToDelete = [];
+      const daysToDeleteFromStart = startDate < pickedStartDate ? CalculateDays(startDate, pickedStartDate, false) : 0;
+      const daysToDeleteFromEnd = endDate > pickedEndDate ? CalculateDays(pickedEndDate, endDate, false) : 0;
 
-      const startDaysToDelete =
-        startDate < pickedStartDate ? CalculateDays(startDate, pickedStartDate) - 1 : 0;
-      const endDaysToDelete = endDate > pickedEndDate ? CalculateDays(pickedEndDate, endDate) - 1 : 0;
-
-      let eventsToDelete = [];
-      for (let i = 0; i < startDaysToDelete; i++) {
-        const events = currentItinerary[i]?.events;
-        events?.forEach((event) => {
-          eventsToDelete.push(event);
-        });
+      // Collect events from both the start and end of the itinerary that are about to be deleted.
+      for (let i = 0; i < daysToDeleteFromStart; i++) {
+        const events = activeTrip.itinerary[i]?.events;
+        events?.forEach((event) => eventsToDelete.push(event));
       }
-      for (let i = numberOfDays; i > numberOfDays - endDaysToDelete; i--) {
-        const events = currentItinerary[i]?.events;
-        events?.forEach((event) => {
-          eventsToDelete.push(event);
-        });
+      for (let i = activeTrip.itinerary.length; i > activeTrip.itinerary.length - daysToDeleteFromEnd; i--) {
+        // Subtract 1 from 'i' to access the correct day's events since array indices are 0-based.
+        const events = activeTrip.itinerary[i - 1]?.events;
+        events?.forEach((event) => eventsToDelete.push(event));
       }
 
+      // Apply changes when there are no events to delete.
       if (eventsToDelete.length === 0) {
-        setStartDate(pickedStartDate);
-        setEndDate(pickedEndDate);
-
-        dispatchUserTrips({ type: UT.REPLACE, userTrips });
+        dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
+        updateTrip.mutate({ tripId: trip.id, data: { startDate: trip.startDate, endDate: trip.endDate } });
         return;
       }
 
+      // Apply changes when there are events to delete.
       const handleExcludedDays = () => {
-        setStartDate(pickedStartDate);
-        setEndDate(pickedEndDate);
-
-        dispatchUserTrips({ type: UT.REPLACE, userTrips });
+        dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
+        updateTrip.mutate({ tripId: trip.id, data: { startDate: trip.startDate, endDate: trip.endDate } });
         setModalShown(false);
       };
 
-      setModalShown(true);
-      setModalChildren(EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays));
+      // Show modal to confirm deletion of events on excluded days.
+      // setModalShown(true);
+      // setModalChildren(EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays));
     });
     picker.on("hide", () => {
       setDisplay(false);
@@ -127,16 +108,16 @@ export default function DatePicker() {
 
       <section className="absolute h-9 w-[5.0625rem] text-center text-[10px] font-medium text-white/75">
         <div className="absolute left-[-0.125rem] top-1 w-10">
-          {!isLoading && startDate?.toLocaleString("default", { month: "short" }).toUpperCase()}
+          {new Date(activeTrip.startDate).toLocaleString("default", { month: "short" }).toUpperCase()}
         </div>
         <div className="absolute right-[-0.125rem] top-1 w-10">
-          {!isLoading && endDate?.toLocaleString("default", { month: "short" }).toUpperCase()}
+          {new Date(activeTrip.endDate).toLocaleString("default", { month: "short" }).toUpperCase()}
         </div>
       </section>
 
       <section className="absolute h-9 w-[5.0625rem] text-center text-sm font-medium">
-        <div className="absolute bottom-0 left-[-0.125rem] w-10">{!isLoading && startDate?.getDate()}</div>
-        <div className="absolute bottom-0 right-[-0.125rem] w-10">{!isLoading && endDate?.getDate()}</div>
+        <div className="absolute bottom-0 left-[-0.125rem] w-10">{new Date(activeTrip.startDate).getDate()}</div>
+        <div className="absolute bottom-0 right-[-0.125rem] w-10">{new Date(activeTrip.endDate).getDate()}</div>
       </section>
 
       <input

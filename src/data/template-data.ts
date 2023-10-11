@@ -1,13 +1,11 @@
-import { Trip, Event } from "@/types";
-import { Currency, EventType } from "@prisma/client";
+import { Currency } from "@prisma/client";
 
-export const tripTemplate: Trip = {
+export const tripTemplate = {
   id: "",
   userId: "",
   name: "",
   startDate: new Date().toISOString(),
   endDate: new Date().toISOString(),
-  days: 1,
   position: 0,
   itinerary: [],
   updatedAt: new Date().toISOString(),
@@ -30,7 +28,6 @@ export const eventTemplate = {
   website: null,
   openingHours: {},
 
-  type: EventType.DEFAULT,
   updatedAt: "",
   createdAt: "",
 };

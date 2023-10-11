@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Currency, EventType } from "@prisma/client";
+import { Currency } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { protectedProcedure, router } from "../trpc";
 import { PlaceOpeningHours } from "@/types";
@@ -21,9 +21,8 @@ const updateSchema = z.object({
   photoAlbum: z.array(z.string()).optional(),
   photo: z.string().nullable().optional(),
 
-  type: z.nativeEnum(EventType).optional(),
-  position: z.number().optional(),
   date: z.string().datetime().optional(),
+  position: z.number().optional(),
 });
 const createSchema = z.object({
   id: z.string().cuid2("Invalid event id"),
@@ -42,23 +41,14 @@ const createSchema = z.object({
   photoAlbum: z.array(z.string()),
   photo: z.string().nullable(),
 
-  type: z.nativeEnum(EventType),
-  position: z.number(),
   date: z.string().datetime(),
+  position: z.number(),
   updatedAt: z.string(),
   createdAt: z.string(),
   createdBy: z.string(),
 });
 
 const event = router({
-  update: protectedProcedure
-    .input(z.object({ eventId: z.string().cuid2("Invalid event id"), data: updateSchema }))
-    .mutation(async ({ ctx, input }) => {
-      if (!ctx.user.id) return;
-
-      const { id, ...data } = input.data;
-      await prisma.event.update({ where: { id: input.eventId }, data });
-    }),
   create: protectedProcedure.input(createSchema).mutation(async ({ ctx, input }) => {
     if (!ctx.user.id) return;
 
@@ -67,6 +57,14 @@ const event = router({
 
     return event;
   }),
+  update: protectedProcedure
+    .input(z.object({ eventId: z.string().cuid2("Invalid event id"), data: updateSchema }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.user.id) return;
+
+      const { id, ...data } = input.data;
+      await prisma.event.update({ where: { id: input.eventId }, data });
+    }),
   delete: protectedProcedure
     .input(z.object({ eventId: z.string().cuid2("Invalid event id"), events: z.array(updateSchema) }))
     .mutation(async ({ ctx, input }) => {

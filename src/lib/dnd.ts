@@ -12,15 +12,20 @@ export function GetDragType(event: Active | Over): "day" | "event" {
 }
 
 /**
- * Finds the index of a specific day in an itinerary based on a given date.
- * @param itinerary - The array of days that make up the itinerary.
- * @param date - The date for which you want to find the day index.
- * @returns The index of the day in the itinerary that matches the given date, or -1 if not found.
+ * Function to get an item (day or event) from the itinerary based on its ID
+ * @param itinerary - The itinerary containing all the days and events.
+ * @param events - The array of all events.
+ * @param id - The id of element to find.
+ * @returns The day if found, the event if found, or undefined if neither found
  */
-export function GetDayIndex(itinerary: Itinerary, date: string): number {
-  // Search for a day in the itinerary array with a matching date.
-  // Return its index if found, or -1 if not found.
-  return itinerary.findIndex((day: Day) => day.date === date);
+export function GetItem(itinerary: Itinerary, events: Event[], id: string) {
+  // Find the day with the matching ID
+  const day = itinerary?.find((day) => day.id === id);
+
+  // Find the event with the matching ID
+  const event = events?.find((event) => event.id === id);
+
+  return day ? day : event ? event : undefined;
 }
 
 /**
@@ -46,23 +51,6 @@ export function GetEvent(events: Event[], id: string): Event {
 }
 
 /**
- * Function to get an item (day or event) from the itinerary based on its ID
- * @param itinerary - The itinerary containing all the days and events.
- * @param events - The array of all events.
- * @param id - The id of element to find.
- * @returns The day if found, the event if found, or undefined if neither found
- */
-export function GetItem(itinerary: Itinerary, events: Event[], id: string) {
-  // Find the day with the matching ID
-  const day = itinerary?.find((day) => day.id === id);
-
-  // Find the event with the matching ID
-  const event = events?.find((event) => event.id === id);
-
-  return day ? day : event ? event : undefined;
-}
-
-/**
  * Function to get the index of a day or event in the itinerary based on its ID and type.
  * @param itinerary - The itinerary containing all the days and events.
  * @param type - The drag type of element
@@ -82,6 +70,18 @@ export function GetIndex(itinerary: Itinerary, events: Event[], type: "day" | "e
   }
 
   return -1;
+}
+
+/**
+ * Finds the index of a specific day in an itinerary based on a given date.
+ * @param itinerary - The array of days that make up the itinerary.
+ * @param date - The date for which you want to find the day index.
+ * @returns The index of the day in the itinerary that matches the given date, or -1 if not found.
+ */
+export function GetDayIndex(itinerary: Itinerary, date: string): number {
+  // Search for a day in the itinerary array with a matching date.
+  // Return its index if found, or -1 if not found.
+  return itinerary.findIndex((day: Day) => day.date === date);
 }
 
 /**

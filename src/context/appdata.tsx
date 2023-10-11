@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState, useReducer } fro
 import api from "@/app/_trpc/client";
 import { DispatchAction, Trip, UT } from "@/types";
 
+//#region Context
 type AppdataContext = {
   userTrips: Trip[];
   dispatchUserTrips: React.Dispatch<DispatchAction>;
@@ -18,7 +19,6 @@ type AppdataContext = {
   setModalChildren: React.Dispatch<React.SetStateAction<null>>;
 };
 const appdataContext = createContext<AppdataContext | null>(null);
-
 /**
  * Custom hook to access appdata context.
  * @returns The appdata context.
@@ -28,6 +28,7 @@ export default function useAppdata() {
   if (!context) throw new Error("useAppdata must be used within a AppDataProvider");
   return context;
 }
+//#endregion
 
 export function AppdataProvider({ children }: { children: React.ReactNode }) {
   const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, []);
@@ -41,12 +42,12 @@ export function AppdataProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof data === "undefined" || areTripsLoading) return;
-
     dispatchUserTrips({ type: UT.REPLACE, userTrips: data });
-    setLoading(false);
   }, [data, areTripsLoading]);
 
-  // console.log("userTrips", userTrips);
+  useEffect(() => {
+    if (userTrips?.length !== 0 && typeof userTrips[selectedTrip]?.itinerary !== "undefined") setLoading(false);
+  }, [userTrips, selectedTrip, isLoading]);
 
   const value = {
     userTrips,
@@ -75,6 +76,16 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
     case UT.REPLACE:
       if (action.userTrips) {
         const newTrips: Trip[] = action.userTrips;
+        return newTrips;
+      }
+      return trips;
+    case UT.UPDATE_TRIP:
+      if (action.payload) {
+        const { trip } = action.payload;
+        const newTrips = [...trips];
+
+        newTrips.splice(trip.position, 1, trip);
+
         return newTrips;
       }
       return trips;
