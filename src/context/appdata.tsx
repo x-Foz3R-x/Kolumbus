@@ -1,7 +1,6 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useReducer } from "react";
-import api from "@/app/_trpc/client";
 import { DispatchAction, Trip, UT } from "@/types";
 
 //#region Context
@@ -30,39 +29,47 @@ export default function useAppdata() {
 }
 //#endregion
 
-export function AppdataProvider({ children }: { children: React.ReactNode }) {
-  const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, []);
+type AppdataProviderProps = {
+  trips: Trip[];
+  children: React.ReactNode;
+};
+/**
+ * Provider component for appdata context.
+ * @param serverTrips - The user's trips from the server.
+ * @param children - The children components to render.
+ * @returns The provider component.
+ */
+export function AppdataProvider({ trips: serverTrips, children }: AppdataProviderProps) {
+  const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, serverTrips);
   const [selectedTrip, setSelectedTrip] = useState(-1);
   const [isLoading, setLoading] = useState(true);
 
   const [isModalShown, setModalShown] = useState(false);
   const [modalChildren, setModalChildren] = useState(null);
 
-  const { data, isLoading: areTripsLoading } = api.trip.getAllWithEvents.useQuery();
-
-  useEffect(() => {
-    if (typeof data === "undefined" || areTripsLoading) return;
-    dispatchUserTrips({ type: UT.REPLACE, userTrips: data });
-  }, [data, areTripsLoading]);
-
   useEffect(() => {
     if (userTrips?.length !== 0 && typeof userTrips[selectedTrip]?.itinerary !== "undefined") setLoading(false);
-  }, [userTrips, selectedTrip, isLoading]);
+  }, [userTrips, selectedTrip]);
 
-  const value = {
-    userTrips,
-    dispatchUserTrips,
-    selectedTrip,
-    setSelectedTrip,
-    isLoading,
-    setLoading,
+  return (
+    <appdataContext.Provider
+      value={{
+        userTrips,
+        dispatchUserTrips,
+        selectedTrip,
+        setSelectedTrip,
+        isLoading,
+        setLoading,
 
-    isModalShown,
-    setModalShown,
-    modalChildren,
-    setModalChildren,
-  };
-  return <appdataContext.Provider value={value}>{children}</appdataContext.Provider>;
+        isModalShown,
+        setModalShown,
+        modalChildren,
+        setModalChildren,
+      }}
+    >
+      {children}
+    </appdataContext.Provider>
+  );
 }
 
 /**

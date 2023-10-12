@@ -52,7 +52,7 @@ export default function SignUp() {
   };
 
   // This verifies the user using email code that is delivered.
-  const onPressVerify = async (e: any) => {
+  const handleVerify = async (e: any) => {
     e.preventDefault();
     if (!isLoaded) {
       return;
@@ -62,13 +62,11 @@ export default function SignUp() {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code,
       });
-      if (completeSignUp.status !== "complete") {
-        console.log(JSON.stringify(completeSignUp, null, 2));
-      }
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
-        router.push("/itinerary");
+        router.push("/library");
       }
+      if (completeSignUp.status !== "complete") console.log(JSON.stringify(completeSignUp, null, 2));
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
     }
@@ -200,16 +198,11 @@ export default function SignUp() {
 
         <form className="relative flex w-[22rem] flex-shrink-0 flex-col gap-6">
           <div className="rounded-lg shadow-soft">
-            <Input
-              value={code}
-              label="Verification code"
-              onChange={(e) => setCode(e.target.value)}
-              variant="insetLabel"
-            />
+            <Input value={code} label="Verification code" onChange={(e) => setCode(e.target.value)} variant="insetLabel" />
           </div>
 
           <button
-            onClick={onPressVerify}
+            onClick={handleVerify}
             className={`absolute bottom-3 right-4 z-40 flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 shadow-soft duration-150 ease-in focus:shadow-focus`}
           >
             <Icon.arrowRight className={`h-full w-4 fill-gray-700`} />
