@@ -9,11 +9,11 @@ export default function Home() {
         <h1 className="text-4xl font-bold">Adventure awaits</h1>
       </div>
       <div className="flex items-end justify-end gap-1 text-xs">
-        <Link href="/signin" className="hover:underline">
-          signin
+        <Link href="/sign-in" className="hover:underline">
+          sign in
         </Link>
-        <Link href="/signup" className="hover:underline">
-          signup
+        <Link href="/sign-up" className="hover:underline">
+          sign up
         </Link>
         <Link href="/itinerary" className="hover:underline">
           itinerary

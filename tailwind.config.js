@@ -12,7 +12,9 @@ module.exports = {
         inconsolata: "var(--font-inconsolata)",
       },
       animation: {
-        appear: "appear 500ms cubic-bezier(0.175, 0.75, 0.32, 1)",
+        appear: "appear 700ms cubic-bezier(0.175, 0.75, 0.32, 1)",
+        slideIn: "slideIn 400ms cubic-bezier(0.175, 0.5, 0.32, 1.275)",
+        test: "composer 400ms cubic-bezier(0.175, 0.5, 0.32, 1.275)",
         verticalScaleIn: "verticalScaleIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
         horizontalScaleIn: "horizontalScaleIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
       },
@@ -33,6 +35,22 @@ module.exports = {
             transformOrigin: "bottom",
           },
         },
+        slideIn: {
+          "0%": {
+            opacity: "0",
+            transformOrigin: "left",
+            transform: "translate(-1.5rem, -0.5rem) skew(3deg, 6deg) scale(0.75, 1)",
+          },
+          "100%": {
+            opacity: "1",
+            transformOrigin: "left",
+            transform: "translate(0, 0) skew(0deg, 0deg) scale(1, 1)",
+          },
+        },
+        composer: {
+          "0%": "",
+          "100%": "",
+        },
         verticalScaleIn: {
           "0%": { transform: "scale(1, 0)" },
           "100%": { transform: "scale(1, 1)" },
@@ -49,28 +67,48 @@ module.exports = {
       },
     },
     boxShadow: {
-      soft: "0px 1px 2px rgba(15, 15, 15, 0.05)",
-      focus: "0 0 0 1px hsla(210, 78%, 50%, 0.3)",
+      none: "0 0 #000000",
+      border: "0 0 0 1px hsl(232, 9%, 90%)",
+      focus: "0 0 0 1px hsla(210, 78%, 60%), 0 0 0 3px hsla(210, 78%, 60%, 0.3)",
+      softSm: "0px 1px 2px rgba(15, 15, 15, 0.1)",
+      soft: "0px 1px 4px rgba(15, 15, 15, 0.1)",
 
       xs: "0 1px 2px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.01), 0 2px 3px rgba(15,15,15,0.01)",
       sm: "0 2px 2px rgba(15,15,15,0.02), 0 3px 3px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02)",
       smI: "0 -2px 2px rgba(15,15,15,0.01), 0 -3px 3px rgba(15,15,15,0.02), 0 -4px 4px rgba(15,15,15,0.01)",
-      md: "0 0px 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 12px 12px rgba(15,15,15,0.01)",
-      lg: "0 0px 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 12px 12px rgba(15,15,15,0.01)",
-      xl: "0 0px 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.01), 0 4px 4px rgba(15,15,15,0.01), 0 8px 8px rgba(15,15,15,0.01), 0 16px 16px rgba(15,15,15,0.01)",
-      xxl: "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
-      xxxl: "0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02)",
+      md: "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 12px 12px rgba(15,15,15,0.01)",
+      lg: "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 12px 12px rgba(15,15,15,0.01)",
+      xl: "0 0 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.02)",
+      "2xl":
+        "0 0 5px rgba(15,15,15,0.05), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
+      "3xl":
+        "0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02)",
+
+      splashXl:
+        "0 0 5px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02), 4px 0 4px rgba(15,15,15,0.02), 8px 0 8px rgba(15,15,15,0.02), -4px 0 4px rgba(15,15,15,0.02), -8px 0 8px rgba(15,15,15,0.02)",
+
+      borderXl:
+        "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.02)",
+      border2xl:
+        "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.03), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
+      border3xl:
+        "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 12px 12px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.05)",
+
+      borderSplashXl:
+        "0 0 0 1px hsla(232, 9%, 90%, 0.4), 0 0 5px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02), 4px 0 4px rgba(15,15,15,0.02), 8px 0 8px rgba(15,15,15,0.02), -4px 0 4px rgba(15,15,15,0.02), -8px 0 8px rgba(15,15,15,0.02)",
 
       btn: "0px 0px 0px 1px rgba(15,15,15,.02), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
       select:
         "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.01), 0 5px 6px rgba(15,15,15,0.01), 0 6px 8px rgba(15,15,15,0.01)",
+
       insetSm:
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px rgba(15,15,15,.02), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02)",
       inset:
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px rgba(15,15,15,.02), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px rgba(15,15,15,.02)",
-      splash:
-        "0 0 5px rgba(15,15,15,0.1), 0 0 1px rgba(15,15,15,0.03), 0 0 2px rgba(15,15,15,0.03), 0 0 4px rgba(15,15,15,0.03), 0 0 8px rgba(15,15,15,0.03), 0 0 12px rgba(15,15,15,0.03)",
 
+      //
+      // TO REMOVE
+      //
       kolumblue: "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px rgba(15,15,15,.06)",
       kolumblueInset:
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px hsla(210, 78%, 75%, 0.1), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px hsla(210, 78%, 90%, 0.1)",
@@ -110,7 +148,7 @@ module.exports = {
         900: "hsl(24, 33%, 17%)",
         950: "hsl(24, 33%, 11%)",
       },
-      kolumbGray: {
+      gray: {
         50: "hsl(232, 9%, 98%)",
         100: "hsl(232, 9%, 94%)",
         200: "hsl(232, 9%, 90%)",

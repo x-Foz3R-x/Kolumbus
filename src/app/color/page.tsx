@@ -1,12 +1,13 @@
+import Icon from "@/components/icons";
 import Color from "./Color";
-import Icon from "@/assets/kolumbus/icon.svg";
+// import Icon from "@/assets/kolumbus/icon.svg";
 
 export default function ColorPallette() {
   return (
     <>
       <header className="flex h-12 justify-center bg-kolumblue-200 py-1 text-white">
-        <Icon className="fill-black" />
-        <Icon className="fill-white" />
+        <Icon.x className="fill-black" />
+        <Icon.x className="fill-white" />
       </header>
 
       <div className="grid grid-cols-[auto,auto,auto] gap-4">
@@ -39,18 +40,18 @@ export default function ColorPallette() {
           <Color value={950} className="bg-kolumbrown-950" />
         </section>
         <section>
-          <div className="flex items-center justify-center p-1">kolumbGray</div>
-          <Color value={50} className="bg-kolumbGray-50" />
-          <Color value={100} className="bg-kolumbGray-100" />
-          <Color value={200} className="bg-kolumbGray-200" />
-          <Color value={300} className="bg-kolumbGray-300" />
-          <Color value={400} className="bg-kolumbGray-400" />
-          <Color value={500} className="bg-kolumbGray-500" />
-          <Color value={600} className="bg-kolumbGray-600" />
-          <Color value={700} className="bg-kolumbGray-700" />
-          <Color value={800} className="bg-kolumbGray-800" />
-          <Color value={900} className="bg-kolumbGray-900" />
-          <Color value={950} className="bg-kolumbGray-950" />
+          <div className="flex items-center justify-center p-1">gray</div>
+          <Color value={50} className="bg-gray-50" />
+          <Color value={100} className="bg-gray-100" />
+          <Color value={200} className="bg-gray-200" />
+          <Color value={300} className="bg-gray-300" />
+          <Color value={400} className="bg-gray-400" />
+          <Color value={500} className="bg-gray-500" />
+          <Color value={600} className="bg-gray-600" />
+          <Color value={700} className="bg-gray-700" />
+          <Color value={800} className="bg-gray-800" />
+          <Color value={900} className="bg-gray-900" />
+          <Color value={950} className="bg-gray-950" />
         </section>
         <section>
           <div className="flex items-center justify-center p-1">tintedGray</div>
@@ -93,6 +94,496 @@ export default function ColorPallette() {
           <Color value={800} className="bg-yellow-800" />
           <Color value={900} className="bg-yellow-900" />
           <Color value={950} className="bg-yellow-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
+        </section>
+        <section>
+          <div className="flex items-center justify-center p-1">green</div>
+          <Color value={50} className="bg-green-50" />
+          <Color value={100} className="bg-green-100" />
+          <Color value={200} className="bg-green-200" />
+          <Color value={300} className="bg-green-300" />
+          <Color value={400} className="bg-green-400" />
+          <Color value={500} className="bg-green-500" />
+          <Color value={600} className="bg-green-600" />
+          <Color value={700} className="bg-green-700" />
+          <Color value={800} className="bg-green-800" />
+          <Color value={900} className="bg-green-900" />
+          <Color value={950} className="bg-green-950" />
         </section>
         <section>
           <div className="flex items-center justify-center p-1">green</div>

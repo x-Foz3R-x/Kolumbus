@@ -1,4 +1,4 @@
-import useAppData from "@/context/app-data";
+import useAppdata from "@/context/appdata";
 import Icon from "../icons";
 import { Event } from "@/types";
 
@@ -44,7 +44,7 @@ export function Modal({ showModal, modalChildren }: ModalProps) {
     >
       <div
         className={`
-          "relative max-w-lg overflow-hidden rounded-lg bg-white text-left shadow-xxxl duration-300 ease-kolumb-flow ${
+          "relative max-w-lg overflow-hidden rounded-lg bg-white text-left shadow-3xl duration-300 ease-kolumb-flow ${
             showModal ? "opacity-100 " : "opacity-0"
           }`}
       >
@@ -66,11 +66,11 @@ export function ModalBody({ type, children }: ModalBodyProps) {
 }
 
 export function ModalTitle({ children }: ModalTextProps) {
-  return <h1 className="mb-3 text-base font-semibold text-kolumbGray-800">{children}</h1>;
+  return <h1 className="mb-3 text-base font-semibold text-gray-800">{children}</h1>;
 }
 
 export function ModalMessage({ children }: ModalTextProps) {
-  return <p className="my-2 text-sm font-normal text-kolumbGray-500">{children}</p>;
+  return <p className="my-2 text-sm font-normal text-gray-500">{children}</p>;
 }
 
 export function ModalGridList({ list, sortBy, printField }: ModalGridListProps) {
@@ -82,7 +82,7 @@ export function ModalGridList({ list, sortBy, printField }: ModalGridListProps) 
       .map((item, index) => (
         <li
           key={`listItem${index}`}
-          className="w-28 overflow-hidden text-ellipsis whitespace-nowrap rounded px-2 text-sm text-kolumbGray-500 [&:nth-child(odd)]:bg-kolumbGray-50"
+          className="w-28 overflow-hidden text-ellipsis whitespace-nowrap rounded px-2 text-sm text-gray-500 [&:nth-child(odd)]:bg-gray-50"
         >
           {item[printField] ? <span>{item[printField]}</span> : <span>---</span>}
         </li>
@@ -90,13 +90,13 @@ export function ModalGridList({ list, sortBy, printField }: ModalGridListProps) 
   };
 
   return (
-    <div className="flex gap-3 overflow-auto rounded-lg bg-kolumbGray-100 px-2 py-3">
+    <div className="flex gap-3 overflow-auto rounded-lg bg-gray-100 px-2 py-3">
       {uniqueHeaders.map((header, index) => (
         <div
           key={`header${index}`}
           className="h-full min-w-fit max-w-[8rem] rounded-md bg-white p-2 shadow-kolumblue"
         >
-          <h2 className="mb-2 border-b border-kolumbGray-200 px-2 pb-1 text-center text-sm font-medium text-kolumbGray-600">
+          <h2 className="mb-2 border-b border-gray-200 px-2 pb-1 text-center text-sm font-medium text-gray-600">
             {header}
           </h2>
 
@@ -108,15 +108,15 @@ export function ModalGridList({ list, sortBy, printField }: ModalGridListProps) 
 }
 
 export function ModalCancelActionButtons({ actionButtonText, actionButtonOnClick }: ModalButtonsProps) {
-  const { setModalShown, isModalShown } = useAppData();
+  const { setModalShown, isModalShown } = useAppdata();
 
   return (
-    <section className="flex justify-end gap-3 bg-kolumbGray-50 px-5 py-3 text-sm font-medium">
+    <section className="flex justify-end gap-3 bg-gray-50 px-5 py-3 text-sm font-medium">
       <button
         onClick={() => {
           setModalShown(false);
         }}
-        className="rounded-lg bg-kolumbGray-100 px-5 py-[6px] capitalize text-kolumbGray-800 shadow-btn duration-200 ease-kolumb-overflow hover:scale-105"
+        className="rounded-lg bg-gray-100 px-5 py-[6px] capitalize text-gray-800 shadow-btn duration-200 ease-kolumb-overflow hover:scale-105"
       >
         Cancel
       </button>

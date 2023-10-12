@@ -1,11 +1,9 @@
-import Main from "@/components/app/main";
-
 export default function ItineraryPageSkeleton() {
   return (
-    <Main>
+    <>
       Loading Itinerary...
       {ItinerarySkeleton()}
-    </Main>
+    </>
   );
 }
 

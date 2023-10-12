@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Trip {
+  id        String   @id
+  userId    String
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  position  Int
+  events    Event[]
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@index([id])
+  @@index([userId])
+  @@index([userId, id])
+}
+
+model Event {
+  id      String  @id
+  trip    Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  tripId  String
+  placeId String?
+
+  name         String?
+  address      String?
+  phoneNumber  String?
+  cost         Float?
+  currency     Currency @default(USD)
+  website      String?
+  url          String?
+  note         String?
+  openingHours Json
+  photoAlbum   Json
+  photo        String?
+
+  date      DateTime
+  position  Int
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  createdBy String
+
+  @@index([id])
+  @@index([tripId])
+  @@index([placeId])
+}
+
+enum Currency {
+  CAD
+  PLN
+  USD
+}
+
+enum EventType {
+  DEFAULT
+  FOOD
+  ACCOMMODATION
+  TRANSPORT
+}
