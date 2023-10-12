@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Currency } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { protectedProcedure, router } from "../trpc";
-import { PlaceOpeningHours } from "@/types";
+import { EventSchema, PlaceOpeningHours } from "@/types";
 
 export type UpdateEvent = z.infer<typeof updateSchema>;
 const updateSchema = z.object({
@@ -24,32 +24,9 @@ const updateSchema = z.object({
   date: z.string().datetime().optional(),
   position: z.number().optional(),
 });
-const createSchema = z.object({
-  id: z.string().cuid2("Invalid event id"),
-  tripId: z.string().cuid2("Invalid trip id"),
-  placeId: z.string().nullable(),
-
-  name: z.string().nullable(),
-  address: z.string().nullable(),
-  phoneNumber: z.string().nullable(),
-  cost: z.number().nullable(),
-  currency: z.nativeEnum(Currency),
-  website: z.string().nullable(),
-  url: z.string().nullable(),
-  note: z.string().nullable(),
-  openingHours: PlaceOpeningHours,
-  photoAlbum: z.array(z.string()),
-  photo: z.string().nullable(),
-
-  date: z.string().datetime(),
-  position: z.number(),
-  updatedAt: z.string(),
-  createdAt: z.string(),
-  createdBy: z.string(),
-});
 
 const event = router({
-  create: protectedProcedure.input(createSchema).mutation(async ({ ctx, input }) => {
+  create: protectedProcedure.input(EventSchema).mutation(async ({ ctx, input }) => {
     if (!ctx.user.id) return;
 
     const { updatedAt, createdAt, ...eventData } = input;

@@ -15,10 +15,9 @@ import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@
 
 export default function EventComposer() {
   const { user } = useUser();
-  const { dispatchUserTrips, selectedTrip, activeTrip, isEventComposerDisplayed, setEventComposerDisplay, addEventDayIndex } = useDndData();
-
   const createEvent = api.event.create.useMutation();
   const getPlaceDetails = api.google.details.useMutation();
+  const { dispatchUserTrips, selectedTrip, activeTrip, isEventComposerDisplayed, setEventComposerDisplay, addEventDayIndex } = useDndData();
 
   // console.log(cuid2.init({ length: 14 })());
 
@@ -43,7 +42,7 @@ export default function EventComposer() {
       newEvent.name = eventData.searchValue;
 
       dispatchUserTrips({
-        type: UT.ADD_EVENT,
+        type: UT.CREATE_EVENT,
         payload: { selectedTrip, dayIndex: addEventDayIndex, placeAt: "end", event: newEvent },
       });
     } else if (eventData.place_id) {
@@ -70,7 +69,7 @@ export default function EventComposer() {
 
             createEvent.mutate(newEvent);
             dispatchUserTrips({
-              type: UT.ADD_EVENT,
+              type: UT.CREATE_EVENT,
               payload: { selectedTrip, dayIndex: addEventDayIndex, placeAt: "end", event: newEvent },
             });
           },
@@ -80,7 +79,7 @@ export default function EventComposer() {
       newEvent.name = eventData.structured_formatting.main_text;
 
       dispatchUserTrips({
-        type: UT.ADD_EVENT,
+        type: UT.CREATE_EVENT,
         payload: { selectedTrip, dayIndex: addEventDayIndex, placeAt: "end", event: newEvent },
       });
     }

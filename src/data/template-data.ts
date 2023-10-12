@@ -1,12 +1,11 @@
 import { Currency } from "@prisma/client";
 
 export const tripTemplate = {
-  id: "",
-  userId: "",
-  name: "",
+  name: "New trip",
   startDate: new Date().toISOString(),
-  endDate: new Date().toISOString(),
-  position: 0,
+  endDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4).toISOString(),
+
+  // For typescript purposes to be destructed before db insert
   itinerary: [],
   updatedAt: new Date().toISOString(),
   createdAt: new Date().toISOString(),
@@ -28,6 +27,7 @@ export const eventTemplate = {
   website: null,
   openingHours: {},
 
-  updatedAt: "",
-  createdAt: "",
+  // For typescript purposes to be destructed before db insert
+  updatedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
 };

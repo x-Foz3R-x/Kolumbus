@@ -31,7 +31,7 @@ export default function Layout({ params: { tripId }, children }: LayoutProps) {
             // backgroundImage: `url("https://png.pngtree.com/background/20230414/original/pngtree-sea-%E2%80%8B%E2%80%8Bsunrise-scenery-blue-sky-clouds-beautiful-sky-background-picture-image_2424890.jpg")`,
           }
         }
-        className="fixed bottom-0 left-56 right-0 top-14 overflow-y-scroll bg-cover bg-center bg-no-repeat"
+        className="fixed bottom-0 left-56 right-0 top-14 bg-cover bg-center bg-no-repeat"
       >
         {children}
       </main>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useReducer } from "react";
+import { GenerateItinerary } from "@/lib/utils";
 import { DispatchAction, Trip, UT } from "@/types";
 
 //#region Context
@@ -39,8 +40,8 @@ type AppdataProviderProps = {
  * @param children - The children components to render.
  * @returns The provider component.
  */
-export function AppdataProvider({ trips: serverTrips, children }: AppdataProviderProps) {
-  const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, serverTrips);
+export function AppdataProvider({ trips, children }: AppdataProviderProps) {
+  const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, trips);
   const [selectedTrip, setSelectedTrip] = useState(-1);
   const [isLoading, setLoading] = useState(true);
 
@@ -86,21 +87,34 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
         return newTrips;
       }
       return trips;
+    case UT.CREATE_TRIP:
+      if (action.payload) {
+        const newTrips = [...trips];
+
+        const { trip } = action.payload;
+        trip.itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, []);
+        newTrips.push(trip);
+
+        return newTrips;
+      }
+      return trips;
     case UT.UPDATE_TRIP:
       if (action.payload) {
-        const { trip } = action.payload;
         const newTrips = [...trips];
+        const { trip } = action.payload;
+
+        if (newTrips[trip.position].id !== trip.id) return trips;
 
         newTrips.splice(trip.position, 1, trip);
 
         return newTrips;
       }
       return trips;
-    case UT.ADD_EVENT:
+    case UT.CREATE_EVENT:
       if (action.payload) {
+        const newTrips = [...trips];
         const { selectedTrip, dayIndex, placeAt, event } = action.payload;
 
-        const newTrips = [...trips];
         const dayEvents = newTrips[selectedTrip].itinerary[dayIndex].events;
 
         if (placeAt === "start") dayEvents.unshift(event);
@@ -112,8 +126,8 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
       return trips;
     case UT.UPDATE_EVENT:
       if (action.payload) {
-        const { selectedTrip, dayIndex, event } = action.payload;
         const newTrips = [...trips];
+        const { selectedTrip, dayIndex, event } = action.payload;
 
         newTrips[selectedTrip].itinerary[dayIndex].events[event.position] = event;
 
@@ -122,8 +136,8 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
       return trips;
     case UT.DELETE_EVENT:
       if (action.payload) {
-        const { selectedTrip, dayIndex, event } = action.payload;
         const newTrips = [...trips];
+        const { selectedTrip, dayIndex, event } = action.payload;
 
         newTrips[selectedTrip].itinerary[dayIndex].events.splice(event.position, 1);
         newTrips[selectedTrip].itinerary[dayIndex].events.forEach((event, index) => (event.position = index));
