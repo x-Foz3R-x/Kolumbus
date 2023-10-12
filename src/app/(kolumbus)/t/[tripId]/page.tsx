@@ -7,7 +7,7 @@ import DndItinerary from "@/components/dnd-itinerary";
 import ActionBar from "@/components/itinerary/action-bar";
 // import { Modal } from "@/components/ui/modal";
 import { ItinerarySkeleton } from "@/components/loading/itinerary-skeleton";
-import ActionBarSkeleton from "@/components/loading/actionBarSkeleton";
+import ActionBarSkeleton from "@/components/loading/action-bar-skeleton";
 
 type ItineraryProps = {
   params: { tripId: string };

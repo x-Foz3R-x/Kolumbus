@@ -7,8 +7,8 @@ export default function ActionBarSkeleton() {
         </section>
 
         <section className="flex flex-shrink-0 items-center gap-2 pr-5">
-          <div className="h-9 w-20 rounded bg-black/5" />
           <div className="h-9 w-9 rounded bg-black/5" />
+          <div className="h-9 w-20 rounded bg-black/5" />
         </section>
       </div>
     </div>
