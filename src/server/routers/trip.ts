@@ -11,7 +11,7 @@ const updateSchema = z.object({
   position: z.number().optional(),
 });
 
-type ServerTrip = z.infer<typeof ServerTrip>;
+export type ServerTrip = z.infer<typeof ServerTrip>;
 const ServerTrip = z.object({
   id: z.string().cuid2("Not a cuid2"),
   userId: z.string(),

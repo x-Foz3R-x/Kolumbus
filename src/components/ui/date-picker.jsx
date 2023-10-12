@@ -93,8 +93,8 @@ export default function DatePicker() {
       };
 
       // Show modal to confirm deletion of events on excluded days.
-      // setModalShown(true);
-      // setModalChildren(EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays));
+      setModalShown(true);
+      setModalChildren(EventsOnExcludedDaysModal(eventsToDelete, handleExcludedDays));
     });
     picker.on("hide", () => {
       setDisplay(false);

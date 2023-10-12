@@ -65,8 +65,8 @@ export function GenerateItinerary(tripId: string, startDate: string | Date, endD
   // Convert date properties of events to ISO strings if they are Date objects.
   events = events.map((event) => {
     if (event.date instanceof Date) event.date = event.date.toISOString();
-    if (event.createdAt instanceof Date) event.createdAt = event.createdAt.toISOString();
     if (event.updatedAt instanceof Date) event.updatedAt = event.updatedAt.toISOString();
+    if (event.createdAt instanceof Date) event.createdAt = event.createdAt.toISOString();
 
     return event as Event;
   });
