@@ -2,7 +2,7 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { GenerateItinerary } from "@/lib/utils";
-import { ItinerarySchema } from "@/types";
+import { ItinerarySchema, TripSchema } from "@/types";
 
 const updateSchema = z.object({
   name: z.string().optional(),
@@ -27,6 +27,23 @@ const ServerTrip = z.object({
 });
 
 const trip = router({
+  create: protectedProcedure.input(TripSchema).mutation(async ({ ctx, input }) => {
+    if (!ctx.user.id) return;
+
+    const { itinerary, updatedAt, createdAt, ...tripData } = input;
+    const trip = await prisma.trip.create({
+      data: tripData,
+    });
+
+    const events = await prisma.event.findMany({
+      where: { tripId: trip.id },
+      orderBy: [{ position: "asc" }],
+    });
+
+    (trip as ServerTrip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, events);
+
+    return trip as ServerTrip;
+  }),
   //#region Read
   find: protectedProcedure.input(z.object({ tripId: z.string() })).query(async ({ ctx, input }) => {
     if (!ctx.user.id) return;

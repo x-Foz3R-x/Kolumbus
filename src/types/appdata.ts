@@ -28,7 +28,7 @@ export const EventSchema = z.object({
 });
 
 export type Day = z.infer<typeof DaySchema>;
-const DaySchema = z.object({
+export const DaySchema = z.object({
   id: z.string(),
   date: z.string().datetime(),
   events: z.array(EventSchema),
@@ -38,7 +38,7 @@ export type Itinerary = z.infer<typeof ItinerarySchema>;
 export const ItinerarySchema = z.array(DaySchema);
 
 export type Trip = z.infer<typeof TripSchema>;
-const TripSchema = z.object({
+export const TripSchema = z.object({
   id: z.string().cuid2("Invalid trip id"),
   userId: z.string(),
   name: z.string(),
@@ -58,10 +58,11 @@ export enum UT {
   REPLACE = "replace_trips_state",
 
   // TRIP
+  CREATE_TRIP = "create_trip_in_state",
   UPDATE_TRIP = "update_trip_in_state",
 
   // EVENT
-  ADD_EVENT = "add_event_to_state",
+  CREATE_EVENT = "add_event_to_state",
   UPDATE_EVENT = "update_event_in_state",
   DELETE_EVENT = "delete_event_in_state",
 }
@@ -72,11 +73,15 @@ export type DispatchAction =
       userTrips: Trip[];
     }
   | {
+      type: UT.CREATE_TRIP;
+      payload: { trip: Trip };
+    }
+  | {
       type: UT.UPDATE_TRIP;
       payload: { trip: Trip };
     }
   | {
-      type: UT.ADD_EVENT;
+      type: UT.CREATE_EVENT;
       payload: { selectedTrip: number; dayIndex: number; placeAt: "start" | "end"; event: Event };
     }
   | {
