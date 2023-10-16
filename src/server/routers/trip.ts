@@ -2,17 +2,10 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { GenerateItinerary } from "@/lib/utils";
-import { ItinerarySchema, TripSchema } from "@/types";
+import { itinerarySchema, tripSchema } from "@/types";
 
-const updateSchema = z.object({
-  name: z.string().optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
-  position: z.number().optional(),
-});
-
-export type ServerTrip = z.infer<typeof ServerTrip>;
-const ServerTrip = z.object({
+export type ServerTrip = z.infer<typeof serverTrip>;
+const serverTrip = z.object({
   id: z.string().cuid2("Not a cuid2"),
   userId: z.string(),
 
@@ -20,14 +13,20 @@ const ServerTrip = z.object({
   startDate: z.date(),
   endDate: z.date(),
   position: z.number(),
-  itinerary: ItinerarySchema,
+  itinerary: itinerarySchema,
 
   createdAt: z.date(),
   updatedAt: z.date(),
 });
+const updateSchema = z.object({
+  name: z.string().optional(),
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
+  position: z.number().optional(),
+});
 
 const trip = router({
-  create: protectedProcedure.input(TripSchema).mutation(async ({ ctx, input }) => {
+  create: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
     if (!ctx.user.id) return;
 
     const { itinerary, updatedAt, createdAt, ...tripData } = input;
@@ -91,11 +90,18 @@ const trip = router({
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.id) return;
 
-      await prisma.trip.update({
+      return await prisma.trip.update({
         where: { userId: ctx.user.id, id: input.tripId },
         data: input.data,
       });
     }),
+  delete: protectedProcedure.input(z.object({ tripId: z.string().cuid2("Invalid trip id") })).mutation(async ({ ctx, input }) => {
+    if (!ctx.user.id) return;
+
+    return await prisma.trip.delete({
+      where: { userId: ctx.user.id, id: input.tripId },
+    });
+  }),
 });
 
 export default trip;

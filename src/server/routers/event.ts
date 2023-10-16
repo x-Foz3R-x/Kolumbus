@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Currency } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { protectedProcedure, router } from "../trpc";
-import { EventSchema, PlaceOpeningHours } from "@/types";
+import { eventSchema, PlaceOpeningHours } from "@/types";
 
 export type UpdateEvent = z.infer<typeof updateSchema>;
 const updateSchema = z.object({
@@ -26,33 +26,33 @@ const updateSchema = z.object({
 });
 
 const event = router({
-  create: protectedProcedure.input(EventSchema).mutation(async ({ ctx, input }) => {
+  create: protectedProcedure.input(eventSchema).mutation(async ({ ctx, input }) => {
     if (!ctx.user.id) return;
 
     const { updatedAt, createdAt, ...eventData } = input;
-    const event = await prisma.event.create({ data: { ...eventData } });
-
-    return event;
+    return await prisma.event.create({ data: { ...eventData } });
   }),
   update: protectedProcedure
     .input(z.object({ eventId: z.string().cuid2("Invalid event id"), data: updateSchema }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.id) return;
-
       const { id, ...data } = input.data;
-      await prisma.event.update({ where: { id: input.eventId }, data });
+      return await prisma.event.update({ where: { id: input.eventId }, data });
     }),
   delete: protectedProcedure
     .input(z.object({ eventId: z.string().cuid2("Invalid event id"), events: z.array(updateSchema) }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.id) return;
 
+      const updatedEvents = [];
       for (let i = 0; i < input.events.length; i++) {
-        const { id, ...data } = input.events[i];
-        await prisma.event.update({ where: { id }, data });
+        const { id, position } = input.events[i];
+        const event = await prisma.event.update({ where: { id }, data: { position } });
+        updatedEvents.push(event);
       }
 
       await prisma.event.delete({ where: { id: input.eventId } });
+      return updatedEvents;
     }),
 });
 

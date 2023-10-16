@@ -9,7 +9,7 @@ import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifi
 import { CSS } from "@dnd-kit/utilities";
 
 import api from "@/app/_trpc/client";
-import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayIndex } from "@/lib/dnd";
+import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayPosition } from "@/lib/dnd";
 
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
@@ -17,11 +17,9 @@ import EventPanel from "./itinerary/event-panel";
 import Icon from "./icons";
 
 import { type DispatchAction, type Trip, type Day, type Event, UT } from "@/types";
+import useAppdata from "@/context/appdata";
 
 const DndDataContext = createContext<{
-  dispatchUserTrips: React.Dispatch<DispatchAction>;
-  selectedTrip: number;
-
   activeTrip: Trip;
   activeEvent: Event | null;
   setActiveEvent: React.Dispatch<React.SetStateAction<Event | null>>;
@@ -36,11 +34,8 @@ const DndDataContext = createContext<{
   isEventPanelDisplayed: boolean;
   setEventPanelDisplay: React.Dispatch<React.SetStateAction<boolean>>;
 
-  dialogIndexPosition: { x: number; y: number };
-  setDialogIndexPosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>;
-
-  addEventDayIndex: number;
-  setAddEventDayIndex: React.Dispatch<React.SetStateAction<number>>;
+  itineraryPosition: { y_day: number; x_event: number };
+  setItineraryPosition: React.Dispatch<React.SetStateAction<{ y_day: number; x_event: number }>>;
 } | null>(null);
 export function useDndData() {
   const context = useContext(DndDataContext);
@@ -51,10 +46,12 @@ export function useDndData() {
 //#region Itinerary
 type DndItineraryProps = {
   userTrips: Trip[];
-  dispatchUserTrips: React.Dispatch<DispatchAction>;
-  selectedTrip: number;
+  // dispatchUserTrips: React.Dispatch<DispatchAction>;
+  // selectedTrip: number;
+  // setSaving: React.Dispatch<React.SetStateAction<boolean>>;
 };
-export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTrip }: DndItineraryProps) {
+export default function DndItinerary({ userTrips }: DndItineraryProps) {
+  const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
   const updateEvent = api.event.update.useMutation();
 
   const [activeTrip, setActiveTrip] = useState<Trip>(userTrips[selectedTrip]);
@@ -63,12 +60,12 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
 
   const [isEventComposerDisplayed, setEventComposerDisplay] = useState(false);
   const [isEventPanelDisplayed, setEventPanelDisplay] = useState(false);
-  const [dialogIndexPosition, setDialogIndexPosition] = useState({ x: 0, y: 0 });
+  const [itineraryPosition, setItineraryPosition] = useState({ y_day: 0, x_event: 0 });
 
-  // to delete
-  const [addEventDayIndex, setAddEventDayIndex] = useState(0);
+  // to delete/change
   const [apiUpdate, setApiUpdate] = useState<{ type: "day^day" | "event^day" | "event^event" } | null>(null);
   //
+
   useEffect(() => {
     setActiveTrip(userTrips[selectedTrip]);
   }, [userTrips, selectedTrip]);
@@ -98,19 +95,38 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     // todo: optimize not to update all events, only the changed ones
     // todo: sync with db, if update fails, revert to previous state
     const iteratedDate = new Date(tripInfo.startDate);
-    itinerary.forEach((day, dayIndex) => {
+    itinerary.forEach((day, dayPosition) => {
       day.events.forEach((event, index) => {
         event.date = iteratedDate.toISOString();
         event.position = index;
 
+        setSaving(true);
         dispatchUserTrips({
           type: UT.UPDATE_EVENT,
-          payload: { selectedTrip, dayIndex, event },
+          payload: { selectedTrip, dayPosition, event },
         });
-        updateEvent.mutate({
-          eventId: event.id,
-          data: { date: event.date, position: event.position },
-        });
+        updateEvent.mutate(
+          {
+            eventId: event.id,
+            data: { date: event.date, position: event.position },
+          },
+          {
+            onSuccess(updatedEvent) {
+              if (!updatedEvent) return;
+              dispatchUserTrips({
+                type: UT.UPDATE_EVENT,
+                payload: { selectedTrip, dayPosition, event: { ...event, ...(updatedEvent as Event) } },
+              });
+            },
+            onError(error) {
+              console.error(error);
+              dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+            },
+            onSettled() {
+              setSaving(false);
+            },
+          }
+        );
       });
 
       iteratedDate.setDate(iteratedDate.getDate() + 1);
@@ -168,8 +184,6 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
   };
 
   const value = {
-    dispatchUserTrips,
-    selectedTrip,
     activeTrip,
     activeEvent,
     setActiveEvent,
@@ -184,11 +198,8 @@ export default function DndItinerary({ userTrips, dispatchUserTrips, selectedTri
     isEventPanelDisplayed,
     setEventPanelDisplay,
 
-    dialogIndexPosition,
-    setDialogIndexPosition,
-
-    addEventDayIndex,
-    setAddEventDayIndex,
+    itineraryPosition,
+    setItineraryPosition,
   };
 
   return (
@@ -277,21 +288,21 @@ type DayComponentProps = {
 };
 const DayComponent = memo(
   forwardRef(function DndDayContentComponent({ day, dragOverlay, ...props }: DayComponentProps, ref: ForwardedRef<HTMLDivElement>) {
-    const { activeTrip, activeId, setEventComposerDisplay, setAddEventDayIndex } = useDndData();
+    const { activeTrip, activeId, setEventComposerDisplay, setItineraryPosition } = useDndData();
     const { id, date, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
-    const dayIndex = GetDayIndex(activeTrip.itinerary, date);
+    const dayPosition = GetDayPosition(activeTrip.itinerary, date);
 
     const handleAddEvent = () => {
       setEventComposerDisplay(true);
-      setAddEventDayIndex(dayIndex);
+      setItineraryPosition({ y_day: dayPosition, x_event: 0 });
     };
 
     const eventWidthAndGap = 168;
     return (
       <div ref={ref} className="group/day flex w-full gap-5">
-        <Calendar dayIndex={dayIndex} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
+        <Calendar dayPosition={dayPosition} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
 
         <ul
           className={`flex h-32 origin-left list-none gap-2 pt-5 duration-300 ease-kolumb-flow ${
@@ -359,8 +370,8 @@ type EventComponentProps = {
 };
 const EventComponent = memo(
   forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
-    const { activeTrip, setActiveEvent, isEventPanelDisplayed, setEventPanelDisplay, setDialogIndexPosition } = useDndData();
-    const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+    const { activeTrip, setActiveEvent, isEventPanelDisplayed, setEventPanelDisplay, setItineraryPosition } = useDndData();
+    const dayPosition = GetDayPosition(activeTrip.itinerary, event.date);
 
     const getImageUrl = (): string => {
       if (!event.photo) return "/images/event-placeholder.png";
@@ -380,7 +391,7 @@ const EventComponent = memo(
             <button
               onClick={() => {
                 setActiveEvent(event);
-                setDialogIndexPosition({ x: event.position, y: dayIndex });
+                setItineraryPosition({ y_day: dayPosition, x_event: event.position });
 
                 if (isEventPanelDisplayed) {
                   setEventPanelDisplay(false);
@@ -415,5 +426,4 @@ const EventComponent = memo(
     );
   })
 );
-
 //#endregion

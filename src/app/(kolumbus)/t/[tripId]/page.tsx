@@ -13,7 +13,7 @@ type ItineraryProps = {
   params: { tripId: string };
 };
 export default function Itinerary({ params: { tripId } }: ItineraryProps) {
-  const { userTrips, dispatchUserTrips, selectedTrip, setSelectedTrip, isLoading, isModalShown, modalChildren } = useAppdata();
+  const { userTrips, selectedTrip, setSelectedTrip, isLoading, isModalShown, modalChildren } = useAppdata();
 
   useEffect(() => {
     setSelectedTrip(userTrips.findIndex((trip) => trip.id === tripId));
@@ -22,13 +22,7 @@ export default function Itinerary({ params: { tripId } }: ItineraryProps) {
   return (
     <>
       {!isLoading ? <ActionBar activeTrip={userTrips[selectedTrip]} /> : <ActionBarSkeleton />}
-      <div className="flex flex-col px-6">
-        {!isLoading ? (
-          <DndItinerary userTrips={userTrips} dispatchUserTrips={dispatchUserTrips} selectedTrip={selectedTrip} />
-        ) : (
-          <ItinerarySkeleton />
-        )}
-      </div>
+      <div className="flex flex-col px-6">{!isLoading ? <DndItinerary userTrips={userTrips} /> : <ItinerarySkeleton />}</div>
 
       {createPortal(<Modal showModal={isModalShown} modalChildren={modalChildren} />, document.body)}
     </>

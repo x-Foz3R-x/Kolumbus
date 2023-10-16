@@ -20,15 +20,34 @@ export function useActionBarContext() {
 }
 
 export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
+  const { dispatchUserTrips, isSaving, setSaving } = useAppdata();
   const updateTrip = api.trip.update.useMutation();
-  const { dispatchUserTrips } = useAppdata();
 
-  const handleChange = (e: React.FocusEvent<HTMLInputElement>) => {
-    const trip = activeTrip;
-    trip.name = e.target.value;
+  /**
+   * Handles the change event of the input element and updates the active trip name.
+   * @param e - The focus event of the input element.
+   */
+  const handleChange = (e: React.FocusEvent<HTMLInputElement>): void => {
+    const trip = { ...activeTrip, name: e.target.value };
 
-    dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
-    updateTrip.mutate({ tripId: activeTrip.id, data: { name: e.target.value } });
+    setSaving(true);
+    dispatchUserTrips({ type: UT.UPDATE_TRIP, trip });
+    updateTrip.mutate(
+      { tripId: activeTrip.id, data: { name: e.target.value } },
+      {
+        onSuccess(updatedTrip) {
+          if (!updatedTrip) return;
+          dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: { ...trip, updatedAt: updatedTrip.updatedAt } });
+        },
+        onError(error) {
+          console.error(error);
+          dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+        },
+        onSettled() {
+          setSaving(false);
+        },
+      }
+    );
   };
 
   return (
@@ -57,6 +76,7 @@ export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
             <p>cost: $0</p>
             <DaysPicker maxTripsDays={90} />
             <DatePicker />
+            {isSaving && <p>saving...</p>}
           </section>
         </div>
       </section>

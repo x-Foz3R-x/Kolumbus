@@ -1,7 +1,7 @@
 import { serverApi } from "../_trpc/serverClient";
 import { AppdataProvider } from "@/context/appdata";
 
-import type { ServerTrip } from "@/server/routers/trip";
+import type { serverTrip } from "@/server/routers/trip";
 import type { Trip } from "@/types";
 
 import Header from "@/components/layouts/header";

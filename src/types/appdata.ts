@@ -2,8 +2,8 @@ import { z } from "zod";
 import { Trip as PrismaTrip, Event as PrismaEvent, Currency } from "@prisma/client";
 import { PlaceOpeningHours } from "./google";
 
-export type Event = z.infer<typeof EventSchema>;
-export const EventSchema = z.object({
+export type Event = z.infer<typeof eventSchema>;
+export const eventSchema = z.object({
   id: z.string().cuid2("Invalid event id"),
   tripId: z.string().cuid2("Invalid trip id"),
   placeId: z.string().nullable(),
@@ -27,25 +27,25 @@ export const EventSchema = z.object({
   createdBy: z.string(),
 });
 
-export type Day = z.infer<typeof DaySchema>;
-export const DaySchema = z.object({
+export type Day = z.infer<typeof daySchema>;
+export const daySchema = z.object({
   id: z.string(),
   date: z.string().datetime(),
-  events: z.array(EventSchema),
+  events: z.array(eventSchema),
 });
 
-export type Itinerary = z.infer<typeof ItinerarySchema>;
-export const ItinerarySchema = z.array(DaySchema);
+export type Itinerary = z.infer<typeof itinerarySchema>;
+export const itinerarySchema = z.array(daySchema);
 
-export type Trip = z.infer<typeof TripSchema>;
-export const TripSchema = z.object({
+export type Trip = z.infer<typeof tripSchema>;
+export const tripSchema = z.object({
   id: z.string().cuid2("Invalid trip id"),
   userId: z.string(),
   name: z.string(),
   startDate: z.string().datetime(),
   endDate: z.string().datetime(),
   position: z.number(),
-  itinerary: ItinerarySchema,
+  itinerary: itinerarySchema,
   updatedAt: z.string().datetime(),
   createdAt: z.string().datetime(),
 });
@@ -53,6 +53,9 @@ export const TripSchema = z.object({
 export type TripDB = PrismaTrip;
 export type EventDB = PrismaEvent;
 
+/**
+ * Enum representing the different types of updates that can be made to the appdata.
+ */
 export enum UT {
   // TRIPS
   REPLACE = "replace_trips_state",
@@ -60,6 +63,7 @@ export enum UT {
   // TRIP
   CREATE_TRIP = "create_trip_in_state",
   UPDATE_TRIP = "update_trip_in_state",
+  DELETE_TRIP = "delete_trip_in_state",
 
   // EVENT
   CREATE_EVENT = "add_event_to_state",
@@ -67,6 +71,11 @@ export enum UT {
   DELETE_EVENT = "delete_event_in_state",
 }
 
+/**
+ * DispatchAction is a union type that represents all possible actions that can be dispatched to the store.
+ * Each action has a `type` property that specifies the type of action being performed, as well as any additional
+ * properties required for that action.
+ */
 export type DispatchAction =
   | {
       type: UT.REPLACE;
@@ -74,21 +83,25 @@ export type DispatchAction =
     }
   | {
       type: UT.CREATE_TRIP;
-      payload: { trip: Trip };
+      trip: Trip;
     }
   | {
       type: UT.UPDATE_TRIP;
-      payload: { trip: Trip };
+      trip: Trip;
+    }
+  | {
+      type: UT.DELETE_TRIP;
+      trip: Trip;
     }
   | {
       type: UT.CREATE_EVENT;
-      payload: { selectedTrip: number; dayIndex: number; placeAt: "start" | "end"; event: Event };
+      payload: { selectedTrip: number; dayPosition: number; placeAt: "start" | "end"; event: Event };
     }
   | {
       type: UT.UPDATE_EVENT;
-      payload: { selectedTrip: number; dayIndex: number; event: Event };
+      payload: { selectedTrip: number; dayPosition: number; event: Event };
     }
   | {
       type: UT.DELETE_EVENT;
-      payload: { selectedTrip: number; dayIndex: number; event: Event };
+      payload: { selectedTrip: number; dayPosition: number; event: Event };
     };
