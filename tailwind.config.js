@@ -84,14 +84,14 @@ module.exports = {
       "3xl":
         "0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02)",
 
-      splashXl:
+      splashXL:
         "0 0 5px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02), 4px 0 4px rgba(15,15,15,0.02), 8px 0 8px rgba(15,15,15,0.02), -4px 0 4px rgba(15,15,15,0.02), -8px 0 8px rgba(15,15,15,0.02)",
 
-      borderXl:
+      borderXL:
         "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.02)",
-      border2xl:
+      border2XL:
         "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.03), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
-      border3xl:
+      border3XL:
         "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 12px 12px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.05)",
 
       borderSplashXl:
@@ -107,15 +107,13 @@ module.exports = {
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px rgba(15,15,15,.02), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px rgba(15,15,15,.02)",
 
       //
-      // TO REMOVE
+      // TO BE REMOVED
       //
       kolumblue: "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px rgba(15,15,15,.06)",
       kolumblueInset:
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px hsla(210, 78%, 75%, 0.1), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02), inset 0 3px 6px rgba(15,15,15,.02), inset 0 4px 8px hsla(210, 78%, 90%, 0.1)",
-      kolumblueSelected:
-        "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
-      kolumblueHover:
-        "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
+      kolumblueSelected: "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
+      kolumblueHover: "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(15,15,15,.06), 0px 5px 10px rgba(15,15,15,.03)",
     },
     colors: {
       transparent: "transparent",
@@ -134,19 +132,6 @@ module.exports = {
         800: "hsl(210, 78%, 27%)",
         900: "hsl(210, 78%, 17%)",
         950: "hsl(210, 78%, 11%)",
-      },
-      kolumbrown: {
-        50: "hsl(24, 33%, 98%)",
-        100: "hsl(24, 33%, 94%)",
-        200: "hsl(24, 33%, 90%)",
-        300: "hsl(24, 33%, 84%)",
-        400: "hsl(24, 33%, 71%)",
-        500: "hsl(24, 33%, 60%)",
-        600: "hsl(24, 33%, 46%)",
-        700: "hsl(24, 33%, 34%)",
-        800: "hsl(24, 33%, 27%)",
-        900: "hsl(24, 33%, 17%)",
-        950: "hsl(24, 33%, 11%)",
       },
       gray: {
         50: "hsl(232, 9%, 98%)",

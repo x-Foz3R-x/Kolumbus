@@ -1,39 +1,23 @@
-/* eslint-disable */
-
 import { useEffect, useState } from "react";
 import useKeyPress from "./use-key-press";
 import { Key } from "@/types";
 
 /**
- * Attaches event listeners to the document to detect when a user clicks outside of a given element,
- * presses the escape key, or scrolls the window. When any of these events occur, the provided callback
- * function is called.
- *
- * @param ref - A React ref object that points to the element that should trigger the callback when clicked outside of.
- * @param callback - The function to call when the user clicks outside of the element, presses the escape key, or scrolls the window.
+ * Attaches event listeners to detect clicks outside of a given element and pressing the escape key.
+ * @param ref - A React ref object that points to the element to detect clicks outside of.
+ * @param callback - A function to be called when a click outside of the element or the escape key is pressed.
  */
 export function useCloseTriggers(ref: React.RefObject<HTMLElement>, callback: Function) {
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) callback();
-    };
-
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === Key.Escape) callback();
-    };
-
-    const handleScroll = (event: Event) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) callback();
-    };
+    const handleOutsideClick = (event: MouseEvent) => ref.current && !ref.current.contains(event.target as Node) && callback();
+    const handleEscapeKey = (event: KeyboardEvent) => event.key === Key.Escape && callback();
 
     document.addEventListener("mouseup", handleOutsideClick);
     document.addEventListener("keydown", handleEscapeKey);
-    window.addEventListener("scroll", handleScroll, true);
 
     return () => {
       document.removeEventListener("mouseup", handleOutsideClick);
       document.removeEventListener("keydown", handleEscapeKey);
-      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [ref, callback]);
 }
@@ -73,12 +57,12 @@ export function useListNavigation<T>(
     if (!isNavigationEnabled) return;
     if (arrowUpPressed) handleArrowPress(Key.ArrowUp);
     else if (arrowDownPressed) handleArrowPress(Key.ArrowDown);
-  }, [arrowUpPressed, arrowDownPressed]);
+  }, [arrowUpPressed, arrowDownPressed]); // eslint-disable-line
 
   useEffect(() => {
     if (!isNavigationEnabled) return;
     if (enterPressed) onEnterSelectCallback(list[selectedIndex]);
-  }, [enterPressed]);
+  }, [enterPressed]); // eslint-disable-line
 
   return { selectedIndex, setSelectedIndex };
 }

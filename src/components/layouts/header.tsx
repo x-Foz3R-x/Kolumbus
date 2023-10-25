@@ -4,7 +4,7 @@ import Icon from "@/components/icons";
 
 export default function Header() {
   const linkStyle =
-    "flex h-9 flex-none items-center gap-3 rounded-md fill-tintedGray-400 px-4 font-medium hover:bg-gray-100 hover:fill-tintedGray-500";
+    "h-9 flex-none flex items-center gap-3 rounded-md fill-tintedGray-400 px-4 font-medium hover:bg-gray-100 hover:fill-tintedGray-500";
   const linkSvgStyle = "h-4 w-4 flex-none";
 
   return (

@@ -10,7 +10,7 @@ import { UT, Event } from "@/types";
 
 import Icon from "../icons";
 import { EventsOnExcludedDaysModal } from "./modal";
-import { Dropdown, DropdownButton } from "@/components/ui/dropdown";
+import { Dropdown, DropdownButton } from "@/components/ui/dropdown-old";
 
 interface Props {
   maxTripsDays: number;

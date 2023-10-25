@@ -38,7 +38,7 @@ export default function Library() {
 
   return (
     <main className="mt-14 h-screen overflow-y-scroll bg-gray-50 bg-cover bg-center bg-no-repeat">
-      <div className="mx-auto flex h-full max-w-5xl flex-col items-center gap-4 bg-white shadow-borderXl">
+      <div className="mx-auto flex h-full max-w-5xl flex-col items-center gap-4 bg-white shadow-borderXL">
         <div className="text-center font-adso text-3xl font-bold text-gray-600">
           Library
           <button

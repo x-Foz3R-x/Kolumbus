@@ -1,6 +1,6 @@
 {
   "name": "kolumbus",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -36,6 +36,7 @@
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
+    "react-remove-scroll": "^2.5.7",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "^3.3.3",
     "typescript": "5.0.4",

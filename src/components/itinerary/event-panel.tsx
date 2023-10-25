@@ -129,7 +129,7 @@ export default function EventPanel() {
           autoFocus
           open
         >
-          <div className="flex w-80 flex-col overflow-hidden rounded-2xl border-4 border-white bg-white shadow-border3xl">
+          <div className="flex w-80 flex-col overflow-hidden rounded-2xl border-4 border-white bg-white shadow-border3XL">
             <div className="w-80 bg-transparent">
               <Image src={getImageUrl()} alt="Event Image" width={312} height={160} priority className="h-40 object-cover object-center" />
             </div>

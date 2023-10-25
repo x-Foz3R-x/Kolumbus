@@ -16,9 +16,10 @@ import EventComposer from "./itinerary/event-composer";
 import EventPanel from "./itinerary/event-panel";
 import Icon from "./icons";
 
-import { type DispatchAction, type Trip, type Day, type Event, UT } from "@/types";
+import { type Trip, type Day, type Event, UT } from "@/types";
 import useAppdata from "@/context/appdata";
 
+//#region Context
 const DndDataContext = createContext<{
   activeTrip: Trip;
   activeEvent: Event | null;
@@ -42,15 +43,10 @@ export function useDndData() {
   if (!context) throw new Error("useDndData must be used within a DndDataContext.Provider");
   return context;
 }
+//#endregion
 
 //#region Itinerary
-type DndItineraryProps = {
-  userTrips: Trip[];
-  // dispatchUserTrips: React.Dispatch<DispatchAction>;
-  // selectedTrip: number;
-  // setSaving: React.Dispatch<React.SetStateAction<boolean>>;
-};
-export default function DndItinerary({ userTrips }: DndItineraryProps) {
+export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
   const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
   const updateEvent = api.event.update.useMutation();
 
@@ -383,7 +379,7 @@ const EventComponent = memo(
     return (
       <div
         className={`group relative flex h-28 flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-lg border-2 border-white/80 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-leave hover:shadow-borderSplashXl hover:ease-kolumb-flow ${
-          dragOverlay ? "shadow-borderSplashXl" : "shadow-borderXl"
+          dragOverlay ? "shadow-borderSplashXl" : "shadow-borderXL"
         }`}
       >
         {!dragOverlay && (

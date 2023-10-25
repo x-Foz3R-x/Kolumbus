@@ -155,8 +155,8 @@ export default function EventComposer() {
         left: 172,
         transform: `translate(0,${itineraryPosition.y_day * 132 + 20}px)`,
       }}
-      className={`absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-borderXl transition-opacity duration-300 ease-kolumb-flow  ${
-        isEventComposerDisplayed ? "opacity-100" : "select-none opacity-0"
+      className={`absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-borderXL transition-opacity duration-300 ease-kolumb-flow  ${
+        isEventComposerDisplayed ? "opacity-100" : "pointer-events-none select-none opacity-0"
       } 
       `}
     >

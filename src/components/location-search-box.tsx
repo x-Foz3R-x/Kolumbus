@@ -129,7 +129,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
       }
       <Combobox.List
         listHeight={(predictionList.length - 1) * 52 + 12} // numberOfPredictions * comboboxOptionHeight + padding
-        className={`rounded-b-[0.625rem] p-1.5 shadow-borderXl ${
+        className={`rounded-b-[0.625rem] p-1.5 shadow-borderXL ${
           isListDisplayed
             ? "scale-y-100 duration-[375ms] ease-kolumb-flow"
             : "-translate-y-6 scale-x-95 scale-y-[0.3] duration-300 ease-kolumb-leave"
