@@ -9,9 +9,9 @@ export default function PopoverTests() {
   const targetRef = useRef(null);
   const popoverRef = useRef(null);
 
-  const placement: Placement = "top-start";
+  const placement: Placement = "top";
   const containerSelector = "main";
-  const padding = 150;
+  const padding = 250;
   const offset = 5;
   const arrowSize = 12;
   const arrowStyles = {

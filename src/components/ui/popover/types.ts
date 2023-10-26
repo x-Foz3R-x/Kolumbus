@@ -6,7 +6,7 @@ export type Axis = "x" | "y";
 export type Length = "width" | "height";
 export type Coords = { x: number; y: number };
 export type Rect = { x: number; y: number; width: number; height: number };
-export type RectPosition = { top: number; right: number; bottom: number; left: number };
+export type Inset = { top: number; right: number; bottom: number; left: number };
 
 export type Dimensions = {
   top: number;
