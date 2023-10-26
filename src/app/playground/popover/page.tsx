@@ -9,7 +9,7 @@ export default function PopoverTests() {
   const targetRef = useRef(null);
   const popoverRef = useRef(null);
 
-  const placement: Placement = "top-end";
+  const placement: Placement = "top-start";
   const containerSelector = "main";
   const padding = 150;
   const offset = 5;

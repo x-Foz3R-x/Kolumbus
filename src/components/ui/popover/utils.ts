@@ -1,27 +1,11 @@
-import {
-  Alignment,
-  Arrow,
-  Axis,
-  Length,
-  Offset,
-  Placement,
-  Prevent,
-  Side,
-  Flip,
-  Position,
-  Backdrop,
-  Rect,
-  Dimensions,
-  Coords,
-} from "./types";
+import { Alignment, Arrow, Axis, Length, Offset, Placement, Prevent, Side, Flip, Position, Backdrop, Rect, Dimensions } from "./types";
 
-const oppositeSideMap = {
+const oppositeSideMap: { top: Side; bottom: Side; right: Side; left: Side } = {
   top: "bottom",
   bottom: "top",
   right: "left",
   left: "right",
 };
-
 const oppositeAlignmentMap: { start: Alignment; end: Alignment } = { start: "end", end: "start" };
 
 /**
@@ -62,7 +46,7 @@ export function getAlignment(placement: Placement): Alignment | undefined {
  * getOppositeAxis("x"); // Returns "y"
  * getOppositeAxis("y"); // Returns "x"
  */
-export function getOppositeAxis(axis: Axis): Axis {
+function getOppositeAxis(axis: Axis): Axis {
   return axis === "x" ? "y" : "x";
 }
 
@@ -89,7 +73,7 @@ export function getAxisLength(axis: Axis): Length {
  * @example
  * getSideAxis("top-start"); // Returns "y"
  */
-export function getSideAxis(placement: Placement): Axis {
+export function getAxis(placement: Placement): Axis {
   return ["top", "bottom"].includes(getSide(placement)) ? "y" : "x";
 }
 
@@ -103,36 +87,7 @@ export function getSideAxis(placement: Placement): Axis {
  * getAlignmentAxis("top-start"); // Returns "x"
  */
 export function getAlignmentAxis(placement: Placement): Axis {
-  return getOppositeAxis(getSideAxis(placement));
-}
-
-/**
- * Returns the main and opposite alignment sides based on the target and popover rectangles and the placement.
- *
- * @param targetRect - The target rectangle.
- * @param popoverRect - The popover rectangle.
- * @param placement - The placement of the popover relative to the target.
- * @returns An array containing the main and opposite alignment sides.
- *
- * @example
- * const targetRect = {...rect, width: 100};
- * const popoverRect = {...rect, width: 200};
- * const placement = "bottom-start";
- * getAlignmentSides(targetRect, popoverRect, placement); // Returns ["right", "left"]
- */
-export function getAlignmentSides(targetRect: Rect, popoverRect: Rect, placement: Placement): [Side, Side] {
-  const alignment = getAlignment(placement);
-  const alignmentAxis = getAlignmentAxis(placement);
-  const length = getAxisLength(alignmentAxis);
-
-  let mainAlignmentSide: Side =
-    alignmentAxis === "x" ? (alignment === "start" ? "right" : "left") : alignment === "start" ? "bottom" : "top";
-
-  if (targetRect[length] > popoverRect[length]) {
-    mainAlignmentSide = getOppositePlacement(mainAlignmentSide) as Side;
-  }
-
-  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide) as Side];
+  return getOppositeAxis(getAxis(placement));
 }
 
 export function getFallbackPlacements(placement: Placement): Placement[] {
@@ -141,69 +96,56 @@ export function getFallbackPlacements(placement: Placement): Placement[] {
 
   let list: Placement[] = [];
 
-  if (alignment) list.push(`${side}-${alignment}`, side, `${side}-${oppositeAlignmentMap[alignment]}`);
+  if (alignment) list.push(`${side}-${alignment}`, `${side}-${oppositeAlignmentMap[alignment]}`);
   else list.push(side, `${side}-start`, `${side}-end`);
 
-  if (oppositeAlignment)
-    list.push(`${oppositeSide}-${oppositeAlignment}`, oppositeSide, `${oppositeSide}-${oppositeAlignmentMap[oppositeAlignment]}`);
+  if (oppositeAlignment) list.push(`${oppositeSide}-${oppositeAlignment}`, `${oppositeSide}-${oppositeAlignmentMap[oppositeAlignment]}`);
   else list.push(oppositeSide, `${oppositeSide}-start`, `${oppositeSide}-end`);
 
   return list;
 }
 
-export function getExpandedPlacement(placement: Placement): [Placement, Placement, Placement] {
-  const [side, alignment] = placement.split("-") as [Side, Alignment];
+export type PlacementData = {
+  side: Side;
+  alignment: Alignment | undefined;
+  oppositeSide: Side;
+  oppositeAlignment: Alignment | undefined;
+  axis: Axis;
+  oppositeAxis: Axis;
+  length: "width" | "height";
+  oppositeLength: "width" | "height";
+  isBasePlacement: boolean;
+};
+export function getPlacementData(placement: Placement) {
+  const [side, alignment] = placement.split("-") as [Side, Alignment | undefined];
+  const [oppositeSide, oppositeAlignment] = getOppositePlacement(placement).split("-") as [Side, Alignment | undefined];
 
-  const oppositeSide = oppositeSideMap[side] as Side;
+  const axis: Axis = ["top", "bottom"].includes(side) ? "y" : "x";
+  const oppositeAxis: Axis = axis === "x" ? "y" : "x";
 
-  const oppositeAlignment = alignment === "start" ? "end" : "start";
+  const length: "height" | "width" = axis === "y" ? "height" : "width";
+  const oppositeLength: "height" | "width" = oppositeAxis === "y" ? "height" : "width";
 
-  const flippedAlignment = placement.replace(alignment, oppositeAlignment) as Placement;
-  const flippedSide = placement.replace(side, oppositeSide) as Placement;
-  const flipped = flippedSide.replace(alignment, oppositeAlignment) as Placement;
+  const isBasePlacement = side === placement;
 
-  return [flippedAlignment, flippedSide, flipped];
+  return {
+    side,
+    alignment,
+    oppositeSide,
+    oppositeAlignment,
+    axis,
+    oppositeAxis,
+    length,
+    oppositeLength,
+    isBasePlacement,
+  };
 }
 
-function getSideList(side: Side, isStart: boolean): Placement[] {
-  const lr: Placement[] = ["left", "right"];
-  const rl: Placement[] = ["right", "left"];
-  const tb: Placement[] = ["top", "bottom"];
-  const bt: Placement[] = ["bottom", "top"];
-
-  switch (side) {
-    case "top":
-    case "bottom":
-      return isStart ? lr : rl;
-    case "left":
-    case "right":
-      return isStart ? tb : bt;
-    default:
-      return [];
-  }
-}
-
-export function getOppositeAxisPlacements(placement: Placement): Placement[] {
-  const alignment = getAlignment(placement);
-  let list = getSideList(getSide(placement), alignment === "start");
-
-  if (alignment) {
-    list = list.map((side) => `${side}-${alignment}` as Placement);
-
-    list = list.concat(list.map(getOppositeAlignmentPlacement));
-  }
-
-  return list;
-}
-
-export function getOppositePlacement(placement: Placement): Placement {
+function getOppositePlacement(placement: Placement): Placement {
   return placement.replace(/left|right|bottom|top/g, (side) => oppositeSideMap[side as Side]) as Placement;
 }
 
-export function getOppositeAlignmentPlacement(placement: Placement): Placement {
-  return placement.replace(/start|end/g, (alignment) => oppositeAlignmentMap[alignment as Alignment]) as Placement;
-}
-
+// to be removed
 /**
  * Returns the dimensions of an element relative to its container.
  * @param element - The element to get the dimensions of.
@@ -266,6 +208,37 @@ export function getDimensions(element: Element, containerDimensions?: Dimensions
   };
 }
 
+/**
+ * Finds the two sides that correspond to overflowing for the given placement.
+ * If the placement is the base placement, the two sides will be the opposite sides of the axis.
+ *
+ * @param axis The placement axis ("x" or "y").
+ * @param alignment The popover alignment ("start" or "end").
+ * @param isBasePlacement Whether the placement is the base placement.
+ * @returns An array of two sides that are corresponding to overflowing for the given placement.
+ */
+export function getPlacementOverflowSides(axis: Axis, alignment: Alignment | undefined, isBasePlacement: boolean): [Side, Side] {
+  if (isBasePlacement) return axis === "x" ? ["top", "bottom"] : ["left", "right"];
+  if (axis === "x") return alignment === "start" ? ["bottom", "bottom"] : ["top", "top"];
+  else return alignment === "start" ? ["right", "right"] : ["left", "left"];
+}
+
+/**
+ * Returns the position and size of an element relative to its container.
+ *
+ * @param element The element to get the position and size of.
+ * @param containerRect The container element's position and size. Defaults to the document element.
+ * @returns An object containing the position and size of the element relative to its container.
+ * - `x`: The horizontal position of the element relative to its container.
+ * - `y`: The vertical position of the element relative to its container.
+ * - `width`: The width of the element.
+ * - `height`: The height of the element.
+ *
+ * @example
+ * const element = document.getElementById('my-element');
+ * const elementRect = getElementRect(element);
+ * console.log(elementRect); // { x, y, width, height }
+ */
 export function getElementRect(element: Element, containerRect?: Rect): Rect {
   const { top, left, width, height } = element.getBoundingClientRect();
   const { scrollTop, scrollLeft } = element;

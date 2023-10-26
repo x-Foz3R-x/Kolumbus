@@ -4,15 +4,13 @@ import {
   getDimensions,
   getAlignment,
   getAlignmentAxis,
-  getAlignmentSides,
   getAxisLength,
-  getExpandedPlacement,
-  getOppositeAxisPlacements,
-  getOppositePlacement,
   getSide,
-  getSideAxis,
+  getAxis,
   getElementRect,
   getFallbackPlacements,
+  getPlacementOverflowSides,
+  getPlacementData,
 } from "./utils";
 
 type UsePopoverProps = {
@@ -136,7 +134,7 @@ function computePosition(
   console.log("--------------------");
 
   const side = getSide(initialPlacement);
-  const sideAxis = getSideAxis(initialPlacement);
+  const sideAxis = getAxis(initialPlacement);
   const alignment = getAlignment(initialPlacement);
   const isVertical = sideAxis === "y";
 
@@ -302,145 +300,38 @@ function Offset(side: Side, offset: number, coords: Coords) {
   return { ...coords, ...offsetMap[side] };
 }
 function Flip(rects: { target: Rect; popover: Rect }, boundary: RectPosition, initialPlacement: Placement): Placement {
+  const PLACEMENTS = getFallbackPlacements(initialPlacement);
+  const OVERFLOW = DetectOverflow(boundary, rects.popover);
+
   let placement = initialPlacement;
   let overflowsData: { placement: Placement; overflows: number[] }[] = [];
 
-  const placements = getFallbackPlacements(initialPlacement);
-
-  for (let i = 0; i < placements.length; i++) {
+  for (let i = 0; i < PLACEMENTS.length; i++) {
     // Continue if placement is the same as previous calculated placement
     if (overflowsData.length > 0 && overflowsData[overflowsData.length - 1].placement === placement) continue;
+    const placementData = getPlacementData(placement);
 
-    const side = getSide(placement);
-
-    const overflow = detectOverflow(boundary, rects.popover);
-
-    const overflows = [overflow[side]];
-
-    const alignmentSides = getAlignmentSides(rects.target, rects.popover, placement);
-    overflows.push(overflow[alignmentSides[0]], overflow[alignmentSides[1]]);
-
-    // console.log(placement);
+    const overflows = [OVERFLOW[placementData.side]];
+    const placementOverflowSides = getPlacementOverflowSides(placementData.axis, placementData.alignment, placementData.isBasePlacement);
+    overflows.push(OVERFLOW[placementOverflowSides[0]], OVERFLOW[placementOverflowSides[1]]);
     overflowsData = [...overflowsData, { placement, overflows }];
 
-    // Checks if the popover overflows the container on any side and flips it if it does
-    // If any side is <= 0, that means the popover is overflowing the container on that side
     if (!overflows.every((side) => side <= 0)) {
-      if (placements[i + 1]) {
-        placement = placements[i + 1];
+      if (PLACEMENTS[i + 1]) {
+        placement = PLACEMENTS[i + 1];
         continue;
       }
-
-      // let resetPlacement = overflowsData
-      //   .filter((data) => data.overflows[0] <= 0)
-      //   .sort((a, b) => a.overflows[1] - b.overflows[1])[0]?.placement;
-
-      // if (!resetPlacement) resetPlacement = initialPlacement;
-
-      // if (placement !== resetPlacement) {
-      //   placement = resetPlacement;
-      // }
-      // continue;
     }
   }
 
-  let bestPlacement = overflowsData.filter((data) => data.overflows[0] <= 0).sort((a, b) => a.overflows[1] - b.overflows[1])[0]?.placement;
-  let nonOverflownPlacements = overflowsData.filter((data) => data.overflows[0] <= 0);
+  let bestPlacement = overflowsData
+    .filter((data) => data.overflows.every((side) => side <= 0))
+    .sort((a, b) => a.overflows[1] - b.overflows[1])[0]?.placement;
+  let nonOverflownPlacements = overflowsData.filter((data) => data.overflows.every((side) => side <= 0));
 
   // console.log(placement);
-  // console.log(bestPlacement);
+  console.log(bestPlacement);
   // console.log(nonOverflownPlacements);
-
-  return placement;
-}
-function FlipOLD(rects: { target: Rect; popover: Rect }, boundary: RectPosition, initialPlacement: Placement): Placement {
-  type extensionData = { index: number; overflows: { placement: Placement; overflows: number[] }[] };
-
-  let placement = initialPlacement;
-  let extensionData: extensionData = { index: 0, overflows: [] };
-  let resetCount = 0;
-
-  const isBasePlacement = getSide(initialPlacement) === initialPlacement;
-
-  const fallbackPlacements = isBasePlacement ? [getOppositePlacement(initialPlacement)] : getExpandedPlacement(initialPlacement);
-  fallbackPlacements.push(...getOppositeAxisPlacements(initialPlacement));
-
-  type fnReturn = { data?: extensionData; reset?: boolean | { placement?: Placement } };
-  const fn = ({
-    rects,
-    initialPlacement,
-    placement,
-    extensionData,
-  }: {
-    rects: { target: Rect; popover: Rect };
-    initialPlacement: Placement;
-    placement: Placement;
-    extensionData: extensionData;
-  }): fnReturn => {
-    const side = getSide(placement);
-    const isBasePlacement = getSide(initialPlacement) === initialPlacement;
-
-    const fallbackPlacements = isBasePlacement ? [getOppositePlacement(initialPlacement)] : getExpandedPlacement(initialPlacement);
-    fallbackPlacements.push(...getOppositeAxisPlacements(initialPlacement));
-    const placements = [initialPlacement, ...fallbackPlacements];
-
-    const overflow = detectOverflow(boundary, rects.popover);
-
-    const overflows = [overflow[side]];
-    let overflowsData = extensionData.overflows;
-
-    const alignmentSides = getAlignmentSides(rects.target, rects.popover, placement);
-    overflows.push(overflow[alignmentSides[0]], overflow[alignmentSides[1]]);
-
-    overflowsData = [...overflowsData, { placement, overflows }];
-
-    // Checks if the popover overflows the container on any side and flips it if it does
-    // If any side is <= 0, that means the popover is overflowing the container on that side
-    if (!overflows.every((side) => side <= 0)) {
-      const nextIndex = extensionData.index + 1;
-      const nextPlacement = placements[nextIndex];
-
-      if (nextPlacement) return { data: { index: nextIndex, overflows: overflowsData }, reset: { placement: nextPlacement } };
-
-      // First, find the candidates that fit on the mainAxis side of overflow,
-      // then find the placement that fits the best on the main crossAxis side.
-      let resetPlacement = overflowsData
-        .filter((data) => data.overflows[0] <= 0)
-        .sort((a, b) => a.overflows[1] - b.overflows[1])[0]?.placement;
-
-      if (!resetPlacement) resetPlacement = initialPlacement;
-
-      if (placement !== resetPlacement) {
-        return {
-          reset: {
-            placement: resetPlacement,
-          },
-        };
-      }
-    }
-
-    return {};
-  };
-
-  for (let i = 0; i < 1; i++) {
-    const { data, reset } = fn({
-      rects,
-      initialPlacement,
-      placement,
-      extensionData,
-    });
-
-    extensionData = { ...extensionData, ...data };
-
-    if (reset && resetCount <= 24) {
-      resetCount++;
-
-      if (typeof reset === "object" && reset.placement) placement = reset.placement;
-
-      i = -1;
-      continue;
-    }
-  }
 
   return placement;
 }
@@ -453,7 +344,7 @@ function FlipOLD(rects: { target: Rect; popover: Rect }, boundary: RectPosition,
  * @param padding - The padding of the popover element.
  * @returns An object containing the overflow values for each direction (top, bottom, left, right).
  */
-function detectOverflow(boundary: RectPosition, popoverRect: Rect) {
+function DetectOverflow(boundary: RectPosition, popoverRect: Rect) {
   const popoverClientRect = {
     ...popoverRect,
     top: popoverRect.y,
