@@ -27,7 +27,7 @@ export default function EventComposer() {
 
   // todo - fill type of useRef
   const ref = useRef<any>(null);
-  useCloseTriggers(ref, () => isEventComposerDisplayed && setEventComposerDisplay(false));
+  useCloseTriggers([ref], () => isEventComposerDisplayed && setEventComposerDisplay(false));
 
   /**
    * Handles adding a new event to the itinerary.

@@ -89,7 +89,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
   };
 
   const ref = useRef<HTMLDivElement | null>(null);
-  useCloseTriggers(ref, () => setListDisplay(false));
+  useCloseTriggers([ref], () => setListDisplay(false));
   const { selectedIndex, setSelectedIndex } = useListNavigation(predictionList, isListDisplayed, handleIndexChange, handlePredictionSelect);
 
   return (

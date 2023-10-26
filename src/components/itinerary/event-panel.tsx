@@ -113,7 +113,7 @@ export default function EventPanel() {
   }, [address, note, isEventPanelDisplayed]);
 
   const ref = useRef<HTMLDialogElement>(null);
-  useCloseTriggers(ref, () => setEventPanelDisplay(false));
+  useCloseTriggers([ref], () => setEventPanelDisplay(false));
 
   return (
     <AnimatePresence>

@@ -1,12 +1,12 @@
-import { Arrow, Offset, Prevent, Flip, Position, Backdrop } from "./types";
+import { Arrow, Offset, Prevent, Flip, Position, Backdrop, Coords } from "./types";
 
 export { Popover } from "./popover";
 
 export function Offset(value: number): Offset {
   return { name: "offset", value };
 }
-export function Position(position: { top?: number; bottom?: number; left?: number; right?: number }, transformOrigin: string): Position {
-  return { name: "position", position, transformOrigin };
+export function Position(x: string | number, y: string | number, transformOrigin: string): Position {
+  return { name: "position", x, y, transformOrigin };
 }
 export function Flip(): Flip {
   return { name: "flip" };

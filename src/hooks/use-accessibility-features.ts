@@ -3,14 +3,23 @@ import useKeyPress from "./use-key-press";
 import { Key } from "@/types";
 
 /**
- * Attaches event listeners to detect clicks outside of a given element and pressing the escape key.
- * @param ref - A React ref object that points to the element to detect clicks outside of.
- * @param callback - A function to be called when a click outside of the element or the escape key is pressed.
+ * Attaches event listeners to detect clicks outside of given elements and pressing the escape key.
+ * @param refs - An array of React ref objects that point to the elements to detect clicks outside of.
+ * @param callback - A function to be called when a click outside of any of the elements or the escape key is pressed.
  */
-export function useCloseTriggers(ref: React.RefObject<HTMLElement>, callback: Function) {
+export function useCloseTriggers(refs: React.RefObject<HTMLElement>[], callback: Function) {
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => ref.current && !ref.current.contains(event.target as Node) && callback();
-    const handleEscapeKey = (event: KeyboardEvent) => event.key === Key.Escape && callback();
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!refs.some((ref) => ref.current && ref.current.contains(event.target as Node))) {
+        callback();
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        callback();
+      }
+    };
 
     document.addEventListener("mouseup", handleOutsideClick);
     document.addEventListener("keydown", handleEscapeKey);
@@ -19,7 +28,7 @@ export function useCloseTriggers(ref: React.RefObject<HTMLElement>, callback: Fu
       document.removeEventListener("mouseup", handleOutsideClick);
       document.removeEventListener("keydown", handleEscapeKey);
     };
-  }, [ref, callback]);
+  }, [refs, callback]);
 }
 
 /**

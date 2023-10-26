@@ -3,34 +3,66 @@ import {
   Alignment,
   Container,
   Coords,
-  Dimensions,
   MountedExtensions,
   Placement,
-  PopoverData,
   Rect,
   Inset,
   Side,
   Axis,
   Length,
+  PropsForPopoverComponent,
 } from "./types";
 
-type UsePopoverProps = {
-  popoverRef: React.RefObject<HTMLElement>;
-  targetRef: React.RefObject<HTMLElement>;
-  isOpen: boolean;
-  placement: Placement;
-  container: Container;
-  extensions: MountedExtensions;
-};
-export default function usePopover({ popoverRef, targetRef, isOpen, placement, container, extensions }: UsePopoverProps) {
-  const [mounted, setMounted] = useState(false);
-  const [data, setData] = useState<PopoverData>({
+/**
+ * A hook that calculates the position of a popover relative to a target element.
+ *
+ * @remarks
+ * This hook uses the `computePosition` function to calculate the position of the popover based on the target element, the popover element, and the specified placement. It also updates the position of the popover when the window is resized or scrolled.
+ *
+ * @param popoverRef - A ref to the popover element.
+ * @param targetRef - A ref to the target element.
+ * @param isOpen - Whether the popover is currently open.
+ * @param placement - The placement of the popover relative to the target element.
+ * @param container - The container element for the popover.
+ * @param extensions - Additional options for the popover.
+ * @returns An object containing the popover, arrow, and motion styles, as well as an `update` function to update the position of the popover.
+ *
+ * @example
+ * function MyComponent() {
+ *   const targetRef = useRef(null);
+ *   const popoverRef = useRef(null);
+ *   const { props } = usePopover({
+ *     popoverRef,
+ *     targetRef,
+ *     isOpen: true,
+ *     placement: 'bottom',
+ *     container: { selector: '#container', margin: 10, padding: 10 },
+ *     extensions: { offset: { value: 10 }, flip: true, arrow: { size: 8 }, prevent: { scroll: false } },
+ *   });
+ *
+ *   return (
+ *     <div id="container">
+ *       <div ref={targetRef}>Target element</div>
+ *       <div ref={popoverRef} style={props.popover.style}>
+ *         Popover content
+ *         <div ref={arrowRef} style={props.arrow.style} />
+ *       </div>
+ *     </div>
+ *   );
+ * }
+ */
+export default function usePopover(
+  popoverRef: React.RefObject<HTMLElement>,
+  targetRef: React.RefObject<HTMLElement>,
+  isOpen: boolean,
+  placement: Placement,
+  container: Container,
+  extensions: MountedExtensions
+): { props: PropsForPopoverComponent; update: () => void } {
+  const [data, setData] = useState<{ coords: { x: number; y: number }; arrowCoords: { x: number; y: number }; transformOrigin?: string }>({
     coords: { x: 0, y: 0 },
     arrowCoords: { x: 0, y: 0 },
-    maxWidth: undefined,
-    maxHeight: undefined,
     transformOrigin: undefined,
-    isPositioned: false,
   });
 
   const update = useCallback(() => {
@@ -38,35 +70,31 @@ export default function usePopover({ popoverRef, targetRef, isOpen, placement, c
 
     const containerMargin =
       typeof container.margin === "number"
-        ? { top: container.margin, bottom: container.margin, left: container.margin, right: container.margin }
-        : { top: container.margin[0], bottom: container.margin[2], left: container.margin[3], right: container.margin[1] };
+        ? { top: container.margin, right: container.margin, bottom: container.margin, left: container.margin }
+        : { top: container.margin[0], right: container.margin[1], bottom: container.margin[2], left: container.margin[3] };
     const containerPadding =
       typeof container.padding === "number"
-        ? { top: container.padding, bottom: container.padding, left: container.padding, right: container.padding }
-        : { top: container.padding[0], bottom: container.padding[2], left: container.padding[3], right: container.padding[1] };
+        ? { top: container.padding, right: container.padding, bottom: container.padding, left: container.padding }
+        : { top: container.padding[0], right: container.padding[1], bottom: container.padding[2], left: container.padding[3] };
+
     const offset = extensions.offset?.value ?? 0;
+    const flip = !!extensions.flip ?? false;
     const arrowSize = extensions.arrow?.size ?? 0;
-    const flip = (!!extensions.flip && mounted) ?? false;
 
-    if (!mounted) setMounted(true);
+    const computedPosition = computePosition(
+      document.querySelector(container.selector) ?? document.body,
+      targetRef.current,
+      popoverRef.current,
+      placement,
+      containerMargin,
+      containerPadding,
+      offset,
+      flip,
+      arrowSize
+    );
 
-    const fullData = {
-      ...computePosition(
-        document.querySelector(container.selector) ?? document.body,
-        targetRef.current,
-        popoverRef.current,
-        placement,
-        containerMargin,
-        containerPadding,
-        offset,
-        arrowSize,
-        flip
-      ),
-      isPositioned: true,
-    };
-
-    if (fullData !== data) setData(fullData);
-  }, [popoverRef, targetRef, isOpen, placement, container, mounted, extensions]); // eslint-disable-line
+    if (computedPosition !== data) setData(computedPosition);
+  }, [popoverRef, targetRef, isOpen, placement, container, extensions]);
 
   // Update position when popover is opened, closed or any of the dependencies change
   useLayoutEffect(update, [update, popoverRef, targetRef, placement, container, extensions]);
@@ -82,12 +110,9 @@ export default function usePopover({ popoverRef, targetRef, isOpen, placement, c
     };
   }, [update, extensions.prevent]);
 
-  useLayoutEffect(() => {
-    if (isOpen === false && data.isPositioned) setData((data) => ({ ...data, isPositioned: false }));
-  }, [isOpen]); // eslint-disable-line
-
+  // Calculate and memoize the popover, arrow, and motion styles
   const props = useMemo(() => {
-    const popover = { style: { top: data.coords.y, left: data.coords.x, maxWidth: data.maxWidth, maxHeight: data.maxHeight } };
+    const popover = { style: { top: data.coords.y, left: data.coords.x } };
 
     const arrowSize = `${(extensions.arrow?.size ?? 0) / 16}rem`;
     const arrow = { style: { top: data.arrowCoords.y, left: data.arrowCoords.x, width: arrowSize, height: arrowSize } };
@@ -96,7 +121,7 @@ export default function usePopover({ popoverRef, targetRef, isOpen, placement, c
     return { popover, arrow, motion };
   }, [data, extensions.arrow]);
 
-  return useMemo(() => ({ ...data, update, props }), [data, update, props]);
+  return useMemo(() => ({ props, update }), [props, update]);
 }
 
 function computePosition(
@@ -107,18 +132,9 @@ function computePosition(
   margin: Inset,
   padding: Inset,
   offset: number,
-  arrowSize: number,
-  flip: boolean
+  shouldFlip: boolean,
+  arrowSize: number
 ) {
-  const elementsRect = {
-    target: getElementRect(target, getElementRect(container)),
-    popover: getElementRect(popover, getElementRect(container)),
-  };
-  const elementsAbsoluteRect = {
-    target: getElementRect(target),
-    popover: getElementRect(popover),
-  };
-
   const documentRect = document.documentElement.getBoundingClientRect();
   const boundary: Inset = {
     top: margin.top + padding.top,
@@ -126,35 +142,38 @@ function computePosition(
     left: margin.left + padding.left,
     right: documentRect.width - (margin.right + padding.right),
   };
-  const containerDimensions = getDimensions(container);
-  const targetDimensions = getDimensions(target, containerDimensions);
+  const elementsRect = {
+    container: getElementRect(container),
+    target: getElementRect(target, getElementRect(container)),
+    popover: getElementRect(popover, getElementRect(container)),
+  };
 
-  console.log("--------------------");
+  if (shouldFlip) {
+    const elementsAbsoluteRect = {
+      target: getElementRect(target),
+      popover: getElementRect(popover),
+    };
 
-  const [side, alignment] = parsePlacement(placement);
-  const sideAxis = getAxis(placement);
-  const isVertical = sideAxis === "y";
+    const { coords: absoluteCoords } = computeCoords(elementsAbsoluteRect, placement, offset, arrowSize);
+    elementsRect.popover = { ...elementsRect.popover, ...absoluteCoords };
 
-  const { coords: absoluteCoords } = computeCoords(elementsAbsoluteRect, placement, offset, arrowSize);
-  elementsRect.popover = { ...elementsRect.popover, ...absoluteCoords };
-
-  if (flip) placement = Flip(boundary, elementsRect, placement);
+    placement = Flip(boundary, elementsRect, placement);
+  }
 
   const { coords, arrowCoords } = computeCoords(elementsRect, placement, offset, arrowSize);
-  const maxLengths = computeMaxLengths(containerDimensions, targetDimensions, placement, padding);
-  const maxWidth = maxLengths.maxWidth;
-  const maxHeight = maxLengths.maxHeight;
-  const transformOrigin = computeTransformOrigin(side, alignment, isVertical);
+  const transformOrigin = computeTransformOrigin(parsePlacement(placement), getAxis(placement));
 
-  return { coords, arrowCoords, maxWidth, maxHeight, transformOrigin };
+  return { coords, arrowCoords, transformOrigin };
 }
+
 /**
- * Computes the coordinates for a popover based on the target dimensions, popover dimensions, placement, and arrow size.
- * @param targetRect The dimensions of the target element.
- * @param popoverRect The dimensions of the popover element.
- * @param placement The placement of the popover relative to the target element.
+ * Computes the coordinates for a popover based on the target element's position and the desired placement.
+ *
+ * @param rects An object containing the target element's and popover's size and positions.
+ * @param placement The desired placement of the popover relative to the target element.
+ * @param offset The offset distance between the popover and the target element.
  * @param arrowSize The size of the arrow on the popover.
- * @returns An object containing the coordinates for the popover and arrow.
+ * @returns An object containing the coordinates for the popover and its arrow.
  */
 function computeCoords(rects: { target: Rect; popover: Rect }, placement: Placement, offset: number, arrowSize: number) {
   const [side, alignment] = parsePlacement(placement);
@@ -201,66 +220,20 @@ function computeCoords(rects: { target: Rect; popover: Rect }, placement: Placem
       break;
   }
 
-  if (offset !== 0) {
-    offset += arrowSize / 2;
-    coords = Offset(side, offset, coords);
-  }
+  offset += arrowSize / 2;
+  if (offset !== 0) coords = Offset(side, offset, coords);
 
   return { coords, arrowCoords };
 }
-// todo finish
-function computeMaxLengths(containerDimensions: Dimensions, targetDimensions: Dimensions, placement: Placement, padding: Inset) {
-  const [side, alignment] = parsePlacement(placement);
-  const oppositeLength = getOppositeAxisLength(placement);
 
-  // const commonAlign = targetDimensions[alignLength] / 2 - popoverDimensions[alignLength] / 2;
-  const commonWidth = containerDimensions.totalWidth - padding.left + padding.right;
-  const commonHeight = containerDimensions.totalHeight - padding.top + padding.bottom;
-
-  let maxWidth: number;
-  let maxHeight: number;
-  switch (side) {
-    case "top":
-      maxWidth = commonWidth;
-      maxHeight =
-        containerDimensions.totalHeight - (containerDimensions.totalHeight - targetDimensions.top - targetDimensions.height) - padding.top;
-      break;
-    case "bottom":
-      maxWidth = commonWidth;
-      maxHeight = containerDimensions.totalHeight - targetDimensions.top - padding.bottom;
-      break;
-    case "left":
-      maxWidth =
-        containerDimensions.totalWidth - (containerDimensions.totalWidth - targetDimensions.left - targetDimensions.width) - padding.left;
-      maxHeight = commonHeight;
-      break;
-    case "right":
-      maxWidth = containerDimensions.totalWidth - targetDimensions.left - padding.right;
-      maxHeight = commonHeight;
-      break;
-  }
-  // todo correctly adjust for alignment
-  switch (alignment) {
-    case "start":
-      maxWidth -= targetDimensions[oppositeLength] / 2;
-      maxHeight -= targetDimensions[oppositeLength] / 2;
-      break;
-    case "end":
-      maxWidth -= targetDimensions[oppositeLength] / 2;
-      maxHeight -= targetDimensions[oppositeLength] / 2;
-      break;
-  }
-
-  return { maxWidth, maxHeight };
-}
 /**
- * Computes the transform origin for a popover based on its side, alignment and orientation.
- * @param side - The side of the popover.
- * @param alignment - The alignment of the popover.
- * @param isVertical - Whether the popover is vertically oriented.
+ * Computes the transform origin for a popover based on its side, alignment and axis.
+ * @param side The side of the popover.
+ * @param alignment The alignment of the popover.
+ * @param axis The axis of the popover.
  * @returns The computed transform origin.
  */
-function computeTransformOrigin(side: Side, alignment: Alignment | undefined, isVertical: boolean) {
+function computeTransformOrigin([side, alignment]: [Side, Alignment | undefined], axis: Axis) {
   const oppositeSideMap = {
     top: "bottom",
     bottom: "top",
@@ -269,8 +242,8 @@ function computeTransformOrigin(side: Side, alignment: Alignment | undefined, is
   };
 
   let transformOrigin = oppositeSideMap[side];
-  if (alignment === "start") transformOrigin = isVertical ? `${transformOrigin} left` : `top ${transformOrigin}`;
-  else if (alignment === "end") transformOrigin = isVertical ? `${transformOrigin} right` : `bottom ${transformOrigin}`;
+  if (alignment === "start") transformOrigin = axis === "y" ? `${transformOrigin} left` : `top ${transformOrigin}`;
+  else if (alignment === "end") transformOrigin = axis === "y" ? `${transformOrigin} right` : `bottom ${transformOrigin}`;
 
   return transformOrigin;
 }
@@ -386,21 +359,6 @@ function getOppositeAxis(placement: Placement): Axis {
 }
 
 /**
- * Returns the length of the axis of the given placement.
- *
- * @param placement - The placement of the popover.
- * @returns The length of the axis.
- *
- * @example
- * ```typescriptreact
- * const axisLength = getAxisLength("left"); // "width"
- * ```
- */
-function getAxisLength(placement: Placement): Length {
-  return ["top", "bottom"].includes(parsePlacement(placement)[0]) ? "height" : "width";
-}
-
-/**
  * Returns the length of the opposite axis of the given placement.
  *
  * @param placement - The placement of the popover.
@@ -457,70 +415,6 @@ function getFallbackPlacements(placement: Placement): Placement[] {
 
   return list;
 }
-
-// to be removed
-/**
- * Returns the dimensions of an element relative to its container.
- * @param element - The element to get the dimensions of.
- * @param containerDimensions - Optional dimensions of the container element. If not provided, the dimensions of the body element will be used.
- * @returns An object containing the dimensions of the element relative to its container.
- */
-function getDimensions(element: Element, containerDimensions?: Dimensions) {
-  const { top, left, width, height } = element.getBoundingClientRect();
-  const { scrollWidth, scrollHeight, scrollTop, scrollLeft, clientTop: borderTop, clientLeft: borderLeft } = element;
-
-  if (!containerDimensions) {
-    const { top, left, width, height } = document.documentElement.getBoundingClientRect();
-    const { scrollWidth, scrollHeight, scrollTop, scrollLeft, clientTop: borderTop, clientLeft: borderLeft } = document.documentElement;
-
-    const totalWidth = scrollWidth + borderLeft * 2;
-    const totalHeight = scrollHeight + borderTop * 2;
-
-    const offsetTop = top - scrollTop;
-    const offsetLeft = left - scrollLeft;
-
-    containerDimensions = {
-      top: offsetTop,
-      bottom: totalHeight - offsetTop,
-      left: offsetLeft,
-      right: totalWidth - offsetLeft,
-
-      documentTop: top,
-      documentBottom: document.documentElement.scrollHeight - (top + height),
-      documentLeft: left,
-      documentRight: document.documentElement.scrollWidth - (left + width),
-
-      width,
-      height,
-      totalWidth,
-      totalHeight,
-    };
-  }
-
-  const totalWidth = scrollWidth + borderLeft * 2;
-  const totalHeight = scrollHeight + borderTop * 2;
-
-  const offsetTop = top - scrollTop - containerDimensions.top;
-  const offsetLeft = left - scrollLeft - containerDimensions.left;
-
-  return {
-    top: offsetTop,
-    bottom: containerDimensions.height - (offsetTop + totalHeight),
-    left: offsetLeft,
-    right: containerDimensions.width - (offsetLeft + totalWidth),
-
-    documentTop: top,
-    documentBottom: document.documentElement.scrollHeight - (top + height),
-    documentLeft: left,
-    documentRight: document.documentElement.scrollWidth - (left + width),
-
-    width,
-    height,
-    totalWidth,
-    totalHeight,
-  };
-}
-//
 
 /**
  * Finds the two sides that correspond to overflowing for the given placement.

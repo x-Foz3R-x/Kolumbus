@@ -172,7 +172,7 @@ export function DropdownSelect({
   const height = optionHeight * visibleOptionsLength;
 
   const ref = useRef<HTMLDivElement>(null);
-  useCloseTriggers(ref, () => setDropdownShown(false));
+  useCloseTriggers([ref], () => setDropdownShown(false));
 
   return (
     <div ref={ref} className={`absolute ${className}`}>

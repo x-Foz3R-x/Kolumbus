@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
-import { Arrow, Backdrop, Container, Extensions, Flip, Offset, Placement, Position, Prevent } from "./types";
+import { Arrow, Backdrop, Container, Extensions, Flip, Offset, Placement, Position, Prevent, PropsForPopoverComponent } from "./types";
 import usePopover from "./use-popover";
 
 import { TRANSITION } from "@/lib/framer-motion";
@@ -34,11 +34,11 @@ export function Popover({
   children,
 }: PopoverContentProps) {
   const handleClose = useCallback(() => setIsOpen(false), [setIsOpen]);
-  useCloseTriggers(popoverRef, handleClose);
+  useCloseTriggers([targetRef, popoverRef], handleClose);
 
   const [mountedExtensions, setMountedExtensions] = useState({
     offset: extensions.find((extension) => extension.name === "offset") as Offset | undefined,
-    position: extensions.find((extension) => extension.name === "position") as Position | undefined, // todo implement
+    position: extensions.find((extension) => extension.name === "position") as Position | undefined,
     flip: extensions.find((extension) => extension.name === "flip") as Flip | undefined,
     arrow: extensions.find((extension) => extension.name === "arrow") as Arrow | undefined,
     backdrop: extensions.find((extension) => extension.name === "backdrop") as Backdrop | undefined,
@@ -47,7 +47,7 @@ export function Popover({
   useEffect(() => {
     setMountedExtensions({
       offset: extensions.find((extension) => extension.name === "offset") as Offset | undefined,
-      position: extensions.find((extension) => extension.name === "position") as Position | undefined, // todo implement
+      position: extensions.find((extension) => extension.name === "position") as Position | undefined,
       flip: extensions.find((extension) => extension.name === "flip") as Flip | undefined,
       arrow: extensions.find((extension) => extension.name === "arrow") as Arrow | undefined,
       backdrop: extensions.find((extension) => extension.name === "backdrop") as Backdrop | undefined,
@@ -55,14 +55,16 @@ export function Popover({
     });
   }, [extensions]);
 
-  const { props } = usePopover({
-    popoverRef,
-    targetRef,
-    isOpen,
-    placement,
-    container,
-    extensions: mountedExtensions,
-  });
+  let props: PropsForPopoverComponent;
+  if (!mountedExtensions.position) {
+    props = usePopover(popoverRef, targetRef, isOpen, placement, container, mountedExtensions).props;
+  } else {
+    props = {
+      popover: { style: { top: mountedExtensions.position.y, left: mountedExtensions.position.x } },
+      arrow: { style: { top: 0, left: 0, width: "", height: "" } },
+      motion: { style: { transformOrigin: mountedExtensions.position.transformOrigin } },
+    };
+  }
 
   const arrowContent = useMemo(() => {
     if (!mountedExtensions.arrow) return null;
@@ -72,7 +74,7 @@ export function Popover({
         <span
           role="presentation"
           aria-hidden={true}
-          className={cn("absolute z-10 rotate-45", mountedExtensions.arrow.className?.arrow)}
+          className={cn("absolute rotate-45", mountedExtensions.arrow.className?.arrow)}
           {...props.arrow}
         ></span>
         {mountedExtensions.arrow.className?.backdrop ? (
