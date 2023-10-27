@@ -1,16 +1,9 @@
-import Icon from "@/components/icons";
 import Color from "./Color";
-// import Icon from "@/assets/kolumbus/icon.svg";
 
 export default function ColorPallette() {
   return (
     <>
-      <header className="flex h-12 justify-center bg-kolumblue-200 py-1 text-white">
-        <Icon.x className="fill-black" />
-        <Icon.x className="fill-white" />
-      </header>
-
-      <div className="grid grid-cols-[auto,auto,auto] gap-4">
+      <div className="mt-14 grid grid-cols-[auto,auto,auto] gap-5 p-8">
         <section>
           <div className="flex items-center justify-center p-1">kolumblue</div>
           <Color value={50} className="bg-kolumblue-50" />
@@ -24,20 +17,6 @@ export default function ColorPallette() {
           <Color value={800} className="bg-kolumblue-800" />
           <Color value={900} className="bg-kolumblue-900" />
           <Color value={950} className="bg-kolumblue-950" />
-        </section>
-        <section>
-          <div className="flex items-center justify-center p-1">kolumbrown</div>
-          <Color value={50} className="bg-kolumbrown-50" />
-          <Color value={100} className="bg-kolumbrown-100" />
-          <Color value={200} className="bg-kolumbrown-200" />
-          <Color value={300} className="bg-kolumbrown-300" />
-          <Color value={400} className="bg-kolumbrown-400" />
-          <Color value={500} className="bg-kolumbrown-500" />
-          <Color value={600} className="bg-kolumbrown-600" />
-          <Color value={700} className="bg-kolumbrown-700" />
-          <Color value={800} className="bg-kolumbrown-800" />
-          <Color value={900} className="bg-kolumbrown-900" />
-          <Color value={950} className="bg-kolumbrown-950" />
         </section>
         <section>
           <div className="flex items-center justify-center p-1">gray</div>

@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { Popover, Offset, Flip, Arrow, Position } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import Icon from "@/components/icons";
-import Input, { BasicInput } from "@/components/ui/input";
+import { BasicInput } from "@/components/ui/input";
 
 export default function PopoverTests() {
   const [areOptionsOpen, setOptionsOpen] = useState(false);
@@ -42,7 +42,10 @@ export default function PopoverTests() {
   //#endregion
 
   return (
-    <>
+    <div className="h-screen w-screen bg-red-200">
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-center text-lg font-medium text-gray-800">
+        Popover
+      </h1>
       <div
         id="center"
         ref={centerRef}
@@ -85,7 +88,10 @@ export default function PopoverTests() {
         </main>
       </div>
 
-      {/* Boundary */}
+      <div style={{ insetInline: 200, top: 106, bottom: 50 }} className="absolute rounded-xl border-gray-50 bg-green-100 shadow-borderXL" />
+      <span className="pointer-events-none absolute left-52 top-14 select-none p-3 text-red-600">margin</span>
+      <span className="pointer-events-none absolute left-52 top-36 select-none p-3 text-green-600">padding</span>
+
       <div
         style={{ insetInline: 200 + padding, top: 150 + padding, bottom: 50 + padding }}
         className="absolute overflow-hidden rounded-lg border-2 border-gray-200 bg-white"
@@ -171,6 +177,6 @@ export default function PopoverTests() {
 
         <p className="absolute right-4 flex gap-2 text-sm font-medium text-gray-800">Tip: use scroll</p>
       </div>
-    </>
+    </div>
   );
 }

@@ -20,8 +20,8 @@ export default function Home() {
             sign up
           </Link>
           <Divider gradient orientation="vertical" className="via-black/30" />
-          <Link href="/library" className="px-4 py-2 hover:underline">
-            library
+          <Link href="/playground" className="px-4 py-2 hover:underline">
+            playground
           </Link>
         </div>
       </div>
