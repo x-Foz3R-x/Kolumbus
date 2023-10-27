@@ -1,17 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
-import {
-  Alignment,
-  Container,
-  Coords,
-  MountedExtensions,
-  Placement,
-  Rect,
-  Inset,
-  Side,
-  Axis,
-  Length,
-  PropsForPopoverComponent,
-} from "./types";
+import { Alignment, Container, Coords, MountedExtensions, Placement, Rect, Inset, Side, Axis, Length } from "./types";
 
 /**
  * A hook that calculates the position of a popover relative to a target element.
@@ -58,21 +46,21 @@ export default function usePopover(
   placement: Placement,
   container: Container,
   extensions: MountedExtensions
-): { placement: Placement; props: PropsForPopoverComponent; update: () => void } {
+) {
   const [data, setData] = useState<{
-    coords: { x: number; y: number };
+    coords: { x: number | string; y: number | string };
     arrowCoords: { x: number; y: number };
     transformOrigin?: string;
     settedPlacement: Placement;
   }>({
     settedPlacement: placement,
-    coords: { x: 0, y: 0 },
+    coords: extensions.position ? { x: extensions.position.x, y: extensions.position.y } : { x: 0, y: 0 },
     arrowCoords: { x: 0, y: 0 },
-    transformOrigin: undefined,
+    transformOrigin: extensions.position ? extensions.position.transformOrigin : undefined,
   });
 
   const update = useCallback(() => {
-    if (!targetRef?.current || !popoverRef?.current) return;
+    if (!targetRef?.current || !popoverRef?.current || !isOpen || extensions.position) return;
 
     const containerMargin =
       typeof container.margin === "number"
@@ -100,7 +88,7 @@ export default function usePopover(
     );
 
     if (computedPosition !== data) setData(computedPosition);
-  }, [popoverRef, targetRef, isOpen, placement, container, extensions]);
+  }, [popoverRef, targetRef, isOpen, placement, container, extensions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Update position when popover is opened, closed or any of the dependencies change
   useLayoutEffect(update, [update, popoverRef, targetRef, placement, container, extensions]);

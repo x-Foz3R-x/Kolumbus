@@ -3,7 +3,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { Popover, Offset, Flip, Arrow, Position, Motion } from "@/components/ui/popover";
+import { Popover, Offset, Flip, Arrow, Position } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
@@ -17,17 +17,17 @@ export default function PopoverTests() {
   const targetRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef(null);
 
-  const handleClose = useCallback(() => {
-    setIsOpen(false), [setIsOpen];
-    targetRef.current?.focus({ preventScroll: true });
-  }, [setIsOpen]);
-
   const [placement, setPlacement] = useState("top" as Placement);
   const [padding, setPadding] = useState(100);
   const [offset, setOffset] = useState(5);
   const [arrowSize, setArrowSize] = useState(12);
 
   const arrowStyles = { arrow: "bg-gray-800 rounded-[3px]", backdrop: "shadow-borderXL rounded-[3px]" };
+
+  const handleClose = useCallback(() => {
+    setIsOpen(false), [setIsOpen];
+    targetRef.current?.focus({ preventScroll: true });
+  }, [targetRef, setIsOpen]);
 
   //#region centering logic
   window.addEventListener("load", () => {

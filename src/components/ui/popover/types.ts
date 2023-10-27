@@ -9,11 +9,6 @@ export type Coords = { x: number; y: number };
 export type Rect = { x: number; y: number; width: number; height: number };
 export type Inset = { top: number; right: number; bottom: number; left: number };
 
-export type PropsForPopoverComponent = {
-  popover: { style: { top: number | string; left: number | string } };
-  arrow: { style: { top: number; left: number; width: string; height: string } };
-  motion: { style: { transformOrigin: string | undefined } };
-};
 export type Container = {
   selector: string;
   margin: number | [number, number, number, number];
@@ -29,7 +24,7 @@ export type MountedExtensions = {
   prevent?: Prevent;
 };
 
-//#region extensions
+// Extensions
 export type Position = { name: "position"; x: string | number; y: string | number; transformOrigin: string };
 
 export type Offset = { name: "offset"; value: number };
@@ -39,4 +34,3 @@ export type Arrow = { name: "arrow"; size: number; className?: { arrow?: string;
 export type Backdrop = { name: "backdrop"; type: "opaque" | "opaque-white" | "blur" | "blur-white"; className?: string };
 export type Motion = { name: "motion"; transition: Variants | { top: Variants; bottom: Variants; left: Variants; right: Variants } };
 export type Prevent = { name: "prevent"; scroll: boolean };
-//#endregion

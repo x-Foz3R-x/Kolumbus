@@ -1,19 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
-import {
-  Arrow,
-  Backdrop,
-  Container,
-  Extensions,
-  Flip,
-  Motion,
-  Offset,
-  Placement,
-  Position,
-  Prevent,
-  PropsForPopoverComponent,
-} from "./types";
+import { Arrow, Backdrop, Container, Extensions, Flip, Motion, Offset, Placement, Position, Prevent } from "./types";
 import usePopover, { parsePlacement } from "./use-popover";
 
 import { TRANSITION } from "@/lib/framer-motion";
@@ -45,11 +33,11 @@ export function Popover({
   className,
   children,
   ...divProps
-}: PopoverContentProps & React.InputHTMLAttributes<HTMLDivElement>) {
+}: PopoverContentProps & React.HTMLAttributes<HTMLDivElement>) {
   const handleClose = useCallback(() => {
     setIsOpen(false), [setIsOpen];
     targetRef.current?.focus();
-  }, [setIsOpen]);
+  }, [targetRef, setIsOpen]);
   useCloseTriggers([targetRef, popoverRef], handleClose);
 
   const [mountedExtensions, setMountedExtensions] = useState({
@@ -73,19 +61,7 @@ export function Popover({
     });
   }, [extensions]);
 
-  let props: PropsForPopoverComponent;
-  let settedPlacement = initialPlacement;
-  if (!mountedExtensions.position) {
-    const { props: usePopoverProps, placement } = usePopover(popoverRef, targetRef, isOpen, initialPlacement, container, mountedExtensions);
-    props = usePopoverProps;
-    settedPlacement = placement;
-  } else {
-    props = {
-      popover: { style: { top: mountedExtensions.position.y, left: mountedExtensions.position.x } },
-      arrow: { style: { top: 0, left: 0, width: "", height: "" } },
-      motion: { style: { transformOrigin: mountedExtensions.position.transformOrigin } },
-    };
-  }
+  const { props, placement } = usePopover(popoverRef, targetRef, isOpen, initialPlacement, container, mountedExtensions);
 
   const arrowContent = useMemo(() => {
     if (!mountedExtensions.arrow) return null;
@@ -135,10 +111,10 @@ export function Popover({
   const variants: Variants = mountedExtensions.motion?.transition
     ? typeof mountedExtensions.motion.transition.top === "undefined"
       ? (mountedExtensions.motion.transition as Variants)
-      : (mountedExtensions.motion.transition[parsePlacement(settedPlacement)[0]] as Variants)
-    : TRANSITION.fadeInOut[parsePlacement(settedPlacement)[0]];
+      : (mountedExtensions.motion.transition[parsePlacement(placement)[0]] as Variants)
+    : TRANSITION.fadeInOut[parsePlacement(placement)[0]];
 
-  // focus first element in popover
+  // Focus first element in popover
   if (popoverRef.current && isOpen) {
     const elements = popoverRef.current.querySelectorAll<HTMLElement>("input, select, textarea, button, object, a, area, [tabindex]");
     Array.from(elements)[0].focus({ preventScroll: true });
