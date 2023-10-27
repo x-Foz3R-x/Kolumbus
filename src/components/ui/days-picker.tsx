@@ -10,16 +10,16 @@ import { UT, Event } from "@/types";
 
 import Icon from "../icons";
 import { EventsOnExcludedDaysModal } from "./modal";
-import { Dropdown, DropdownButton } from "@/components/ui/dropdown";
+import { Dropdown, DropdownButton } from "@/components/ui/dropdown-old";
 
 interface Props {
   maxTripsDays: number;
 }
 
 export default function DaysPicker({ maxTripsDays }: Props) {
-  const updateTrip = api.trip.update.useMutation();
-  const { dispatchUserTrips, setModalShown, setModalChildren } = useAppdata();
+  const { dispatchUserTrips, setSaving, setModalShown, setModalChildren } = useAppdata();
   const { activeTrip } = useActionBarContext();
+  const updateTrip = api.trip.update.useMutation();
 
   const [isDisplayed, setDisplay] = useState(false);
 
@@ -34,7 +34,6 @@ export default function DaysPicker({ maxTripsDays }: Props) {
 
     const startDate = new Date(trip.startDate);
     const endDate = new Date(trip.endDate);
-
     const newEndDate = new Date(startDate);
     newEndDate.setDate(startDate.getDate() + selectedDays - 1);
 
@@ -43,8 +42,24 @@ export default function DaysPicker({ maxTripsDays }: Props) {
 
     // Apply changes when there are no conflicting dates.
     if (newEndDate > endDate) {
-      dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
-      updateTrip.mutate({ tripId: trip.id, data: { endDate: trip.endDate } });
+      setSaving(true);
+      dispatchUserTrips({ type: UT.UPDATE_TRIP, trip });
+      updateTrip.mutate(
+        { tripId: trip.id, data: { startDate: trip.startDate, endDate: trip.endDate } },
+        {
+          onSuccess(updatedTrip) {
+            if (!updatedTrip) return;
+            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: { ...trip, updatedAt: updatedTrip.updatedAt } });
+          },
+          onError(error) {
+            console.error(error);
+            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+          },
+          onSettled() {
+            setSaving(false);
+          },
+        }
+      );
       return;
     }
 
@@ -60,15 +75,47 @@ export default function DaysPicker({ maxTripsDays }: Props) {
 
     // Apply changes when there are no events to delete.
     if (eventsToDelete.length === 0) {
-      dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
-      updateTrip.mutate({ tripId: trip.id, data: { endDate: trip.endDate } });
+      setSaving(true);
+      dispatchUserTrips({ type: UT.UPDATE_TRIP, trip });
+      updateTrip.mutate(
+        { tripId: trip.id, data: { endDate: trip.endDate } },
+        {
+          onSuccess(updatedTrip) {
+            if (!updatedTrip) return;
+            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: { ...trip, updatedAt: updatedTrip.updatedAt } });
+          },
+          onError(error) {
+            console.error(error);
+            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+          },
+          onSettled() {
+            setSaving(false);
+          },
+        }
+      );
       return;
     }
 
     // Apply changes when there are events to delete.
     const handleExcludedDays = () => {
-      dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
-      updateTrip.mutate({ tripId: trip.id, data: { endDate: trip.endDate } });
+      setSaving(true);
+      dispatchUserTrips({ type: UT.UPDATE_TRIP, trip });
+      updateTrip.mutate(
+        { tripId: trip.id, data: { endDate: trip.endDate } },
+        {
+          onSuccess(updatedTrip) {
+            if (!updatedTrip) return;
+            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: { ...trip, updatedAt: updatedTrip.updatedAt } });
+          },
+          onError(error) {
+            console.error(error);
+            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+          },
+          onSettled() {
+            setSaving(false);
+          },
+        }
+      );
       setModalShown(false);
     };
 

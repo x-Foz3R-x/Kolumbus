@@ -1,24 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 
 import api from "@/app/_trpc/client";
+import useAppdata from "@/context/appdata";
 import { useDndData } from "@/components/dnd-itinerary";
+
+import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import type { UpdateEvent } from "@/server/routers/event";
+import { GetDayPosition } from "@/lib/dnd";
+import { Event, UT } from "@/types";
 
 import Input from "../ui/input";
 import Divider from "../ui/divider";
 import Icon from "../icons";
-import { useAnyCloseActions } from "@/hooks/use-accessibility-features";
-import { UpdateEvent } from "@/server/routers/event";
-import { UT } from "@/types";
-import { GetDayIndex } from "@/lib/dnd";
 
 export default function EventPanel() {
+  const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
+  const { activeTrip, activeEvent, isEventPanelDisplayed, setEventPanelDisplay, itineraryPosition } = useDndData();
   const updateEvent = api.event.update.useMutation();
   const deleteEvent = api.event.delete.useMutation();
-  const { dispatchUserTrips, selectedTrip, activeTrip, activeEvent, isEventPanelDisplayed, setEventPanelDisplay, dialogIndexPosition } =
-    useDndData();
 
   const [address, setAddress] = useState(activeEvent?.address ?? "");
   const addressRef = useRef<HTMLTextAreaElement>(null);
@@ -26,10 +27,8 @@ export default function EventPanel() {
   const [note, setNote] = useState(activeEvent?.note ?? "");
   const noteRef = useRef<HTMLTextAreaElement>(null);
 
-  const initialTopPosition = dialogIndexPosition.y * 132 + 20;
-  const topPosition = dialogIndexPosition.y * 132 + 20;
-  const initialLeftPosition = 148 + dialogIndexPosition.x * 168;
-  const leftPosition = 148 + dialogIndexPosition.x * 168;
+  const topPosition = itineraryPosition.y_day * 132 + 20;
+  const leftPosition = 148 + itineraryPosition.x_event * 168;
 
   const getImageUrl = (): string => {
     if (!activeEvent?.photo) return "/images/event-placeholder.png";
@@ -40,31 +39,62 @@ export default function EventPanel() {
 
   const handleUpdate = (data: UpdateEvent) => {
     if (!activeEvent) return;
-    const dayIndex = GetDayIndex(activeTrip.itinerary, activeEvent.date);
-    dispatchUserTrips({
-      type: UT.UPDATE_EVENT,
-      payload: { selectedTrip, dayIndex, event: { ...activeEvent, ...data } },
-    });
 
-    updateEvent.mutate({
-      eventId: activeEvent.id,
-      data: data,
-    });
+    const dayPosition = GetDayPosition(activeTrip.itinerary, activeEvent.date);
+
+    setSaving(true);
+    dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { selectedTrip, dayPosition, event: { ...activeEvent, ...data } } });
+    updateEvent.mutate(
+      { eventId: activeEvent.id, data: data },
+      {
+        onSuccess(updatedEvent) {
+          if (!updatedEvent) return;
+          dispatchUserTrips({
+            type: UT.UPDATE_EVENT,
+            payload: { selectedTrip, dayPosition, event: { ...activeEvent, ...data, updatedAt: updatedEvent.updatedAt } },
+          });
+        },
+        onError(error) {
+          console.error(error);
+          dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+        },
+        onSettled() {
+          setSaving(false);
+        },
+      }
+    );
   };
 
   const handleDelete = () => {
     if (!activeEvent) return;
 
-    dispatchUserTrips({
-      type: UT.DELETE_EVENT,
-      payload: { selectedTrip, dayIndex: GetDayIndex(activeTrip.itinerary, activeEvent?.date), event: activeEvent },
-    });
+    const dayPosition = GetDayPosition(activeTrip.itinerary, activeEvent.date);
 
-    const events = [...activeTrip.itinerary[GetDayIndex(activeTrip.itinerary, activeEvent.date)].events];
+    const events = [...activeTrip.itinerary[dayPosition].events];
     events.splice(activeEvent.position, 1);
-    events.forEach((event, index) => (event.position = index));
+    events.map((event, index) => ({ position: index }));
 
-    deleteEvent.mutate({ eventId: activeEvent.id, events });
+    setSaving(true);
+    setEventPanelDisplay(false);
+    dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { selectedTrip, dayPosition, event: activeEvent } });
+    deleteEvent.mutate(
+      { eventId: activeEvent.id, events },
+      {
+        onSuccess(updatedEvents) {
+          if (!updatedEvents) return;
+          updatedEvents.forEach((event) => {
+            dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { selectedTrip, dayPosition, event: { ...(event as Event) } } });
+          });
+        },
+        onError(error) {
+          console.error(error);
+          dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+        },
+        onSettled() {
+          setSaving(false);
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -83,34 +113,23 @@ export default function EventPanel() {
   }, [address, note, isEventPanelDisplayed]);
 
   const ref = useRef<HTMLDialogElement>(null);
-  useAnyCloseActions(ref, () => setEventPanelDisplay(false));
+  useCloseTriggers([ref], () => setEventPanelDisplay(false));
 
   return (
     <AnimatePresence>
       {isEventPanelDisplayed && activeEvent && (
         <motion.dialog
           ref={ref}
-          initial={{
-            scale: 0.5,
-            top: initialTopPosition,
-            left: initialLeftPosition,
-          }}
-          animate={{
-            scale: 1,
-            top: topPosition,
-            left: leftPosition,
-          }}
-          exit={{
-            scale: 0.5,
-            top: initialTopPosition,
-            left: initialLeftPosition,
-          }}
+          initial={{ scale: 0.5 }}
+          animate={{ scale: 1 }}
+          exit={{ scale: 0.5 }}
           transition={{ duration: 0.3, ease: [0.175, 0.885, 0.32, 1] }}
+          style={{ top: topPosition, left: leftPosition }}
           className={"absolute z-20 m-0 flex origin-top-left -translate-x-1/2 bg-transparent"}
           autoFocus
           open
         >
-          <div className="flex w-80 flex-col overflow-hidden rounded-2xl border-4 border-white bg-white shadow-border3xl">
+          <div className="flex w-80 flex-col overflow-hidden rounded-2xl border-4 border-white bg-white shadow-border3XL">
             <div className="w-80 bg-transparent">
               <Image src={getImageUrl()} alt="Event Image" width={312} height={160} priority className="h-40 object-cover object-center" />
             </div>

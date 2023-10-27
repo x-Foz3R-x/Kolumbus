@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { useClerk, useUser } from "@clerk/nextjs";
-import { Dropdown, DropdownButton, DropdownProfile, DropdownSeparator } from "./ui/dropdown";
+import { Dropdown, DropdownButton, DropdownProfile, DropdownSeparator } from "./ui/dropdown-old";
 import Icon from "./icons";
 
 export default function ProfileButton() {
@@ -39,15 +39,8 @@ export default function ProfileButton() {
         />
       </button>
 
-      <Dropdown
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        className="fixed right-4 top-11 w-56 p-2"
-      >
-        <DropdownProfile
-          username={user?.username || "Guest"}
-          email={user?.primaryEmailAddress?.emailAddress || ""}
-        />
+      <Dropdown isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} className="fixed right-4 top-11 w-56 p-2">
+        <DropdownProfile username={user?.username || "Guest"} email={user?.primaryEmailAddress?.emailAddress || ""} />
 
         <DropdownSeparator />
 

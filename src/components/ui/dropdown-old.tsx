@@ -2,9 +2,8 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-import "./dropdown.css";
 import Icon from "../icons";
-import { useAnyCloseActions } from "@/hooks/use-accessibility-features";
+import { useCloseTriggers } from "@/hooks/use-accessibility-features";
 
 interface DropdownProps {
   isModalOpen: boolean;
@@ -48,9 +47,7 @@ export function Dropdown({ isModalOpen, setIsModalOpen, className, children }: D
       ref={modalRef}
       aria-haspopup={true}
       aria-hidden={isModalOpen}
-      className={
-        "modal flex-col rounded-xl bg-white shadow-2xl " + (isModalOpen ? "flex " : "hidden ") + className
-      }
+      className={"modal flex-col rounded-xl bg-white shadow-2xl " + (isModalOpen ? "flex " : "hidden ") + className}
     >
       {children}
     </div>
@@ -120,7 +117,7 @@ export const Dropdown2 = {
       role="listbox"
       aria-label="Dropdown List"
       style={{ height: height + 12 }}
-      className={`shadow-border2xl absolute left-1/2 mt-1 origin-top -translate-x-1/2 overflow-scroll rounded-lg bg-white p-1.5 ${
+      className={`absolute left-1/2 mt-1 origin-top -translate-x-1/2 overflow-scroll rounded-lg bg-white p-1.5 shadow-border2XL ${
         showList
           ? "scale-y-100 opacity-100 duration-300 ease-kolumb-flow"
           : "pointer-events-none scale-y-50 opacity-0 duration-200 ease-kolumb-leave"
@@ -171,12 +168,11 @@ export function DropdownSelect({
 }: DropdownSelectProps) {
   const [isDropdownShown, setDropdownShown] = useState(false);
 
-  const visibleOptionsLength =
-    selectList.length >= maxVisibleOptionsLength ? maxVisibleOptionsLength : selectList.length;
+  const visibleOptionsLength = selectList.length >= maxVisibleOptionsLength ? maxVisibleOptionsLength : selectList.length;
   const height = optionHeight * visibleOptionsLength;
 
   const ref = useRef<HTMLDivElement>(null);
-  useAnyCloseActions(ref, () => setDropdownShown(false));
+  useCloseTriggers([ref], () => setDropdownShown(false));
 
   return (
     <div ref={ref} className={`absolute ${className}`}>
@@ -186,9 +182,7 @@ export function DropdownSelect({
         {...props}
       >
         <p className="">{selectList[selectedIndex].text}</p>
-        <Icon.chevron
-          className={`h-full w-2.5 flex-shrink-0 duration-150 ease-in-out ${isDropdownShown && "rotate-180"}`}
-        />
+        <Icon.chevron className={`h-full w-2.5 flex-shrink-0 duration-150 ease-in-out ${isDropdownShown && "rotate-180"}`} />
       </label>
 
       <Dropdown2.List showList={isDropdownShown} height={height}>
@@ -206,11 +200,7 @@ export function DropdownSelect({
               {option?.optionText}
             </div>
 
-            <Icon.check
-              className={`h-2 flex-shrink-0 ${
-                index === selectedIndex ? "fill-gray-700" : "fill-transparent"
-              }`}
-            />
+            <Icon.check className={`h-2 flex-shrink-0 ${index === selectedIndex ? "fill-gray-700" : "fill-transparent"}`} />
           </Dropdown2.SelectableOption>
         ))}
       </Dropdown2.List>

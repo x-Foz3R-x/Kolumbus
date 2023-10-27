@@ -1,12 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import api from "@/app/_trpc/client";
-import { useAnyCloseActions, useListNavigation } from "@/hooks/use-accessibility-features";
+import { useCloseTriggers, useListNavigation } from "@/hooks/use-accessibility-features";
 import { Language, PlaceAutocompletePrediction } from "@/types";
 
 import Combobox from "./ui/combobox";
 import Divider from "./ui/divider";
 import Icon from "./icons";
+import { set } from "zod";
 
 type List = [searchValue: { searchValue: string }, ...predictions: PlaceAutocompletePrediction[]];
 
@@ -20,9 +21,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
 
   const [searchValue, setSearchValue] = useState("");
   const [predictionList, setPredictionList] = useState<List>([{ searchValue }]);
-  const [selectedPrediction, setSelectedPrediction] = useState<
-    { searchValue: string } | PlaceAutocompletePrediction
-  >({ searchValue });
+  const [selectedPrediction, setSelectedPrediction] = useState<{ searchValue: string } | PlaceAutocompletePrediction>({ searchValue });
   const [isListDisplayed, setListDisplay] = useState(false);
 
   //#region Handlers
@@ -71,9 +70,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
     else setSearchValue(selectedPrediction.structured_formatting.main_text);
   };
 
-  const handlePredictionSelect = (
-    selectedPrediction: { searchValue: string } | PlaceAutocompletePrediction
-  ) => {
+  const handlePredictionSelect = (selectedPrediction: { searchValue: string } | PlaceAutocompletePrediction) => {
     setSelectedPrediction(selectedPrediction);
     setListDisplay(false);
 
@@ -92,15 +89,8 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
   };
 
   const ref = useRef<HTMLDivElement | null>(null);
-  useAnyCloseActions(ref, () => {
-    setListDisplay(false);
-  });
-  const { selectedIndex, setSelectedIndex } = useListNavigation(
-    predictionList,
-    isListDisplayed,
-    handleIndexChange,
-    handlePredictionSelect
-  );
+  useCloseTriggers([ref], () => setListDisplay(false));
+  const { selectedIndex, setSelectedIndex } = useListNavigation(predictionList, isListDisplayed, handleIndexChange, handlePredictionSelect);
 
   return (
     <Combobox.Root ref={ref} name="PlaceAutocomplete" isExpanded={isListDisplayed}>
@@ -110,9 +100,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
         onChange={handleInputChange}
         onFocus={handleInputFocus}
         className={`bg-gray-50 fill-gray-400 text-sm text-gray-400 outline-0 ${
-          isListDisplayed
-            ? "duration-[375ms] ease-kolumb-flow"
-            : "rounded-b-lg duration-300 ease-kolumb-leave"
+          isListDisplayed ? "duration-[375ms] ease-kolumb-flow" : "rounded-b-lg duration-300 ease-kolumb-leave"
         }`}
       >
         <button
@@ -128,7 +116,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
         <Divider orientation="vertical" className="absolute left-6 h-4" />
 
         <button
-          onClick={() => onAdd(selectedPrediction)}
+          onClick={() => onAdd("searchValue" in selectedPrediction ? { searchValue } : selectedPrediction)}
           className="flex h-8 items-center justify-center gap-1 px-2 duration-100 hover:fill-gray-700 hover:text-gray-700"
         >
           <Icon.plus className="w-[10px]" />
@@ -141,7 +129,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
       }
       <Combobox.List
         listHeight={(predictionList.length - 1) * 52 + 12} // numberOfPredictions * comboboxOptionHeight + padding
-        className={`rounded-b-[0.625rem] p-1.5 shadow-borderXl ${
+        className={`rounded-b-[0.625rem] p-1.5 shadow-borderXL ${
           isListDisplayed
             ? "scale-y-100 duration-[375ms] ease-kolumb-flow"
             : "-translate-y-6 scale-x-95 scale-y-[0.3] duration-300 ease-kolumb-leave"

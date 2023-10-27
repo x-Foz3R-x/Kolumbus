@@ -59,8 +59,8 @@ export function GetEvent(events: Event[], id: string): Event {
  */
 export function GetIndex(itinerary: Itinerary, events: Event[], type: "day" | "event", id: string): number {
   if (type === "day") {
-    const dayIndex = itinerary.findIndex((day) => day.id === id);
-    return dayIndex;
+    const dayPosition = itinerary.findIndex((day) => day.id === id);
+    return dayPosition;
   }
 
   if (type === "event") {
@@ -78,7 +78,7 @@ export function GetIndex(itinerary: Itinerary, events: Event[], type: "day" | "e
  * @param date - The date for which you want to find the day index.
  * @returns The index of the day in the itinerary that matches the given date, or -1 if not found.
  */
-export function GetDayIndex(itinerary: Itinerary, date: string): number {
+export function GetDayPosition(itinerary: Itinerary, date: string): number {
   // Search for a day in the itinerary array with a matching date.
   // Return its index if found, or -1 if not found.
   return itinerary.findIndex((day: Day) => day.date === date);

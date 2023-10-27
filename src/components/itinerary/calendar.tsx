@@ -3,33 +3,24 @@ import { useDndData } from "@/components/dnd-itinerary";
 import DayOfWeekIndicator from "./day-of-week-indicator";
 
 interface CalendarProps {
-  dayIndex: number;
+  dayPosition: number;
   dragOverlay?: boolean;
   handleAddEvent: React.MouseEventHandler<HTMLButtonElement>;
   className?: string;
 }
-export function Calendar({ dayIndex, dragOverlay, handleAddEvent, ...props }: CalendarProps) {
+export function Calendar({ dayPosition, dragOverlay, handleAddEvent, ...props }: CalendarProps) {
   const { activeTrip } = useDndData();
   const date = new Date(activeTrip.startDate);
-  date.setDate(date.getDate() + dayIndex);
+  date.setDate(date.getDate() + dayPosition);
 
   return (
     <div className="sticky left-0 z-20 flex-none">
-      <CalendarHeader
-        dayIndex={dayIndex}
-        dragOverlay={dragOverlay}
-        handleAddEvent={handleAddEvent}
-        {...props}
-      />
+      <CalendarHeader dayPosition={dayPosition} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
 
       <div className="flex h-28 w-32 cursor-default flex-col items-center justify-between gap-1 bg-white/80 p-2 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
-        <p className="flex h-fit w-14 items-center justify-center text-5xl font-bold leading-10 text-kolumblue-500">
-          {date.getDate()}
-        </p>
+        <p className="flex h-fit w-14 items-center justify-center text-5xl font-bold leading-10 text-kolumblue-500">{date.getDate()}</p>
 
-        <p className="text-sm text-gray-600">
-          {date.toLocaleString("default", { month: "short" }) + " • " + date.getFullYear()}
-        </p>
+        <p className="text-sm text-gray-600">{date.toLocaleString("default", { month: "short" }) + " • " + date.getFullYear()}</p>
 
         <DayOfWeekIndicator dayOfWeek={date.getDay()} />
       </div>
@@ -38,11 +29,11 @@ export function Calendar({ dayIndex, dragOverlay, handleAddEvent, ...props }: Ca
 }
 
 interface CalendarHeaderProps {
-  dayIndex: number;
+  dayPosition: number;
   dragOverlay?: boolean;
   handleAddEvent: React.MouseEventHandler<HTMLButtonElement>;
 }
-function CalendarHeader({ dayIndex, dragOverlay, handleAddEvent, ...props }: CalendarHeaderProps) {
+function CalendarHeader({ dayPosition, dragOverlay, handleAddEvent, ...props }: CalendarHeaderProps) {
   return (
     <div className="relative z-30 flex h-5 w-32 cursor-default items-center justify-center bg-kolumblue-500 text-xs font-medium text-white/75 shadow-xl group-first/calendar:rounded-t-xl">
       <button
@@ -76,12 +67,8 @@ function CalendarHeader({ dayIndex, dragOverlay, handleAddEvent, ...props }: Cal
         </p>
       </button>
 
-      <div
-        className={`origin-center capitalize duration-200 ease-kolumb-flow ${
-          !dragOverlay && "peer-hover:scale-0"
-        }`}
-      >
-        {!dragOverlay ? `day ${dayIndex + 1}` : "moving"}
+      <div className={`origin-center capitalize duration-200 ease-kolumb-flow ${!dragOverlay && "peer-hover:scale-0"}`}>
+        {!dragOverlay ? `day ${dayPosition + 1}` : "moving"}
       </div>
     </div>
   );

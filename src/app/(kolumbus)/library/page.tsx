@@ -23,11 +23,11 @@ export default function Library() {
     const currentUserTrips: Trip[] = userTrips;
     const newTrip: Trip = { ...tripTemplate, id: cuid2.init({ length: 14 })(), userId: user?.id, position: userTrips.length };
 
-    dispatchUserTrips({ type: UT.CREATE_TRIP, payload: { trip: newTrip } });
+    dispatchUserTrips({ type: UT.CREATE_TRIP, trip: newTrip });
     createTrip.mutate(newTrip, {
       onSuccess(trip) {
         if (!trip) return;
-        dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
+        dispatchUserTrips({ type: UT.UPDATE_TRIP, trip });
       },
       onError(error) {
         console.error(error);
@@ -37,8 +37,8 @@ export default function Library() {
   };
 
   return (
-    <main className="fixed inset-0 top-14 overflow-y-scroll bg-gray-50 bg-cover bg-center bg-no-repeat">
-      <div className="mx-auto flex h-full max-w-5xl flex-col items-center gap-4 bg-white shadow-borderXl">
+    <main className="mt-14 h-screen overflow-y-scroll bg-gray-50 bg-cover bg-center bg-no-repeat">
+      <div className="mx-auto flex h-full max-w-5xl flex-col items-center gap-4 bg-white shadow-borderXL">
         <div className="text-center font-adso text-3xl font-bold text-gray-600">
           Library
           <button
