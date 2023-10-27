@@ -23,11 +23,11 @@ export default function Library() {
     const currentUserTrips: Trip[] = userTrips;
     const newTrip: Trip = { ...tripTemplate, id: cuid2.init({ length: 14 })(), userId: user?.id, position: userTrips.length };
 
-    dispatchUserTrips({ type: UT.CREATE_TRIP, payload: { trip: newTrip } });
+    dispatchUserTrips({ type: UT.CREATE_TRIP, trip: newTrip });
     createTrip.mutate(newTrip, {
       onSuccess(trip) {
         if (!trip) return;
-        dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
+        dispatchUserTrips({ type: UT.UPDATE_TRIP, trip });
       },
       onError(error) {
         console.error(error);
