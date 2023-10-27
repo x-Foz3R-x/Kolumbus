@@ -34,35 +34,56 @@ export function Popover({
   children,
   ...divProps
 }: PopoverContentProps & React.HTMLAttributes<HTMLDivElement>) {
+  const mountedExtensions: {
+    offset?: Offset;
+    position?: Position;
+    flip?: Flip;
+    arrow?: Arrow;
+    backdrop?: Backdrop;
+    motion?: Motion;
+    prevent?: Prevent;
+  } = {
+    offset: undefined,
+    position: undefined,
+    flip: undefined,
+    arrow: undefined,
+    backdrop: undefined,
+    motion: undefined,
+    prevent: undefined,
+  };
+  extensions.forEach((extension) => {
+    switch (extension.name) {
+      case "offset":
+        mountedExtensions.offset = extension as Offset;
+        break;
+      case "position":
+        mountedExtensions.position = extension as Position;
+        break;
+      case "flip":
+        mountedExtensions.flip = extension as Flip;
+        break;
+      case "arrow":
+        mountedExtensions.arrow = extension as Arrow;
+        break;
+      case "backdrop":
+        mountedExtensions.backdrop = extension as Backdrop;
+        break;
+      case "motion":
+        mountedExtensions.motion = extension as Motion;
+        break;
+      case "prevent":
+        mountedExtensions.prevent = extension as Prevent;
+        break;
+    }
+  });
+
+  const { props, placement } = usePopover(popoverRef, targetRef, isOpen, initialPlacement, container, mountedExtensions);
+
   const handleClose = useCallback(() => {
     setIsOpen(false), [setIsOpen];
     targetRef.current?.focus();
   }, [targetRef, setIsOpen]);
   useCloseTriggers([targetRef, popoverRef], handleClose);
-
-  const [mountedExtensions, setMountedExtensions] = useState({
-    offset: extensions.find((extension) => extension.name === "offset") as Offset | undefined,
-    position: extensions.find((extension) => extension.name === "position") as Position | undefined,
-    flip: extensions.find((extension) => extension.name === "flip") as Flip | undefined,
-    arrow: extensions.find((extension) => extension.name === "arrow") as Arrow | undefined,
-    backdrop: extensions.find((extension) => extension.name === "backdrop") as Backdrop | undefined,
-    motion: extensions.find((extension) => extension.name === "motion") as Motion | undefined,
-    prevent: extensions.find((extension) => extension.name === "prevent") as Prevent | undefined,
-  });
-  useEffect(() => {
-    setMountedExtensions({
-      offset: extensions.find((extension) => extension.name === "offset") as Offset | undefined,
-      position: extensions.find((extension) => extension.name === "position") as Position | undefined,
-      flip: extensions.find((extension) => extension.name === "flip") as Flip | undefined,
-      arrow: extensions.find((extension) => extension.name === "arrow") as Arrow | undefined,
-      backdrop: extensions.find((extension) => extension.name === "backdrop") as Backdrop | undefined,
-      motion: extensions.find((extension) => extension.name === "motion") as Motion | undefined,
-      prevent: extensions.find((extension) => extension.name === "prevent") as Prevent | undefined,
-    });
-  }, [extensions]);
-
-  const { props, placement } = usePopover(popoverRef, targetRef, isOpen, initialPlacement, container, mountedExtensions);
-
   const arrowContent = useMemo(() => {
     if (!mountedExtensions.arrow) return null;
 
