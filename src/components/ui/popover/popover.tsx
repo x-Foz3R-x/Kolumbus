@@ -1,8 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
-import { Arrow, Backdrop, Container, Extensions, Flip, Offset, Placement, Position, Prevent, PropsForPopoverComponent } from "./types";
-import usePopover from "./use-popover";
+import {
+  Arrow,
+  Backdrop,
+  Container,
+  Extensions,
+  Flip,
+  Motion,
+  Offset,
+  Placement,
+  Position,
+  Prevent,
+  PropsForPopoverComponent,
+} from "./types";
+import usePopover, { parsePlacement } from "./use-popover";
 
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
@@ -27,13 +39,17 @@ export function Popover({
   targetRef,
   isOpen,
   setIsOpen,
-  placement = "bottom",
+  placement: initialPlacement = "bottom",
   container = { selector: "body", margin: 0, padding: 0 },
   extensions = [],
   className,
   children,
-}: PopoverContentProps) {
-  const handleClose = useCallback(() => setIsOpen(false), [setIsOpen]);
+  ...divProps
+}: PopoverContentProps & React.InputHTMLAttributes<HTMLDivElement>) {
+  const handleClose = useCallback(() => {
+    setIsOpen(false), [setIsOpen];
+    targetRef.current?.focus();
+  }, [setIsOpen]);
   useCloseTriggers([targetRef, popoverRef], handleClose);
 
   const [mountedExtensions, setMountedExtensions] = useState({
@@ -42,6 +58,7 @@ export function Popover({
     flip: extensions.find((extension) => extension.name === "flip") as Flip | undefined,
     arrow: extensions.find((extension) => extension.name === "arrow") as Arrow | undefined,
     backdrop: extensions.find((extension) => extension.name === "backdrop") as Backdrop | undefined,
+    motion: extensions.find((extension) => extension.name === "motion") as Motion | undefined,
     prevent: extensions.find((extension) => extension.name === "prevent") as Prevent | undefined,
   });
   useEffect(() => {
@@ -51,13 +68,17 @@ export function Popover({
       flip: extensions.find((extension) => extension.name === "flip") as Flip | undefined,
       arrow: extensions.find((extension) => extension.name === "arrow") as Arrow | undefined,
       backdrop: extensions.find((extension) => extension.name === "backdrop") as Backdrop | undefined,
+      motion: extensions.find((extension) => extension.name === "motion") as Motion | undefined,
       prevent: extensions.find((extension) => extension.name === "prevent") as Prevent | undefined,
     });
   }, [extensions]);
 
   let props: PropsForPopoverComponent;
+  let settedPlacement = initialPlacement;
   if (!mountedExtensions.position) {
-    props = usePopover(popoverRef, targetRef, isOpen, placement, container, mountedExtensions).props;
+    const { props: usePopoverProps, placement } = usePopover(popoverRef, targetRef, isOpen, initialPlacement, container, mountedExtensions);
+    props = usePopoverProps;
+    settedPlacement = placement;
   } else {
     props = {
       popover: { style: { top: mountedExtensions.position.y, left: mountedExtensions.position.x } },
@@ -93,11 +114,14 @@ export function Popover({
 
     let backdropStyles;
     if (mountedExtensions.backdrop.type === "opaque") backdropStyles = "bg-black/25";
+    if (mountedExtensions.backdrop.type === "opaque-white") backdropStyles = "bg-white/25";
     if (mountedExtensions.backdrop.type === "blur") backdropStyles = "bg-black/25 backdrop-blur-sm backdrop-saturate-150";
+    if (mountedExtensions.backdrop.type === "blur-white") backdropStyles = "bg-white/25 backdrop-blur-sm backdrop-saturate-150";
 
     return (
       <motion.div
         role="presentation"
+        aria-hidden={true}
         initial="initial"
         animate="enter"
         exit="exit"
@@ -108,6 +132,18 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, handleClose]);
 
+  const variants: Variants = mountedExtensions.motion?.transition
+    ? typeof mountedExtensions.motion.transition.top === "undefined"
+      ? (mountedExtensions.motion.transition as Variants)
+      : (mountedExtensions.motion.transition[parsePlacement(settedPlacement)[0]] as Variants)
+    : TRANSITION.fadeInOut[parsePlacement(settedPlacement)[0]];
+
+  // focus first element in popover
+  if (popoverRef.current && isOpen) {
+    const elements = popoverRef.current.querySelectorAll<HTMLElement>("input, select, textarea, button, object, a, area, [tabindex]");
+    Array.from(elements)[0].focus({ preventScroll: true });
+  }
+
   return (
     <AnimatePresence>
       {isOpen ? (
@@ -117,13 +153,14 @@ export function Popover({
             enabled={mountedExtensions.prevent?.scroll === true && isOpen}
             className="absolute z-[100] min-h-fit min-w-fit appearance-none bg-transparent"
             {...props.popover}
+            {...divProps}
           >
             {backdropContent}
             <motion.div
               initial="initial"
               animate="enter"
               exit="exit"
-              variants={TRANSITION.scaleSpring}
+              variants={variants}
               className={cn("relative", className)}
               {...props.motion}
             >

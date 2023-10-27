@@ -58,8 +58,14 @@ export default function usePopover(
   placement: Placement,
   container: Container,
   extensions: MountedExtensions
-): { props: PropsForPopoverComponent; update: () => void } {
-  const [data, setData] = useState<{ coords: { x: number; y: number }; arrowCoords: { x: number; y: number }; transformOrigin?: string }>({
+): { placement: Placement; props: PropsForPopoverComponent; update: () => void } {
+  const [data, setData] = useState<{
+    coords: { x: number; y: number };
+    arrowCoords: { x: number; y: number };
+    transformOrigin?: string;
+    settedPlacement: Placement;
+  }>({
+    settedPlacement: placement,
     coords: { x: 0, y: 0 },
     arrowCoords: { x: 0, y: 0 },
     transformOrigin: undefined,
@@ -121,9 +127,23 @@ export default function usePopover(
     return { popover, arrow, motion };
   }, [data, extensions.arrow]);
 
-  return useMemo(() => ({ props, update }), [props, update]);
+  return useMemo(() => ({ placement: data.settedPlacement, props, update }), [data.settedPlacement, props, update]);
 }
 
+/**
+ * Computes the position of a popover element relative to a target element and a container element.
+ *
+ * @param container - The container element that the popover is positioned within.
+ * @param target - The target element that the popover is positioned relative to.
+ * @param popover - The popover element that is being positioned.
+ * @param placement - The initial placement of the popover relative to the target element.
+ * @param margin - The margin of the popover element.
+ * @param padding - The padding of the popover element.
+ * @param offset - The offset of the popover element from the target element.
+ * @param shouldFlip - Whether or not the popover should flip to the opposite side if there is not enough space.
+ * @param arrowSize - The size of the arrow element on the popover.
+ * @returns An object containing the computed placement, coordinates, arrow coordinates, and transform origin of the popover element.
+ */
 function computePosition(
   container: Element,
   target: Element,
@@ -163,7 +183,7 @@ function computePosition(
   const { coords, arrowCoords } = computeCoords(elementsRect, placement, offset, arrowSize);
   const transformOrigin = computeTransformOrigin(parsePlacement(placement), getAxis(placement));
 
-  return { coords, arrowCoords, transformOrigin };
+  return { settedPlacement: placement, coords, arrowCoords, transformOrigin };
 }
 
 /**
@@ -324,7 +344,7 @@ function Flip(boundary: Inset, rects: { target: Rect; popover: Rect }, placement
  * const [side, alignment] = parsePlacement("top-start"); // ["top", "start"]
  * ```
  */
-function parsePlacement(placement: Placement): [Side, Alignment | undefined] {
+export function parsePlacement(placement: Placement): [Side, Alignment | undefined] {
   return placement.split("-") as [Side, Alignment];
 }
 

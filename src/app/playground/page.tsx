@@ -1,4 +1,6 @@
+"use client";
 import Icon from "@/components/icons";
+import { motion } from "framer-motion";
 import Link from "next/link";
 
 interface Props {}
@@ -23,37 +25,41 @@ export default function page({}: Props) {
         </div>
 
         <div className="grid grid-cols-4 gap-5">
-          <Link
-            href="/playground/color"
-            title="Playground"
-            aria-label="Playground"
-            className="rounded-xl bg-gray-50 p-10 text-center shadow-borderXL duration-200 ease-kolumb-flow hover:scale-110 hover:bg-gray-100"
-          >
-            Color
+          <Link href="/playground/color" title="Playground" aria-label="Playground">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
+            >
+              Color
+            </motion.button>
           </Link>
-          <Link
-            href="/playground/popover"
-            title="Playground"
-            aria-label="Playground"
-            className="rounded-xl bg-gray-50 p-10 text-center shadow-borderXL duration-200 ease-kolumb-flow hover:scale-110 hover:bg-gray-100"
-          >
-            Popover
+          <Link href="/playground/popover" title="Playground" aria-label="Playground">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
+            >
+              Popover
+            </motion.button>
           </Link>
-          <Link
-            href="/playground/popover"
-            title="Playground"
-            aria-label="Playground"
-            className="rounded-xl bg-gray-50 p-10 text-center shadow-borderXL duration-200 ease-kolumb-flow hover:scale-110 hover:bg-gray-100"
-          >
-            Popover
+          <Link href="/playground/popover" title="Playground" aria-label="Playground">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
+            >
+              Popover
+            </motion.button>
           </Link>
-          <Link
-            href="/playground/popover"
-            title="Playground"
-            aria-label="Playground"
-            className="rounded-xl bg-gray-50 p-10 text-center shadow-borderXL duration-200 ease-kolumb-flow hover:scale-110 hover:bg-gray-100"
-          >
-            Popover
+          <Link href="/playground/popover" title="Playground" aria-label="Playground">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
+            >
+              Popover
+            </motion.button>
           </Link>
         </div>
       </main>

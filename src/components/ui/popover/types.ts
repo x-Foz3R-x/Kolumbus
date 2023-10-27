@@ -1,3 +1,5 @@
+import { Variants } from "framer-motion";
+
 export type Alignment = "start" | "end";
 export type Side = "top" | "right" | "bottom" | "left";
 export type Placement = Side | `${Side}-${Alignment}`;
@@ -17,7 +19,7 @@ export type Container = {
   margin: number | [number, number, number, number];
   padding: number | [number, number, number, number];
 };
-export type Extensions = (Offset | Flip | Arrow | Backdrop | Prevent)[] | (Position | Backdrop | Prevent)[];
+export type Extensions = (Offset | Flip | Arrow | Backdrop | Motion | Prevent)[] | (Position | Backdrop | Motion | Prevent)[];
 export type MountedExtensions = {
   offset?: Offset;
   position?: Position;
@@ -34,6 +36,7 @@ export type Offset = { name: "offset"; value: number };
 export type Flip = { name: "flip" };
 export type Arrow = { name: "arrow"; size: number; className?: { arrow?: string; backdrop?: string } };
 
-export type Backdrop = { name: "backdrop"; type: "opaque" | "blur"; className?: string };
+export type Backdrop = { name: "backdrop"; type: "opaque" | "opaque-white" | "blur" | "blur-white"; className?: string };
+export type Motion = { name: "motion"; transition: Variants | { top: Variants; bottom: Variants; left: Variants; right: Variants } };
 export type Prevent = { name: "prevent"; scroll: boolean };
 //#endregion
