@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
-import { Alignment, Container, Coords, MountedExtensions, Placement, Rect, Inset, Side, Axis, Length } from "./types";
+import { Alignment, Container, Coords, MountedExtensions, Placement, Rect, Inset, Side, Axis, Length, PositionCoords } from "./types";
 
 /**
  * A hook that calculates the position of a popover relative to a target element.
@@ -10,7 +10,7 @@ import { Alignment, Container, Coords, MountedExtensions, Placement, Rect, Inset
  * @param popoverRef - A ref to the popover element.
  * @param targetRef - A ref to the target element.
  * @param isOpen - Whether the popover is currently open.
- * @param placement - The placement of the popover relative to the target element.
+ * @param initialPlacement - The placement of the popover relative to the target element.
  * @param container - The container element for the popover.
  * @param extensions - Additional options for the popover.
  * @returns An object containing the popover, arrow, and motion styles, as well as an `update` function to update the position of the popover.
@@ -43,17 +43,13 @@ export default function usePopover(
   popoverRef: React.RefObject<HTMLElement>,
   targetRef: React.RefObject<HTMLElement>,
   isOpen: boolean,
-  placement: Placement,
+  initialPlacement: Placement,
   container: Container,
   extensions: MountedExtensions
 ) {
-  const [data, setData] = useState<{
-    coords: { x: number | string; y: number | string };
-    arrowCoords: { x: number; y: number };
-    transformOrigin?: string;
-    settedPlacement: Placement;
-  }>({
-    settedPlacement: placement,
+  type Data = { placement: Placement; coords: PositionCoords; arrowCoords: Coords; transformOrigin?: string };
+  const [data, setData] = useState<Data>({
+    placement: initialPlacement,
     coords: extensions.position ? { x: extensions.position.x, y: extensions.position.y } : { x: 0, y: 0 },
     arrowCoords: { x: 0, y: 0 },
     transformOrigin: extensions.position ? extensions.position.transformOrigin : undefined,
@@ -79,7 +75,7 @@ export default function usePopover(
       document.querySelector(container.selector) ?? document.body,
       targetRef.current,
       popoverRef.current,
-      placement,
+      initialPlacement,
       containerMargin,
       containerPadding,
       offset,
@@ -87,11 +83,11 @@ export default function usePopover(
       arrowSize
     );
 
-    if (computedPosition !== data) setData(computedPosition);
-  }, [popoverRef, targetRef, isOpen, placement, container, extensions]); // eslint-disable-line react-hooks/exhaustive-deps
+    setData(computedPosition);
+  }, [popoverRef, targetRef, isOpen, initialPlacement, container, extensions]);
 
   // Update position when popover is opened, closed or any of the dependencies change
-  useLayoutEffect(update, [update, popoverRef, targetRef, placement, container, extensions]);
+  useLayoutEffect(update, [popoverRef, targetRef, isOpen, initialPlacement]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Update position when window is resized or scrolled (if prevent.scroll is false)
   useLayoutEffect(() => {
@@ -115,7 +111,7 @@ export default function usePopover(
     return { popover, arrow, motion };
   }, [data, extensions.arrow]);
 
-  return useMemo(() => ({ placement: data.settedPlacement, props, update }), [data.settedPlacement, props, update]);
+  return useMemo(() => ({ placement: data.placement, props, update }), [data.placement, props, update]);
 }
 
 /**
@@ -171,7 +167,7 @@ function computePosition(
   const { coords, arrowCoords } = computeCoords(elementsRect, placement, offset, arrowSize);
   const transformOrigin = computeTransformOrigin(parsePlacement(placement), getAxis(placement));
 
-  return { settedPlacement: placement, coords, arrowCoords, transformOrigin };
+  return { placement, coords, arrowCoords, transformOrigin };
 }
 
 /**

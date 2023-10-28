@@ -1,20 +1,22 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { Arrow, Backdrop, Container, Extensions, Flip, Motion, Offset, Placement, Position, Prevent } from "./types";
 import usePopover, { parsePlacement } from "./use-popover";
 
+import { useCloseTriggers } from "@/hooks/use-accessibility-features";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 import Portal from "@/components/portal";
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
 
 type PopoverContentProps = {
+  tag?: "div" | "ul";
+
   popoverRef: React.RefObject<HTMLElement>;
   targetRef: React.RefObject<HTMLElement>;
 
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   placement?: Placement;
   container?: Container;
   extensions?: Extensions;
@@ -23,10 +25,11 @@ type PopoverContentProps = {
   children: React.ReactNode;
 };
 export function Popover({
+  tag = "div",
   popoverRef,
   targetRef,
   isOpen,
-  setIsOpen,
+  setOpen,
   placement: initialPlacement = "bottom",
   container = { selector: "body", margin: 0, padding: 0 },
   extensions = [],
@@ -80,10 +83,17 @@ export function Popover({
   const { props, placement } = usePopover(popoverRef, targetRef, isOpen, initialPlacement, container, mountedExtensions);
 
   const handleClose = useCallback(() => {
-    setIsOpen(false), [setIsOpen];
-    targetRef.current?.focus();
-  }, [targetRef, setIsOpen]);
-  useCloseTriggers([targetRef, popoverRef], handleClose);
+    if (isOpen) {
+      setOpen(false), [setOpen];
+      targetRef.current?.focus();
+    }
+  }, [targetRef, isOpen, setOpen]);
+
+  const variants = useMemo(() => {
+    if (!mountedExtensions.motion?.transition) return TRANSITION.fadeInOut[parsePlacement(placement)[0]] as Variants;
+    if (typeof mountedExtensions.motion.transition.top === "undefined") return mountedExtensions.motion.transition as Variants;
+    return mountedExtensions.motion.transition[parsePlacement(placement)[0]] as Variants;
+  }, [placement, mountedExtensions.motion]);
   const arrowContent = useMemo(() => {
     if (!mountedExtensions.arrow) return null;
 
@@ -129,18 +139,15 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, handleClose]);
 
-  const variants: Variants = mountedExtensions.motion?.transition
-    ? typeof mountedExtensions.motion.transition.top === "undefined"
-      ? (mountedExtensions.motion.transition as Variants)
-      : (mountedExtensions.motion.transition[parsePlacement(placement)[0]] as Variants)
-    : TRANSITION.fadeInOut[parsePlacement(placement)[0]];
-
   // Focus first element in popover
   if (popoverRef.current && isOpen) {
-    const elements = popoverRef.current.querySelectorAll<HTMLElement>("input, select, textarea, button, object, a, area, [tabindex]");
-    Array.from(elements)[0].focus({ preventScroll: true });
+    const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
+      "input, select, textarea, button, object, a, area, [tabindex]"
+    );
+    Array.from(focusableElements)[0]?.focus({ preventScroll: true });
   }
 
+  useCloseTriggers([targetRef, popoverRef], handleClose);
   return (
     <AnimatePresence>
       {isOpen ? (
@@ -153,17 +160,31 @@ export function Popover({
             {...divProps}
           >
             {backdropContent}
-            <motion.div
-              initial="initial"
-              animate="enter"
-              exit="exit"
-              variants={variants}
-              className={cn("relative", className)}
-              {...props.motion}
-            >
-              {arrowContent}
-              {children}
-            </motion.div>
+            {tag === "div" ? (
+              <motion.div
+                initial="initial"
+                animate="enter"
+                exit="exit"
+                variants={variants}
+                className={cn("relative", className)}
+                {...props.motion}
+              >
+                {arrowContent}
+                {children}
+              </motion.div>
+            ) : (
+              <motion.ul
+                initial="initial"
+                animate="enter"
+                exit="exit"
+                variants={variants}
+                className={cn("relative", className)}
+                {...props.motion}
+              >
+                {arrowContent}
+                {children}
+              </motion.ul>
+            )}
           </RemoveScroll>
         </Portal>
       ) : null}

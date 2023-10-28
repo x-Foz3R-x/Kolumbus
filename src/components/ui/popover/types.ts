@@ -6,6 +6,7 @@ export type Placement = Side | `${Side}-${Alignment}`;
 export type Axis = "x" | "y";
 export type Length = "width" | "height";
 export type Coords = { x: number; y: number };
+export type PositionCoords = { x: number | string; y: number | string };
 export type Rect = { x: number; y: number; width: number; height: number };
 export type Inset = { top: number; right: number; bottom: number; left: number };
 
@@ -27,8 +28,8 @@ export type MountedExtensions = {
 // Extensions
 export type Position = { name: "position"; x: string | number; y: string | number; transformOrigin: string };
 
-export type Offset = { name: "offset"; value: number };
 export type Flip = { name: "flip" };
+export type Offset = { name: "offset"; value: number };
 export type Arrow = { name: "arrow"; size: number; className?: { arrow?: string; backdrop?: string } };
 
 export type Backdrop = { name: "backdrop"; type: "opaque" | "opaque-white" | "blur" | "blur-white"; className?: string };

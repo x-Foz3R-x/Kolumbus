@@ -3,9 +3,7 @@ import Icon from "@/components/icons";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-interface Props {}
-
-export default function page({}: Props) {
+export default function page() {
   return (
     <>
       <nav className="fixed left-0 right-0 top-0 z-10 flex h-14 items-center justify-center bg-white shadow-xs">
@@ -43,22 +41,22 @@ export default function page({}: Props) {
               Popover
             </motion.button>
           </Link>
-          <Link href="/playground/popover" title="Playground" aria-label="Playground">
+          <Link href="/playground/dropdown" title="Playground" aria-label="Playground">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
             >
-              Popover
+              Dropdown
             </motion.button>
           </Link>
-          <Link href="/playground/popover" title="Playground" aria-label="Playground">
+          <Link href="/playground/" title="Playground" aria-label="Playground">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
             >
-              Popover
+              /
             </motion.button>
           </Link>
         </div>

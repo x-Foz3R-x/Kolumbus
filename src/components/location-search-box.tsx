@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import api from "@/app/_trpc/client";
 import { useCloseTriggers, useListNavigation } from "@/hooks/use-accessibility-features";
@@ -7,7 +7,6 @@ import { Language, PlaceAutocompletePrediction } from "@/types";
 import Combobox from "./ui/combobox";
 import Divider from "./ui/divider";
 import Icon from "./icons";
-import { set } from "zod";
 
 type List = [searchValue: { searchValue: string }, ...predictions: PlaceAutocompletePrediction[]];
 
@@ -90,7 +89,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
 
   const ref = useRef<HTMLDivElement | null>(null);
   useCloseTriggers([ref], () => setListDisplay(false));
-  const { selectedIndex, setSelectedIndex } = useListNavigation(predictionList, isListDisplayed, handleIndexChange, handlePredictionSelect);
+  const [selectedIndex, setSelectedIndex] = useListNavigation(predictionList, isListDisplayed, handlePredictionSelect, handleIndexChange);
 
   return (
     <Combobox.Root ref={ref} name="PlaceAutocomplete" isExpanded={isListDisplayed}>

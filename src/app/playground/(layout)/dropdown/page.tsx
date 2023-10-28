@@ -3,32 +3,30 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { Popover, Offset, Flip, Arrow, position, Motion } from "@/components/ui/popover";
+import { Popover, position, Motion } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
+import Dropdown from "@/components/ui/dropdown";
 import { TRANSITION } from "@/lib/framer-motion";
 
-export default function PopoverTests() {
+export default function DropdownTests() {
   const [areOptionsOpen, setOptionsOpen] = useState(false);
   const optionsTargetRef = useRef(null);
   const optionsPopoverRef = useRef(null);
 
   const [isOpen, setOpen] = useState(false);
-  const targetRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const [placement, setPlacement] = useState("top" as Placement);
+  const [placement, setPlacement] = useState("right-start" as Placement);
   const [padding, setPadding] = useState(100);
   const [offset, setOffset] = useState(5);
   const [arrowSize, setArrowSize] = useState(12);
 
-  const arrowStyles = { arrow: "bg-gray-800 rounded-[3px]", backdrop: "shadow-borderXL rounded-[3px]" };
-
   const handleClose = useCallback(() => {
     setOpen(false), [setOpen];
-    targetRef.current?.focus({ preventScroll: true });
-  }, [targetRef, setOpen]);
+    buttonRef.current?.focus({ preventScroll: true });
+  }, [buttonRef, setOpen]);
 
   //#region centering logic
   window.addEventListener("load", () => {
@@ -49,7 +47,7 @@ export default function PopoverTests() {
   return (
     <div className="h-screen w-screen bg-red-200">
       <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-medium text-gray-800">
-        Popover
+        Dropdown / work in progress
       </h1>
       <div
         id="center"
@@ -59,8 +57,8 @@ export default function PopoverTests() {
       >
         <main style={{ width: "calc(200% - 59px)", height: "calc(200% - 34px)" }} className="relative flex items-center justify-center">
           <button
-            ref={targetRef}
-            aria-haspopup="dialog"
+            ref={buttonRef}
+            aria-haspopup="menu"
             {...(isOpen && { "aria-expanded": true })}
             onClick={() => setOpen(!isOpen)}
             className="rounded-md border border-gray-600 bg-gray-700 px-2 py-1 text-gray-100 focus:bg-kolumblue-600"
@@ -68,23 +66,15 @@ export default function PopoverTests() {
             open
           </button>
 
-          <Popover
-            popoverRef={popoverRef}
-            targetRef={targetRef}
+          <Dropdown
+            buttonRef={buttonRef}
             isOpen={isOpen}
             setOpen={setOpen}
+            menuList={[{ title: "delete" }, { title: "rename" }, { title: "copy" }]}
             placement={placement}
-            container={{ selector: "main", margin: [150, 200, 50, 200], padding }}
-            extensions={[Offset(offset), Flip(), Arrow(arrowSize, arrowStyles)]}
+            container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
             className="rounded-md text-gray-100 shadow-borderXL"
-          >
-            <div className="relative z-10 flex items-center justify-center gap-3 rounded-md bg-gray-800 px-4 py-3">
-              <button onClick={handleClose} className="h-8 w-8 rounded border border-gray-600 bg-gray-700 focus:bg-kolumblue-600">
-                X
-              </button>
-              popover
-            </div>
-          </Popover>
+          />
 
           {/* Rulers */}
           <div style={{ paddingBlock: "15px" }} className="absolute -z-10 w-full border-y-4 border-double border-black/10" />
