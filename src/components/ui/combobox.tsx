@@ -35,7 +35,6 @@ type ListProps = {
 };
 
 type OptionProps = {
-  isSelected: boolean;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   onMouseMove: React.MouseEventHandler<HTMLButtonElement>;
   onMouseLeave: React.MouseEventHandler<HTMLButtonElement>;
@@ -46,10 +45,7 @@ type OptionProps = {
 //#endregion
 
 const Combobox = {
-  Root: forwardRef<HTMLDivElement, RootProps>(function ComboboxComponent(
-    { name, isExpanded, children },
-    ref
-  ) {
+  Root: forwardRef<HTMLDivElement, RootProps>(function ComboboxComponent({ name, isExpanded, children }, ref) {
     const value = {
       name,
       isExpanded,
@@ -116,15 +112,7 @@ const Combobox = {
     );
   },
 
-  Option({
-    isSelected,
-    onClick,
-    onMouseMove,
-    onMouseLeave,
-    animationDelay = 0,
-    className,
-    children,
-  }: OptionProps) {
+  Option({ onClick, onMouseMove, onMouseLeave, animationDelay = 0, className, children }: OptionProps) {
     const [opacity, setOpacity] = useState("opacity-0");
     setTimeout(() => {
       setOpacity("opacity-100");
@@ -135,8 +123,7 @@ const Combobox = {
         onClick={onClick}
         onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
-        role="option"
-        aria-selected={isSelected}
+        role="menuitem"
         style={{ animationDelay: `${animationDelay}ms` }}
         className={cn("flex w-full items-center hover:z-10", opacity, className)}
       >

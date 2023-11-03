@@ -1,12 +1,24 @@
 import { useEffect, useState } from "react";
 import { Key } from "@/types";
 
-export default function useKeyPress(targetKey: Key) {
+export default function useKeyPress(targetKey: Key, block?: boolean) {
   const [keyPressed, setKeyPressed] = useState(false);
+  const [event, setEvent] = useState<KeyboardEvent | null>(null);
 
   useEffect(() => {
-    const downHandler = (event: KeyboardEvent) => event.key === targetKey && setKeyPressed(true);
-    const upHandler = (event: KeyboardEvent) => event.key === targetKey && setKeyPressed(false);
+    const downHandler = (event: KeyboardEvent) => {
+      if (event.key === targetKey) {
+        setKeyPressed(true);
+        setEvent(event);
+        if (block) event.preventDefault();
+      }
+    };
+    const upHandler = (event: KeyboardEvent) => {
+      if (event.key === targetKey) {
+        setKeyPressed(false);
+        setEvent(null);
+      }
+    };
 
     window.addEventListener("keydown", downHandler);
     window.addEventListener("keyup", upHandler);
@@ -15,7 +27,7 @@ export default function useKeyPress(targetKey: Key) {
       window.removeEventListener("keydown", downHandler);
       window.removeEventListener("keyup", upHandler);
     };
-  }, [targetKey]);
+  }, [targetKey, block]);
 
-  return keyPressed;
+  return [keyPressed, event] as const;
 }

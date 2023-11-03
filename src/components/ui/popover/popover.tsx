@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { Arrow, Backdrop, Container, Extensions, Flip, Motion, Offset, Placement, Position, Prevent } from "./types";
@@ -10,8 +10,6 @@ import { cn } from "@/lib/utils";
 import Portal from "@/components/portal";
 
 type PopoverContentProps = {
-  tag?: "div" | "ul";
-
   popoverRef: React.RefObject<HTMLElement>;
   targetRef: React.RefObject<HTMLElement>;
 
@@ -25,7 +23,6 @@ type PopoverContentProps = {
   children: React.ReactNode;
 };
 export function Popover({
-  tag = "div",
   popoverRef,
   targetRef,
   isOpen,
@@ -35,8 +32,7 @@ export function Popover({
   extensions = [],
   className,
   children,
-  ...divProps
-}: PopoverContentProps & React.HTMLAttributes<HTMLDivElement>) {
+}: PopoverContentProps) {
   const mountedExtensions: {
     offset?: Offset;
     position?: Position;
@@ -139,15 +135,19 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, handleClose]);
 
-  // Focus first element in popover
-  if (popoverRef.current && isOpen) {
-    const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
-      "input, select, textarea, button, object, a, area, [tabindex]"
-    );
-    Array.from(focusableElements)[0]?.focus({ preventScroll: true });
-  }
-
+  // Close popover when user clicks outside
   useCloseTriggers([targetRef, popoverRef], handleClose);
+
+  // Focus first element in popover when opened
+  useEffect(() => {
+    if (isOpen && !mountedExtensions.prevent?.autofocus && popoverRef.current) {
+      const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
+        "input, select, textarea, button, object, a, area, [tabindex]"
+      );
+      Array.from(focusableElements)[0]?.focus({ preventScroll: true });
+    }
+  }, [isOpen, mountedExtensions.prevent?.autofocus, popoverRef]);
+
   return (
     <AnimatePresence>
       {isOpen ? (
@@ -155,36 +155,23 @@ export function Popover({
           <RemoveScroll
             ref={popoverRef}
             enabled={mountedExtensions.prevent?.scroll === true && isOpen}
+            allowPinchZoom={mountedExtensions.prevent?.scroll === true && isOpen}
             className="absolute z-[100] min-h-fit min-w-fit appearance-none bg-transparent"
+            data-placement={placement}
             {...props.popover}
-            {...divProps}
           >
             {backdropContent}
-            {tag === "div" ? (
-              <motion.div
-                initial="initial"
-                animate="enter"
-                exit="exit"
-                variants={variants}
-                className={cn("relative", className)}
-                {...props.motion}
-              >
-                {arrowContent}
-                {children}
-              </motion.div>
-            ) : (
-              <motion.ul
-                initial="initial"
-                animate="enter"
-                exit="exit"
-                variants={variants}
-                className={cn("relative", className)}
-                {...props.motion}
-              >
-                {arrowContent}
-                {children}
-              </motion.ul>
-            )}
+            <motion.div
+              initial={"initial"}
+              animate={"animate"}
+              exit={"exit"}
+              variants={variants}
+              className={cn("relative", className)}
+              {...props.motion}
+            >
+              {arrowContent}
+              {children}
+            </motion.div>
           </RemoveScroll>
         </Portal>
       ) : null}

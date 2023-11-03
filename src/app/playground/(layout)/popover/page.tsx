@@ -51,6 +51,7 @@ export default function PopoverTests() {
       <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-medium text-gray-800">
         Popover
       </h1>
+
       <div
         id="center"
         ref={centerRef}
@@ -125,12 +126,13 @@ export default function PopoverTests() {
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
           placement="bottom"
-          extensions={[position("calc(50% - 88px)", 150, "top"), Motion(TRANSITION.scale)]}
+          extensions={[position("calc(50% - 88px)", 150, "top"), Motion(TRANSITION.fadeInScale)]}
           className="z-50 flex w-44 flex-col gap-3 rounded-b-xl bg-gray-50 px-4 py-2 text-xs"
         >
           <div className="flex flex-col items-center gap-1 text-sm">
             Placement
             <select
+              value={placement}
               onChange={(e) => setPlacement(e.target.value as Placement)}
               className="appearance-none rounded-md border px-2 text-center"
             >
