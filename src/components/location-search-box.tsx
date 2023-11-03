@@ -25,6 +25,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
 
   //#region Handlers
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
     setSearchValue(e.target.value);
 
     if (e.target.value.length < 3) {
@@ -42,6 +43,8 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
       {
         onSettled(data) {
           if (typeof data === "undefined") return;
+
+          console.log(data);
 
           if (data.status === "OK" && data.predictions.length > 0) {
             setPredictionList([{ searchValue: e.target.value }, ...data.predictions]);
@@ -89,7 +92,10 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
 
   const ref = useRef<HTMLDivElement | null>(null);
   useCloseTriggers([ref], () => setListDisplay(false));
-  const [selectedIndex, setSelectedIndex] = useListNavigation(predictionList, isListDisplayed, handlePredictionSelect, handleIndexChange);
+  const [selectedIndex, setSelectedIndex] = useListNavigation(predictionList, isListDisplayed, {
+    onSelect: handlePredictionSelect,
+    onChange: handleIndexChange,
+  });
 
   return (
     <Combobox.Root ref={ref} name="PlaceAutocomplete" isExpanded={isListDisplayed}>
@@ -170,12 +176,11 @@ function Predictions({ predictionList, selectedIndex, setSelectedIndex, handleCl
         return (
           <Combobox.Option
             key={key}
-            isSelected={selectedIndex === index + 1} // +1 to omit first index as its user input not prediction
             onClick={() => handleClick(prediction)}
             onMouseMove={() => setSelectedIndex(index + 1)} // +1 to omit first index as its user input not prediction
             onMouseLeave={() => setSelectedIndex(0)}
             animationDelay={animationDelay}
-            className={`animate-slideIn gap-4 rounded fill-gray-400 px-4 py-2`}
+            className="animate-slideIn gap-4 rounded fill-gray-400 px-4 py-2"
           >
             <Icon.pin className="w-[0.625rem] flex-shrink-0" />
 

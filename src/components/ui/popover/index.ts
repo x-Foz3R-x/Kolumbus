@@ -1,11 +1,21 @@
+import { useRef, useState } from "react";
+
 import { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop } from "./types";
 import { Variants } from "framer-motion";
 
 export { Popover } from "./popover";
 export type { Placement, Container } from "./types";
 
-// Extensions
+export function usePopover() {
+  const targetRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLButtonElement>(null);
+  const [isOpen, setOpen] = useState(false);
+  const [activationType, setActivationType] = useState<"mouse" | "keyboard">("mouse");
 
+  return [targetRef, popoverRef, isOpen, setOpen, activationType, setActivationType] as const;
+}
+
+// Extensions
 export function position(x: string | number, y: string | number, transformOrigin: string): Position {
   return { name: "position", x, y, transformOrigin };
 }
@@ -26,6 +36,6 @@ export function Backdrop(type: "opaque" | "opaque-white" | "blur" | "blur-white"
 export function Motion(transition: Variants | { top: Variants; bottom: Variants; left: Variants; right: Variants }): Motion {
   return { name: "motion", transition };
 }
-export function Prevent(scroll: boolean): Prevent {
-  return { name: "prevent", scroll };
+export function Prevent({ scroll, autofocus }: { scroll?: boolean; autofocus?: boolean }): Prevent {
+  return { name: "prevent", scroll, autofocus };
 }

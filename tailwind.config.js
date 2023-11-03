@@ -14,9 +14,6 @@ module.exports = {
       animation: {
         appear: "appear 700ms cubic-bezier(0.175, 0.75, 0.32, 1)",
         slideIn: "slideIn 400ms cubic-bezier(0.175, 0.5, 0.32, 1.275)",
-        test: "composer 400ms cubic-bezier(0.175, 0.5, 0.32, 1.275)",
-        verticalScaleIn: "verticalScaleIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
-        horizontalScaleIn: "horizontalScaleIn 500ms cubic-bezier(0.175, 0.885, 0.32, 1)",
       },
       keyframes: {
         appear: {
@@ -46,18 +43,6 @@ module.exports = {
             transformOrigin: "left",
             transform: "translate(0, 0) skew(0deg, 0deg) scale(1, 1)",
           },
-        },
-        composer: {
-          "0%": "",
-          "100%": "",
-        },
-        verticalScaleIn: {
-          "0%": { transform: "scale(1, 0)" },
-          "100%": { transform: "scale(1, 1)" },
-        },
-        horizontalScaleIn: {
-          "0%": { transform: "scale(0, 1)" },
-          "100%": { transform: "scale(1, 1)" },
         },
       },
       transitionTimingFunction: {

@@ -29,7 +29,6 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
     dynamicWidth?: boolean;
     preventEmpty?: boolean;
   };
-
 export default function Input({
   label,
   value = "",
@@ -52,7 +51,7 @@ export default function Input({
   }, [value]);
 
   const ref = useRef<HTMLInputElement | null>(null);
-  const enterPressed = useKeyPress(Key.Enter);
+  const [enterPressed] = useKeyPress(Key.Enter);
   useEffect(() => {
     if (enterPressed && ref.current && document.activeElement === ref.current) ref.current.blur();
   }, [enterPressed]);
