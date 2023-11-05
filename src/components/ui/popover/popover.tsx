@@ -11,7 +11,7 @@ import Portal from "@/components/portal";
 
 type PopoverContentProps = {
   popoverRef: React.RefObject<HTMLElement>;
-  targetRef: React.RefObject<HTMLElement>;
+  triggerRef: React.RefObject<HTMLElement>;
 
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,7 +24,7 @@ type PopoverContentProps = {
 };
 export function Popover({
   popoverRef,
-  targetRef,
+  triggerRef,
   isOpen,
   setOpen,
   placement: initialPlacement = "bottom",
@@ -76,14 +76,14 @@ export function Popover({
     }
   });
 
-  const { props, placement } = usePopover(popoverRef, targetRef, isOpen, initialPlacement, container, mountedExtensions);
+  const { props, placement } = usePopover(triggerRef, popoverRef, isOpen, initialPlacement, container, mountedExtensions);
 
   const handleClose = useCallback(() => {
-    if (isOpen) {
-      setOpen(false), [setOpen];
-      targetRef.current?.focus();
-    }
-  }, [targetRef, isOpen, setOpen]);
+    if (!isOpen) return;
+
+    setOpen(false);
+    triggerRef.current?.focus();
+  }, [triggerRef, isOpen, setOpen]);
 
   const variants = useMemo(() => {
     if (!mountedExtensions.motion?.transition) return TRANSITION.fadeInOut[parsePlacement(placement)[0]] as Variants;
@@ -136,7 +136,7 @@ export function Popover({
   }, [mountedExtensions.backdrop, handleClose]);
 
   // Close popover when user clicks outside
-  useCloseTriggers([targetRef, popoverRef], handleClose);
+  useCloseTriggers([triggerRef, popoverRef], handleClose);
 
   // Focus first element in popover when opened
   useEffect(() => {

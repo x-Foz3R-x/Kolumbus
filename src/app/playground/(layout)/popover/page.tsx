@@ -71,7 +71,7 @@ export default function PopoverTests() {
 
           <Popover
             popoverRef={popoverRef}
-            targetRef={targetRef}
+            triggerRef={targetRef}
             isOpen={isOpen}
             setOpen={setOpen}
             placement={placement}
@@ -122,7 +122,7 @@ export default function PopoverTests() {
         </button>
         <Popover
           popoverRef={optionsPopoverRef}
-          targetRef={optionsTargetRef}
+          triggerRef={optionsTargetRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
           placement="bottom"

@@ -9,15 +9,16 @@ import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifi
 import { CSS } from "@dnd-kit/utilities";
 
 import api from "@/app/_trpc/client";
+import useAppdata from "@/context/appdata";
 import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayPosition } from "@/lib/dnd";
+import { Trip, Day, Event, UT } from "@/types";
 
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
 import EventPanel from "./itinerary/event-panel";
 import Icon from "./icons";
-
-import { type Trip, type Day, type Event, UT } from "@/types";
-import useAppdata from "@/context/appdata";
+import Dropdown, { DropdownList, DropdownOption } from "./ui/dropdown";
+import Divider from "./ui/divider";
 
 //#region Context
 const DndDataContext = createContext<{
@@ -366,7 +367,11 @@ type EventComponentProps = {
 };
 const EventComponent = memo(
   forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
+    const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
     const { activeTrip, setActiveEvent, isEventPanelDisplayed, setEventPanelDisplay, setItineraryPosition } = useDndData();
+    const deleteEvent = api.event.delete.useMutation();
+
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
     const dayPosition = GetDayPosition(activeTrip.itinerary, event.date);
 
     const getImageUrl = (): string => {
@@ -376,6 +381,62 @@ const EventComponent = memo(
       return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=312&maxheight=160&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
     };
 
+    const openEventPanel = () => {
+      setActiveEvent(event);
+      setItineraryPosition({ y_day: dayPosition, x_event: event.position });
+
+      if (isEventPanelDisplayed) {
+        setEventPanelDisplay(false);
+        setTimeout(() => setEventPanelDisplay(true), 350);
+      } else setEventPanelDisplay(true);
+    };
+
+    const dropdownList: DropdownList = [
+      { onSelect: openEventPanel, index: 0 },
+      {
+        onSelect: () => {
+          if (event.address) navigator.clipboard.writeText(event.address);
+        },
+        index: 1,
+      },
+      { onSelect: () => {}, index: 2 },
+      { onSelect: () => {}, index: 3 },
+      {
+        onSelect: () => {
+          if (!event) return;
+
+          const dayPosition = GetDayPosition(activeTrip.itinerary, event.date);
+
+          const events = [...activeTrip.itinerary[dayPosition].events];
+          events.splice(event.position, 1);
+          events.map((event, index) => ({ position: index }));
+
+          setSaving(true);
+          setEventPanelDisplay(false);
+          dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { selectedTrip, dayPosition, event } });
+          deleteEvent.mutate(
+            { eventId: event.id, events },
+            {
+              onSuccess(updatedEvents) {
+                if (!updatedEvents) return;
+                updatedEvents.forEach((event) => {
+                  dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { selectedTrip, dayPosition, event: { ...(event as Event) } } });
+                });
+              },
+              onError(error) {
+                console.error(error);
+                dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+              },
+              onSettled() {
+                setSaving(false);
+              },
+            }
+          );
+        },
+        index: 4,
+      },
+    ];
+
     return (
       <div
         className={`group relative flex h-28 flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-lg border-2 border-white/80 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-leave hover:shadow-borderSplashXl hover:ease-kolumb-flow ${
@@ -384,24 +445,38 @@ const EventComponent = memo(
       >
         {!dragOverlay && (
           <span className="absolute right-1 top-1 z-20 flex h-6 w-14 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 opacity-0 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow">
-            <button
-              onClick={() => {
-                setActiveEvent(event);
-                setItineraryPosition({ y_day: dayPosition, x_event: event.position });
-
-                if (isEventPanelDisplayed) {
-                  setEventPanelDisplay(false);
-                  setTimeout(() => setEventPanelDisplay(true), 350);
-                } else setEventPanelDisplay(true);
-              }}
-              className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100"
-            >
+            <button onClick={openEventPanel} className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100">
               <Icon.pinPen className="m-auto h-3" />
             </button>
 
-            <button className="w-full duration-200 ease-kolumb-flow hover:bg-gray-100">
-              <Icon.horizontalDots className="m-auto w-4" />
-            </button>
+            <Dropdown
+              isOpen={isDropdownOpen}
+              setOpen={setDropdownOpen}
+              list={dropdownList}
+              container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
+              buttonVariant="unstyled"
+              className={{
+                container: "flex h-full w-full items-center justify-center",
+                button: "h-full w-full duration-200 ease-kolumb-flow hover:bg-gray-100 focus-visible:bg-kolumblue-100",
+                dropdown: "whitespace-nowrap",
+              }}
+              buttonChildren={<Icon.horizontalDots className="m-auto w-4" />}
+            >
+              <DropdownOption index={0}>Event panel</DropdownOption>
+              <DropdownOption index={1}>Copy address</DropdownOption>
+              <DropdownOption index={2} disabled>
+                Find in Google Maps
+              </DropdownOption>
+
+              <Divider className="rounded" />
+
+              <DropdownOption index={3} disabled>
+                Duplicate
+              </DropdownOption>
+              <DropdownOption index={4} optionVariant="danger">
+                Delete
+              </DropdownOption>
+            </Dropdown>
           </span>
         )}
 

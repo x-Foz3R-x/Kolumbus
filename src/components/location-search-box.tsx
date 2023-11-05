@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import api from "@/app/_trpc/client";
-import { useCloseTriggers, useListNavigation } from "@/hooks/use-accessibility-features";
+import { useCloseTriggers, useListNavigationOLD } from "@/hooks/use-accessibility-features";
 import { Language, PlaceAutocompletePrediction } from "@/types";
 
 import Combobox from "./ui/combobox";
@@ -92,7 +92,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
 
   const ref = useRef<HTMLDivElement | null>(null);
   useCloseTriggers([ref], () => setListDisplay(false));
-  const [selectedIndex, setSelectedIndex] = useListNavigation(predictionList, isListDisplayed, {
+  const [selectedIndex, setSelectedIndex] = useListNavigationOLD(predictionList, isListDisplayed, {
     onSelect: handlePredictionSelect,
     onChange: handleIndexChange,
   });

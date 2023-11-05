@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useKeyPress from "./use-key-press";
 import { Key } from "@/types";
-import { DropdownList } from "@/components/ui/dropdown";
+
 import { Placement } from "@/components/ui/popover";
 import { parsePlacement } from "@/components/ui/popover/use-popover";
 
@@ -9,7 +9,7 @@ import { parsePlacement } from "@/components/ui/popover/use-popover";
  * Attaches event listeners to detect clicks outside of given elements and pressing the escape key.
  *
  * @param refs - An array of React ref objects that point to the elements to detect clicks outside of.
- * @param callback - A function to be called when a click outside of any of the elements or the escape key is pressed.
+ * @param callback - A function to be called when detected close interaction.
  */
 export function useCloseTriggers(refs: React.RefObject<HTMLElement>[], callback: Function) {
   useEffect(() => {
@@ -45,7 +45,7 @@ export function useCloseTriggers(refs: React.RefObject<HTMLElement>[], callback:
  * @param onChangeCallback A callback function to be called when an arrow key is pressed.
  * @returns An object containing the currently selected index and a function to set the selected index.
  */
-export function useListNavigation<T>(
+export function useListNavigationOLD<T>(
   list: T[],
   isNavigationEnabled: boolean,
   callback: { onSelect: (selectedItem: T, index: number) => void; onChange?: (selectedItem: T, index: number) => void }
@@ -103,119 +103,140 @@ export function useListNavigation<T>(
   return [selectedIndex, setSelectedIndex] as const;
 }
 
-type UseDropdownNavigationProps = {
-  list: DropdownList;
+type UseListNavigationProps = {
+  onChangeCallback?: (index: number) => void;
+  hasFocus?: false | "trigger" | "popper";
+  setFocus?: React.Dispatch<React.SetStateAction<false | "trigger" | "popper">>;
+  triggerRef: React.MutableRefObject<HTMLButtonElement | null>;
   listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLLIElement | null)[]>;
-  placement: Placement;
+  listLength: number;
   initialIndex: number;
+  placement: Placement;
   enabled: boolean;
   loop: boolean;
-  hasFocus: false | "button" | "dropdown";
-  setFocus: React.Dispatch<React.SetStateAction<false | "button" | "dropdown">>;
 };
 /**
  * A hook that provides dropdown navigation functionality for accessibility purposes.
  *
- * @param DropdownList The list of items to navigate.
- * @param listItemsRef A React ref object that points to the list items.
- * @param enabled Whether or not dropdown navigation is enabled.
- * @param loop Whether or not the navigation should loop.
- * @param startAt The index to start at.
  * @returns An object containing the currently selected index and a function to set the selected index.
  */
-export function useDropdownNavigation({
-  list,
-  listItemsRef,
-  placement,
-  initialIndex,
-  enabled,
-  loop,
+export function useListNavigation({
+  onChangeCallback,
   hasFocus,
   setFocus,
-}: UseDropdownNavigationProps) {
+  triggerRef,
+  listItemsRef,
+  listLength,
+  initialIndex,
+  placement,
+  enabled,
+  loop,
+}: UseListNavigationProps) {
   const [activeIndex, setActiveIndex] = useState(initialIndex);
 
-  const [enterPressed] = useKeyPress(Key.Enter);
-  const [spacePressed] = useKeyPress(Key.Space);
   const [arrowUpPressed] = useKeyPress(Key.ArrowUp, enabled);
   const [arrowDownPressed] = useKeyPress(Key.ArrowDown, enabled);
   const [arrowLeftPressed] = useKeyPress(Key.ArrowLeft, enabled);
   const [arrowRightPressed] = useKeyPress(Key.ArrowRight, enabled);
+
   const [homePressed] = useKeyPress(Key.Home, enabled);
   const [endPressed] = useKeyPress(Key.End, enabled);
+
   const [tabPressed, tabEvent] = useKeyPress(Key.Tab);
 
+  // Handle arrow key press events for navigating within or to a list.
   useEffect(() => {
     if (!enabled) return;
 
-    const handleVerticalArrowPress = (direction: Key.ArrowUp | Key.ArrowDown) => {
+    const handleArrowPress = (direction: Key.ArrowUp | Key.ArrowDown | Key.ArrowLeft | Key.ArrowRight) => {
       let nextIndex = activeIndex;
 
-      if (activeIndex < 0 || hasFocus === "button") {
-        nextIndex = direction === Key.ArrowUp ? list.length - 1 : 0;
-      } else if (loop) {
-        nextIndex = (direction === Key.ArrowUp ? activeIndex + list.length - 1 : activeIndex + 1) % list.length;
-      } else {
-        nextIndex = direction === Key.ArrowUp ? Math.max(activeIndex - 1, 0) : Math.min(activeIndex + 1, list.length - 1);
+      if (direction === Key.ArrowUp || direction === Key.ArrowDown) {
+        if (activeIndex < 0 || hasFocus === "trigger") {
+          nextIndex = direction === Key.ArrowUp ? listLength - 1 : 0;
+        } else if (loop) {
+          nextIndex = (direction === Key.ArrowUp ? activeIndex + listLength - 1 : activeIndex + 1) % listLength;
+        } else {
+          nextIndex = direction === Key.ArrowUp ? Math.max(activeIndex - 1, 0) : Math.min(activeIndex + 1, listLength - 1);
+        }
+      } else if (hasFocus === "trigger" && (direction === Key.ArrowLeft || direction === Key.ArrowRight)) {
+        const [side, alignment] = parsePlacement(placement);
+
+        if (side === "top" || side === "bottom") return;
+
+        if (side === "left") {
+          nextIndex =
+            alignment !== "end" ? (direction === Key.ArrowLeft ? 0 : listLength - 1) : direction === Key.ArrowLeft ? listLength - 1 : 0;
+        } else if (side === "right") {
+          nextIndex =
+            alignment !== "end" ? (direction === Key.ArrowRight ? 0 : listLength - 1) : direction === Key.ArrowRight ? listLength - 1 : 0;
+        }
       }
 
-      // Focus on the list item at the nextIndex if it exists.
+      // Focus on the list item at the nextIndex if it exists,
+      // update the activeIndex with the new value, and trigger the onChangeCallback if available.
       listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
-
-      // Update the activeIndex with the new value.
       setActiveIndex(nextIndex);
+      if (onChangeCallback) onChangeCallback(nextIndex);
     };
 
-    const handleHorizontalArrowPress = (direction: Key.ArrowLeft | Key.ArrowRight) => {
-      if (hasFocus !== "button") return;
+    if (arrowUpPressed) handleArrowPress(Key.ArrowUp);
+    else if (arrowDownPressed) handleArrowPress(Key.ArrowDown);
+    else if (arrowLeftPressed) handleArrowPress(Key.ArrowLeft);
+    else if (arrowRightPressed) handleArrowPress(Key.ArrowRight);
+  }, [arrowUpPressed, arrowDownPressed, arrowLeftPressed, arrowRightPressed]); // eslint-disable-line
 
-      const [side, alignment] = parsePlacement(placement);
-      let nextIndex = activeIndex;
-
-      if (side === "top" || side === "bottom") return;
-
-      if (side === "left") {
-        nextIndex =
-          alignment !== "end" ? (direction === Key.ArrowLeft ? 0 : list.length - 1) : direction === Key.ArrowLeft ? list.length - 1 : 0;
-      } else if (side === "right") {
-        nextIndex =
-          alignment !== "end" ? (direction === Key.ArrowRight ? 0 : list.length - 1) : direction === Key.ArrowRight ? list.length - 1 : 0;
-      }
-
-      // Focus on the list item at the nextIndex if it exists.
-      listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
-
-      // Update the activeIndex with the new value.
-      setActiveIndex(nextIndex);
-    };
-
+  // Handles Home and End key press events for navigating to the first or last list item.
+  useEffect(() => {
     const handleHomeEndPress = (direction: Key.Home | Key.End) => {
-      const nextIndex = direction === Key.Home ? 0 : list.length - 1;
+      const nextIndex = direction === Key.Home ? 0 : listLength - 1;
 
-      // Focus on the list item at the nextIndex if it exists.
+      // Focus on the list item at the nextIndex if it exists,
+      // update the activeIndex with the new value, and trigger the onChangeCallback if available.
       listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
-
-      // Update the activeIndex with the new value.
       setActiveIndex(nextIndex);
+      if (onChangeCallback) onChangeCallback(nextIndex);
     };
 
-    const handleTabPress = () => {
-      if ((hasFocus === "button" && !tabEvent?.shiftKey) || (hasFocus === "dropdown" && tabEvent?.shiftKey)) return;
-      setFocus(false);
-    };
-
-    if (arrowUpPressed) handleVerticalArrowPress(Key.ArrowUp);
-    else if (arrowDownPressed) handleVerticalArrowPress(Key.ArrowDown);
-    else if (arrowLeftPressed) handleHorizontalArrowPress(Key.ArrowLeft);
-    else if (arrowRightPressed) handleHorizontalArrowPress(Key.ArrowRight);
-    else if (homePressed) handleHomeEndPress(Key.Home);
+    if (homePressed) handleHomeEndPress(Key.Home);
     else if (endPressed) handleHomeEndPress(Key.End);
-    else if (tabPressed) handleTabPress();
-  }, [enabled, arrowUpPressed, arrowDownPressed, arrowLeftPressed, arrowRightPressed, homePressed, endPressed, tabPressed]); // eslint-disable-line
+  }, [homePressed, endPressed]); // eslint-disable-line
+
+  // Handles Tab key press events for managing focus transitions in different scenarios.
+  useEffect(() => {
+    const handleTabPress = () => {
+      if (hasFocus === "trigger" && !tabEvent?.shiftKey) {
+        tabEvent?.preventDefault();
+
+        let nextIndex = activeIndex < 0 ? 0 : activeIndex;
+
+        // Focus on the list item at the nextIndex if it exists,
+        // update the activeIndex with the new value, and call the onChangeCallback if available.
+        listItemsRef.current[nextIndex]?.focus();
+        setActiveIndex(nextIndex);
+        if (onChangeCallback) onChangeCallback(nextIndex);
+      } else if (hasFocus === "popper") {
+        if (tabEvent?.shiftKey) {
+          tabEvent?.preventDefault();
+          triggerRef.current?.focus();
+        } else if (activeIndex < 0) {
+          tabEvent?.preventDefault();
+
+          // Focus on the first list item (at index 0),
+          // reset the activeIndex to 0, and call the onChangeCallback if available.
+          listItemsRef.current[0]?.focus();
+          setActiveIndex(0);
+          if (onChangeCallback) onChangeCallback(0);
+        } else setFocus && setFocus(false);
+      } else setFocus && setFocus(false);
+    };
+
+    if (tabPressed) handleTabPress();
+  }, [tabPressed]); // eslint-disable-line
 
   useEffect(() => {
-    if (list.length <= activeIndex) setActiveIndex(0);
-  }, [list, activeIndex]);
+    if (activeIndex > listLength - 1) setActiveIndex(0);
+  }, [listLength, activeIndex]);
 
-  return [activeIndex, setActiveIndex, { enter: enterPressed, space: spacePressed }] as const;
+  return [activeIndex, setActiveIndex] as const;
 }

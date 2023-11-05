@@ -13,8 +13,9 @@ import { TRANSITION } from "@/lib/framer-motion";
 export default function DropdownTests() {
   const [optionsTargetRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen] = usePopover();
 
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [placement, setPlacement] = useState("right-start" as Placement);
-  const [padding, setPadding] = useState(100);
+  const [padding, setPadding] = useState(50);
   const [offset, setOffset] = useState(5);
 
   const dropdownList: DropdownList = [
@@ -76,7 +77,7 @@ export default function DropdownTests() {
         </button>
         <Popover
           popoverRef={optionsPopoverRef}
-          targetRef={optionsTargetRef}
+          triggerRef={optionsTargetRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
           placement="bottom"
@@ -155,13 +156,15 @@ export default function DropdownTests() {
       >
         <main style={{ width: "calc(200% - 59px)", height: "calc(200% - 34px)" }} className="relative flex items-center justify-center">
           <Dropdown
+            isOpen={isDropdownOpen}
+            setOpen={setDropdownOpen}
             list={dropdownList}
             placement={placement}
-            margin={[150, 200, 50, 200]}
-            padding={padding}
+            container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
             offset={offset}
-            buttonChildren={<span>open</span>}
             preventScroll
+            className={{ dropdown: "w-40 gap-1" }}
+            buttonChildren={<span>open</span>}
           >
             <p className="rounded-lg bg-yellow-500/20 text-center text-xs leading-relaxed text-gray-300 shadow-soft">Tip: use arrow keys</p>
             <DropdownOption index={0} optionVariant={"blue"}>
