@@ -462,7 +462,9 @@ const EventComponent = memo(
               }}
               buttonChildren={<Icon.horizontalDots className="m-auto w-4" />}
             >
-              <DropdownOption index={0}>Event panel</DropdownOption>
+              <DropdownOption index={0} className="">
+                Event panel
+              </DropdownOption>
               <DropdownOption index={1}>Copy address</DropdownOption>
               <DropdownOption index={2} disabled>
                 Find in Google Maps

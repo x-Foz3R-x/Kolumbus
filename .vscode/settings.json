@@ -1,3 +1,4 @@
 {
-  "cSpell.ignoreWords": ["paralleldrive"]
+  "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)"], ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  "cSpell.ignoreWords": ["easepick", "paralleldrive", "tailwindcss", "tanstack", "trpc"]
 }

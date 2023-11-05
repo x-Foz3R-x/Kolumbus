@@ -105,8 +105,8 @@ export function useListNavigationOLD<T>(
 
 type UseListNavigationProps = {
   onChangeCallback?: (index: number) => void;
-  hasFocus?: false | "trigger" | "popper";
-  setFocus?: React.Dispatch<React.SetStateAction<false | "trigger" | "popper">>;
+  hasFocus?: false | "trigger" | "popover";
+  setFocus?: React.Dispatch<React.SetStateAction<false | "trigger" | "popover">>;
   triggerRef: React.MutableRefObject<HTMLButtonElement | null>;
   listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLLIElement | null)[]>;
   listLength: number;
@@ -143,6 +143,10 @@ export function useListNavigation({
   const [endPressed] = useKeyPress(Key.End, enabled);
 
   const [tabPressed, tabEvent] = useKeyPress(Key.Tab);
+
+  // todo - add printable character navigation (e.g. type "a" to select the first option that starts with "a")
+  // todo - add support for disabled options in the keyboard navigation
+  // todo - add arrow key navigation for nested dropdowns
 
   // Handle arrow key press events for navigating within or to a list.
   useEffect(() => {
@@ -215,7 +219,7 @@ export function useListNavigation({
         listItemsRef.current[nextIndex]?.focus();
         setActiveIndex(nextIndex);
         if (onChangeCallback) onChangeCallback(nextIndex);
-      } else if (hasFocus === "popper") {
+      } else if (hasFocus === "popover") {
         if (tabEvent?.shiftKey) {
           tabEvent?.preventDefault();
           triggerRef.current?.focus();

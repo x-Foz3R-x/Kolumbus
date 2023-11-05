@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-import colors from "tailwindcss/colors";
 
 module.exports = {
   content: ["./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
+  darkMode: "darkMode",
   theme: {
     extend: {
       fontFamily: {
@@ -103,8 +103,8 @@ module.exports = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      black: colors.black,
-      white: colors.white,
+      black: "#000000",
+      white: "#ffffff",
       kolumblue: {
         50: "hsl(210, 78%, 98%)",
         100: "hsl(210, 78%, 94%)",
@@ -186,5 +186,7 @@ module.exports = {
     },
   },
   plugins: [],
-  darkMode: "darkMode",
+  experimental: {
+    classRegex: [["clsx\\(([^)]*)\\)"], ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  },
 };
