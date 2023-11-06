@@ -6,13 +6,22 @@ import { Variants } from "framer-motion";
 export { Popover } from "./popover";
 export type { Placement, Container } from "./types";
 
+/**
+ * Custom Hook for handling popovers.
+ *
+ * @returns An array of references and state values for managing popovers.
+ *
+ * @example
+ * // Use the hook to get references and state values.
+ * const [triggerRef, popoverRef, isOpen, setOpen, inputType, setInputType] = usePopover();
+ */
 export function usePopover() {
-  const targetRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [isOpen, setOpen] = useState(false);
-  const [activationType, setActivationType] = useState<"mouse" | "keyboard">("mouse");
+  const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
 
-  return [targetRef, popoverRef, isOpen, setOpen, activationType, setActivationType] as const;
+  return [triggerRef, popoverRef, isOpen, setOpen, inputType, setInputType] as const;
 }
 
 // Extensions

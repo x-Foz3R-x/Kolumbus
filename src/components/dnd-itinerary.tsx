@@ -17,7 +17,7 @@ import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
 import EventPanel from "./itinerary/event-panel";
 import Icon from "./icons";
-import Dropdown, { DropdownList, DropdownOption } from "./ui/dropdown";
+import  {Dropdown, DropdownList, DropdownOption } from "./ui/dropdown";
 import Divider from "./ui/divider";
 
 //#region Context
@@ -122,7 +122,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
             onSettled() {
               setSaving(false);
             },
-          }
+          },
         );
       });
 
@@ -208,9 +208,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
             <EventPanel />
 
             <ul className="flex w-full min-w-fit flex-col">
-              {daysId?.map((dayId) => (
-                <DndDay key={dayId} day={GetDay(itinerary, dayId)} />
-              ))}
+              {daysId?.map((dayId) => <DndDay key={dayId} day={GetDay(itinerary, dayId)} />)}
               <CalendarEnd totalDays={daysId.length} />
             </ul>
           </SortableContext>
@@ -307,9 +305,7 @@ const DayComponent = memo(
           }`}
         >
           <SortableContext items={dayEventsId} strategy={horizontalListSortingStrategy}>
-            {dayEventsId?.map((eventId) => (
-              <DndEvent key={eventId} event={events.find((event) => event.id === eventId)!} />
-            ))}
+            {dayEventsId?.map((eventId) => <DndEvent key={eventId} event={events.find((event) => event.id === eventId)!} />)}
           </SortableContext>
 
           <button
@@ -324,7 +320,7 @@ const DayComponent = memo(
         </ul>
       </div>
     );
-  })
+  }),
 );
 //#endregion
 
@@ -430,7 +426,7 @@ const EventComponent = memo(
               onSettled() {
                 setSaving(false);
               },
-            }
+            },
           );
         },
         index: 4,
@@ -462,15 +458,13 @@ const EventComponent = memo(
               }}
               buttonChildren={<Icon.horizontalDots className="m-auto w-4" />}
             >
-              <DropdownOption index={0} className="">
-                Event panel
-              </DropdownOption>
+              <DropdownOption index={0}>Event panel</DropdownOption>
               <DropdownOption index={1}>Copy address</DropdownOption>
               <DropdownOption index={2} disabled>
                 Find in Google Maps
               </DropdownOption>
 
-              <Divider className="rounded" />
+              <Divider className="rounded bg-white/25" />
 
               <DropdownOption index={3} disabled>
                 Duplicate
@@ -497,6 +491,6 @@ const EventComponent = memo(
         />
       </div>
     );
-  })
+  }),
 );
 //#endregion

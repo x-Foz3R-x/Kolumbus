@@ -1,24 +1,23 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
-import { Arrow, Backdrop, Container, Extensions, Flip, Motion, Offset, Placement, Position, Prevent } from "./types";
-import usePopover, { parsePlacement } from "./use-popover";
 
+import usePopover, { parsePlacement } from "./use-popover";
+import { Arrow, Backdrop, Container, Extensions, Flip, Motion, Offset, Placement, Position, Prevent } from "./types";
 import { useCloseTriggers } from "@/hooks/use-accessibility-features";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
+
 import Portal from "@/components/portal";
 
 type PopoverContentProps = {
   popoverRef: React.RefObject<HTMLElement>;
   triggerRef: React.RefObject<HTMLElement>;
-
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   placement?: Placement;
   container?: Container;
   extensions?: Extensions;
-
   className?: string;
   children: React.ReactNode;
 };
@@ -142,7 +141,7 @@ export function Popover({
   useEffect(() => {
     if (isOpen && !mountedExtensions.prevent?.autofocus && popoverRef.current) {
       const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
-        "input, select, textarea, button, object, a, area, [tabindex]"
+        "input, select, textarea, button, object, a, area, [tabindex]",
       );
       Array.from(focusableElements)[0]?.focus({ preventScroll: true });
     }

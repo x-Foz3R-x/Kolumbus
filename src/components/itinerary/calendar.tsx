@@ -80,7 +80,7 @@ interface CalendarEndProps {
 export function CalendarEnd({ totalDays }: CalendarEndProps) {
   return (
     <div className="sticky left-0 z-20 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-white/75 shadow-xl">
-      Total {totalDays} days
+      {totalDays} days in total
     </div>
   );
 }

@@ -14,6 +14,11 @@ export const TRANSITION = {
     animate: { scale: 1, transition: { type: "spring", bounce: 0, duration: 0.3 } },
     exit: { scale: 0, transition: { type: "spring", bounce: 0, duration: 0.3 } },
   },
+  fadeInScaleY: {
+    initial: { scaleY: 0, scaleX: 0.75, transition: { duration: 0.25, ease: EASING.kolumbFlow } },
+    animate: { scaleY: 1, scaleX: 1, transition: { duration: 0.25, ease: EASING.kolumbFlow } },
+    exit: { scaleY: 0, scaleX: 0.75, transition: { duration: 0.25, ease: EASING.kolumbOut } },
+  },
   fadeInScale: {
     initial: { scale: 0.7, opacity: 0, transition: { duration: 0.2, ease: EASING.easeOut } },
     animate: { scale: 1, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },

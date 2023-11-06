@@ -50,13 +50,13 @@ export default function page() {
               Dropdown
             </motion.button>
           </Link>
-          <Link href="/playground/" title="Playground" aria-label="Playground">
+          <Link href="/playground/button" title="Playground" aria-label="Playground">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
             >
-              /
+              Button
             </motion.button>
           </Link>
         </div>

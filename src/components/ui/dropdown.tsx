@@ -7,44 +7,10 @@ import { Popover, Placement, Flip, Offset, Prevent, Motion, Container } from "./
 import { useListNavigation } from "@/hooks/use-accessibility-features";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
+import Divider from "./divider";
 
 export type DropdownOption = { onSelect: () => void; index: number };
 export type DropdownList = DropdownOption[];
-
-// Style variants
-const ButtonVariants = cva("group", {
-  variants: {
-    buttonVariant: {
-      default: "rounded-md border border-gray-600 bg-gray-700 px-2 py-1 text-gray-100 focus-visible:shadow-focus",
-      unstyled: "",
-    },
-  },
-  defaultVariants: { buttonVariant: "default" },
-});
-const DropdownVariants = cva("group/dropdown flex flex-col shadow-borderXL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter", {
-  variants: {
-    dropdownVariant: {
-      default: "rounded-xl bg-gray-700/80 p-1.5 text-gray-100",
-      unstyled: "",
-    },
-  },
-  defaultVariants: { dropdownVariant: "default" },
-});
-const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-left duration-200 ease-kolumb-flow", {
-  variants: {
-    optionVariant: {
-      default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select",
-      danger: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select",
-      blue: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select",
-      unstyled: "",
-    },
-    optionSize: {
-      small: "gap-2 rounded px-2 py-1 text-xs",
-      default: "gap-3 rounded px-3 py-1.5 text-sm group-first/dropdown:rounded-t-xl group-last/dropdown:rounded-b-xl",
-    },
-  },
-  defaultVariants: { optionVariant: "default", optionSize: "default" },
-});
 
 //#region Context
 const DropdownContext = createContext<{
@@ -61,6 +27,24 @@ export function useDropdownContext() {
 }
 //#endregion
 
+const ButtonVariants = cva("group", {
+  variants: {
+    buttonVariant: {
+      default: "rounded-md border border-gray-600 bg-gray-700 px-2 py-1 text-gray-100 focus-visible:shadow-focus",
+      unstyled: "",
+    },
+  },
+  defaultVariants: { buttonVariant: "default" },
+});
+const DropdownVariants = cva("flex flex-col shadow-borderXL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter", {
+  variants: {
+    dropdownVariant: {
+      default: "rounded-xl bg-gray-700/80 p-1.5 text-gray-100",
+      unstyled: "",
+    },
+  },
+  defaultVariants: { dropdownVariant: "default" },
+});
 type MenuProps = VariantProps<typeof DropdownVariants> &
   VariantProps<typeof ButtonVariants> & {
     isOpen: boolean;
@@ -74,7 +58,7 @@ type MenuProps = VariantProps<typeof DropdownVariants> &
     buttonChildren?: React.ReactNode;
     children?: React.ReactNode;
   };
-export default function Dropdown({
+export function Dropdown({
   isOpen,
   setOpen,
   list,
@@ -96,14 +80,14 @@ export default function Dropdown({
   const dropdownId = useRef(`dropdown-${cuid2.init({ length: 3 })()}`);
 
   const [hasFocus, setFocus] = useState<false | "trigger" | "popover">(false);
-  const [activationType, setActivationType] = useState<"mouse" | "keyboard">("mouse");
+  const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
   const [activeIndex, setActiveIndex] = useListNavigation({
     hasFocus,
     setFocus,
     triggerRef: buttonRef,
     listItemsRef,
     listLength: list.length,
-    initialIndex: activationType === "keyboard" ? 0 : -1,
+    initialIndex: inputType === "keyboard" ? 0 : -1,
     placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
     enabled: isOpen,
     loop: false,
@@ -111,7 +95,7 @@ export default function Dropdown({
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setOpen(!isOpen);
-    setActivationType(e.detail === 0 ? "keyboard" : "mouse");
+    setInputType(e.detail === 0 ? "keyboard" : "mouse");
   };
   const handleClose = useCallback(() => {
     setOpen(false), [setOpen];
@@ -119,8 +103,8 @@ export default function Dropdown({
   }, [buttonRef, setOpen]);
 
   useEffect(() => {
-    isOpen && setActiveIndex(activationType === "keyboard" ? 0 : -1);
-  }, [isOpen, activationType, setActiveIndex]);
+    isOpen && setActiveIndex(inputType === "keyboard" ? 0 : -1);
+  }, [isOpen, inputType, setActiveIndex]);
 
   useEffect(() => {
     if (hasFocus === false) setOpen(false);
@@ -151,40 +135,55 @@ export default function Dropdown({
         extensions={[
           Flip(),
           Offset(offset),
-          Prevent({ scroll: preventScroll, autofocus: activationType !== "keyboard" }),
+          Prevent({ scroll: preventScroll, autofocus: inputType !== "keyboard" }),
           Motion(TRANSITION.fadeInScale),
         ]}
       >
-        <ul
-          id={dropdownId.current}
-          role="menu"
-          aria-labelledby={buttonRef.current?.id}
-          onFocus={() => setFocus("popover")}
-          className={cn(DropdownVariants({ dropdownVariant, className: className?.dropdown }))}
-        >
-          <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
+        <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
+          <ul
+            id={dropdownId.current}
+            role="menu"
+            aria-labelledby={buttonRef.current?.id}
+            onFocus={() => setFocus("popover")}
+            className={cn(DropdownVariants({ dropdownVariant, className: className?.dropdown }))}
+          >
             {children}
-          </DropdownContext.Provider>
-        </ul>
+          </ul>
+        </DropdownContext.Provider>
       </Popover>
     </div>
   );
 }
 
-type DropdownGroupProps = {
+type DropdownGroupTitleProps = {
   title: string;
+  divider?: boolean;
   className?: string;
-  children?: React.ReactNode;
 };
-export function DropdownGroup({ title, className, children }: DropdownGroupProps) {
+export function DropdownGroupTitle({ title, divider = false, className }: DropdownGroupTitleProps) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <span className="px-1 text-xs text-gray-300">{title}</span>
-      <ul className={`${className}`}>{children}</ul>
+    <div className="pb-0.5">
+      {divider && <Divider className="mt-1 bg-white/25" />}
+      <div className={cn("px-1 pt-1 text-xs text-gray-300", className)}>{title}</div>
     </div>
   );
 }
 
+const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-left duration-200 ease-kolumb-flow", {
+  variants: {
+    optionVariant: {
+      default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select",
+      danger: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select",
+      blue: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select",
+      unstyled: "",
+    },
+    optionSize: {
+      small: "gap-2 rounded px-2 py-1 text-xs",
+      default: "gap-3 rounded px-3 py-1.5 text-sm group-first/option:rounded-t-lg group-last/option:rounded-b-lg",
+    },
+  },
+  defaultVariants: { optionVariant: "default", optionSize: "default" },
+});
 type DropdownOptionProps = VariantProps<typeof OptionVariants> & {
   index: number;
   disabled?: boolean;
@@ -215,7 +214,7 @@ export function DropdownOption({ index, disabled = false, optionVariant, optionS
       exit="exit"
       variants={TRANSITION.appearInSequence}
       custom={{ index }}
-      className="overflow-hidden bg-black"
+      className="group/option"
     >
       <button
         ref={(node) => (listItemsRef.current[index] = node)}

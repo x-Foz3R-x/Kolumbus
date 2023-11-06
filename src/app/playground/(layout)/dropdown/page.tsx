@@ -3,15 +3,16 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { Popover, position, Motion, usePopover } from "@/components/ui/popover";
+import { TRANSITION } from "@/lib/framer-motion";
+
+import { Dropdown, DropdownGroupTitle, DropdownList, DropdownOption } from "@/components/ui/dropdown";
+import { Popover, position, Motion, usePopover, Prevent } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
-import Dropdown, { DropdownGroup, DropdownList, DropdownOption } from "@/components/ui/dropdown";
-import { TRANSITION } from "@/lib/framer-motion";
 
 export default function DropdownTests() {
-  const [optionsTargetRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen] = usePopover();
+  const [optionsTriggerRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [placement, setPlacement] = useState("right-start" as Placement);
@@ -25,6 +26,7 @@ export default function DropdownTests() {
     { onSelect: () => {}, index: 3 },
     { onSelect: () => {}, index: 4 },
     { onSelect: () => {}, index: 5 },
+    { onSelect: () => {}, index: 6 },
   ];
 
   //#region centering logic
@@ -49,7 +51,7 @@ export default function DropdownTests() {
         Dropdown
       </h1>
 
-      <div style={{ insetInline: 200, top: 106, bottom: 50 }} className="absolute rounded-xl border-gray-50 bg-green-100 shadow-borderXL" />
+      <div style={{ insetInline: 200, top: 106, bottom: 50 }} className="absolute rounded-xl bg-green-100 shadow-borderXL" />
       <span className="pointer-events-none absolute left-52 top-36 select-none p-3 text-green-600">padding</span>
 
       <div
@@ -58,18 +60,24 @@ export default function DropdownTests() {
       >
         <span className="rounded-br-lg bg-gray-200 p-1 pr-1.5">Boundary</span>
       </div>
-      <div style={{ insetInline: 200, top: 106 }} className="absolute z-[110] flex h-11 items-center justify-center rounded-t-xl bg-white">
+      <div
+        style={{ insetInline: 200, top: 106 }}
+        className="absolute flex h-11 items-center justify-center rounded-t-xl border-b border-gray-100 bg-gray-50"
+      >
         <div className="absolute left-4 flex gap-2">
-          <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="h-3 w-3 cursor-default rounded-full bg-red-500"></Link>
-          <span className="h-3 w-3 rounded-full bg-yellow-500" />
-          <span className="h-3 w-3 rounded-full bg-green-500" />
+          <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="h-3 w-3 cursor-default rounded-full bg-red-450" />
+          <span className="h-3 w-3 rounded-full bg-orange-500" />
+          <span className="h-3 w-3 rounded-full bg-green-600" />
         </div>
 
         <button
-          ref={optionsTargetRef}
+          ref={optionsTriggerRef}
           aria-haspopup="menu"
           {...(areOptionsOpen && { "aria-expanded": true })}
-          onClick={() => setOptionsOpen(!areOptionsOpen)}
+          onClick={(e) => {
+            setOptionsOpen(!areOptionsOpen);
+            setOptionsInputType(e.detail === 0 ? "keyboard" : "mouse");
+          }}
           className="flex items-center gap-1.5"
         >
           <h2 className="font-medium text-gray-800">Container</h2>
@@ -77,12 +85,16 @@ export default function DropdownTests() {
         </button>
         <Popover
           popoverRef={optionsPopoverRef}
-          triggerRef={optionsTargetRef}
+          triggerRef={optionsTriggerRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
           placement="bottom"
-          extensions={[position("calc(50% - 88px)", 150, "top"), Motion(TRANSITION.fadeInScale)]}
-          className="flex w-44 flex-col gap-3 rounded-b-xl bg-white px-4 py-2 text-xs shadow-md"
+          extensions={[
+            position("calc(50% - 88px)", 149, "top"),
+            Motion(TRANSITION.fadeInScaleY),
+            Prevent({ autofocus: optionsInputType !== "keyboard" }),
+          ]}
+          className="z-50 flex w-44 flex-col gap-3 rounded-b-xl border border-t-0 border-gray-100 bg-gray-50 px-4 py-2 text-xs"
         >
           {/* Placement */}
           <div className="flex flex-col items-center gap-1 text-sm">
@@ -163,28 +175,31 @@ export default function DropdownTests() {
             container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
             offset={offset}
             preventScroll
-            className={{ dropdown: "w-40 gap-1" }}
+            className={{ dropdown: "w-40" }}
             buttonChildren={<span>open</span>}
           >
-            <p className="rounded-lg bg-yellow-500/20 text-center text-xs leading-relaxed text-gray-300 shadow-soft">Tip: use arrow keys</p>
+            <span className="mb-1 rounded-lg bg-yellow-200/10 text-center text-xs leading-relaxed text-yellow-400/70 shadow-soft">
+              Tip: use arrow keys
+            </span>
             <DropdownOption index={0} optionVariant={"blue"}>
-              Option 1
+              Open file
             </DropdownOption>
             <DropdownOption index={1} optionVariant={"blue"}>
-              Option 2
+              Open preview
             </DropdownOption>
 
-            <DropdownGroup title="Actions">
-              <DropdownOption index={2}>New file</DropdownOption>
-              <DropdownOption index={3}>Edit file</DropdownOption>
-              <DropdownOption index={4}>Replace file</DropdownOption>
-            </DropdownGroup>
+            <DropdownGroupTitle title="Actions" divider />
+            <DropdownOption index={2}>New file</DropdownOption>
+            <DropdownOption index={3}>Edit file</DropdownOption>
+            <DropdownOption index={4}>Rename file</DropdownOption>
 
-            <DropdownGroup title="Danger">
-              <DropdownOption index={5} optionVariant="danger">
-                Delete file
-              </DropdownOption>
-            </DropdownGroup>
+            <DropdownGroupTitle title="Danger" divider />
+            <DropdownOption index={5} optionVariant="danger">
+              Block file
+            </DropdownOption>
+            <DropdownOption index={6} optionVariant="danger">
+              Delete file
+            </DropdownOption>
           </Dropdown>
 
           {/* Rulers */}
