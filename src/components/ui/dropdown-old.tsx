@@ -11,7 +11,7 @@ interface DropdownProps {
   className?: string;
   children: React.ReactNode;
 }
-export function Dropdown({ isModalOpen, setIsModalOpen, className, children }: DropdownProps) {
+export function DropdownOld({ isModalOpen, setIsModalOpen, className, children }: DropdownProps) {
   const modalRef: any = useRef(null);
 
   useLayoutEffect(() => {

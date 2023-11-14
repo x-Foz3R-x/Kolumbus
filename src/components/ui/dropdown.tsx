@@ -1,4 +1,5 @@
 import { SetStateAction, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { VariantProps, cva } from "class-variance-authority";
 import { motion } from "framer-motion";
 import cuid2 from "@paralleldrive/cuid2";
@@ -8,14 +9,15 @@ import { useListNavigation } from "@/hooks/use-accessibility-features";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 import Divider from "./divider";
+import Button from "./button";
 
-export type DropdownOption = { onSelect: () => void; index: number };
+export type DropdownOption = { index: number; onSelect: () => void; skip?: boolean };
 export type DropdownList = DropdownOption[];
 
 //#region Context
 const DropdownContext = createContext<{
   list: DropdownList;
-  listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLLIElement | null)[]>;
+  listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLAnchorElement | HTMLLIElement | null)[]>;
   activeIndex: number;
   setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
   handleClose: () => void;
@@ -36,14 +38,21 @@ const ButtonVariants = cva("group", {
   },
   defaultVariants: { buttonVariant: "default" },
 });
-const DropdownVariants = cva("flex flex-col shadow-borderXL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter", {
+const DropdownVariants = cva("flex flex-col", {
   variants: {
     dropdownVariant: {
-      default: "rounded-xl bg-gray-700/80 p-1.5 text-gray-100",
+      light: "bg-white/80 shadow-border2XL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
+      default: "bg-gray-700/80 shadow-border2XL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
+      unstyled: "",
+    },
+    dropdownSize: {
+      sm: "rounded-md p-1",
+      default: "rounded-xl p-1.5",
+      lg: "rounded-2xl p-2",
       unstyled: "",
     },
   },
-  defaultVariants: { dropdownVariant: "default" },
+  defaultVariants: { dropdownVariant: "default", dropdownSize: "default" },
 });
 type MenuProps = VariantProps<typeof DropdownVariants> &
   VariantProps<typeof ButtonVariants> & {
@@ -66,8 +75,9 @@ export function Dropdown({
   container = { selector: "body", margin: 0, padding: 0 },
   offset = 6,
   preventScroll = false,
-  dropdownVariant,
   buttonVariant,
+  dropdownVariant,
+  dropdownSize,
   className,
   buttonChildren,
   children,
@@ -87,10 +97,11 @@ export function Dropdown({
     triggerRef: buttonRef,
     listItemsRef,
     listLength: list.length,
+    skipArray: [0, 3],
     initialIndex: inputType === "keyboard" ? 0 : -1,
     placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
     enabled: isOpen,
-    loop: false,
+    loop: true,
   });
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -145,7 +156,7 @@ export function Dropdown({
             role="menu"
             aria-labelledby={buttonRef.current?.id}
             onFocus={() => setFocus("popover")}
-            className={cn(DropdownVariants({ dropdownVariant, className: className?.dropdown }))}
+            className={cn(DropdownVariants({ dropdownVariant, dropdownSize, className: className?.dropdown }))}
           >
             {children}
           </ul>
@@ -169,20 +180,21 @@ export function DropdownGroupTitle({ title, divider = false, className }: Dropdo
   );
 }
 
-const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-left duration-200 ease-kolumb-flow", {
+const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-left", {
   variants: {
-    optionVariant: {
-      default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select",
-      danger: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select",
-      blue: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select",
+    variant: {
+      default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select focus:before:hidden",
+      blue: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select focus:before:hidden",
+      red: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select focus:before:hidden",
       unstyled: "",
     },
-    optionSize: {
-      small: "gap-2 rounded px-2 py-1 text-xs",
-      default: "gap-3 rounded px-3 py-1.5 text-sm group-first/option:rounded-t-lg group-last/option:rounded-b-lg",
+    size: {
+      sm: "gap-2 rounded px-2 py-1 text-xs",
+      default: "gap-3 rounded px-3 py-1.5 text-sm",
+      unstyled: "",
     },
   },
-  defaultVariants: { optionVariant: "default", optionSize: "default" },
+  defaultVariants: { variant: "default", size: "default" },
 });
 type DropdownOptionProps = VariantProps<typeof OptionVariants> & {
   index: number;
@@ -190,14 +202,15 @@ type DropdownOptionProps = VariantProps<typeof OptionVariants> & {
   className?: string;
   children?: React.ReactNode;
 };
-export function DropdownOption({ index, disabled = false, optionVariant, optionSize, className, children }: DropdownOptionProps) {
+export function DropdownOption({ index, disabled = false, variant, size, className, children }: DropdownOptionProps) {
   const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
 
   const handleClick = () => {
     list[index].onSelect();
     handleClose();
   };
-  const handleMouseEnter = () => {
+  const handleMouseMove = () => {
+    // on mouse move is used because safari has some problems with detecting mouse enter
     setActiveIndex(index);
     if (listItemsRef.current[index]) listItemsRef.current[index]?.focus({ preventScroll: true });
   };
@@ -207,26 +220,59 @@ export function DropdownOption({ index, disabled = false, optionVariant, optionS
   };
 
   return (
-    <motion.li
-      role="menuitem"
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={TRANSITION.appearInSequence}
-      custom={{ index }}
-      className="group/option"
-    >
-      <button
+    <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" className="group/option">
+      <Button
         ref={(node) => (listItemsRef.current[index] = node)}
         onClick={!disabled ? handleClick : () => {}}
-        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={cn(OptionVariants({ optionVariant, optionSize, className }), disabled && "opacity-50")}
+        variant="appear"
+        size="unstyled"
+        focus="none"
+        focusVisible="unstyled"
+        className={cn("w-full", OptionVariants({ variant, size, className }), disabled && "opacity-40")}
         tabIndex={activeIndex === index ? 0 : -1}
         disabled={disabled}
       >
         {children}
-      </button>
+      </Button>
+    </motion.li>
+  );
+}
+
+type DropdownLinkProps = VariantProps<typeof OptionVariants> & {
+  index: number;
+  href?: string | null;
+  className?: string;
+  children?: React.ReactNode;
+};
+export function DropdownLink({ index, href, variant, size, className, children }: DropdownLinkProps) {
+  const { listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
+
+  const handleMouseMove = () => {
+    // on mouse move is used because safari has some problems with detecting mouse enter
+    setActiveIndex(index);
+    if (listItemsRef.current[index]) listItemsRef.current[index]?.focus({ preventScroll: true });
+  };
+  const handleMouseLeave = () => {
+    setActiveIndex(-1);
+    if (listItemsRef.current[index]) listItemsRef.current[index]?.blur();
+  };
+
+  return (
+    <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" className="group/option">
+      <Link
+        href={href ?? ""}
+        target="_blank"
+        ref={(node) => (listItemsRef.current[index] = node)}
+        onClick={href ? handleClose : () => {}}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={cn("w-full", OptionVariants({ variant, size, className }), !href && "pointer-events-none opacity-40")}
+        tabIndex={activeIndex === index ? 0 : -1}
+      >
+        {children}
+      </Link>
     </motion.li>
   );
 }

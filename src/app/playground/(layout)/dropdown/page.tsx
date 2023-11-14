@@ -175,16 +175,16 @@ export default function DropdownTests() {
             container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
             offset={offset}
             preventScroll
-            className={{ dropdown: "w-40" }}
+            className={{ container: "dark", dropdown: "w-40" }}
             buttonChildren={<span>open</span>}
           >
             <span className="mb-1 rounded-lg bg-yellow-200/10 text-center text-xs leading-relaxed text-yellow-400/70 shadow-soft">
               Tip: use arrow keys
             </span>
-            <DropdownOption index={0} optionVariant={"blue"}>
+            <DropdownOption index={0} variant={"blue"}>
               Open file
             </DropdownOption>
-            <DropdownOption index={1} optionVariant={"blue"}>
+            <DropdownOption index={1} variant={"blue"}>
               Open preview
             </DropdownOption>
 
@@ -194,10 +194,10 @@ export default function DropdownTests() {
             <DropdownOption index={4}>Rename file</DropdownOption>
 
             <DropdownGroupTitle title="Danger" divider />
-            <DropdownOption index={5} optionVariant="danger">
+            <DropdownOption index={5} variant="red">
               Block file
             </DropdownOption>
-            <DropdownOption index={6} optionVariant="danger">
+            <DropdownOption index={6} variant="red" className="rounded-b-lg">
               Delete file
             </DropdownOption>
           </Dropdown>

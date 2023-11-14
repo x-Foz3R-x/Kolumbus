@@ -13,11 +13,11 @@ import useAppdata from "@/context/appdata";
 import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayPosition } from "@/lib/dnd";
 import { Trip, Day, Event, UT } from "@/types";
 
+import Icon from "./icons";
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
 import EventPanel from "./itinerary/event-panel";
-import Icon from "./icons";
-import  {Dropdown, DropdownList, DropdownOption } from "./ui/dropdown";
+import { Dropdown, DropdownLink, DropdownList, DropdownOption } from "./ui/dropdown";
 import Divider from "./ui/divider";
 
 //#region Context
@@ -388,16 +388,15 @@ const EventComponent = memo(
     };
 
     const dropdownList: DropdownList = [
-      { onSelect: openEventPanel, index: 0 },
+      { index: 0, onSelect: openEventPanel },
       {
-        onSelect: () => {
-          if (event.address) navigator.clipboard.writeText(event.address);
-        },
         index: 1,
+        onSelect: () => event.address && navigator.clipboard.writeText(event.address),
       },
-      { onSelect: () => {}, index: 2 },
-      { onSelect: () => {}, index: 3 },
+      { index: 2, onSelect: () => {}, skip: !event?.url },
+      { index: 3, onSelect: () => {}, skip: true },
       {
+        index: 4,
         onSelect: () => {
           if (!event) return;
 
@@ -429,7 +428,6 @@ const EventComponent = memo(
             },
           );
         },
-        index: 4,
       },
     ];
 
@@ -442,7 +440,7 @@ const EventComponent = memo(
         {!dragOverlay && (
           <span className="absolute right-1 top-1 z-20 flex h-6 w-14 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 opacity-0 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow">
             <button onClick={openEventPanel} className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100">
-              <Icon.pinPen className="m-auto h-3" />
+              <Icon.eventPanel className="m-auto h-3" />
             </button>
 
             <Dropdown
@@ -450,26 +448,38 @@ const EventComponent = memo(
               setOpen={setDropdownOpen}
               list={dropdownList}
               container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
+              offset={8}
               buttonVariant="unstyled"
+              dropdownSize="sm"
               className={{
                 container: "flex h-full w-full items-center justify-center",
                 button: "h-full w-full duration-200 ease-kolumb-flow hover:bg-gray-100 focus-visible:bg-kolumblue-100",
-                dropdown: "whitespace-nowrap",
+                dropdown: "w-44 rounded-xl",
               }}
               buttonChildren={<Icon.horizontalDots className="m-auto w-4" />}
             >
-              <DropdownOption index={0}>Event panel</DropdownOption>
-              <DropdownOption index={1}>Copy address</DropdownOption>
-              <DropdownOption index={2} disabled>
-                Find in Google Maps
+              <DropdownOption index={0} className="rounded-t-lg">
+                <Icon.eventPanel className="h-3.5 w-3.5 fill-gray-100" />
+                Event panel
+              </DropdownOption>
+              <DropdownOption index={1}>
+                <Icon.clipboardPin className="h-3.5 w-3.5 fill-gray-100" />
+                Copy address
               </DropdownOption>
 
-              <Divider className="rounded bg-white/25" />
+              <Divider className="my-1 rounded bg-white/25" />
+              <DropdownLink index={2} href={event?.url} size="sm" className="flex items-center justify-center gap-1">
+                Find in Google Maps
+                <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-100" />
+              </DropdownLink>
+              <Divider className="my-1 rounded bg-white/25" />
 
               <DropdownOption index={3} disabled>
+                <Icon.duplicate className="h-3.5 w-3.5 fill-gray-100" />
                 Duplicate
               </DropdownOption>
-              <DropdownOption index={4} optionVariant="danger">
+              <DropdownOption index={4} variant="red" className="rounded-b-lg">
+                <Icon.trash className="h-3.5 w-3.5 fill-gray-100" />
                 Delete
               </DropdownOption>
             </Dropdown>

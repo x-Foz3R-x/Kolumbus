@@ -23,7 +23,7 @@ export default function Layout({ params: { tripId }, children }: LayoutProps) {
       <SidebarMenu tripId={tripId} />
 
       <div className="pointer-events-none fixed bottom-0 left-56 right-0 top-14 z-40 h-full rounded-tl-lg border-l border-t border-gray-100" />
-      <div className="pointer-events-none fixed bottom-0 left-56 right-0 top-14 z-40 h-full rounded-tl-lg shadow-kolumblueInset" />
+      <div className="pointer-events-none fixed bottom-0 left-56 right-0 top-14 z-40 h-full rounded-tl-lg shadow-inset" />
 
       <div className="fixed bottom-0 left-56 right-0 top-14 overflow-y-scroll">
         <main
