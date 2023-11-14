@@ -110,7 +110,7 @@ type UseListNavigationProps = {
   triggerRef: React.MutableRefObject<HTMLButtonElement | null>;
   listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLLIElement | null)[]>;
   listLength: number;
-  skipArray?: number[];
+  skipIndexes?: number[];
   initialIndex: number;
   placement: Placement;
   enabled: boolean;
@@ -128,7 +128,7 @@ export function useListNavigation({
   triggerRef,
   listItemsRef,
   listLength,
-  skipArray,
+  skipIndexes,
   initialIndex,
   placement,
   enabled,
@@ -153,11 +153,11 @@ export function useListNavigation({
 
   // Update firstValidIndex, and lastValidIndex whenever skipArray or listLength changes
   useEffect(() => {
-    const newExcludedIndexes = Array.from({ length: listLength }, (_, i) => (skipArray?.includes(i) ? "x" : "valid_index"));
+    const newExcludedIndexes = Array.from({ length: listLength }, (_, i) => (skipIndexes?.includes(i) ? "x" : "valid_index"));
 
     setFirstValidIndex(newExcludedIndexes.indexOf("valid_index") ?? 0);
     setLastValidIndex(newExcludedIndexes.lastIndexOf("valid_index") ?? listLength - 1);
-  }, [skipArray, listLength]);
+  }, [skipIndexes, listLength]);
 
   // Handle arrow key press events for navigating within or to a list.
   useEffect(() => {
@@ -173,14 +173,14 @@ export function useListNavigation({
           nextIndex = (direction === Key.ArrowUp ? activeIndex + listLength - 1 : activeIndex + 1) % listLength;
 
           // Determine the nextIndex by skipping the indexes specified in skipArray.
-          while (skipArray?.includes(nextIndex)) {
+          while (skipIndexes?.includes(nextIndex)) {
             nextIndex = (direction === Key.ArrowUp ? nextIndex + listLength - 1 : nextIndex + 1) % listLength;
           }
         } else {
           nextIndex = direction === Key.ArrowUp ? Math.max(activeIndex - 1, firstValidIndex) : Math.min(activeIndex + 1, lastValidIndex);
 
           // Determine the nextIndex by skipping the indexes specified in skipArray.
-          while (skipArray?.includes(nextIndex)) {
+          while (skipIndexes?.includes(nextIndex)) {
             nextIndex = direction === Key.ArrowUp ? Math.max(nextIndex - 1, firstValidIndex) : Math.min(nextIndex + 1, lastValidIndex);
           }
         }

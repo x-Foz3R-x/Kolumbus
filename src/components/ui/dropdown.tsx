@@ -91,17 +91,18 @@ export function Dropdown({
 
   const [hasFocus, setFocus] = useState<false | "trigger" | "popover">(false);
   const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
+  const [skipIndexes, setSkipIndexes] = useState<number[]>([]);
   const [activeIndex, setActiveIndex] = useListNavigation({
     hasFocus,
     setFocus,
     triggerRef: buttonRef,
     listItemsRef,
     listLength: list.length,
-    skipArray: [0, 3],
+    skipIndexes,
     initialIndex: inputType === "keyboard" ? 0 : -1,
     placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
     enabled: isOpen,
-    loop: true,
+    loop: false,
   });
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -120,6 +121,11 @@ export function Dropdown({
   useEffect(() => {
     if (hasFocus === false) setOpen(false);
   }, [hasFocus, setOpen]);
+
+  useEffect(() => {
+    // Find indexes with skip value as true
+    setSkipIndexes(list.map((item, index) => (item.skip === true ? index : undefined)).filter((index) => index !== undefined) as number[]);
+  }, [list]);
 
   return (
     <div className={cn("relative", className?.container)}>
