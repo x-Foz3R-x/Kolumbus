@@ -9,7 +9,7 @@ import { CalculateDays, GenerateItinerary } from "@/lib/utils";
 import { UT, Event } from "@/types";
 
 import Icon from "../icons";
-import { EventsOnExcludedDaysModal } from "./modal";
+import { EventsOnExcludedDaysModal } from "./modalOld";
 import { DropdownOld, DropdownButton } from "@/components/ui/dropdown-old";
 
 interface Props {

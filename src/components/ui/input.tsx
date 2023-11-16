@@ -5,18 +5,18 @@ import useKeyPress from "@/hooks/use-key-press";
 import { Key } from "@/types";
 
 const InputVariants = cva(
-  "w-full appearance-none outline-0 text-gray-900 disabled:pointer-events-none placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:z-10 focus:outline-none",
+  "w-full appearance-none text-gray-900 outline-0 placeholder:text-gray-400 focus:z-10 focus:outline-none disabled:pointer-events-none dark:placeholder:text-gray-600",
   {
     variants: {
       variant: {
-        default: "shadow-border focus:shadow-focus peer",
-        insetLabelSm: "shadow-border focus:shadow-focus peer rounded-md text-sm px-3 pb-1 pt-5",
-        insetLabel: "shadow-border focus:shadow-focus peer rounded-lg text-base px-4 pb-1.5 pt-6",
+        default: "peer shadow-border focus:shadow-focus",
+        insetLabelSm: "peer rounded-md px-3 pb-1 pt-5 text-sm shadow-border focus:shadow-focus",
+        insetLabel: "peer rounded-lg px-4 pb-1.5 pt-6 text-base shadow-border focus:shadow-focus",
         unstyled: "",
       },
     },
     defaultVariants: { variant: "default" },
-  }
+  },
 );
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &

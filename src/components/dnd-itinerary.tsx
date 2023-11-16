@@ -438,7 +438,11 @@ const EventComponent = memo(
         }`}
       >
         {!dragOverlay && (
-          <span className="absolute right-1 top-1 z-20 flex h-6 w-14 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 opacity-0 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow">
+          <span
+            className={`absolute right-1 top-1 z-20 grid h-6 w-14 grid-cols-2 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow ${
+              isDropdownOpen ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <button onClick={openEventPanel} className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100">
               <Icon.eventPanel className="m-auto h-3" />
             </button>
@@ -450,15 +454,15 @@ const EventComponent = memo(
               container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
               offset={8}
               buttonVariant="unstyled"
+              buttonSize="unstyled"
               dropdownSize="sm"
               className={{
-                container: "flex h-full w-full items-center justify-center",
-                button: "h-full w-full duration-200 ease-kolumb-flow hover:bg-gray-100 focus-visible:bg-kolumblue-100",
-                dropdown: "w-44 rounded-xl",
+                button: "h-full w-full rounded-none duration-200 ease-kolumb-flow hover:bg-gray-100 focus-visible:bg-kolumblue-100",
+                dropdown: "w-44",
               }}
               buttonChildren={<Icon.horizontalDots className="m-auto w-4" />}
             >
-              <DropdownOption index={0} className="rounded-t-lg">
+              <DropdownOption index={0}>
                 <Icon.eventPanel className="h-3.5 w-3.5 fill-gray-100" />
                 Event panel
               </DropdownOption>
@@ -478,7 +482,7 @@ const EventComponent = memo(
                 <Icon.duplicate className="h-3.5 w-3.5 fill-gray-100" />
                 Duplicate
               </DropdownOption>
-              <DropdownOption index={4} variant="red" className="rounded-b-lg">
+              <DropdownOption index={4} variant="red">
                 <Icon.trash className="h-3.5 w-3.5 fill-gray-100" />
                 Delete
               </DropdownOption>

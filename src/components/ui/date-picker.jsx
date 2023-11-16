@@ -10,7 +10,7 @@ import { CalculateDays, GenerateItinerary } from "@/lib/utils";
 import { UT } from "@/types";
 
 import Icon from "../icons";
-import { EventsOnExcludedDaysModal } from "./modal";
+import { EventsOnExcludedDaysModal } from "./modalOld";
 
 export default function DatePicker() {
   const { dispatchUserTrips, setSaving, setModalShown, setModalChildren } = useAppdata();
@@ -74,7 +74,7 @@ export default function DatePicker() {
             onSettled() {
               setSaving(false);
             },
-          }
+          },
         );
         return;
       }
@@ -112,7 +112,7 @@ export default function DatePicker() {
             onSettled() {
               setSaving(false);
             },
-          }
+          },
         );
         return;
       }
@@ -135,7 +135,7 @@ export default function DatePicker() {
             onSettled() {
               setSaving(false);
             },
-          }
+          },
         );
         setModalShown(false);
       };

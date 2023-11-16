@@ -8,7 +8,7 @@ import useAppdata from "@/context/appdata";
 
 import DndItinerary from "@/components/dnd-itinerary";
 import ActionBar from "@/components/itinerary/action-bar";
-import { Modal } from "@/components/ui/modal";
+import { ModalOld } from "@/components/ui/modalOld";
 import { ItinerarySkeleton } from "@/components/loading/itinerary-skeleton";
 import ActionBarSkeleton from "@/components/loading/action-bar-skeleton";
 
@@ -21,11 +21,14 @@ export default function Itinerary({ params: { tripId } }: { params: { tripId: st
 
   return (
     <>
+      {/* This span ensures that action bar isn't first to focus and the warning about position sticky disappears */}
+      <span></span>
+
       {!isLoading ? <ActionBar activeTrip={userTrips[selectedTrip]} /> : <ActionBarSkeleton />}
       <div className="flex flex-col px-6">{!isLoading ? <DndItinerary userTrips={userTrips} /> : <ItinerarySkeleton />}</div>
 
       <Portal>
-        <Modal showModal={isModalShown} modalChildren={modalChildren} />
+        <ModalOld showModal={isModalShown} modalChildren={modalChildren} />
       </Portal>
     </>
   );

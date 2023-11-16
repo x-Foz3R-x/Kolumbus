@@ -5,6 +5,7 @@ export const EASING = {
   easeInOut: [0.4, 0, 0.2, 1],
 
   kolumbFlow: [0.175, 0.885, 0.32, 1],
+  kolumbOverflow: [0.175, 0.885, 0.32, 1.275],
   kolumbOut: [0.885, 0.175, 0.5, 1],
 } as const;
 
@@ -13,6 +14,24 @@ export const TRANSITION = {
     initial: { scale: 0, transition: { type: "spring", bounce: 0, duration: 0.3 } },
     animate: { scale: 1, transition: { type: "spring", bounce: 0, duration: 0.3 } },
     exit: { scale: 0, transition: { type: "spring", bounce: 0, duration: 0.3 } },
+  },
+  scaleIn: {
+    initial: { scale: 1.3, opacity: 0.7, transition: { type: "spring", bounce: 0, duration: 0.3 } },
+    animate: { scale: 1, opacity: 1, transition: { type: "spring", bounce: 0, duration: 0.3 } },
+    exit: { scale: 1.1, opacity: 0, transition: { duration: 0.3, ease: EASING.kolumbFlow } },
+  },
+  scaleInOut: {
+    initial: { scale: 0.4, opacity: 0 },
+    animate: {
+      scale: 1,
+      opacity: 1,
+      transition: { opacity: { duration: 0.3, ease: EASING.kolumbFlow }, scale: { duration: 0.4, ease: EASING.kolumbOverflow } },
+    },
+    exit: {
+      scale: 0,
+      opacity: 0,
+      transition: { opacity: { duration: 0.3, ease: EASING.kolumbFlow }, scale: { duration: 0.3, ease: EASING.kolumbOut } },
+    },
   },
   fadeInScaleY: {
     initial: { scaleY: 0, scaleX: 0.75, transition: { duration: 0.25, ease: EASING.kolumbFlow } },
@@ -25,8 +44,8 @@ export const TRANSITION = {
     exit: { scale: 0.5, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
   },
   fade: {
-    initial: { opacity: 0, transition: { duration: 0.2, ease: EASING.easeOut } },
-    animate: { opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
+    initial: { opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
+    animate: { opacity: 1, transition: { duration: 0.15, ease: EASING.easeIn } },
     exit: { opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
   },
   fadeInOut: {
@@ -49,6 +68,38 @@ export const TRANSITION = {
       initial: { x: 4, opacity: 0, transition: { duration: 0.2, ease: EASING.easeOut } },
       animate: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
       exit: { x: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
+    },
+  },
+  appear: {
+    initial: {
+      opacity: 0,
+      scale: 0,
+      filter: "blur(10px)",
+      transition: {
+        opacity: { type: "spring", duration: 0.25 },
+        scale: { type: "spring", duration: 0.25 },
+        filter: { duration: 0.1 },
+      },
+    },
+    animate: {
+      opacity: 1,
+      scale: 1,
+      filter: "blur(0px)",
+      transition: {
+        opacity: { type: "spring", duration: 0.25 },
+        scale: { type: "spring", duration: 0.25 },
+        filter: { duration: 0.1 },
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0,
+      filter: "blur(10px)",
+      transition: {
+        opacity: { type: "spring", duration: 0.25 },
+        scale: { type: "spring", duration: 0.25 },
+        filter: { duration: 0.15 },
+      },
     },
   },
   appearInSequence: {

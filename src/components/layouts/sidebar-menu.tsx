@@ -1,4 +1,4 @@
-import Trips from "../trips";
+import YourTrips, { NewTrip } from "../your-trips";
 import TileLink from "../tile-link";
 import Icon from "@/components/icons";
 
@@ -32,8 +32,12 @@ export default function SidebarMenu({ tripId }: { tripId: string }) {
         </section>
 
         <section className="flex flex-col gap-2 px-3 pb-3">
-          <h1 className="cursor-default font-adso text-xl font-bold text-tintedGray-400">Your trips</h1>
-          <Trips tripId={tripId} />
+          <span className="flex items-center justify-between">
+            <h2 className="cursor-default font-adso text-xl font-bold text-tintedGray-400">Your trips</h2>
+            <NewTrip />
+          </span>
+
+          <YourTrips activeTripId={tripId} />
         </section>
       </div>
     </nav>
