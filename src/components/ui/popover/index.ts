@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop } from "./types";
+import { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop, BackdropType } from "./types";
 import { Variants } from "framer-motion";
 
 export { Popover } from "./popover";
@@ -25,7 +25,7 @@ export function usePopover() {
 }
 
 // Extensions
-export function position(x: string | number, y: string | number, transformOrigin: string): Position {
+export function Position(x: string | number, y: string | number, transformOrigin: string): Position {
   return { name: "position", x, y, transformOrigin };
 }
 
@@ -39,12 +39,12 @@ export function Arrow(value: number, className: { arrow: string; backdrop: strin
   return { name: "arrow", size: value, className };
 }
 
-export function Backdrop(type: "opaque" | "opaque-white" | "blur" | "blur-white", className?: string): Backdrop {
+export function Backdrop(type: BackdropType, className?: string): Backdrop {
   return { name: "backdrop", type, className };
 }
 export function Motion(transition: Variants | { top: Variants; bottom: Variants; left: Variants; right: Variants }): Motion {
   return { name: "motion", transition };
 }
-export function Prevent({ scroll, autofocus }: { scroll?: boolean; autofocus?: boolean }): Prevent {
-  return { name: "prevent", scroll, autofocus };
+export function Prevent({ scroll, autofocus, closeTriggers }: { scroll?: boolean; autofocus?: boolean; closeTriggers?: boolean }): Prevent {
+  return { name: "prevent", scroll, autofocus, closeTriggers };
 }

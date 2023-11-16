@@ -1,13 +1,13 @@
-import { SetStateAction, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { SetStateAction, createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { VariantProps, cva } from "class-variance-authority";
 import { motion } from "framer-motion";
-import cuid2 from "@paralleldrive/cuid2";
 
 import { Popover, Placement, Flip, Offset, Prevent, Motion, Container } from "./popover";
 import { useListNavigation } from "@/hooks/use-accessibility-features";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
+
 import Divider from "./divider";
 import Button from "./button";
 
@@ -29,15 +29,6 @@ export function useDropdownContext() {
 }
 //#endregion
 
-const ButtonVariants = cva("group", {
-  variants: {
-    buttonVariant: {
-      default: "rounded-md border border-gray-600 bg-gray-700 px-2 py-1 text-gray-100 focus-visible:shadow-focus",
-      unstyled: "",
-    },
-  },
-  defaultVariants: { buttonVariant: "default" },
-});
 const DropdownVariants = cva("flex flex-col", {
   variants: {
     dropdownVariant: {
@@ -47,26 +38,27 @@ const DropdownVariants = cva("flex flex-col", {
     },
     dropdownSize: {
       sm: "rounded-md p-1",
-      default: "rounded-xl p-1.5",
-      lg: "rounded-2xl p-2",
+      default: "rounded-xl p-1",
+      lg: "rounded-2xl p-1.5",
       unstyled: "",
     },
   },
   defaultVariants: { dropdownVariant: "default", dropdownSize: "default" },
 });
-type MenuProps = VariantProps<typeof DropdownVariants> &
-  VariantProps<typeof ButtonVariants> & {
-    isOpen: boolean;
-    setOpen: React.Dispatch<SetStateAction<boolean>>;
-    list: DropdownList;
-    placement?: Placement;
-    container?: Container;
-    offset?: number;
-    preventScroll?: boolean;
-    className?: { container?: string; button?: string; dropdown?: string; option?: string };
-    buttonChildren?: React.ReactNode;
-    children?: React.ReactNode;
-  };
+type MenuProps = VariantProps<typeof DropdownVariants> & {
+  isOpen: boolean;
+  setOpen: React.Dispatch<SetStateAction<boolean>>;
+  list: DropdownList;
+  placement?: Placement;
+  container?: Container;
+  offset?: number;
+  preventScroll?: boolean;
+  buttonVariant?: "default" | "appear" | "scale" | "button" | "disabled" | "unstyled" | null;
+  buttonSize?: "default" | "sm" | "lg" | "icon" | "unstyled" | null;
+  className?: { button?: string; dropdown?: string; option?: string };
+  buttonChildren?: React.ReactNode;
+  children?: React.ReactNode;
+};
 export function Dropdown({
   isOpen,
   setOpen,
@@ -76,6 +68,7 @@ export function Dropdown({
   offset = 6,
   preventScroll = false,
   buttonVariant,
+  buttonSize,
   dropdownVariant,
   dropdownSize,
   className,
@@ -86,8 +79,8 @@ export function Dropdown({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listItemsRef = useRef<HTMLButtonElement[]>([]);
 
-  const buttonId = useRef(`dropdown-button-${cuid2.init({ length: 3 })()}`);
-  const dropdownId = useRef(`dropdown-${cuid2.init({ length: 3 })()}`);
+  const buttonId = useId();
+  const listId = useId();
 
   const [hasFocus, setFocus] = useState<false | "trigger" | "popover">(false);
   const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
@@ -128,19 +121,21 @@ export function Dropdown({
   }, [list]);
 
   return (
-    <div className={cn("relative", className?.container)}>
-      <motion.button
+    <div className="relative">
+      <Button
         ref={buttonRef}
-        id={buttonId.current}
+        id={buttonId}
         onClick={handleClick}
         onFocus={() => setFocus("trigger")}
-        className={cn(ButtonVariants({ buttonVariant, className: className?.button }))}
         aria-haspopup="menu"
-        aria-controls={dropdownRef.current?.id}
+        aria-controls={listId}
         {...(isOpen && { "aria-expanded": true })}
+        variant={buttonVariant}
+        size={buttonSize}
+        className={className?.button}
       >
         {buttonChildren}
-      </motion.button>
+      </Button>
 
       <Popover
         popoverRef={dropdownRef}
@@ -152,13 +147,13 @@ export function Dropdown({
         extensions={[
           Flip(),
           Offset(offset),
-          Prevent({ scroll: preventScroll, autofocus: inputType !== "keyboard" }),
           Motion(TRANSITION.fadeInScale),
+          Prevent({ scroll: preventScroll, autofocus: inputType !== "keyboard" }),
         ]}
       >
         <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
           <ul
-            id={dropdownId.current}
+            id={listId}
             role="menu"
             aria-labelledby={buttonRef.current?.id}
             onFocus={() => setFocus("popover")}
@@ -186,7 +181,7 @@ export function DropdownGroupTitle({ title, divider = false, className }: Dropdo
   );
 }
 
-const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-left", {
+const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-left focus-visible:shadow-none", {
   variants: {
     variant: {
       default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select focus:before:hidden",
@@ -234,8 +229,6 @@ export function DropdownOption({ index, disabled = false, variant, size, classNa
         onMouseLeave={handleMouseLeave}
         variant="appear"
         size="unstyled"
-        focus="none"
-        focusVisible="unstyled"
         className={cn("w-full", OptionVariants({ variant, size, className }), disabled && "opacity-40")}
         tabIndex={activeIndex === index ? 0 : -1}
         disabled={disabled}

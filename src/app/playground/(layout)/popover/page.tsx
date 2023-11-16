@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { TRANSITION } from "@/lib/framer-motion";
 
-import { Popover, Offset, Flip, Arrow, position, Motion, usePopover, Prevent } from "@/components/ui/popover";
+import { Popover, Offset, Flip, Arrow, Position, Motion, usePopover, Prevent } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
@@ -88,7 +88,7 @@ export default function PopoverTests() {
           setOpen={setOptionsOpen}
           placement="bottom"
           extensions={[
-            position("calc(50% - 88px)", 149, "top"),
+            Position("calc(50% - 88px)", 149, "top"),
             Motion(TRANSITION.fadeInScaleY),
             Prevent({ autofocus: optionsInputType !== "keyboard" }),
           ]}

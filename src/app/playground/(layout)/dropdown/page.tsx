@@ -6,7 +6,7 @@ import Link from "next/link";
 import { TRANSITION } from "@/lib/framer-motion";
 
 import { Dropdown, DropdownGroupTitle, DropdownList, DropdownOption } from "@/components/ui/dropdown";
-import { Popover, position, Motion, usePopover, Prevent } from "@/components/ui/popover";
+import { Popover, Position, Motion, usePopover, Prevent } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
@@ -21,12 +21,11 @@ export default function DropdownTests() {
 
   const dropdownList: DropdownList = [
     { onSelect: () => {}, index: 0 },
-    { onSelect: () => {}, index: 1 },
+    { onSelect: () => {}, index: 1, skip: true },
     { onSelect: () => {}, index: 2 },
     { onSelect: () => {}, index: 3 },
     { onSelect: () => {}, index: 4 },
     { onSelect: () => {}, index: 5 },
-    { onSelect: () => {}, index: 6 },
   ];
 
   //#region centering logic
@@ -90,7 +89,7 @@ export default function DropdownTests() {
           setOpen={setOptionsOpen}
           placement="bottom"
           extensions={[
-            position("calc(50% - 88px)", 149, "top"),
+            Position("calc(50% - 88px)", 149, "top"),
             Motion(TRANSITION.fadeInScaleY),
             Prevent({ autofocus: optionsInputType !== "keyboard" }),
           ]}
@@ -184,20 +183,19 @@ export default function DropdownTests() {
             <DropdownOption index={0} variant={"blue"}>
               Open file
             </DropdownOption>
-            <DropdownOption index={1} variant={"blue"}>
+            <DropdownOption index={1} variant={"blue"} disabled>
               Open preview
             </DropdownOption>
 
             <DropdownGroupTitle title="Actions" divider />
             <DropdownOption index={2}>New file</DropdownOption>
             <DropdownOption index={3}>Edit file</DropdownOption>
-            <DropdownOption index={4}>Rename file</DropdownOption>
 
             <DropdownGroupTitle title="Danger" divider />
-            <DropdownOption index={5} variant="red">
+            <DropdownOption index={4} variant="red">
               Block file
             </DropdownOption>
-            <DropdownOption index={6} variant="red" className="rounded-b-lg">
+            <DropdownOption index={5} variant="red" className="rounded-b-lg">
               Delete file
             </DropdownOption>
           </Dropdown>
