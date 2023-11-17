@@ -81,12 +81,12 @@ export default function Modal({
         isOpen={isOpen}
         setOpen={setOpen}
         extensions={[
-          Position(0, 0, "center"),
+          Position("50%", "50%", "top left"),
           Motion(TRANSITION.scaleInOut),
-          Prevent({ scroll: true, closeTriggers: backdrop?.type !== "none" }),
+          Prevent({ closeTriggers: backdrop?.type !== "none", hide: true, scroll: true }),
           backdrop ? Backdrop(backdrop?.type, backdrop?.className) : Backdrop("none"),
         ]}
-        // className="flex h-screen w-screen items-center justify-center duration-300 ease-kolumb-overflow"
+        className="-translate-x-1/2 -translate-y-1/2"
       >
         <div id={contentId} className={cn(ModalVariants({ modalVariant, modalSize, className: className?.modal }))}>
           {children}

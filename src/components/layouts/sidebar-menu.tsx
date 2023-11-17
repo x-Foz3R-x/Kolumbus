@@ -1,4 +1,4 @@
-import YourTrips, { NewTrip } from "../your-trips";
+import YourTrips from "../your-trips";
 import TileLink from "../tile-link";
 import Icon from "@/components/icons";
 
@@ -22,7 +22,7 @@ export default function SidebarMenu({ tripId }: { tripId: string }) {
             <Icon.map className={tileLinkStyle} />
           </TileLink>
 
-          <TileLink link={`/t/${tripId}/costs`} label="Costs">
+          <TileLink link={`/t/${tripId}/expenses`} label="Expenses">
             <Icon.costs className={tileLinkStyle} />
           </TileLink>
 
@@ -31,14 +31,7 @@ export default function SidebarMenu({ tripId }: { tripId: string }) {
           </TileLink>
         </section>
 
-        <section className="flex flex-col gap-2 px-3 pb-3">
-          <span className="flex items-center justify-between">
-            <h2 className="cursor-default font-adso text-xl font-bold text-tintedGray-400">Your trips</h2>
-            <NewTrip />
-          </span>
-
-          <YourTrips activeTripId={tripId} />
-        </section>
+        <YourTrips activeTripId={tripId} />
       </div>
     </nav>
   );

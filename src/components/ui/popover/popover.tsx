@@ -79,7 +79,7 @@ export function Popover({
     );
   }, [mountedExtensions.arrow, props.arrow]);
   const backdropContent = useMemo(() => {
-    if (!mountedExtensions.backdrop || mountedExtensions.backdrop.type === "none") return null;
+    if (!mountedExtensions.backdrop) return null;
 
     let backdropStyles;
     if (mountedExtensions.backdrop.type === "opaque") backdropStyles = "bg-black/25";
@@ -122,7 +122,7 @@ export function Popover({
     if (mountedExtensions.prevent?.hide) return;
 
     const triggerElement = triggerRef.current;
-    const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && setOpen(false), { threshold: 0.5 });
+    const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && setOpen(false), { threshold: 0.1 });
 
     if (triggerElement) observer.observe(triggerElement);
 
@@ -144,14 +144,7 @@ export function Popover({
             {...props.popover}
           >
             {backdropContent}
-            <motion.div
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={variants}
-              {...props.motion}
-              // className="flex h-screen w-screen items-center justify-center duration-300 ease-kolumb-overflow"
-            >
+            <motion.div initial="initial" animate="animate" exit="exit" variants={variants} {...props.motion}>
               <RemoveScroll
                 enabled={mountedExtensions.prevent?.scroll === true && isOpen}
                 allowPinchZoom={mountedExtensions.prevent?.scroll === true && isOpen}
