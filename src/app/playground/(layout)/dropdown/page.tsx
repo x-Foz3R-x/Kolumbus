@@ -174,7 +174,7 @@ export default function DropdownTests() {
             container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
             offset={offset}
             preventScroll
-            className={{ container: "dark", dropdown: "w-40" }}
+            className={{ dropdown: "w-40" }}
             buttonChildren={<span>open</span>}
           >
             <span className="mb-1 rounded-lg bg-yellow-200/10 text-center text-xs leading-relaxed text-yellow-400/70 shadow-soft">

@@ -33,12 +33,6 @@ export function Popover({
   children,
 }: PopoverContentProps) {
   const useTransition = useRef("");
-  const handleClose = useCallback(() => {
-    if (!isOpen) return;
-
-    setOpen(false);
-    triggerRef.current?.focus();
-  }, [triggerRef, isOpen, setOpen]);
   const mountedExtensions: {
     offset?: Offset;
     position?: Position;
@@ -48,6 +42,13 @@ export function Popover({
     motion?: Motion;
     prevent?: Prevent;
   } = extensions.reduce((acc, extension) => ({ ...acc, [extension.name]: extension }), {});
+
+  const handleClose = useCallback(() => {
+    if (!isOpen) return;
+
+    setOpen(false);
+    triggerRef.current?.focus();
+  }, [triggerRef, isOpen, setOpen]);
 
   const { props, placement } = usePopover(triggerRef, popoverRef, isOpen, initialPlacement, container, mountedExtensions);
 
