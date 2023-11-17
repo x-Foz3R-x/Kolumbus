@@ -119,6 +119,8 @@ export function Popover({
 
   // Observe triggerRef's visibility to close the popover when out of view.
   useEffect(() => {
+    if (mountedExtensions.prevent?.hide) return;
+
     const triggerElement = triggerRef.current;
     const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && setOpen(false), { threshold: 0.5 });
 
@@ -127,7 +129,7 @@ export function Popover({
     return () => {
       triggerElement && observer.unobserve(triggerElement);
     };
-  }, [triggerRef, setOpen, container.selector]);
+  }, [triggerRef, setOpen, container.selector, mountedExtensions.prevent?.hide]);
 
   useCloseTriggers([triggerRef, popoverRef], handleClose, mountedExtensions.prevent?.closeTriggers);
 

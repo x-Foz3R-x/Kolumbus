@@ -34,6 +34,6 @@ export type Arrow = { name: "arrow"; size: number; className?: { arrow?: string;
 
 export type Backdrop = { name: "backdrop"; type: BackdropType; className?: string };
 export type Motion = { name: "motion"; transition: Variants | { top: Variants; bottom: Variants; left: Variants; right: Variants } };
-export type Prevent = { name: "prevent"; scroll?: boolean; autofocus?: boolean; closeTriggers?: boolean };
+export type Prevent = { name: "prevent"; autofocus?: boolean; closeTriggers?: boolean; hide?: boolean; scroll?: boolean };
 
 export type BackdropType = "opaque" | "opaque-white" | "blur" | "blur-white" | "none";
