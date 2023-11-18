@@ -30,9 +30,8 @@ const ButtonVariants = cva("group peer relative flex select-none items-center ou
 type ButtonProps = HTMLMotionProps<"button"> &
   VariantProps<typeof ButtonVariants> & {
     whileTap?: VariantLabels | TargetAndTransition | undefined;
-    shift?: boolean;
-    animatePress?: boolean;
     className?: string;
+    animatePress?: boolean;
     children?: React.ReactNode;
   };
 /**
@@ -44,7 +43,7 @@ type ButtonProps = HTMLMotionProps<"button"> &
  * @property className - Additional CSS classes.
  */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant, size, whileTap, shift, animatePress = false, className, children, ...props }, ref) => {
+  ({ variant, size, whileTap, className, animatePress = false, children, ...props }, ref) => {
     return (
       <motion.button
         ref={ref}
@@ -52,18 +51,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...(!animatePress ? { whileTap } : { whileTap: { scale: 0.94 } })}
         {...props}
       >
-        {shift ? (
-          <span
-            className={cn(
-              "duration-300 ease-kolumb-overflow",
-              size === "sm" || size === "default" ? "group-hover:translate-x-1" : size === "lg" && "group-hover:translate-x-2",
-            )}
-          >
-            {children}
-          </span>
-        ) : (
-          children
-        )}
+        {children}
       </motion.button>
     );
   },

@@ -121,8 +121,16 @@ export function ModalBodyWithIcon({ variant, icon, children }: ModalBodyWithIcon
   );
 }
 
+export function ModalBody({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="px-6 pb-3 pt-6">
+      <div className="flex flex-col gap-2">{children}</div>
+    </div>
+  );
+}
+
 export function ModalTitle({ children }: { children: React.ReactNode }) {
-  return <h1 className="text-base font-semibold text-gray-800">{children}</h1>;
+  return <h1 className="text-base font-semibold text-gray-700">{children}</h1>;
 }
 
 export function ModalMessage({ children }: { children: React.ReactNode }) {

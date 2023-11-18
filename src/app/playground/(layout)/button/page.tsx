@@ -49,18 +49,6 @@ export default function ButtonTests() {
               </span>
             </Button>
           </div>
-          <span className="flex items-center">With shift</span>
-          <div className="col-span-3 flex items-center gap-4">
-            <Button variant="default" size="lg" shift animatePress className="w-32">
-              Large
-            </Button>
-            <Button variant="default" size="default" shift animatePress className="w-28 bg-kolumblue-500 text-gray-100">
-              Default
-            </Button>
-            <Button variant="default" size="sm" shift animatePress className="w-20">
-              Small
-            </Button>
-          </div>
 
           <Divider />
           <Divider className="col-span-3" />
@@ -80,18 +68,6 @@ export default function ButtonTests() {
               <span className="flex h-5 w-5 items-center">
                 <Icon.horizontalDots className="w-5" />
               </span>
-            </Button>
-          </div>
-          <span className="flex items-center">With shift</span>
-          <div className="col-span-3 flex items-center gap-4">
-            <Button variant="scale" size="lg" shift animatePress className="w-32 before:bg-gray-100">
-              Large
-            </Button>
-            <Button variant="scale" size="default" shift animatePress className="w-28 before:bg-kolumblue-500 hover:text-gray-100">
-              Default
-            </Button>
-            <Button variant="scale" size="sm" shift animatePress className="w-20 before:bg-gray-100">
-              Small
             </Button>
           </div>
 
