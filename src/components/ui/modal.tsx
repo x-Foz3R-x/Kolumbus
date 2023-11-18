@@ -8,6 +8,7 @@ import useKeyPress from "@/hooks/use-key-press";
 import { Key } from "@/types";
 import { TRANSITION } from "@/lib/framer-motion";
 import { BackdropType } from "./popover/types";
+import { useScopedTabNavigation } from "@/hooks/use-accessibility-features";
 
 const ModalVariants = cva("mx-3 min-w-min overflow-hidden", {
   variants: {
@@ -47,13 +48,15 @@ export default function Modal({ isOpen, setOpen, backdrop, variant, size, classN
 
   const handleClick = () => setOpen(!isOpen);
 
+  useScopedTabNavigation(modalRef, isOpen);
+
   return (
     <div className="relative">
       <Button
         ref={buttonRef ?? ButtonRef}
         id={buttonId}
         onClick={handleClick}
-        aria-haspopup="menu"
+        aria-haspopup="dialog"
         aria-controls={contentId}
         {...(isOpen && { "aria-expanded": true })}
         {...buttonProps}
@@ -72,7 +75,7 @@ export default function Modal({ isOpen, setOpen, backdrop, variant, size, classN
         ]}
         className="-translate-x-1/2 -translate-y-1/2"
       >
-        <div id={contentId} className={cn(ModalVariants({ variant, size, className }))}>
+        <div id={contentId} role="dialog" aria-modal className={cn(ModalVariants({ variant, size, className }))}>
           {children}
         </div>
       </Popover>

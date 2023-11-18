@@ -84,17 +84,13 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
     const dropdownList: DropdownList = [
       {
         index: 0,
-        onSelect: () => {
-          console.log("move up");
-        },
+        onSelect: () => console.log("move up"),
       },
       {
         index: 1,
-        onSelect: () => {
-          console.log("move down");
-        },
+        onSelect: () => console.log("move down"),
       },
-      { index: 2, onSelect: () => {} },
+      { index: 2, onSelect: () => {}, skip: true },
       { index: 3, onSelect: () => {} },
     ];
 
@@ -103,7 +99,7 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
         isOpen={isDropdownOpen}
         setOpen={setDropdownOpen}
         list={dropdownList}
-        className="w-36"
+        className="w-40"
         buttonProps={{
           variant: "scale",
           size: "icon",
@@ -111,11 +107,23 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
           children: <Icon.horizontalDots className="w-3.5" />,
         }}
       >
-        <DropdownOption index={0}>Move up</DropdownOption>
+        <DropdownOption index={0} className="rounded-t-lg">
+          Move up
+        </DropdownOption>
         <DropdownOption index={1}>Move down</DropdownOption>
         <DropdownOption index={2}>Duplicate</DropdownOption>
-        <DropdownModalOption index={3} buttonChildren="Delete">
-          <ModalBodyWithIcon variant="danger" icon={<Icon.trash />}>
+        <DropdownModalOption
+          index={3}
+          variant="danger"
+          className="rounded-b-lg"
+          buttonChildren={
+            <>
+              <Icon.trash className="h-3.5 w-3.5 fill-gray-100" />
+              Delete trip
+            </>
+          }
+        >
+          <ModalBodyWithIcon variant="danger" icon={<Icon.exclamationTriangle />}>
             <ModalTitle>Delete Trip</ModalTitle>
 
             <ModalMessage>Are you sure you want to delete this trip?</ModalMessage>

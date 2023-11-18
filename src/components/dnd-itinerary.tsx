@@ -478,11 +478,11 @@ const EventComponent = memo(
               </DropdownLink>
               <Divider className="my-1 rounded bg-white/25" />
 
-              <DropdownOption index={3} disabled>
+              <DropdownOption index={3}>
                 <Icon.duplicate className="h-3.5 w-3.5 fill-gray-100" />
                 Duplicate
               </DropdownOption>
-              <DropdownOption index={4} variant="red">
+              <DropdownOption index={4} variant="danger">
                 <Icon.trash className="h-3.5 w-3.5 fill-gray-100" />
                 Delete
               </DropdownOption>

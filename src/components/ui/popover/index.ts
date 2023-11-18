@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop, BackdropType } from "./types";
+import type { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop, BackdropType } from "./types";
 import { Variants } from "framer-motion";
 
 export { Popover } from "./popover";

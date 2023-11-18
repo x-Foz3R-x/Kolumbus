@@ -112,7 +112,7 @@ export function Popover({
   useEffect(() => {
     if (isOpen && !mountedExtensions.prevent?.autofocus && popoverRef.current) {
       const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
-        "input, select, textarea, button, object, a, area, [tabindex]",
+        "a, area, button, input, object, select, textarea, [tabindex]:not([tabindex='-1'])",
       );
       Array.from(focusableElements)[0]?.focus({ preventScroll: true });
     }

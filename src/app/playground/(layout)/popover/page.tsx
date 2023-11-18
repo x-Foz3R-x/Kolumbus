@@ -9,6 +9,7 @@ import { Popover, Offset, Flip, Arrow, Position, Motion, usePopover, Prevent } f
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
+import Button from "@/components/ui/button";
 
 export default function PopoverTests() {
   const [optionsTriggerRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
@@ -180,7 +181,7 @@ export default function PopoverTests() {
         className="absolute z-20 overflow-auto rounded-b-xl"
       >
         <main style={{ width: "calc(200% - 59px)", height: "calc(200% - 34px)" }} className="relative flex items-center justify-center">
-          <button
+          <Button
             ref={triggerRef}
             aria-haspopup="dialog"
             {...(isOpen && { "aria-expanded": true })}
@@ -188,10 +189,10 @@ export default function PopoverTests() {
               setOpen(!isOpen);
               setInputType(e.detail === 0 ? "keyboard" : "mouse");
             }}
-            className="rounded-md border border-gray-600 bg-gray-700 px-2 py-1 text-gray-100 focus:bg-kolumblue-600"
+            className="border border-gray-600 bg-gray-700 font-medium text-gray-100"
           >
             open
-          </button>
+          </Button>
 
           <Popover
             popoverRef={popoverRef}
@@ -204,9 +205,14 @@ export default function PopoverTests() {
             className="rounded-md text-gray-100 shadow-borderXL"
           >
             <div className="relative z-10 flex items-center justify-center gap-3 rounded-md bg-gray-800 px-4 py-3">
-              <button onClick={handleClose} className="h-8 w-8 rounded border border-gray-600 bg-gray-700 focus:bg-kolumblue-600">
-                X
-              </button>
+              <Button
+                onClick={handleClose}
+                variant="button"
+                size="icon"
+                className="border border-gray-600 bg-gray-700 fill-gray-300 p-2 focus:fill-gray-100"
+              >
+                <Icon.x className="h-3.5 w-3.5" />
+              </Button>
               popover
             </div>
           </Popover>

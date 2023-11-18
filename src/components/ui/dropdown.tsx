@@ -22,6 +22,7 @@ const DropdownContext = createContext<{
   activeIndex: number;
   setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
   handleClose: () => void;
+  preventInteraction: React.MutableRefObject<boolean>;
 } | null>(null);
 export function useDropdownContext() {
   const context = useContext(DropdownContext);
@@ -78,6 +79,7 @@ export function Dropdown({
 
   const buttonId = useId();
   const listId = useId();
+  const preventInteraction = useRef(false);
 
   const [hasFocus, setFocus] = useState<false | "trigger" | "popover">(false);
   const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
@@ -91,7 +93,7 @@ export function Dropdown({
     skipIndexes,
     initialIndex: inputType === "keyboard" ? 0 : -1,
     placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
-    enabled: isOpen,
+    enabled: isOpen && !preventInteraction.current,
     loop: false,
   });
 
@@ -141,10 +143,10 @@ export function Dropdown({
           Flip(),
           Offset(offset),
           Motion(TRANSITION.fadeInScale),
-          Prevent({ scroll: preventScroll, autofocus: inputType !== "keyboard" }),
+          Prevent({ autofocus: inputType !== "keyboard", closeTriggers: preventInteraction.current, scroll: preventScroll }),
         ]}
       >
-        <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
+        <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose, preventInteraction }}>
           <ul
             id={listId}
             role="menu"
@@ -178,8 +180,8 @@ const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-le
   variants: {
     variant: {
       default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select focus:before:hidden",
-      blue: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select focus:before:hidden",
-      red: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select focus:before:hidden",
+      primary: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select focus:before:hidden",
+      danger: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select focus:before:hidden",
       unstyled: "",
     },
     size: {
@@ -192,11 +194,10 @@ const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-le
 });
 type DropdownOptionProps = VariantProps<typeof OptionVariants> & {
   index: number;
-  disabled?: boolean;
   className?: string;
   children?: React.ReactNode;
 };
-export function DropdownOption({ index, disabled = false, variant, size, className, children }: DropdownOptionProps) {
+export function DropdownOption({ index, variant, size, className, children }: DropdownOptionProps) {
   const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
 
   const handleClick = () => {
@@ -217,14 +218,14 @@ export function DropdownOption({ index, disabled = false, variant, size, classNa
     <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" className="group/option">
       <Button
         ref={(node) => (listItemsRef.current[index] = node)}
-        onClick={!disabled ? handleClick : () => {}}
+        onClick={!list[index].skip ? handleClick : () => {}}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         variant="appear"
         size="unstyled"
-        className={cn("w-full", OptionVariants({ variant, size, className }), disabled && "opacity-40")}
+        className={cn("w-full", OptionVariants({ variant, size, className }), list[index].skip && "opacity-40")}
         tabIndex={activeIndex === index ? 0 : -1}
-        disabled={disabled}
+        disabled={list[index].skip}
       >
         {children}
       </Button>
@@ -239,7 +240,7 @@ type DropdownLinkProps = VariantProps<typeof OptionVariants> & {
   children?: React.ReactNode;
 };
 export function DropdownLink({ index, href, variant, size, className, children }: DropdownLinkProps) {
-  const { listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
+  const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
 
   const handleMouseMove = () => {
     // on mouse move is used because safari has some problems with detecting mouse enter
@@ -251,16 +252,18 @@ export function DropdownLink({ index, href, variant, size, className, children }
     if (listItemsRef.current[index]) listItemsRef.current[index]?.blur();
   };
 
+  const disabled = href === null || list[index].skip ? true : false;
+
   return (
     <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" className="group/option">
       <Link
         href={href ?? ""}
         target="_blank"
         ref={(node) => (listItemsRef.current[index] = node)}
-        onClick={href ? handleClose : () => {}}
+        onClick={!disabled ? handleClose : () => {}}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={cn("w-full", OptionVariants({ variant, size, className }), !href && "pointer-events-none opacity-40")}
+        className={cn("w-full", OptionVariants({ variant, size, className }), disabled && "pointer-events-none opacity-40")}
         tabIndex={activeIndex === index ? 0 : -1}
       >
         {children}
@@ -269,23 +272,15 @@ export function DropdownLink({ index, href, variant, size, className, children }
   );
 }
 
+// TODO: prevent close trigger on dropdown when modal is open (use a context)
 type DropdownModalOptionProps = VariantProps<typeof OptionVariants> & {
   index: number;
-  disabled?: boolean;
   className?: string;
   buttonChildren?: React.ReactNode;
   children?: React.ReactNode;
 };
-export function DropdownModalOption({
-  index,
-  disabled = false,
-  variant,
-  size,
-  className,
-  buttonChildren,
-  children,
-}: DropdownModalOptionProps) {
-  const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
+export function DropdownModalOption({ index, variant, size, className, buttonChildren, children }: DropdownModalOptionProps) {
+  const { list, listItemsRef, activeIndex, setActiveIndex, handleClose, preventInteraction } = useDropdownContext();
 
   const [isOpen, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -305,34 +300,42 @@ export function DropdownModalOption({
     listItemsRef.current[index] = buttonRef.current;
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    // Prevent close triggers when modal is open and reset when modal closes
+    if (isOpen) preventInteraction.current = true;
+    else preventInteraction.current = false;
+  }, [isOpen, preventInteraction]);
+
   return (
     <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" className="group/option">
       <Modal
         isOpen={isOpen}
         setOpen={setOpen}
+        backdrop={{ type: "blur" }}
         buttonRef={buttonRef}
         buttonProps={{
-          // onClick: !disabled ? () => setOpen(!isOpen) : () => {},
+          onClick: !list[index].skip ? () => setOpen(true) : () => {},
           onMouseMove: handleMouseMove,
           onMouseLeave: handleMouseLeave,
           tabIndex: activeIndex === index ? 0 : -1,
-          disabled: disabled,
+          disabled: list[index].skip,
           variant: "appear",
           size: "unstyled",
-          className: cn("w-full", OptionVariants({ variant, size, className }), disabled && "opacity-40"),
+          className: cn("w-full", OptionVariants({ variant, size, className }), list[index].skip && "opacity-40"),
           children: buttonChildren,
         }}
       >
         {children}
         <ModalActionSection>
-          {/* <Button onClick={handleClose} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="px-5">
+          <Button onClick={() => setOpen(false)} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="px-5">
             Cancel
-          </Button> */}
+          </Button>
           <Button
-            // onClick={() => {
-            //   list[index].onSelect();
-            //   handleClose();
-            // }}
+            onClick={() => {
+              list[index].onSelect();
+              setOpen(false);
+              handleClose();
+            }}
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.98 }}
             className="whitespace-nowrap bg-kolumblue-500 text-gray-100"
