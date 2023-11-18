@@ -9,7 +9,8 @@ import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
 import Divider from "./divider";
-import Button from "./button";
+import Button, { ButtonProps } from "./button";
+import Modal, { ModalActionSection } from "./modal";
 
 export type DropdownOption = { index: number; onSelect: () => void; skip?: boolean };
 export type DropdownList = DropdownOption[];
@@ -31,21 +32,21 @@ export function useDropdownContext() {
 
 const DropdownVariants = cva("flex flex-col", {
   variants: {
-    dropdownVariant: {
+    variant: {
       light: "bg-white/80 shadow-border2XL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
       default: "bg-gray-700/80 shadow-border2XL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
       unstyled: "",
     },
-    dropdownSize: {
+    size: {
       sm: "rounded-md p-1",
       default: "rounded-xl p-1",
       lg: "rounded-2xl p-1.5",
       unstyled: "",
     },
   },
-  defaultVariants: { dropdownVariant: "default", dropdownSize: "default" },
+  defaultVariants: { variant: "default", size: "default" },
 });
-type MenuProps = VariantProps<typeof DropdownVariants> & {
+type DropdownProps = VariantProps<typeof DropdownVariants> & {
   isOpen: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
   list: DropdownList;
@@ -53,10 +54,8 @@ type MenuProps = VariantProps<typeof DropdownVariants> & {
   container?: Container;
   offset?: number;
   preventScroll?: boolean;
-  buttonVariant?: "default" | "appear" | "scale" | "button" | "disabled" | "unstyled" | null;
-  buttonSize?: "default" | "sm" | "lg" | "icon" | "unstyled" | null;
-  className?: { button?: string; dropdown?: string; option?: string };
-  buttonChildren?: React.ReactNode;
+  className?: string;
+  buttonProps?: ButtonProps;
   children?: React.ReactNode;
 };
 export function Dropdown({
@@ -67,14 +66,12 @@ export function Dropdown({
   container = { selector: "body", margin: 0, padding: 0 },
   offset = 6,
   preventScroll = false,
-  buttonVariant,
-  buttonSize,
-  dropdownVariant,
-  dropdownSize,
+  variant,
+  size,
   className,
-  buttonChildren,
+  buttonProps,
   children,
-}: MenuProps) {
+}: DropdownProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listItemsRef = useRef<HTMLButtonElement[]>([]);
@@ -103,7 +100,7 @@ export function Dropdown({
     setInputType(e.detail === 0 ? "keyboard" : "mouse");
   };
   const handleClose = useCallback(() => {
-    setOpen(false), [setOpen];
+    setOpen(false);
     buttonRef.current?.focus({ preventScroll: true });
   }, [buttonRef, setOpen]);
 
@@ -112,7 +109,7 @@ export function Dropdown({
   }, [isOpen, inputType, setActiveIndex]);
 
   useEffect(() => {
-    if (hasFocus === false) setOpen(false);
+    !hasFocus && setOpen(false);
   }, [hasFocus, setOpen]);
 
   useEffect(() => {
@@ -130,12 +127,8 @@ export function Dropdown({
         aria-haspopup="menu"
         aria-controls={listId}
         {...(isOpen && { "aria-expanded": true })}
-        variant={buttonVariant}
-        size={buttonSize}
-        className={className?.button}
-      >
-        {buttonChildren}
-      </Button>
+        {...buttonProps}
+      />
 
       <Popover
         popoverRef={dropdownRef}
@@ -157,7 +150,7 @@ export function Dropdown({
             role="menu"
             aria-labelledby={buttonRef.current?.id}
             onFocus={() => setFocus("popover")}
-            className={cn(DropdownVariants({ dropdownVariant, dropdownSize, className: className?.dropdown }))}
+            className={cn(DropdownVariants({ variant, size, className }))}
           >
             {children}
           </ul>
@@ -272,6 +265,82 @@ export function DropdownLink({ index, href, variant, size, className, children }
       >
         {children}
       </Link>
+    </motion.li>
+  );
+}
+
+type DropdownModalOptionProps = VariantProps<typeof OptionVariants> & {
+  index: number;
+  disabled?: boolean;
+  className?: string;
+  buttonChildren?: React.ReactNode;
+  children?: React.ReactNode;
+};
+export function DropdownModalOption({
+  index,
+  disabled = false,
+  variant,
+  size,
+  className,
+  buttonChildren,
+  children,
+}: DropdownModalOptionProps) {
+  const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
+
+  const [isOpen, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handleMouseMove = () => {
+    // on mouse move is used because safari has some problems with detecting mouse enter
+    setActiveIndex(index);
+    if (listItemsRef.current[index]) listItemsRef.current[index]?.focus({ preventScroll: true });
+  };
+  const handleMouseLeave = () => {
+    setActiveIndex(-1);
+    if (listItemsRef.current[index]) listItemsRef.current[index]?.blur();
+  };
+
+  useEffect(() => {
+    // Assign the ref to the list of refs when the component mounts
+    listItemsRef.current[index] = buttonRef.current;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" className="group/option">
+      <Modal
+        isOpen={isOpen}
+        setOpen={setOpen}
+        buttonRef={buttonRef}
+        buttonProps={{
+          // onClick: !disabled ? () => setOpen(!isOpen) : () => {},
+          onMouseMove: handleMouseMove,
+          onMouseLeave: handleMouseLeave,
+          tabIndex: activeIndex === index ? 0 : -1,
+          disabled: disabled,
+          variant: "appear",
+          size: "unstyled",
+          className: cn("w-full", OptionVariants({ variant, size, className }), disabled && "opacity-40"),
+          children: buttonChildren,
+        }}
+      >
+        {children}
+        <ModalActionSection>
+          {/* <Button onClick={handleClose} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="px-5">
+            Cancel
+          </Button> */}
+          <Button
+            // onClick={() => {
+            //   list[index].onSelect();
+            //   handleClose();
+            // }}
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.98 }}
+            className="whitespace-nowrap bg-kolumblue-500 text-gray-100"
+          >
+            Delete
+          </Button>
+        </ModalActionSection>
+      </Modal>
     </motion.li>
   );
 }

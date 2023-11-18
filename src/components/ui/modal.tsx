@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef } from "react";
 import { VariantProps, cva } from "class-variance-authority";
 
-import Button from "./button";
+import Button, { ButtonProps } from "./button";
 import { Backdrop, Motion, Popover, Position, Prevent } from "./popover";
 import { cn } from "@/lib/utils";
 import useKeyPress from "@/hooks/use-key-press";
@@ -11,41 +11,29 @@ import { BackdropType } from "./popover/types";
 
 const ModalVariants = cva("mx-3 min-w-min overflow-hidden", {
   variants: {
-    modalVariant: {
+    variant: {
       default: "bg-white shadow-borderXL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
       unstyled: "",
     },
-    modalSize: {
+    size: {
       default: "max-w-lg rounded-xl",
       sm: "max-w-md rounded-md",
       lg: "max-w-xl rounded-2xl",
       unstyled: "",
     },
   },
-  defaultVariants: { modalVariant: "default", modalSize: "default" },
+  defaultVariants: { variant: "default", size: "default" },
 });
 type ModalProps = VariantProps<typeof ModalVariants> & {
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   backdrop?: { type: BackdropType; className?: string };
-  buttonVariant?: "default" | "appear" | "scale" | "button" | "disabled" | "unstyled" | null;
-  buttonSize?: "default" | "sm" | "lg" | "icon" | "unstyled" | null;
-  className?: { button?: string; modal?: string };
-  buttonChildren: React.ReactNode;
+  className?: string;
+  buttonRef?: React.RefObject<HTMLButtonElement>;
+  buttonProps?: ButtonProps;
   children: React.ReactNode;
 };
-export default function Modal({
-  isOpen,
-  setOpen,
-  backdrop,
-  buttonVariant,
-  buttonSize,
-  modalVariant,
-  modalSize,
-  className,
-  buttonChildren,
-  children,
-}: ModalProps) {
+export default function Modal({ isOpen, setOpen, backdrop, variant, size, className, buttonRef, buttonProps, children }: ModalProps) {
   const ButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -62,22 +50,18 @@ export default function Modal({
   return (
     <div className="relative">
       <Button
-        ref={ButtonRef}
+        ref={buttonRef ?? ButtonRef}
         id={buttonId}
         onClick={handleClick}
         aria-haspopup="menu"
         aria-controls={contentId}
         {...(isOpen && { "aria-expanded": true })}
-        variant={buttonVariant}
-        size={buttonSize}
-        className={className?.button}
-      >
-        {buttonChildren}
-      </Button>
+        {...buttonProps}
+      />
 
       <Popover
         popoverRef={modalRef}
-        triggerRef={ButtonRef}
+        triggerRef={buttonRef ?? ButtonRef}
         isOpen={isOpen}
         setOpen={setOpen}
         extensions={[
@@ -88,7 +72,7 @@ export default function Modal({
         ]}
         className="-translate-x-1/2 -translate-y-1/2"
       >
-        <div id={contentId} className={cn(ModalVariants({ modalVariant, modalSize, className: className?.modal }))}>
+        <div id={contentId} className={cn(ModalVariants({ variant, size, className }))}>
           {children}
         </div>
       </Popover>

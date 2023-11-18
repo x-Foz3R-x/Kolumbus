@@ -453,14 +453,14 @@ const EventComponent = memo(
               list={dropdownList}
               container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
               offset={8}
-              buttonVariant="unstyled"
-              buttonSize="unstyled"
-              dropdownSize="sm"
-              className={{
-                button: "h-full w-full rounded-none duration-200 ease-kolumb-flow hover:bg-gray-100 focus-visible:bg-kolumblue-100",
-                dropdown: "w-44",
+              size="sm"
+              className="w-44"
+              buttonProps={{
+                variant: "unstyled",
+                size: "unstyled",
+                className: "h-full w-full rounded-none duration-200 ease-kolumb-flow hover:bg-gray-100 focus-visible:bg-kolumblue-100",
+                children: <Icon.horizontalDots className="m-auto w-4" />,
               }}
-              buttonChildren={<Icon.horizontalDots className="m-auto w-4" />}
             >
               <DropdownOption index={0}>
                 <Icon.eventPanel className="h-3.5 w-3.5 fill-gray-100" />

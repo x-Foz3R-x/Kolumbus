@@ -27,7 +27,7 @@ const ButtonVariants = cva("group peer relative flex select-none items-center ou
   },
   defaultVariants: { variant: "default", size: "default" },
 });
-type ButtonProps = HTMLMotionProps<"button"> &
+export type ButtonProps = HTMLMotionProps<"button"> &
   VariantProps<typeof ButtonVariants> & {
     whileTap?: VariantLabels | TargetAndTransition | undefined;
     className?: string;

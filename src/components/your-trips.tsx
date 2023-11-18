@@ -15,29 +15,16 @@ import Modal, { ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle 
 import Button from "./ui/button";
 import Input from "./ui/input";
 import { cn } from "@/lib/utils";
-import { Dropdown, DropdownList, DropdownOption } from "./ui/dropdown";
+import { Dropdown, DropdownList, DropdownModalOption, DropdownOption } from "./ui/dropdown";
 
 export default function YourTrips({ activeTripId }: { activeTripId: string }) {
   const { user } = useUser();
   const { userTrips, dispatchUserTrips, setSaving } = useAppdata();
   const createTrip = api.trip.create.useMutation();
 
-  const router = useRouter();
-
-  const newTripName = useRef("");
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownList: DropdownList = [
-    {
-      index: 0,
-      onSelect: () => {
-        console.log("first");
-      },
-    },
-    { index: 1, onSelect: () => {} },
-    { index: 2, onSelect: () => {} },
-    { index: 3, onSelect: () => {} },
-  ];
+  const newTripName = useRef("");
+  const router = useRouter();
 
   const createNewTrip = () => {
     if (!user) return;
@@ -92,6 +79,52 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
     //   });
   };
 
+  const TripDropdown = () => {
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownList: DropdownList = [
+      {
+        index: 0,
+        onSelect: () => {
+          console.log("move up");
+        },
+      },
+      {
+        index: 1,
+        onSelect: () => {
+          console.log("move down");
+        },
+      },
+      { index: 2, onSelect: () => {} },
+      { index: 3, onSelect: () => {} },
+    ];
+
+    return (
+      <Dropdown
+        isOpen={isDropdownOpen}
+        setOpen={setDropdownOpen}
+        list={dropdownList}
+        className="w-36"
+        buttonProps={{
+          variant: "scale",
+          size: "icon",
+          className: "flex h-6 w-6 items-center justify-center p-0 before:bg-kolumblue-500/20",
+          children: <Icon.horizontalDots className="w-3.5" />,
+        }}
+      >
+        <DropdownOption index={0}>Move up</DropdownOption>
+        <DropdownOption index={1}>Move down</DropdownOption>
+        <DropdownOption index={2}>Duplicate</DropdownOption>
+        <DropdownModalOption index={3} buttonChildren="Delete">
+          <ModalBodyWithIcon variant="danger" icon={<Icon.trash />}>
+            <ModalTitle>Delete Trip</ModalTitle>
+
+            <ModalMessage>Are you sure you want to delete this trip?</ModalMessage>
+          </ModalBodyWithIcon>
+        </DropdownModalOption>
+      </Dropdown>
+    );
+  };
+
   return (
     <section className="flex flex-col gap-2 px-3 pb-3">
       <div className="flex items-center justify-between">
@@ -101,16 +134,19 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
           isOpen={isModalOpen}
           setOpen={setModalOpen}
           backdrop={{ type: "none" }}
-          buttonVariant="unstyled"
-          className={{ button: "h-6 w-6 fill-tintedGray-400 text-tintedGray-400", modal: "max-w-md shadow-border3XL" }}
-          buttonChildren={
-            <>
-              <Icon.plus className="absolute right-0 h-6 w-6 flex-shrink-0 flex-grow p-1.5 duration-200 ease-kolumb-flow group-hover:right-14" />
-              <span className="absolute right-0 h-6 origin-right scale-x-0 select-none whitespace-nowrap pt-0.5 font-medium opacity-0 duration-200 ease-kolumb-flow group-hover:scale-x-100 group-hover:opacity-100">
-                New Trip
-              </span>
-            </>
-          }
+          className="max-w-md shadow-border3XL"
+          buttonProps={{
+            variant: "unstyled",
+            className: "h-6 w-6 fill-tintedGray-400 text-tintedGray-400",
+            children: (
+              <>
+                <Icon.plus className="absolute right-0 h-6 w-6 flex-shrink-0 flex-grow p-1.5 duration-200 ease-kolumb-flow group-hover:right-14" />
+                <span className="absolute right-0 h-6 origin-right scale-x-0 select-none whitespace-nowrap pt-0.5 font-medium opacity-0 duration-200 ease-kolumb-flow group-hover:scale-x-100 group-hover:opacity-100">
+                  New Trip
+                </span>
+              </>
+            ),
+          }}
         >
           <ModalBodyWithIcon variant="primary" icon={<Icon.defaultTrip />}>
             <ModalTitle>Create Trip</ModalTitle>
@@ -138,28 +174,9 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
 
       <ul className="flex flex-col">
         {userTrips?.map((trip: Trip, index: number) => (
-          <li key={index} className="relative">
+          <li key={`trip-${index}`} className="relative">
             <span className="peer absolute right-2 top-1 z-10 duration-300 ease-kolumb-overflow">
-              <Dropdown
-                isOpen={isDropdownOpen}
-                setOpen={setDropdownOpen}
-                list={dropdownList}
-                buttonVariant="scale"
-                buttonSize="icon"
-                className={{ button: "flex h-6 w-6 items-center justify-center p-0 before:bg-kolumblue-500/20", dropdown: "w-36" }}
-                buttonChildren={<Icon.horizontalDots className="w-3.5" />}
-              >
-                <DropdownOption index={0}>Move up</DropdownOption>
-                <DropdownOption index={1}>Move down</DropdownOption>
-                <DropdownOption index={2}>Duplicate</DropdownOption>
-                <DropdownOption index={3}>Delete</DropdownOption>
-              </Dropdown>
-              {/* <Button variant="scale" size="icon" className="flex h-6 w-6 items-center justify-center p-0 before:bg-black/10" animatePress>
-                <Icon.horizontalDots className="w-3.5" />
-              </Button> */}
-              {/* <button onClick={deleteTrip} className="rounded-lg p-1.5 hover:bg-black/20">
-                <Icon.horizontalDots className="h-3 w-3" />
-              </button> */}
+              <TripDropdown />
             </span>
 
             <Button
