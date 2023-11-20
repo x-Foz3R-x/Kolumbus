@@ -15,16 +15,20 @@ import Modal, { ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle 
 import Button from "./ui/button";
 import Input from "./ui/input";
 import { cn } from "@/lib/utils";
-import { Dropdown, DropdownList, DropdownModalOption, DropdownOption } from "./ui/dropdown";
+import { Dropdown, DropdownList, DropdownOption } from "./ui/dropdown";
 
-export default function YourTrips({ activeTripId }: { activeTripId: string }) {
+export default function YourTrips() {
   const { user } = useUser();
-  const { userTrips, dispatchUserTrips, setSaving } = useAppdata();
+  const { userTrips, dispatchUserTrips, selectedTrip } = useAppdata();
+
+  const router = useRouter();
+
   const createTrip = api.trip.create.useMutation();
+  const updateTrip = api.trip.update.useMutation();
+  const deleteTrip = api.trip.delete.useMutation();
 
   const [isModalOpen, setModalOpen] = useState(false);
   const newTripName = useRef("");
-  const router = useRouter();
 
   const createNewTrip = () => {
     if (!user) return;
@@ -38,7 +42,7 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
     };
 
     setModalOpen(false);
-    setSaving(true);
+
     dispatchUserTrips({ type: UT.CREATE_TRIP, trip: newTrip });
     createTrip.mutate(newTrip, {
       onSuccess(trip) {
@@ -49,87 +53,211 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
         console.error(error);
         dispatchUserTrips({ type: UT.REPLACE, userTrips });
       },
-      onSettled() {
-        setSaving(false);
-      },
     });
   };
 
-  const deleteTrip = () => {
-    if (!user) return;
+  const deleteSelectedTrip = (index: number) => {
+    if (!user || index === -1) return;
 
-    const currentUserTrips: Trip[] = userTrips;
-    const newTrips = [...userTrips];
+    const tripToDelete = userTrips[index];
 
-    const tripIndex = newTrips.findIndex((trip) => trip.id === activeTripId);
-    if (tripIndex === -1) return;
+    // Redirect if the deleted trip is the selected one
+    if (index === selectedTrip) {
+      const redirectTripId = index === 0 ? userTrips[1].id : userTrips[index - 1].id;
+      router.push(`/t/${redirectTripId}`);
+    }
 
-    newTrips.splice(tripIndex, 1);
-    dispatchUserTrips({ type: UT.REPLACE, userTrips: newTrips });
+    // Update the position of the trips that are after the trip being deleted
+    const handleUpdateTrip = (tripId: string, i: number) => {
+      updateTrip.mutate(
+        { tripId, data: { position: index + i } },
+        {
+          onError(error) {
+            console.error(error);
+            dispatchUserTrips({ type: UT.REPLACE, userTrips });
+          },
+        },
+      );
+    };
 
-    // api.trip.delete
-    //   .useMutation({ tripId })
-    //   .then((trip) => {
-    //     if (!trip) return;
-    //     dispatchUserTrips({ type: UT.UPDATE_TRIP, payload: { trip } });
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     dispatchUserTrips({ type: UT.REPLACE, userTrips: currentUserTrips });
-    //   });
+    // Delete the trip from the database
+    const handleDeleteTrip = () => {
+      deleteTrip.mutate(
+        { tripId: tripToDelete.id },
+        {
+          onError(error) {
+            console.error(error);
+            dispatchUserTrips({ type: UT.REPLACE, userTrips });
+            router.push(`/t/${tripToDelete.id}`);
+          },
+        },
+      );
+    };
+
+    dispatchUserTrips({ type: UT.DELETE_TRIP, trip: tripToDelete });
+
+    const tripsToUpdate = [...userTrips].slice(index + 1);
+    tripsToUpdate.forEach((trip, i) => handleUpdateTrip(trip.id, i));
+
+    handleDeleteTrip();
   };
 
-  const TripDropdown = () => {
+  const TripDropdown = ({ index }: { index: number }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
+
+    const swapTripsPosition = (index: number, direction: "up" | "down") => {
+      const newTrips = [...userTrips];
+
+      const adjacentIndex = direction === "up" ? index - 1 : index + 1;
+
+      newTrips[index].position = adjacentIndex;
+      newTrips[adjacentIndex].position = index;
+
+      dispatchUserTrips({ type: UT.REPLACE, userTrips: newTrips });
+
+      updateTrip.mutate(
+        { tripId: userTrips[index].id, data: { position: adjacentIndex } },
+        {
+          onError(error) {
+            console.error(error);
+            dispatchUserTrips({ type: UT.REPLACE, userTrips });
+          },
+        },
+      );
+      updateTrip.mutate(
+        { tripId: userTrips[adjacentIndex].id, data: { position: index } },
+        {
+          onError(error) {
+            console.error(error);
+            dispatchUserTrips({ type: UT.REPLACE, userTrips });
+          },
+        },
+      );
+    };
+
     const dropdownList: DropdownList = [
       {
         index: 0,
-        onSelect: () => console.log("move up"),
+        onSelect: () => {
+          const selectedId = userTrips[index].id;
+          const aboveId = userTrips[index - 1].id;
+
+          // dispatchUserTrips({ type: UT.SWAP_TRIPS_POSITION, tripsPosition: [index, index - 1] });
+          const newTrips = [...userTrips];
+
+          const adjacentIndex = index - 1;
+
+          newTrips[index].position = adjacentIndex;
+          newTrips[adjacentIndex].position = index;
+
+          dispatchUserTrips({ type: UT.REPLACE, userTrips: newTrips });
+
+          updateTrip.mutate(
+            { tripId: selectedId, data: { position: index - 1 } },
+            {
+              onError(error) {
+                console.error(error);
+                dispatchUserTrips({ type: UT.REPLACE, userTrips });
+              },
+            },
+          );
+          updateTrip.mutate(
+            { tripId: aboveId, data: { position: index + 1 } },
+            {
+              onError(error) {
+                console.error(error);
+                dispatchUserTrips({ type: UT.REPLACE, userTrips });
+              },
+            },
+          );
+        },
+        skip: index === 0,
       },
       {
         index: 1,
-        onSelect: () => console.log("move down"),
+        onSelect: () => {
+          const selectedId = userTrips[index].id;
+          const aboveId = userTrips[index + 1].id;
+
+          // dispatchUserTrips({ type: UT.SWAP_TRIPS_POSITION, tripsPosition: [index, index + 1] });
+
+          updateTrip.mutate(
+            { tripId: selectedId, data: { position: index + 1 } },
+            {
+              onError(error) {
+                console.error(error);
+                dispatchUserTrips({ type: UT.REPLACE, userTrips });
+              },
+            },
+          );
+          updateTrip.mutate(
+            { tripId: aboveId, data: { position: index - 1 } },
+            {
+              onError(error) {
+                console.error(error);
+                dispatchUserTrips({ type: UT.REPLACE, userTrips });
+              },
+            },
+          );
+        },
+        skip: index === userTrips.length - 1,
       },
       { index: 2, onSelect: () => {}, skip: true },
-      { index: 3, onSelect: () => {} },
+      {
+        index: 3,
+        onSelect: () => {
+          setModalOpen(true);
+        },
+      },
     ];
 
     return (
-      <Dropdown
-        isOpen={isDropdownOpen}
-        setOpen={setDropdownOpen}
-        list={dropdownList}
-        className="w-40"
-        buttonProps={{
-          variant: "scale",
-          size: "icon",
-          className: "flex h-6 w-6 items-center justify-center p-0 before:bg-kolumblue-500/20",
-          children: <Icon.horizontalDots className="w-3.5" />,
-        }}
-      >
-        <DropdownOption index={0} className="rounded-t-lg">
-          Move up
-        </DropdownOption>
-        <DropdownOption index={1}>Move down</DropdownOption>
-        <DropdownOption index={2}>Duplicate</DropdownOption>
-        <DropdownModalOption
-          index={3}
-          variant="danger"
-          className="rounded-b-lg"
-          buttonChildren={
-            <>
-              <Icon.trash className="h-3.5 w-3.5 fill-gray-100" />
-              Delete trip
-            </>
-          }
+      <>
+        <Dropdown
+          isOpen={isDropdownOpen}
+          setOpen={setDropdownOpen}
+          list={dropdownList}
+          className="w-40"
+          buttonProps={{
+            variant: "scale",
+            size: "icon",
+            className: "flex h-6 w-6 items-center justify-center p-0 before:bg-kolumblue-500/20",
+            children: <Icon.horizontalDots className="w-3.5" />,
+          }}
         >
+          <DropdownOption index={0} className="rounded-t-lg">
+            Move up
+          </DropdownOption>
+          <DropdownOption index={1}>Move down</DropdownOption>
+          <DropdownOption index={2}>Duplicate</DropdownOption>
+          <DropdownOption index={3}>Delete</DropdownOption>
+        </Dropdown>
+
+        <Modal isOpen={isModalOpen} setOpen={setModalOpen} backdrop={{ type: "blur" }} removeButton>
           <ModalBodyWithIcon variant="danger" icon={<Icon.exclamationTriangle />}>
             <ModalTitle>Delete Trip</ModalTitle>
 
             <ModalMessage>Are you sure you want to delete this trip?</ModalMessage>
           </ModalBodyWithIcon>
-        </DropdownModalOption>
-      </Dropdown>
+          <ModalActionSection>
+            <Button onClick={() => setModalOpen(false)} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="px-5">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setModalOpen(false);
+                deleteSelectedTrip(index);
+              }}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.98 }}
+              className="whitespace-nowrap bg-red-500 text-gray-100"
+            >
+              Delete trip
+            </Button>
+          </ModalActionSection>
+        </Modal>
+      </>
     );
   };
 
@@ -182,18 +310,14 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
 
       <ul className="flex flex-col">
         {userTrips?.map((trip: Trip, index: number) => (
-          <li key={`trip-${index}`} className="relative">
-            <span className="peer absolute right-2 top-1 z-10 duration-300 ease-kolumb-overflow">
-              <TripDropdown />
-            </span>
-
+          <li key={trip.id} className="relative">
             <Button
               onClick={() => router.push(`/t/${trip.id}`)}
               variant="scale"
               size="default"
               className={cn(
                 "peer w-full gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected peer-hover:before:scale-100 peer-hover:before:opacity-100",
-                trip.id !== activeTripId
+                index !== selectedTrip
                   ? "fill-tintedGray-400"
                   : "fill-kolumblue-500 text-kolumblue-500 hover:fill-kolumblue-500 hover:text-kolumblue-500",
               )}
@@ -204,6 +328,10 @@ export default function YourTrips({ activeTripId }: { activeTripId: string }) {
                 {trip.name}
               </p>
             </Button>
+
+            <span className="peer absolute right-2 top-1 z-10 duration-300 ease-kolumb-overflow">
+              <TripDropdown index={index} />
+            </span>
           </li>
         ))}
       </ul>

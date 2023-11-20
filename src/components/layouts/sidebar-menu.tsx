@@ -31,7 +31,7 @@ export default function SidebarMenu({ tripId }: { tripId: string }) {
           </TileLink>
         </section>
 
-        <YourTrips activeTripId={tripId} />
+        <YourTrips />
       </div>
     </nav>
   );

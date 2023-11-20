@@ -57,7 +57,7 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
           // else if(data.status === .REQUEST_DENIED){}
           // else if(data.status === .UNKNOWN_ERROR){}
         },
-      }
+      },
     );
   };
 
@@ -96,6 +96,9 @@ export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: 
     onSelect: handlePredictionSelect,
     onChange: handleIndexChange,
   });
+
+  // console.log(selectedIndex);
+  // console.log(predictionList);
 
   return (
     <Combobox.Root ref={ref} name="PlaceAutocomplete" isExpanded={isListDisplayed}>

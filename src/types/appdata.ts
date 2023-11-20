@@ -57,6 +57,7 @@ export type EventDB = PrismaEvent;
  * Enum representing the different types of updates that can be made to the appdata.
  */
 export enum UT {
+  //#region CRUD
   // TRIPS
   REPLACE = "replace_trips_state",
 
@@ -72,7 +73,7 @@ export enum UT {
 }
 
 /**
- * DispatchAction is a union type that represents all possible actions that can be dispatched to the store.
+ * DispatchAction is a union type that represents all possible actions that can be dispatched to the state.
  * Each action has a `type` property that specifies the type of action being performed, as well as any additional
  * properties required for that action.
  */

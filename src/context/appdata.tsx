@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useEffect, useState, useReducer } from "react";
 import { GenerateItinerary } from "@/lib/utils";
 import { DispatchAction, Trip, UT } from "@/types";
+import api from "@/app/_trpc/client";
+import { useRouter } from "next/router";
 
 //#region Context
 type AppdataContext = {
@@ -114,6 +116,18 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
       return trips;
     case UT.DELETE_TRIP:
       if (action.trip) {
+        const newTrips = [...trips];
+        const trip = action.trip;
+
+        // Update the position of the trips that are after the trip being deleted
+        const tripsToUpdate = newTrips.slice(trip.position + 1);
+        tripsToUpdate.forEach((trip, i) => {
+          trip.position = trip.position + i;
+        });
+
+        // Remove the deleted trip from the state
+        newTrips.splice(trip.position, 1);
+        return newTrips;
       }
       return trips;
     case UT.CREATE_EVENT:

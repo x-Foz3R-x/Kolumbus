@@ -30,11 +30,11 @@ type ModalProps = VariantProps<typeof ModalVariants> & {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   backdrop?: { type: BackdropType; className?: string };
   className?: string;
-  buttonRef?: React.RefObject<HTMLButtonElement>;
+  removeButton?: boolean;
   buttonProps?: ButtonProps;
   children: React.ReactNode;
 };
-export default function Modal({ isOpen, setOpen, backdrop, variant, size, className, buttonRef, buttonProps, children }: ModalProps) {
+export default function Modal({ isOpen, setOpen, backdrop, variant, size, className, removeButton, buttonProps, children }: ModalProps) {
   const ButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -52,19 +52,21 @@ export default function Modal({ isOpen, setOpen, backdrop, variant, size, classN
 
   return (
     <div className="relative">
-      <Button
-        ref={buttonRef ?? ButtonRef}
-        id={buttonId}
-        onClick={handleClick}
-        aria-haspopup="dialog"
-        aria-controls={contentId}
-        {...(isOpen && { "aria-expanded": true })}
-        {...buttonProps}
-      />
+      {!removeButton && (
+        <Button
+          ref={ButtonRef}
+          id={buttonId}
+          onClick={handleClick}
+          aria-haspopup="dialog"
+          aria-controls={contentId}
+          {...(isOpen && { "aria-expanded": true })}
+          {...buttonProps}
+        />
+      )}
 
       <Popover
         popoverRef={modalRef}
-        triggerRef={buttonRef ?? ButtonRef}
+        triggerRef={ButtonRef}
         isOpen={isOpen}
         setOpen={setOpen}
         extensions={[

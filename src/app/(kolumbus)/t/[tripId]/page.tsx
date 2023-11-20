@@ -24,8 +24,10 @@ export default function Itinerary({ params: { tripId } }: { params: { tripId: st
       {/* This span ensures that action bar isn't first to focus and the warning about position sticky disappears */}
       <span></span>
 
-      {!isLoading ? <ActionBar activeTrip={userTrips[selectedTrip]} /> : <ActionBarSkeleton />}
-      <div className="flex flex-col px-6">{!isLoading ? <DndItinerary userTrips={userTrips} /> : <ItinerarySkeleton />}</div>
+      {!isLoading && userTrips[selectedTrip] ? <ActionBar activeTrip={userTrips[selectedTrip]} /> : <ActionBarSkeleton />}
+      <div className="flex flex-col px-6">
+        {!isLoading && userTrips[selectedTrip] ? <DndItinerary userTrips={userTrips} /> : <ItinerarySkeleton />}
+      </div>
 
       <Portal>
         <ModalOld showModal={isModalShown} modalChildren={modalChildren} />
