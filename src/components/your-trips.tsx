@@ -57,7 +57,7 @@ export default function YourTrips() {
   };
 
   const deleteSelectedTrip = (index: number) => {
-    if (!user || index === -1) return;
+    if (!user) return;
 
     const tripToDelete = userTrips[index];
 
@@ -102,31 +102,19 @@ export default function YourTrips() {
     handleDeleteTrip();
   };
 
-  const TripDropdown = ({ index }: { index: number }) => {
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
-    const [isModalOpen, setModalOpen] = useState(false);
+  const swapTripsPosition = (firstIndex: number, secondIndex: number) => {
+    if (!user) return;
 
-    const swapTripsPosition = (index: number, direction: "up" | "down") => {
-      const newTrips = [...userTrips];
+    const newTrips = [...userTrips];
 
-      const adjacentIndex = direction === "up" ? index - 1 : index + 1;
+    // Swap elements using destructuring assignment
+    [newTrips[firstIndex], newTrips[secondIndex]] = [newTrips[secondIndex], newTrips[firstIndex]];
 
-      newTrips[index].position = adjacentIndex;
-      newTrips[adjacentIndex].position = index;
+    dispatchUserTrips({ type: UT.REPLACE, userTrips: newTrips });
 
-      dispatchUserTrips({ type: UT.REPLACE, userTrips: newTrips });
-
+    const updatePosition = (tripId: string, position: number) => {
       updateTrip.mutate(
-        { tripId: userTrips[index].id, data: { position: adjacentIndex } },
-        {
-          onError(error) {
-            console.error(error);
-            dispatchUserTrips({ type: UT.REPLACE, userTrips });
-          },
-        },
-      );
-      updateTrip.mutate(
-        { tripId: userTrips[adjacentIndex].id, data: { position: index } },
+        { tripId, data: { position } },
         {
           onError(error) {
             console.error(error);
@@ -136,79 +124,29 @@ export default function YourTrips() {
       );
     };
 
+    updatePosition(userTrips[firstIndex].id, secondIndex);
+    updatePosition(userTrips[secondIndex].id, firstIndex);
+  };
+
+  const TripDropdown = ({ index }: { index: number }) => {
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
+
     const dropdownList: DropdownList = [
       {
         index: 0,
-        onSelect: () => {
-          const selectedId = userTrips[index].id;
-          const aboveId = userTrips[index - 1].id;
-
-          // dispatchUserTrips({ type: UT.SWAP_TRIPS_POSITION, tripsPosition: [index, index - 1] });
-          const newTrips = [...userTrips];
-
-          const adjacentIndex = index - 1;
-
-          newTrips[index].position = adjacentIndex;
-          newTrips[adjacentIndex].position = index;
-
-          dispatchUserTrips({ type: UT.REPLACE, userTrips: newTrips });
-
-          updateTrip.mutate(
-            { tripId: selectedId, data: { position: index - 1 } },
-            {
-              onError(error) {
-                console.error(error);
-                dispatchUserTrips({ type: UT.REPLACE, userTrips });
-              },
-            },
-          );
-          updateTrip.mutate(
-            { tripId: aboveId, data: { position: index + 1 } },
-            {
-              onError(error) {
-                console.error(error);
-                dispatchUserTrips({ type: UT.REPLACE, userTrips });
-              },
-            },
-          );
-        },
+        onSelect: () => swapTripsPosition(index, index - 1),
         skip: index === 0,
       },
       {
         index: 1,
-        onSelect: () => {
-          const selectedId = userTrips[index].id;
-          const aboveId = userTrips[index + 1].id;
-
-          // dispatchUserTrips({ type: UT.SWAP_TRIPS_POSITION, tripsPosition: [index, index + 1] });
-
-          updateTrip.mutate(
-            { tripId: selectedId, data: { position: index + 1 } },
-            {
-              onError(error) {
-                console.error(error);
-                dispatchUserTrips({ type: UT.REPLACE, userTrips });
-              },
-            },
-          );
-          updateTrip.mutate(
-            { tripId: aboveId, data: { position: index - 1 } },
-            {
-              onError(error) {
-                console.error(error);
-                dispatchUserTrips({ type: UT.REPLACE, userTrips });
-              },
-            },
-          );
-        },
+        onSelect: () => swapTripsPosition(index, index + 1),
         skip: index === userTrips.length - 1,
       },
       { index: 2, onSelect: () => {}, skip: true },
       {
         index: 3,
-        onSelect: () => {
-          setModalOpen(true);
-        },
+        onSelect: () => setModalOpen(true),
       },
     ];
 
@@ -231,7 +169,9 @@ export default function YourTrips() {
           </DropdownOption>
           <DropdownOption index={1}>Move down</DropdownOption>
           <DropdownOption index={2}>Duplicate</DropdownOption>
-          <DropdownOption index={3}>Delete</DropdownOption>
+          <DropdownOption index={3} className="rounded-b-lg">
+            Delete
+          </DropdownOption>
         </Dropdown>
 
         <Modal isOpen={isModalOpen} setOpen={setModalOpen} backdrop={{ type: "blur" }} removeButton>
@@ -310,26 +250,26 @@ export default function YourTrips() {
 
       <ul className="flex flex-col">
         {userTrips?.map((trip: Trip, index: number) => (
-          <li key={trip.id} className="relative">
+          <li key={trip.id} className="group/trip relative">
             <Button
               onClick={() => router.push(`/t/${trip.id}`)}
               variant="scale"
               size="default"
               className={cn(
-                "peer w-full gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected peer-hover:before:scale-100 peer-hover:before:opacity-100",
+                "peer w-full gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
                 index !== selectedTrip
                   ? "fill-tintedGray-400"
-                  : "fill-kolumblue-500 text-kolumblue-500 hover:fill-kolumblue-500 hover:text-kolumblue-500",
+                  : "fill-kolumblue-500 text-kolumblue-500 group-hover/trip:fill-kolumblue-500 group-hover/trip:text-kolumblue-500",
               )}
               animatePress
             >
-              <Icon.defaultTrip className="h-4 w-4 duration-300 ease-kolumb-overflow group-hover:translate-x-1.5 peer-hover:translate-x-1.5" />
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap duration-300 ease-kolumb-overflow group-hover:translate-x-1.5 peer-hover:translate-x-1.5">
+              <Icon.defaultTrip className="h-4 w-4 duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5 group-hover:translate-x-1.5" />
+              <p className="overflow-hidden text-ellipsis whitespace-nowrap duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5 group-hover:translate-x-1.5">
                 {trip.name}
               </p>
             </Button>
 
-            <span className="peer absolute right-2 top-1 z-10 duration-300 ease-kolumb-overflow">
+            <span className="absolute right-2 top-1 z-10 opacity-0 duration-300 ease-kolumb-leave group-hover/trip:opacity-100 group-hover/trip:ease-kolumb-flow">
               <TripDropdown index={index} />
             </span>
           </li>

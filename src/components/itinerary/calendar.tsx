@@ -37,7 +37,7 @@ function CalendarHeader({ dayPosition, dragOverlay, handleAddEvent, ...props }: 
   return (
     <div className="relative z-30 flex h-5 w-32 cursor-default items-center justify-center bg-kolumblue-500 text-xs font-medium text-white/75 shadow-xl group-first/calendar:rounded-t-xl">
       <button
-        className={`group/move peer absolute left-0 flex h-5 w-7 cursor-grab items-center opacity-0 duration-300 ease-kolumb-leave group-hover/calendar:opacity-100 group-hover/calendar:ease-kolumb-flow ${
+        className={`group/move absolute left-0 flex h-5 w-7 cursor-grab items-center opacity-0 duration-300 ease-kolumb-leave group-hover/calendar:opacity-100 group-hover/calendar:ease-kolumb-flow ${
           dragOverlay && "opacity-100 group-hover/calendar:opacity-100"
         }`}
         {...props}
@@ -55,7 +55,7 @@ function CalendarHeader({ dayPosition, dragOverlay, handleAddEvent, ...props }: 
 
       <button
         onClick={handleAddEvent}
-        className="group/add peer absolute right-0 flex h-5 w-6 items-center opacity-0 duration-300 ease-kolumb-leave group-hover/calendar:opacity-100 group-hover/calendar:ease-kolumb-flow"
+        className="group/add absolute right-0 flex h-5 w-6 items-center opacity-0 duration-300 ease-kolumb-leave group-hover/calendar:opacity-100 group-hover/calendar:ease-kolumb-flow"
       >
         <Icon.plus className="absolute right-2 h-2.5 w-2.5 fill-white/75 duration-500 ease-kolumb-flow" />
         <p

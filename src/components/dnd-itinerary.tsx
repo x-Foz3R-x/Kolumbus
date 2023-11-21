@@ -370,7 +370,7 @@ const EventComponent = memo(
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const dayPosition = GetDayPosition(activeTrip.itinerary, event.date);
 
-    const getImageUrl = (): string => {
+    const getImage = (): string => {
       if (!event.photo) return "/images/event-placeholder.png";
       if (event.photo.startsWith("http")) return event.photo;
 
@@ -491,7 +491,7 @@ const EventComponent = memo(
         )}
 
         <div ref={ref} onClick={() => setActiveEvent(event)} className="flex-1 cursor-pointer" {...props}>
-          <Image src={getImageUrl()} alt="Event Image" width={156} height={80} priority className="h-20 object-cover object-center" />
+          <Image src={getImage()} alt="Event Image" width={156} height={80} priority className="h-20 object-cover object-center" />
         </div>
 
         <input
