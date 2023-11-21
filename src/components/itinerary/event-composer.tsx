@@ -21,8 +21,6 @@ export default function EventComposer() {
   const createEvent = api.event.create.useMutation();
   const getPlaceDetails = api.google.details.useMutation();
 
-  // console.log(cuid2.init({ length: 14 })());
-
   const [sessionToken, setSessionToken] = useState(cuid2.createId());
 
   // todo - fill type of useRef
@@ -50,14 +48,14 @@ export default function EventComposer() {
       setSaving(true);
       dispatchUserTrips({
         type: UT.CREATE_EVENT,
-        payload: { selectedTrip, dayPosition: itineraryPosition.y_day, placeAt: "end", event },
+        payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
       });
       createEvent.mutate(event, {
         onSuccess(updatedEvent) {
           if (!updatedEvent) return;
           dispatchUserTrips({
             type: UT.UPDATE_EVENT,
-            payload: { selectedTrip, dayPosition: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
+            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
           });
         },
         onError(error) {
@@ -93,14 +91,18 @@ export default function EventComposer() {
 
             dispatchUserTrips({
               type: UT.CREATE_EVENT,
-              payload: { selectedTrip, dayPosition: itineraryPosition.y_day, placeAt: "end", event },
+              payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
             });
             createEvent.mutate(event, {
               onSuccess(updatedEvent) {
                 if (!updatedEvent) return;
                 dispatchUserTrips({
                   type: UT.UPDATE_EVENT,
-                  payload: { selectedTrip, dayPosition: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
+                  payload: {
+                    tripIndex: selectedTrip,
+                    dayIndex: itineraryPosition.y_day,
+                    event: { ...event, ...(updatedEvent as Event) },
+                  },
                 });
               },
               onError(error) {
@@ -116,7 +118,7 @@ export default function EventComposer() {
           onSettled() {
             setSaving(false);
           },
-        }
+        },
       );
     } else if (!eventData.place_id) {
       event.name = eventData.structured_formatting.main_text;
@@ -124,14 +126,14 @@ export default function EventComposer() {
       setSaving(true);
       dispatchUserTrips({
         type: UT.CREATE_EVENT,
-        payload: { selectedTrip, dayPosition: itineraryPosition.y_day, placeAt: "end", event: event },
+        payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
       });
       createEvent.mutate(event, {
         onSuccess(updatedEvent) {
           if (!updatedEvent) return;
           dispatchUserTrips({
             type: UT.UPDATE_EVENT,
-            payload: { selectedTrip, dayPosition: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
+            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
           });
         },
         onError(error) {

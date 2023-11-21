@@ -52,7 +52,7 @@ export default function YourTrips() {
       },
       onError(error) {
         console.error(error);
-        dispatchUserTrips({ type: UT.REPLACE, userTrips });
+        dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
       },
     });
   };
@@ -74,7 +74,7 @@ export default function YourTrips() {
         {
           onError(error) {
             console.error(error);
-            dispatchUserTrips({ type: UT.REPLACE, userTrips });
+            dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
           },
         },
       );
@@ -87,7 +87,7 @@ export default function YourTrips() {
         {
           onError(error) {
             console.error(error);
-            dispatchUserTrips({ type: UT.REPLACE, userTrips });
+            dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
             router.push(`/t/${tripToDelete.id}`);
           },
         },
@@ -109,7 +109,7 @@ export default function YourTrips() {
     // Swap elements using destructuring assignment
     [newTrips[firstIndex], newTrips[secondIndex]] = [newTrips[secondIndex], newTrips[firstIndex]];
 
-    dispatchUserTrips({ type: UT.REPLACE, userTrips: newTrips });
+    dispatchUserTrips({ type: UT.REPLACE, trips: newTrips });
 
     const updatePosition = (tripId: string, position: number) => {
       updateTrip.mutate(
@@ -117,7 +117,7 @@ export default function YourTrips() {
         {
           onError(error) {
             console.error(error);
-            dispatchUserTrips({ type: UT.REPLACE, userTrips });
+            dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
           },
         },
       );

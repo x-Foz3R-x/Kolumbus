@@ -8,7 +8,7 @@ import { useDndData } from "@/components/dnd-itinerary";
 
 import { useCloseTriggers } from "@/hooks/use-accessibility-features";
 import type { UpdateEvent } from "@/server/routers/event";
-import { GetDayPosition } from "@/lib/dnd";
+import { GetDayIndex } from "@/lib/dnd";
 import { Event, UT } from "@/types";
 
 import Input from "../ui/input";
@@ -40,10 +40,13 @@ export default function EventPanel() {
   const handleUpdate = (data: UpdateEvent) => {
     if (!activeEvent) return;
 
-    const dayPosition = GetDayPosition(activeTrip.itinerary, activeEvent.date);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, activeEvent.date);
 
     setSaving(true);
-    dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { selectedTrip, dayPosition, event: { ...activeEvent, ...data } } });
+    dispatchUserTrips({
+      type: UT.UPDATE_EVENT,
+      payload: { tripIndex: selectedTrip, dayIndex, event: { ...activeEvent, ...data } },
+    });
     updateEvent.mutate(
       { eventId: activeEvent.id, data: data },
       {
@@ -51,7 +54,7 @@ export default function EventPanel() {
           if (!updatedEvent) return;
           dispatchUserTrips({
             type: UT.UPDATE_EVENT,
-            payload: { selectedTrip, dayPosition, event: { ...activeEvent, ...data, updatedAt: updatedEvent.updatedAt } },
+            payload: { tripIndex: selectedTrip, dayIndex, event: { ...activeEvent, ...data, updatedAt: updatedEvent.updatedAt } },
           });
         },
         onError(error) {
@@ -61,29 +64,32 @@ export default function EventPanel() {
         onSettled() {
           setSaving(false);
         },
-      }
+      },
     );
   };
 
   const handleDelete = () => {
     if (!activeEvent) return;
 
-    const dayPosition = GetDayPosition(activeTrip.itinerary, activeEvent.date);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, activeEvent.date);
 
-    const events = [...activeTrip.itinerary[dayPosition].events];
+    const events = [...activeTrip.itinerary[dayIndex].events];
     events.splice(activeEvent.position, 1);
     events.map((event, index) => ({ position: index }));
 
     setSaving(true);
     setEventPanelDisplay(false);
-    dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { selectedTrip, dayPosition, event: activeEvent } });
+    dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event: activeEvent } });
     deleteEvent.mutate(
       { eventId: activeEvent.id, events },
       {
         onSuccess(updatedEvents) {
           if (!updatedEvents) return;
           updatedEvents.forEach((event) => {
-            dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { selectedTrip, dayPosition, event: { ...(event as Event) } } });
+            dispatchUserTrips({
+              type: UT.UPDATE_EVENT,
+              payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event) } },
+            });
           });
         },
         onError(error) {
@@ -93,7 +99,7 @@ export default function EventPanel() {
         onSettled() {
           setSaving(false);
         },
-      }
+      },
     );
   };
 

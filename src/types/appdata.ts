@@ -57,7 +57,6 @@ export type EventDB = PrismaEvent;
  * Enum representing the different types of updates that can be made to the appdata.
  */
 export enum UT {
-  //#region CRUD
   // TRIPS
   REPLACE = "replace_trips_state",
 
@@ -80,7 +79,7 @@ export enum UT {
 export type DispatchAction =
   | {
       type: UT.REPLACE;
-      userTrips: Trip[];
+      trips: Trip[];
     }
   | {
       type: UT.CREATE_TRIP;
@@ -96,13 +95,13 @@ export type DispatchAction =
     }
   | {
       type: UT.CREATE_EVENT;
-      payload: { selectedTrip: number; dayPosition: number; placeAt: "start" | "end"; event: Event };
+      payload: { tripIndex: number; dayIndex: number; event: Event; placeAt: "start" | "end" };
     }
   | {
       type: UT.UPDATE_EVENT;
-      payload: { selectedTrip: number; dayPosition: number; event: Event };
+      payload: { tripIndex: number; dayIndex: number; event: Event };
     }
   | {
       type: UT.DELETE_EVENT;
-      payload: { selectedTrip: number; dayPosition: number; event: Event };
+      payload: { tripIndex: number; dayIndex: number; event: Event };
     };

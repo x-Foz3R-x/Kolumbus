@@ -31,7 +31,7 @@ export default function Library() {
       },
       onError(error) {
         console.error(error);
-        dispatchUserTrips({ type: UT.REPLACE, userTrips: currentUserTrips });
+        dispatchUserTrips({ type: UT.REPLACE, trips: currentUserTrips });
       },
     });
   };

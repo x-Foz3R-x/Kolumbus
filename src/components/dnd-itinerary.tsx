@@ -10,7 +10,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
-import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayPosition } from "@/lib/dnd";
+import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayIndex } from "@/lib/dnd";
 import { Trip, Day, Event, UT } from "@/types";
 
 import Icon from "./icons";
@@ -92,7 +92,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
     // todo: optimize not to update all events, only the changed ones
     // todo: sync with db, if update fails, revert to previous state
     const iteratedDate = new Date(tripInfo.startDate);
-    itinerary.forEach((day, dayPosition) => {
+    itinerary.forEach((day, dayIndex) => {
       day.events.forEach((event, index) => {
         event.date = iteratedDate.toISOString();
         event.position = index;
@@ -100,7 +100,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
         setSaving(true);
         dispatchUserTrips({
           type: UT.UPDATE_EVENT,
-          payload: { selectedTrip, dayPosition, event },
+          payload: { tripIndex: selectedTrip, dayIndex, event },
         });
         updateEvent.mutate(
           {
@@ -112,7 +112,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
               if (!updatedEvent) return;
               dispatchUserTrips({
                 type: UT.UPDATE_EVENT,
-                payload: { selectedTrip, dayPosition, event: { ...event, ...(updatedEvent as Event) } },
+                payload: { tripIndex: selectedTrip, dayIndex, event: { ...event, ...(updatedEvent as Event) } },
               });
             },
             onError(error) {
@@ -287,17 +287,17 @@ const DayComponent = memo(
     const { id, date, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
-    const dayPosition = GetDayPosition(activeTrip.itinerary, date);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, date);
 
     const handleAddEvent = () => {
       setEventComposerDisplay(true);
-      setItineraryPosition({ y_day: dayPosition, x_event: 0 });
+      setItineraryPosition({ y_day: dayIndex, x_event: 0 });
     };
 
     const eventWidthAndGap = 168;
     return (
       <div ref={ref} className="group/day flex w-full gap-5">
-        <Calendar dayPosition={dayPosition} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
+        <Calendar index={dayIndex} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
 
         <ul
           className={`flex h-32 origin-left list-none gap-2 pt-5 duration-300 ease-kolumb-flow ${
@@ -368,7 +368,7 @@ const EventComponent = memo(
     const deleteEvent = api.event.delete.useMutation();
 
     const [isDropdownOpen, setDropdownOpen] = useState(false);
-    const dayPosition = GetDayPosition(activeTrip.itinerary, event.date);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
 
     const getImage = (): string => {
       if (!event.photo) return "/images/event-placeholder.png";
@@ -379,7 +379,7 @@ const EventComponent = memo(
 
     const openEventPanel = () => {
       setActiveEvent(event);
-      setItineraryPosition({ y_day: dayPosition, x_event: event.position });
+      setItineraryPosition({ y_day: dayIndex, x_event: event.position });
 
       if (isEventPanelDisplayed) {
         setEventPanelDisplay(false);
@@ -400,22 +400,25 @@ const EventComponent = memo(
         onSelect: () => {
           if (!event) return;
 
-          const dayPosition = GetDayPosition(activeTrip.itinerary, event.date);
+          const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
 
-          const events = [...activeTrip.itinerary[dayPosition].events];
+          const events = [...activeTrip.itinerary[dayIndex].events];
           events.splice(event.position, 1);
-          events.map((event, index) => ({ position: index }));
+          events.map((_, index) => ({ position: index }));
 
           setSaving(true);
           setEventPanelDisplay(false);
-          dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { selectedTrip, dayPosition, event } });
+          dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
           deleteEvent.mutate(
             { eventId: event.id, events },
             {
               onSuccess(updatedEvents) {
                 if (!updatedEvents) return;
                 updatedEvents.forEach((event) => {
-                  dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { selectedTrip, dayPosition, event: { ...(event as Event) } } });
+                  dispatchUserTrips({
+                    type: UT.UPDATE_EVENT,
+                    payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event) } },
+                  });
                 });
               },
               onError(error) {

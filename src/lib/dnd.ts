@@ -58,15 +58,11 @@ export function GetEvent(events: Event[], id: string): Event {
  * @returns The event index or undefined if not found.
  */
 export function GetIndex(itinerary: Itinerary, events: Event[], type: "day" | "event", id: string): number {
-  if (type === "day") {
-    const dayPosition = itinerary.findIndex((day) => day.id === id);
-    return dayPosition;
-  }
+  if (type === "day") return itinerary.findIndex((day) => day.id === id);
 
   if (type === "event") {
     const event = events.find((event) => event.id === id);
-    const eventIndex = typeof event?.position !== "undefined" ? event.position : -1;
-    return eventIndex;
+    return typeof event?.position !== "undefined" ? event.position : -1;
   }
 
   return -1;
@@ -78,7 +74,7 @@ export function GetIndex(itinerary: Itinerary, events: Event[], type: "day" | "e
  * @param date - The date for which you want to find the day index.
  * @returns The index of the day in the itinerary that matches the given date, or -1 if not found.
  */
-export function GetDayPosition(itinerary: Itinerary, date: string): number {
+export function GetDayIndex(itinerary: Itinerary, date: string): number {
   // Search for a day in the itinerary array with a matching date.
   // Return its index if found, or -1 if not found.
   return itinerary.findIndex((day: Day) => day.date === date);
@@ -102,7 +98,7 @@ export function EventOverDay(
   activeIndex: number,
   activeDate: string,
   overIndex: number,
-  overDate: string
+  overDate: string,
 ): Itinerary | undefined {
   if (activeDate === overDate) return;
 
@@ -142,7 +138,7 @@ export function EventOverEvent(
   activeDate: Date | string,
   overId: string,
   overIndex: number,
-  overDate: Date | string
+  overDate: Date | string,
 ): Itinerary | undefined {
   // Find the index of the active day and the day where the event is being moved over
   const activeDayIndex = itinerary.findIndex((day) => day.date === activeDate);

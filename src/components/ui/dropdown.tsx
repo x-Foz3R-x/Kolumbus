@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import Divider from "./divider";
 import Button, { ButtonProps } from "./button";
 
-export type DropdownOption = { index: number; onSelect: () => void; skip?: boolean };
+export type DropdownOption = { index: number; onSelect?: () => void; skip?: boolean };
 export type DropdownList = DropdownOption[];
 
 //#region Context
@@ -200,7 +200,9 @@ export function DropdownOption({ index, variant, size, className, children }: Dr
   const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
 
   const handleClick = () => {
-    list[index].onSelect();
+    const onSelect = list[index]?.onSelect;
+    if (onSelect) onSelect();
+
     handleClose();
   };
   const handleMouseMove = () => {
