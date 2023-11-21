@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 
 import Divider from "./divider";
 import Button, { ButtonProps } from "./button";
-import Modal, { ModalActionSection } from "./modal";
 
 export type DropdownOption = { index: number; onSelect: () => void; skip?: boolean };
 export type DropdownList = DropdownOption[];

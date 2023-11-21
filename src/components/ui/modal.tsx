@@ -34,7 +34,7 @@ type ModalProps = VariantProps<typeof ModalVariants> & {
   buttonProps?: ButtonProps;
   children: React.ReactNode;
 };
-export default function Modal({ isOpen, setOpen, backdrop, variant, size, className, removeButton, buttonProps, children }: ModalProps) {
+export function Modal({ isOpen, setOpen, backdrop, variant, size, className, removeButton, buttonProps, children }: ModalProps) {
   const ButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 

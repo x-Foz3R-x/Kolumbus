@@ -8,14 +8,15 @@ import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
 import { useUser } from "@clerk/nextjs";
 
+import { cn } from "@/lib/utils";
 import { tripTemplate } from "@/data/template-data";
 import { Trip, UT } from "@/types";
+
 import Icon from "./icons";
-import Modal, { ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle } from "./ui/modal";
+import { Modal, ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle } from "./ui/modal";
+import { Dropdown, DropdownList, DropdownOption } from "./ui/dropdown";
 import Button from "./ui/button";
 import Input from "./ui/input";
-import { cn } from "@/lib/utils";
-import { Dropdown, DropdownList, DropdownOption } from "./ui/dropdown";
 
 export default function YourTrips() {
   const { user } = useUser();
@@ -55,7 +56,6 @@ export default function YourTrips() {
       },
     });
   };
-
   const deleteSelectedTrip = (index: number) => {
     if (!user) return;
 
@@ -101,7 +101,6 @@ export default function YourTrips() {
 
     handleDeleteTrip();
   };
-
   const swapTripsPosition = (firstIndex: number, secondIndex: number) => {
     if (!user) return;
 
@@ -133,21 +132,10 @@ export default function YourTrips() {
     const [isModalOpen, setModalOpen] = useState(false);
 
     const dropdownList: DropdownList = [
-      {
-        index: 0,
-        onSelect: () => swapTripsPosition(index, index - 1),
-        skip: index === 0,
-      },
-      {
-        index: 1,
-        onSelect: () => swapTripsPosition(index, index + 1),
-        skip: index === userTrips.length - 1,
-      },
+      { index: 0, onSelect: () => swapTripsPosition(index, index - 1), skip: index === 0 },
+      { index: 1, onSelect: () => swapTripsPosition(index, index + 1), skip: index === userTrips.length - 1 },
       { index: 2, onSelect: () => {}, skip: true },
-      {
-        index: 3,
-        onSelect: () => setModalOpen(true),
-      },
+      { index: 3, onSelect: () => setModalOpen(true) },
     ];
 
     return (
