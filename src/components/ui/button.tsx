@@ -11,7 +11,7 @@ const ButtonVariants = cva("group peer relative flex select-none items-center ou
       default: "bg-gray-100 shadow-button focus-visible:shadow-focus",
       appear: "bg-transparent duration-300 ease-kolumb-flow focus-visible:shadow-focus",
       scale:
-        "bg-transparent before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:scale-50 before:opacity-0 before:shadow-button before:duration-300 before:ease-kolumb-flow before:hover:scale-100 before:hover:opacity-100 before:focus-visible:scale-100 before:focus-visible:opacity-100",
+        "z-10 bg-transparent before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:scale-50 before:opacity-0 before:shadow-button before:duration-300 before:ease-kolumb-flow before:hover:scale-100 before:hover:opacity-100 before:focus-visible:scale-100 before:focus-visible:opacity-100",
       button:
         "rounded-xl border-b-[3px] border-gray-200 bg-gray-100 shadow-button duration-200 ease-kolumb-flow focus-visible:shadow-focus active:border-b",
       disabled: "pointer-events-none opacity-40 focus-visible:shadow-focus",

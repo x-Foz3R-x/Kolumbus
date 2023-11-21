@@ -3,6 +3,10 @@ import Color from "./Color";
 export default function ColorPallette() {
   return (
     <>
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-bold text-gray-800">
+        Color
+      </h1>
+
       <div className="mt-14 grid grid-cols-[auto,auto,auto] gap-5 p-8">
         <section>
           <div className="flex items-center justify-center p-1">kolumblue</div>

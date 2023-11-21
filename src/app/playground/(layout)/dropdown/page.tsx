@@ -19,14 +19,7 @@ export default function DropdownTests() {
   const [padding, setPadding] = useState(50);
   const [offset, setOffset] = useState(5);
 
-  const dropdownList: DropdownList = [
-    { onSelect: () => {}, index: 0 },
-    { onSelect: () => {}, index: 1, skip: true },
-    { onSelect: () => {}, index: 2 },
-    { onSelect: () => {}, index: 3 },
-    { onSelect: () => {}, index: 4 },
-    { onSelect: () => {}, index: 5 },
-  ];
+  const dropdownList: DropdownList = [{ index: 0 }, { index: 1, skip: true }, { index: 2 }, { index: 3 }, { index: 4 }, { index: 5 }];
 
   //#region centering logic
   window.addEventListener("load", () => {
@@ -46,7 +39,7 @@ export default function DropdownTests() {
 
   return (
     <div className="h-screen w-screen bg-gray-50">
-      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-medium text-gray-800">
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-bold text-gray-800">
         Dropdown
       </h1>
 
@@ -205,7 +198,7 @@ export default function DropdownTests() {
 
           {/* Rulers */}
           <div style={{ paddingBlock: "15px" }} className="absolute -z-10 w-full border-y-4 border-double border-black/10" />
-          <div style={{ paddingInline: "27px" }} className="absolute -z-10 h-full border-x-4 border-double border-black/10" />
+          <div style={{ paddingInline: "29px" }} className="absolute -z-10 h-full border-x-4 border-double border-black/10" />
         </main>
       </div>
     </div>

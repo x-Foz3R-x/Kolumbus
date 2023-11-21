@@ -45,7 +45,7 @@ export default function PopoverTests() {
 
   return (
     <div className="h-screen w-screen bg-red-100">
-      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-medium text-gray-800">
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-bold text-gray-800">
         Popover
       </h1>
 
@@ -219,7 +219,7 @@ export default function PopoverTests() {
 
           {/* Rulers */}
           <div style={{ paddingBlock: "15px" }} className="absolute -z-10 w-full border-y-4 border-double border-black/10" />
-          <div style={{ paddingInline: "27px" }} className="absolute -z-10 h-full border-x-4 border-double border-black/10" />
+          <div style={{ paddingInline: "29px" }} className="absolute -z-10 h-full border-x-4 border-double border-black/10" />
         </main>
       </div>
     </div>

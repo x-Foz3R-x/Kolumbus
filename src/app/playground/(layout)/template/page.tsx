@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Template() {
   return (
     <div className="h-screen w-screen bg-gray-50">
-      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-medium text-gray-800">
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-bold text-gray-800">
         Template
       </h1>
 
