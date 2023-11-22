@@ -152,14 +152,10 @@ export default function YourTrips() {
             children: <Icon.horizontalDots className="w-3.5" />,
           }}
         >
-          <DropdownOption index={0} className="rounded-t-lg">
-            Move up
-          </DropdownOption>
+          <DropdownOption index={0}>Move up</DropdownOption>
           <DropdownOption index={1}>Move down</DropdownOption>
           <DropdownOption index={2}>Duplicate</DropdownOption>
-          <DropdownOption index={3} className="rounded-b-lg">
-            Delete
-          </DropdownOption>
+          <DropdownOption index={3}>Delete</DropdownOption>
         </Dropdown>
 
         <Modal isOpen={isModalOpen} setOpen={setModalOpen} backdrop={{ type: "blur" }} removeButton>

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import Divider from "./divider";
 import Button, { ButtonProps } from "./button";
 
-export type DropdownOption = { index: number; onSelect?: () => void; skip?: boolean };
+type DropdownOption = { index: number; onSelect?: () => void; skip?: boolean };
 export type DropdownList = DropdownOption[];
 
 //#region Context
@@ -30,23 +30,7 @@ export function useDropdownContext() {
 }
 //#endregion
 
-const DropdownVariants = cva("flex flex-col", {
-  variants: {
-    variant: {
-      light: "bg-white/80 shadow-border2XL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
-      default: "bg-gray-700/80 shadow-border2XL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
-      unstyled: "",
-    },
-    size: {
-      sm: "rounded-md p-1",
-      default: "rounded-xl p-1",
-      lg: "rounded-2xl p-1.5",
-      unstyled: "",
-    },
-  },
-  defaultVariants: { variant: "default", size: "default" },
-});
-type DropdownProps = VariantProps<typeof DropdownVariants> & {
+type DropdownProps = {
   isOpen: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
   list: DropdownList;
@@ -66,8 +50,6 @@ export function Dropdown({
   container = { selector: "body", margin: 0, padding: 0 },
   offset = 6,
   preventScroll = false,
-  variant,
-  size,
   className,
   buttonProps,
   children,
@@ -151,7 +133,10 @@ export function Dropdown({
             role="menu"
             aria-labelledby={buttonRef.current?.id}
             onFocus={() => setFocus("popover")}
-            className={cn(DropdownVariants({ variant, size, className }))}
+            className={cn(
+              "flex flex-col rounded-lg bg-gray-700/80 p-1 shadow-border2XL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
+              className,
+            )}
           >
             {children}
           </ul>
@@ -178,14 +163,14 @@ export function DropdownGroupTitle({ title, divider = false, className }: Dropdo
 const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-left focus-visible:shadow-none", {
   variants: {
     variant: {
-      default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select focus:before:hidden",
-      primary: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select focus:before:hidden",
-      danger: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select focus:before:hidden",
+      default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select",
+      primary: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select",
+      danger: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select",
       unstyled: "",
     },
     size: {
       sm: "gap-2 rounded px-2 py-1 text-xs",
-      default: "gap-3 rounded px-3 py-1.5 text-sm",
+      default: "gap-3 rounded-[5px] px-3 py-1.5 text-sm",
       unstyled: "",
     },
   },

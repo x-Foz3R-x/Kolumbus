@@ -3,8 +3,6 @@
 import React, { createContext, useContext, useEffect, useState, useReducer } from "react";
 import { GenerateItinerary } from "@/lib/utils";
 import { DispatchAction, Trip, UT } from "@/types";
-import api from "@/app/_trpc/client";
-import { useRouter } from "next/router";
 
 //#region Context
 type AppdataContext = {

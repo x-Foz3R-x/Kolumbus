@@ -3,7 +3,7 @@ import TileLink from "../tile-link";
 import Icon from "@/components/icons";
 
 export default function SidebarMenu({ tripId }: { tripId: string }) {
-  const tileLinkStyle = "h-6 w-6 flex-none mt-[9px] mb-[3px] ";
+  const tileLinkStyle = "h-6 w-6 flex-none mt-[9px] mb-[3px]";
 
   return (
     <nav className="fixed bottom-0 left-0 top-0 z-40 bg-white">

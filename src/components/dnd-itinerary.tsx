@@ -456,7 +456,6 @@ const EventComponent = memo(
               list={dropdownList}
               container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
               offset={8}
-              size="sm"
               className="w-44"
               buttonProps={{
                 variant: "unstyled",
