@@ -12,11 +12,11 @@ import { cn } from "@/lib/utils";
 import { tripTemplate } from "@/data/template-data";
 import { Trip, UT } from "@/types";
 
-import Icon from "./icons";
-import { Modal, ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle } from "./ui/modal";
-import { Dropdown, DropdownList, DropdownOption } from "./ui/dropdown";
-import Button from "./ui/button";
-import Input from "./ui/input";
+import Icon from "../../icons";
+import { Modal, ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle } from "../../ui/modal";
+import { Dropdown, DropdownList, DropdownOption } from "../../ui/dropdown";
+import Button from "../../ui/button";
+import Input from "../../ui/input";
 
 export default function YourTrips() {
   const { user } = useUser();
