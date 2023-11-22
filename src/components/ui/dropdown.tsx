@@ -9,7 +9,7 @@ import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
 import Divider from "./divider";
-import Button, { ButtonProps } from "./button";
+import Button, { Props } from "./button";
 
 type DropdownOption = { index: number; onSelect?: () => void; skip?: boolean };
 export type DropdownList = DropdownOption[];
@@ -39,7 +39,7 @@ type DropdownProps = {
   offset?: number;
   preventScroll?: boolean;
   className?: string;
-  buttonProps?: ButtonProps;
+  buttonProps?: Props;
   children?: React.ReactNode;
 };
 export function Dropdown({

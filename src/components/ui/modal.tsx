@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef } from "react";
 import { VariantProps, cva } from "class-variance-authority";
 
-import Button, { ButtonProps } from "./button";
+import Button, { Props } from "./button";
 import { Backdrop, Motion, Popover, Position, Prevent } from "./popover";
 import { cn } from "@/lib/utils";
 import useKeyPress from "@/hooks/use-key-press";
@@ -31,7 +31,7 @@ type ModalProps = VariantProps<typeof ModalVariants> & {
   backdrop?: { type: BackdropType; className?: string };
   className?: string;
   removeButton?: boolean;
-  buttonProps?: ButtonProps;
+  buttonProps?: Props;
   children: React.ReactNode;
 };
 export function Modal({ isOpen, setOpen, backdrop, variant, size, className, removeButton, buttonProps, children }: ModalProps) {

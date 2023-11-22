@@ -10,7 +10,6 @@ import { tripTemplate } from "@/data/template-data";
 import { Trip, UT } from "@/types";
 
 import Icon from "@/components/icons";
-import TileLink from "@/components/tile-link";
 
 export default function Library() {
   const { user } = useUser();
@@ -50,11 +49,7 @@ export default function Library() {
           </button>
         </div>
         <section className="grid w-full flex-col items-center justify-items-center gap-2 px-4">
-          {userTrips?.map((trip) => (
-            <TileLink key={trip.id} link={`/t/${trip.id}`} label={trip.name}>
-              <Icon.itinerary className="mb-[3px] mt-[9px] h-6 w-6 flex-none" />
-            </TileLink>
-          ))}
+          {userTrips?.map((trip) => <Icon.itinerary key={trip.id} className="mb-[3px] mt-[9px] h-6 w-6 flex-none" />)}
         </section>
       </div>
     </main>
