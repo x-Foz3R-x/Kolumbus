@@ -389,12 +389,9 @@ const EventComponent = memo(
 
     const dropdownList: DropdownList = [
       { index: 0, onSelect: openEventPanel },
-      {
-        index: 1,
-        onSelect: () => event.address && navigator.clipboard.writeText(event.address),
-      },
-      { index: 2, onSelect: () => {}, skip: !event?.url },
-      { index: 3, onSelect: () => {}, skip: true },
+      { index: 1, onSelect: () => event.address && navigator.clipboard.writeText(event.address) },
+      { index: 2, skip: !event?.url },
+      { index: 3, skip: true },
       {
         index: 4,
         onSelect: () => {
@@ -474,10 +471,12 @@ const EventComponent = memo(
               </DropdownOption>
 
               <Divider className="my-1 rounded bg-white/25" />
+
               <DropdownLink index={2} href={event?.url} size="sm" className="flex items-center justify-center gap-1">
                 Find in Google Maps
                 <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-100" />
               </DropdownLink>
+
               <Divider className="my-1 rounded bg-white/25" />
 
               <DropdownOption index={3}>

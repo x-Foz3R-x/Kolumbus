@@ -7,7 +7,7 @@ import { useClerk } from "@clerk/clerk-react";
 import { useSignUp } from "@clerk/nextjs";
 
 import Checkbox from "@/components/ui/checkbox/checkbox";
-import Input from "@/components/ui/input";
+import { StatelessInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
 
 export default function SignUp() {
@@ -86,7 +86,7 @@ export default function SignUp() {
 
         <form className="relative flex w-[22rem] flex-shrink-0 flex-col gap-6">
           <div className="rounded-lg shadow-soft">
-            <Input
+            <StatelessInput
               id="username"
               name="username"
               type="text"
@@ -102,7 +102,7 @@ export default function SignUp() {
               spellCheck="false"
             />
 
-            <Input
+            <StatelessInput
               id="email"
               name="email"
               type="email"
@@ -118,7 +118,7 @@ export default function SignUp() {
               spellCheck="false"
             />
 
-            <Input
+            <StatelessInput
               id="password"
               name="password"
               type="password"
@@ -134,7 +134,7 @@ export default function SignUp() {
               spellCheck="false"
             />
 
-            <Input
+            <StatelessInput
               id="confirm-password"
               name="confirm-password"
               type="password"
@@ -198,7 +198,7 @@ export default function SignUp() {
 
         <form className="relative flex w-[22rem] flex-shrink-0 flex-col gap-6">
           <div className="rounded-lg shadow-soft">
-            <Input value={code} label="Verification code" onChange={(e) => setCode(e.target.value)} variant="insetLabel" />
+            <StatelessInput value={code} label="Verification code" onChange={(e) => setCode(e.target.value)} variant="insetLabel" />
           </div>
 
           <button

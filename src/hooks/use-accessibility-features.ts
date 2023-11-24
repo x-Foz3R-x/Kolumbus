@@ -70,84 +70,62 @@ export function useScopedTabNavigation(elementRef: React.MutableRefObject<HTMLEl
 
 /**
  * A hook that provides list navigation functionality for accessibility purposes.
- *
  * @template T The type of the items in the list.
  * @param list The list of items to navigate.
  * @param isNavigationEnabled Whether or not list navigation is enabled.
- * @param onSelectCallback A callback function to be called when the enter key is pressed.
- * @param onChangeCallback A callback function to be called when an arrow key is pressed.
+ * @param onArrowPressCallback A callback function to be called when an arrow key is pressed.
+ * @param onEnterSelectCallback A callback function to be called when the enter key is pressed.
  * @returns An object containing the currently selected index and a function to set the selected index.
  */
-export function useListNavigationOLD<T>(
+export function useListNavigationOld<T>(
   list: T[],
   isNavigationEnabled: boolean,
-  callback: { onSelect: (selectedItem: T, index: number) => void; onChange?: (selectedItem: T, index: number) => void },
+  onArrowPressCallback: (selectedItem: T) => void,
+  onEnterSelectCallback: (selectedItem: T) => void,
 ) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const enterPressed = useKeyPress(Key.Enter);
-  const spacePressed = useKeyPress(Key.Space);
-  const arrowUpPressed = useKeyPress(Key.ArrowUp, isNavigationEnabled);
-  const arrowDownPressed = useKeyPress(Key.ArrowDown, isNavigationEnabled);
-  const homePressed = useKeyPress(Key.Home, isNavigationEnabled);
-  const endPressed = useKeyPress(Key.End, isNavigationEnabled);
+  const arrowUpPressed = useKeyPress(Key.ArrowUp);
+  const arrowDownPressed = useKeyPress(Key.ArrowDown);
 
   useEffect(() => {
-    if (!isNavigationEnabled) return;
-
     /**
      * Handles arrow key presses by updating the selected index and calling the onArrowPressCallback.
      * @param direction The direction of the arrow key press.
      */
     const handleArrowPress = (direction: Key.ArrowUp | Key.ArrowDown) => {
-      let nextIndex = selectedIndex;
-
-      if (selectedIndex !== -1) {
-        nextIndex = (direction === Key.ArrowUp ? -1 + selectedIndex + list.length : 1 + selectedIndex) % list.length;
-      } else {
-        nextIndex = direction === Key.ArrowUp ? list.length - 1 : 0;
-      }
-
+      const nextIndex = (direction === Key.ArrowUp ? -1 + selectedIndex + list.length : 1 + selectedIndex) % list.length;
       setSelectedIndex(nextIndex);
-      if (callback.onChange) callback.onChange(list[nextIndex], nextIndex);
-    };
-    const handleHomeEndPress = (direction: Key.Home | Key.End) => {
-      const nextIndex = direction === Key.Home ? 0 : list.length - 1;
-
-      setSelectedIndex(nextIndex);
-      if (callback.onChange) callback.onChange(list[nextIndex], nextIndex);
+      onArrowPressCallback(list[nextIndex]);
     };
 
+    if (!isNavigationEnabled) return;
     if (arrowUpPressed) handleArrowPress(Key.ArrowUp);
     else if (arrowDownPressed) handleArrowPress(Key.ArrowDown);
-    else if (homePressed) handleHomeEndPress(Key.Home);
-    else if (endPressed) handleHomeEndPress(Key.End);
-  }, [isNavigationEnabled, arrowUpPressed, arrowDownPressed, homePressed, endPressed]); // eslint-disable-line
+  }, [arrowUpPressed, arrowDownPressed]); // eslint-disable-line
 
   useEffect(() => {
     if (!isNavigationEnabled) return;
-    if (enterPressed || spacePressed) callback.onSelect(list[selectedIndex], selectedIndex);
-  }, [isNavigationEnabled, enterPressed, spacePressed, callback, list, selectedIndex]);
+    if (enterPressed) onEnterSelectCallback(list[selectedIndex]);
+  }, [enterPressed]); // eslint-disable-line
 
-  useEffect(() => {
-    if (list.length <= selectedIndex) setSelectedIndex(0);
-  }, [list, selectedIndex]);
-
-  return [selectedIndex, setSelectedIndex] as const;
+  return { selectedIndex, setSelectedIndex };
 }
 
 type UseListNavigationProps = {
   onChangeCallback?: (index: number) => void;
   hasFocus?: false | "trigger" | "popover";
   setFocus?: React.Dispatch<React.SetStateAction<false | "trigger" | "popover">>;
-  triggerRef: React.MutableRefObject<HTMLButtonElement | null>;
-  listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLLIElement | null)[]>;
+  triggerRef: React.MutableRefObject<HTMLElement | null>;
+  listItemsRef: React.MutableRefObject<(HTMLElement | null)[]>;
   listLength: number;
   skipIndexes?: number[];
   initialIndex: number;
   placement: Placement;
   enabled: boolean;
-  loop: boolean;
+  loop?: boolean;
+  useFocus?: boolean;
 };
 /**
  * A hook that provides dropdown navigation functionality for accessibility purposes.
@@ -165,7 +143,8 @@ export function useListNavigation({
   initialIndex,
   placement,
   enabled,
-  loop,
+  loop = true,
+  useFocus = true,
 }: UseListNavigationProps) {
   const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [firstValidIndex, setFirstValidIndex] = useState(0);
@@ -239,7 +218,7 @@ export function useListNavigation({
 
       // Focus on the list item at the nextIndex if it exists,
       // update the activeIndex with the new value, and trigger the onChangeCallback if available.
-      listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
+      useFocus && listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
       setActiveIndex(nextIndex);
       if (onChangeCallback) onChangeCallback(nextIndex);
     };
@@ -252,12 +231,14 @@ export function useListNavigation({
 
   // Handles Home and End key press events for navigating to the first or last not skipped list item.
   useEffect(() => {
+    if (!enabled) return;
+
     const handleHomeEndPress = (direction: Key.Home | Key.End) => {
       let nextIndex = direction === Key.Home ? firstValidIndex : lastValidIndex;
 
       // Focus on the list item at the nextIndex if it exists,
       // update the activeIndex with the new value, and trigger the onChangeCallback if available.
-      listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
+      useFocus && listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
       setActiveIndex(nextIndex);
       if (onChangeCallback) onChangeCallback(nextIndex);
     };
@@ -268,6 +249,8 @@ export function useListNavigation({
 
   // Handles Tab key press events for managing focus transitions in different scenarios.
   useEffect(() => {
+    if (!enabled) return;
+
     const handleTabPress = () => {
       if (hasFocus === "trigger" && !tabEvent?.shiftKey) {
         tabEvent?.preventDefault();
@@ -276,26 +259,26 @@ export function useListNavigation({
 
         // Focus on the list item at the nextIndex if it exists,
         // update the activeIndex with the new value, and call the onChangeCallback if available.
-        listItemsRef.current[nextIndex]?.focus();
+        useFocus && listItemsRef.current[nextIndex]?.focus();
         setActiveIndex(nextIndex);
         if (onChangeCallback) onChangeCallback(nextIndex);
       } else if (hasFocus === "popover") {
         if (tabEvent?.shiftKey) {
           tabEvent?.preventDefault();
-          triggerRef.current?.focus();
+          useFocus && triggerRef.current?.focus();
         } else if (activeIndex < firstValidIndex) {
           tabEvent?.preventDefault();
 
           // Focus on the first list item (at index firstValidIndex),
           // reset the activeIndex to firstValidIndex, and call the onChangeCallback if available.
-          listItemsRef.current[firstValidIndex]?.focus();
+          useFocus && listItemsRef.current[firstValidIndex]?.focus();
           setActiveIndex(firstValidIndex);
           if (onChangeCallback) onChangeCallback(firstValidIndex);
         } else setFocus && setFocus(false);
       } else setFocus && setFocus(false);
     };
 
-    if (tabPressed && enabled) handleTabPress();
+    if (tabPressed) handleTabPress();
   }, [tabPressed]); // eslint-disable-line
 
   useEffect(() => {

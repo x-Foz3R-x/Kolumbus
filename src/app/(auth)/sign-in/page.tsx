@@ -8,7 +8,7 @@ import { useSignIn } from "@clerk/nextjs";
 
 import AuthProviders from "@/components/auth-providers";
 import Checkbox from "@/components/ui/checkbox/checkbox";
-import Input from "@/components/ui/input";
+import { StatelessInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
 import Divider from "@/components/ui/divider";
 
@@ -56,7 +56,7 @@ export default function SignIn() {
 
       <form className="relative flex w-80 flex-col gap-6">
         <div className="rounded-lg shadow-soft">
-          <Input
+          <StatelessInput
             id="email"
             name="email"
             type="email"
@@ -71,7 +71,7 @@ export default function SignIn() {
             className="mb-px rounded-lg rounded-b-none px-4 py-3 text-base"
           />
 
-          <Input
+          <StatelessInput
             id="password"
             name="password"
             type="password"

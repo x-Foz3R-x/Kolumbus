@@ -3,28 +3,30 @@
 import { useRef, useState } from "react";
 import cuid2 from "@paralleldrive/cuid2";
 
+import LocationSearchBox from "../location-search-box";
+
 import api from "@/app/_trpc/client";
 import { useUser } from "@clerk/nextjs";
 import { useDndData } from "../dnd-itinerary";
-
-import LocationSearchBox from "../location-search-box";
 
 import { useCloseTriggers } from "@/hooks/use-accessibility-features";
 import { eventTemplate } from "@/data/template-data";
 import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@/types";
 import useAppdata from "@/context/appdata";
+import { cn } from "@/lib/utils";
 
 export default function EventComposer() {
   const { user } = useUser();
   const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
   const { activeTrip, isEventComposerDisplayed, setEventComposerDisplay, itineraryPosition } = useDndData();
+
   const createEvent = api.event.create.useMutation();
   const getPlaceDetails = api.google.details.useMutation();
 
+  const [isOpen, setOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState(cuid2.createId());
 
-  // todo - fill type of useRef
-  const ref = useRef<any>(null);
+  const ref = useRef<HTMLElement>(null);
   useCloseTriggers([ref], () => isEventComposerDisplayed && setEventComposerDisplay(false));
 
   /**
@@ -153,18 +155,22 @@ export default function EventComposer() {
   return (
     <section
       ref={ref}
-      style={{
-        left: 172,
-        transform: `translate(0,${itineraryPosition.y_day * 132 + 20}px)`,
-      }}
-      className={`absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-borderXL transition-opacity duration-300 ease-kolumb-flow  ${
-        isEventComposerDisplayed ? "opacity-100" : "pointer-events-none select-none opacity-0"
-      } 
-      `}
+      style={{ left: 172, transform: `translateY(${itineraryPosition.y_day * 132 + 20}px)` }}
+      className={cn(
+        "absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-borderXL duration-300 ease-kolumb-flow",
+        isEventComposerDisplayed ? "opacity-100" : "pointer-events-none select-none opacity-0",
+        isOpen && "rounded-b-none",
+      )}
     >
-      <section className={`flex flex-1 items-end justify-between p-2 pb-[10px] text-center text-sm`}>Event Composer</section>
+      <section className="flex flex-1 items-end justify-between p-2 pb-[10px] text-center text-sm">Event Composer</section>
 
-      <LocationSearchBox onAdd={handleAddEvent} placeholder="Find interesting places" sessionToken={sessionToken} />
+      <LocationSearchBox
+        isOpen={isOpen}
+        setOpen={setOpen}
+        onAdd={handleAddEvent}
+        placeholder="Find interesting places"
+        sessionToken={sessionToken}
+      />
     </section>
   );
 }

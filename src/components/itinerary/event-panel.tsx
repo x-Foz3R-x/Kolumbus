@@ -11,7 +11,7 @@ import type { UpdateEvent } from "@/server/routers/event";
 import { GetDayIndex } from "@/lib/dnd";
 import { Event, UT } from "@/types";
 
-import Input from "../ui/input";
+import { StatelessInput } from "../ui/input";
 import Divider from "../ui/divider";
 import Icon from "../icons";
 
@@ -140,7 +140,7 @@ export default function EventPanel() {
               <Image src={getImageUrl()} alt="Event Image" width={312} height={160} priority className="h-40 object-cover object-center" />
             </div>
 
-            <Input
+            <StatelessInput
               type="text"
               placeholder="Event Name"
               value={activeEvent?.name ?? ""}
@@ -165,7 +165,7 @@ export default function EventPanel() {
               <div className="flex w-full gap-3">
                 <div className="relative flex items-center">
                   <Icon.x className="absolute left-4 h-3" />
-                  <Input
+                  <StatelessInput
                     type="tel"
                     placeholder="Phone number"
                     value={activeEvent?.phoneNumber ?? ""}
@@ -175,7 +175,7 @@ export default function EventPanel() {
                 </div>
 
                 <div className="relative flex w-2/5 items-center">
-                  <Input
+                  <StatelessInput
                     type="number"
                     placeholder="0.00"
                     value={activeEvent?.cost ?? ""}
@@ -187,7 +187,7 @@ export default function EventPanel() {
 
               <div className="relative flex w-full items-center">
                 <Icon.x className="absolute left-4 h-3" />
-                <Input
+                <StatelessInput
                   type="text"
                   placeholder="www.example.com"
                   value={activeEvent?.website ?? ""}
