@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import api from "@/app/_trpc/client";
 import { Language, PlaceAutocompletePrediction } from "@/types";
@@ -9,6 +9,7 @@ import Button from "./ui/button";
 import Divider from "./ui/divider";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import Tooltip from "./ui/tooltip";
 
 type LocationSearchBoxProps = {
   isOpen: boolean;
@@ -63,16 +64,6 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
 
   const [delayedHover, setDelayedHover] = useState(false);
 
-  const handleMouseEnter = () => {
-    setTimeout(() => {
-      setDelayedHover(true);
-    }, 1250);
-  };
-
-  const handleMouseLeave = () => {
-    setDelayedHover(false);
-  };
-
   return (
     <Combobox.Root isOpen={isOpen} setOpen={setOpen} list={list.current} className="shadow-smI">
       <Combobox.Input
@@ -105,42 +96,53 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
 
       <Combobox.List className="rounded-b-lg">
         {list.current.map((prediction, index) => {
-          // todo: include flags countries
-          if (index === 0 || typeof prediction.data === "string") return null;
-
-          console.log(delayedHover);
-
-          return (
-            <Combobox.Option
-              key={prediction.index}
-              index={index}
-              className="before:scale-x-50 before:scale-y-75 before:rounded-lg before:duration-200"
-            >
-              <Icon.pin className="w-2.5 fill-gray-400" />
-
-              <div
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                className="group/option flex h-9 w-44 flex-col justify-center text-left text-sm"
-              >
-                <span className={cn("w-full truncate", delayedHover && "group-hover/option:overflow-visible group-hover/option:text-clip")}>
-                  {prediction.data.structured_formatting.main_text}
-                </span>
-                {prediction.data.structured_formatting.secondary_text && (
-                  <span
-                    className={cn(
-                      "w-full truncate text-xs text-gray-500",
-                      delayedHover && "group-hover/option:overflow-visible group-hover/option:text-clip",
-                    )}
-                  >
-                    {prediction.data.structured_formatting.secondary_text}
-                  </span>
-                )}
-              </div>
-            </Combobox.Option>
-          );
+          if (prediction.index === 0 || typeof prediction.data === "string") return null;
+          return <Prediction key={prediction.index} index={index} prediction={prediction.data} />;
         })}
       </Combobox.List>
     </Combobox.Root>
+  );
+}
+
+function Prediction({ index, prediction }: { index: number; prediction: PlaceAutocompletePrediction }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const optionRef = useRef<HTMLLIElement>(null);
+
+  return (
+    <>
+      <Combobox.Option
+        ref={optionRef}
+        index={index}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        className="before:scale-x-50 before:scale-y-75 before:rounded-lg before:duration-200"
+      >
+        <Icon.pin className="w-2.5 fill-gray-400" />
+
+        <div className="group/option flex h-9 w-44 flex-col justify-center text-left text-sm">
+          <p className="pointer-events-none w-full truncate">{prediction.structured_formatting.main_text}</p>
+          {prediction.structured_formatting.secondary_text && (
+            <p className="pointer-events-none w-full truncate text-xs text-gray-500">{prediction.structured_formatting.secondary_text}</p>
+          )}
+        </div>
+      </Combobox.Option>
+
+      {isOpen && (
+        <Tooltip
+          triggerRef={optionRef}
+          placement="right"
+          container={{ selector: "main", margin: [56, 240, 0, 0], padding: 12 }}
+          offset={12}
+          arrow={{ size: 12 }}
+          delay={900}
+          className="max-w-[240px]"
+        >
+          <p className="text-xs">{prediction.structured_formatting.main_text}</p>
+          {prediction.structured_formatting.secondary_text && (
+            <p className="text-xs text-gray-600">{prediction.structured_formatting.secondary_text}</p>
+          )}
+        </Tooltip>
+      )}
+    </>
   );
 }

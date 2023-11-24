@@ -35,7 +35,7 @@ export function Flip(): Flip {
 export function Offset(value: number): Offset {
   return { name: "offset", value };
 }
-export function Arrow(value: number, className: { arrow: string; backdrop: string }): Arrow {
+export function Arrow(value: number, className?: { arrow?: string; backdrop?: string }): Arrow {
   return { name: "arrow", size: value, className };
 }
 

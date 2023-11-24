@@ -65,7 +65,7 @@ export function Popover({
         <span
           role="presentation"
           aria-hidden={true}
-          className={cn("absolute rotate-45", mountedExtensions.arrow.className?.arrow, useTransition.current)}
+          className={cn("absolute z-10 rotate-45", mountedExtensions.arrow.className?.arrow, useTransition.current)}
           {...props.arrow}
         ></span>
         {mountedExtensions.arrow.className?.backdrop ? (

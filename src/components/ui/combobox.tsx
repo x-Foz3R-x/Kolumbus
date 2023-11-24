@@ -1,4 +1,4 @@
-import { HTMLAttributes, createContext, useCallback, useContext, useEffect, useId, useRef } from "react";
+import { HTMLAttributes, createContext, forwardRef, useCallback, useContext, useEffect, useId, useRef } from "react";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 
 import { useCloseTriggers, useListNavigation } from "@/hooks/use-accessibility-features";
@@ -41,7 +41,7 @@ type Combobox = {
   };
   input: HTMLAttributes<HTMLInputElement> & { className?: string; children: React.ReactNode };
   list: { className?: string; children: React.ReactNode };
-  option: HTMLMotionProps<"button"> & { index: number; className?: string; children: React.ReactNode };
+  option: HTMLMotionProps<"li"> & { index: number; className?: string; children: React.ReactNode };
 };
 const Combobox = {
   Root({ isOpen, setOpen, list, listHeight, className, children }: Combobox["root"]) {
@@ -158,7 +158,7 @@ const Combobox = {
     );
   },
 
-  Option({ index, className, children }: Combobox["option"]) {
+  Option: forwardRef<HTMLLIElement, Combobox["option"]>(function Option({ index, className, children, ...props }, ref) {
     const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useComboboxContext();
 
     const handleClick = () => {
@@ -179,6 +179,7 @@ const Combobox = {
 
     return (
       <motion.li
+        ref={ref}
         role="menuitem"
         initial="initial"
         animate="animate"
@@ -186,6 +187,7 @@ const Combobox = {
         variants={TRANSITION.appearInSequence}
         custom={{ index }}
         className="group/option"
+        {...props}
       >
         <Button
           ref={(node) => (listItemsRef.current[index] = node)}
@@ -208,7 +210,7 @@ const Combobox = {
         </Button>
       </motion.li>
     );
-  },
+  }),
 };
 
 export default Combobox;
