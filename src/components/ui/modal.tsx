@@ -46,8 +46,6 @@ export function Modal({ isOpen, setOpen, backdrop, variant, size, className, rem
     isOpen && tabEvent?.preventDefault();
   }, [isOpen]); // eslint-disable-line
 
-  const handleClick = () => setOpen(!isOpen);
-
   useScopedTabNavigation(modalRef, isOpen);
 
   return (
@@ -56,7 +54,7 @@ export function Modal({ isOpen, setOpen, backdrop, variant, size, className, rem
         <Button
           ref={ButtonRef}
           id={buttonId}
-          onClick={handleClick}
+          onClick={() => setOpen(!isOpen)}
           aria-haspopup="dialog"
           aria-controls={contentId}
           {...(isOpen && { "aria-expanded": true })}

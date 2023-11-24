@@ -16,7 +16,7 @@ import Icon from "../../icons";
 import { Modal, ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle } from "../../ui/modal";
 import { Dropdown, DropdownList, DropdownOption } from "../../ui/dropdown";
 import Button from "../../ui/button";
-import Input from "../../ui/input";
+import { StatelessInput } from "../../ui/input";
 
 export default function YourTrips() {
   const { user } = useUser();
@@ -213,7 +213,7 @@ export default function YourTrips() {
 
             <ModalMessage>Enter the details below to create a new trip and start planning your itinerary.</ModalMessage>
 
-            <Input label="Trip name" onChange={(e) => (newTripName.current = e.target.value)} variant="insetLabel" />
+            <StatelessInput label="Trip name" onChange={(e) => (newTripName.current = e.target.value)} variant="insetLabel" />
           </ModalBodyWithIcon>
 
           <ModalActionSection>
@@ -240,7 +240,7 @@ export default function YourTrips() {
               variant="scale"
               size="default"
               className={cn(
-                "peer w-full gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
+                "w-full gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
                 index !== selectedTrip
                   ? "fill-tintedGray-400"
                   : "fill-kolumblue-500 text-kolumblue-500 group-hover/trip:fill-kolumblue-500 group-hover/trip:text-kolumblue-500",

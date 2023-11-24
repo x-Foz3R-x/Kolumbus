@@ -21,7 +21,6 @@ const DropdownContext = createContext<{
   activeIndex: number;
   setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
   handleClose: () => void;
-  preventInteraction: React.MutableRefObject<boolean>;
 } | null>(null);
 export function useDropdownContext() {
   const context = useContext(DropdownContext);
@@ -60,7 +59,6 @@ export function Dropdown({
 
   const buttonId = useId();
   const listId = useId();
-  const preventInteraction = useRef(false);
 
   const [hasFocus, setFocus] = useState<false | "trigger" | "popover">(false);
   const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
@@ -74,7 +72,7 @@ export function Dropdown({
     skipIndexes,
     initialIndex: inputType === "keyboard" ? 0 : -1,
     placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
-    enabled: isOpen && !preventInteraction.current,
+    enabled: isOpen,
     loop: false,
   });
 
@@ -124,10 +122,10 @@ export function Dropdown({
           Flip(),
           Offset(offset),
           Motion(TRANSITION.fadeInScale),
-          Prevent({ autofocus: inputType !== "keyboard", closeTriggers: preventInteraction.current, scroll: preventScroll }),
+          Prevent({ autofocus: inputType !== "keyboard", scroll: preventScroll }),
         ]}
       >
-        <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose, preventInteraction }}>
+        <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
           <ul
             id={listId}
             role="menu"
