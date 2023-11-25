@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Arrow, Container, Flip, Offset, Placement, Popover } from "./popover";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { TRANSITION } from "@/lib/framer-motion";
-import { parsePlacement } from "./popover/use-popover";
 
 type Props = {
   triggerRef: React.RefObject<HTMLElement>;
@@ -20,7 +18,7 @@ export default function Tooltip({
   placement,
   container,
   offset = 6,
-  arrow = { size: 12 },
+  arrow = { size: 10 },
   delay = 500,
   className,
   children,
@@ -45,8 +43,8 @@ export default function Tooltip({
         Flip(),
         Offset(offset),
         Arrow(arrow.size, {
-          arrow: cn("rounded-[3px] bg-white dark:bg-gray-800", arrow.className?.arrow),
-          backdrop: cn("-z-20 rounded-[3px] shadow-borderXL", arrow.className?.backdrop),
+          arrow: cn("rounded-sm bg-white dark:bg-gray-800", arrow.className?.arrow),
+          backdrop: cn("rounded-sm shadow-borderXL", arrow.className?.backdrop),
         }),
       ]}
     >
@@ -55,8 +53,7 @@ export default function Tooltip({
           initial="initial"
           animate="animate"
           exit="exit"
-          variants={TRANSITION.fadeInOut[parsePlacement(placement)[0]]}
-          className={cn("pointer-events-none rounded-md bg-white px-2 py-1 opacity-95 shadow-borderXL dark:bg-gray-800", className)}
+          className={cn("pointer-events-none rounded bg-white p-0.5 px-2 shadow-borderXL dark:bg-gray-800", className)}
         >
           {children}
         </motion.div>

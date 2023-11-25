@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
@@ -50,7 +52,7 @@ export function Popover({
     triggerRef.current?.focus();
   }, [triggerRef, isOpen, setOpen]);
 
-  const { props, placement } = usePopover(triggerRef, popoverRef, isOpen, initialPlacement, container, mountedExtensions);
+  const { placement, props } = usePopover(triggerRef, popoverRef, isOpen, initialPlacement, container, mountedExtensions);
 
   const variants = useMemo(() => {
     if (!mountedExtensions.motion?.transition) return TRANSITION.fadeInOut[parsePlacement(placement)[0]] as Variants;

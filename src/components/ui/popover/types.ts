@@ -1,12 +1,13 @@
 import { Variants } from "framer-motion";
 
-export type Alignment = "start" | "end";
 export type Side = "top" | "right" | "bottom" | "left";
+export type SideMap = { top: Side; right: Side; bottom: Side; left: Side };
+export type Alignment = "start" | "end";
 export type Placement = Side | `${Side}-${Alignment}`;
 export type Axis = "x" | "y";
 export type Length = "width" | "height";
 export type Coords = { x: number; y: number };
-export type PositionCoords = { x: number | string; y: number | string };
+export type DynamicCoords = { x: number | string; y: number | string };
 export type Rect = { x: number; y: number; width: number; height: number };
 export type Inset = { top: number; right: number; bottom: number; left: number };
 
@@ -26,7 +27,7 @@ export type MountedExtensions = {
 };
 
 // Extensions
-export type Position = { name: "position"; x: string | number; y: string | number; transformOrigin: string };
+export type Position = { name: "position"; x: string | number; y: string | number; transformOrigin?: string };
 
 export type Flip = { name: "flip" };
 export type Offset = { name: "offset"; value: number };

@@ -54,6 +54,11 @@ export const TRANSITION = {
       animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
       exit: { y: -4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
     },
+    right: {
+      initial: { x: 4, opacity: 0 },
+      animate: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
+      exit: { x: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
+    },
     bottom: {
       initial: { y: 4, opacity: 0 },
       animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
@@ -63,11 +68,6 @@ export const TRANSITION = {
       initial: { x: -4, opacity: 0 },
       animate: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
       exit: { x: -4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
-    },
-    right: {
-      initial: { x: 4, opacity: 0 },
-      animate: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
-      exit: { x: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
     },
   },
   appear: {

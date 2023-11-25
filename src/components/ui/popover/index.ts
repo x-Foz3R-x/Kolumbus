@@ -25,7 +25,7 @@ export function usePopover() {
 }
 
 // Extensions
-export function Position(x: string | number, y: string | number, transformOrigin: string): Position {
+export function Position(x: string | number, y: string | number, transformOrigin?: string): Position {
   return { name: "position", x, y, transformOrigin };
 }
 
@@ -35,14 +35,14 @@ export function Flip(): Flip {
 export function Offset(value: number): Offset {
   return { name: "offset", value };
 }
-export function Arrow(value: number, className?: { arrow?: string; backdrop?: string }): Arrow {
-  return { name: "arrow", size: value, className };
+export function Arrow(size: number, className?: { arrow?: string; backdrop?: string }): Arrow {
+  return { name: "arrow", size, className };
 }
 
 export function Backdrop(type: BackdropType, className?: string): Backdrop {
   return { name: "backdrop", type, className };
 }
-export function Motion(transition: Variants | { top: Variants; bottom: Variants; left: Variants; right: Variants }): Motion {
+export function Motion(transition: Variants | { top: Variants; right: Variants; bottom: Variants; left: Variants }): Motion {
   return { name: "motion", transition };
 }
 export function Prevent({ autofocus, closeTriggers, hide, scroll }: Omit<Prevent, "name">): Prevent {
