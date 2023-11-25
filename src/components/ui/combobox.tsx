@@ -167,15 +167,6 @@ const Combobox = {
 
       handleClose();
     };
-    const handleMouseMove = () => {
-      // on mouse move is used because safari has some problems with detecting mouse enter
-      setActiveIndex(index);
-      if (listItemsRef.current[index]) listItemsRef.current[index]?.focus({ preventScroll: true });
-    };
-    const handleMouseLeave = () => {
-      setActiveIndex(0);
-      if (listItemsRef.current[index]) listItemsRef.current[index]?.blur();
-    };
 
     return (
       <motion.li
@@ -192,8 +183,8 @@ const Combobox = {
         <Button
           ref={(node) => (listItemsRef.current[index] = node)}
           onClick={handleClick}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
+          onMouseMove={() => setActiveIndex(index)}
+          onMouseLeave={() => setActiveIndex(0)}
           variant="baseScale"
           size="unstyled"
           className={cn(

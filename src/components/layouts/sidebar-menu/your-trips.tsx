@@ -240,7 +240,7 @@ export default function YourTrips() {
               variant="scale"
               size="default"
               className={cn(
-                "w-full gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
+                "flex w-full items-center gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
                 index !== selectedTrip
                   ? "fill-tintedGray-400"
                   : "fill-kolumblue-500 text-kolumblue-500 group-hover/trip:fill-kolumblue-500 group-hover/trip:text-kolumblue-500",

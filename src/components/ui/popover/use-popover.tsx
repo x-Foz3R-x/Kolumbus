@@ -63,9 +63,9 @@ export default function usePopover(
   type Data = { placement: Placement; coords: DynamicCoords; arrowCoords: Coords; transformOrigin?: string };
   const [data, setData] = useState<Data>({
     placement: initialPlacement,
-    coords: extensions.position ? { x: extensions.position.x, y: extensions.position.y } : { x: 0, y: 0 },
+    coords: { x: 0, y: 0 },
     arrowCoords: { x: 0, y: 0 },
-    transformOrigin: extensions.position ? extensions.position.transformOrigin : undefined,
+    transformOrigin: undefined,
   });
 
   const containerMargin = useMemo(() => getInsetValues(container.margin), [container.margin]);
@@ -105,14 +105,20 @@ export default function usePopover(
 
   // Calculate and memoize the popover, arrow, and motion styles
   const props = useMemo(() => {
-    const popover = { style: { top: data.coords.y, left: data.coords.x } };
+    const popover = {
+      style: extensions.position
+        ? { top: extensions.position.x, left: extensions.position.y }
+        : { top: data.coords.y, left: data.coords.x },
+    };
 
     const arrowSize = `${(extensions.arrow?.size ?? 0) / 16}rem`;
     const arrow = { style: { top: data.arrowCoords.y, left: data.arrowCoords.x, width: arrowSize, height: arrowSize } };
 
-    const motion = { style: { transformOrigin: data.transformOrigin } };
+    const motion = {
+      style: { transformOrigin: extensions.position ? extensions.position.transformOrigin : data.transformOrigin ?? "center" },
+    };
     return { popover, arrow, motion };
-  }, [data, extensions.arrow]);
+  }, [data, extensions.arrow, extensions.position]);
 
   return useMemo(() => ({ placement: data.placement, props }), [data.placement, props]);
 }

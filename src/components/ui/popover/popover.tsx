@@ -44,7 +44,6 @@ export function Popover({
     motion?: Motion;
     prevent?: Prevent;
   } = extensions.reduce((acc, extension) => ({ ...acc, [extension.name]: extension }), {});
-
   const handleClose = useCallback(() => {
     if (!isOpen) return;
 
@@ -104,11 +103,12 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, mountedExtensions.prevent, handleClose]);
 
-  // Apply transition when to opened popover
+  // Apply transition when popover is opened and position is calculated for the first time.
   useEffect(() => {
-    if (isOpen) setTimeout(() => (useTransition.current = "duration-300 ease-kolumb-leave"), 0);
+    if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0)
+      useTransition.current = "duration-[250ms] ease-kolumb-flow";
     else useTransition.current = "";
-  }, [isOpen]);
+  }, [isOpen, props.popover.style]);
 
   // Focus first element in popover when opened
   useEffect(() => {

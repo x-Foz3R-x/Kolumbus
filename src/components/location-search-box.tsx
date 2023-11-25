@@ -9,7 +9,7 @@ import Button from "./ui/button";
 import Divider from "./ui/divider";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import Tooltip from "./ui/tooltip";
+import Tooltip, { useTooltip } from "./ui/tooltip";
 
 type LocationSearchBoxProps = {
   isOpen: boolean;
@@ -105,7 +105,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
 }
 
 function Prediction({ index, prediction }: { index: number; prediction: PlaceAutocompletePrediction }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setOpen, position, handleMouseEnter, handleMouseLeave, handleMouseMove } = useTooltip(900);
   const optionRef = useRef<HTMLLIElement>(null);
 
   return (
@@ -113,8 +113,9 @@ function Prediction({ index, prediction }: { index: number; prediction: PlaceAut
       <Combobox.Option
         ref={optionRef}
         index={index}
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         className="before:scale-x-50 before:scale-y-75 before:rounded-lg before:duration-200"
       >
         <Icon.pin className="w-2.5 fill-gray-400" />
@@ -127,22 +128,12 @@ function Prediction({ index, prediction }: { index: number; prediction: PlaceAut
         </div>
       </Combobox.Option>
 
-      {isOpen && (
-        <Tooltip
-          triggerRef={optionRef}
-          placement="right"
-          container={{ selector: "main", margin: [56, 240, 0, 0], padding: 12 }}
-          offset={4}
-          arrow={{ size: 0 }}
-          delay={900}
-          className="max-w-[240px]"
-        >
-          <p className="text-xs">{prediction.structured_formatting.main_text}</p>
-          {prediction.structured_formatting.secondary_text && (
-            <p className="text-xs text-gray-600">{prediction.structured_formatting.secondary_text}</p>
-          )}
-        </Tooltip>
-      )}
+      <Tooltip triggerRef={optionRef} isOpen={isOpen} setOpen={setOpen} position={position} className="max-w-fit">
+        <p className="text-xs">{prediction.structured_formatting.main_text}</p>
+        {prediction.structured_formatting.secondary_text && (
+          <p className="text-xs text-gray-400">{prediction.structured_formatting.secondary_text}</p>
+        )}
+      </Tooltip>
     </>
   );
 }
