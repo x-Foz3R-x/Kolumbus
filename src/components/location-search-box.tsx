@@ -132,8 +132,8 @@ function Prediction({ index, prediction }: { index: number; prediction: PlaceAut
           triggerRef={optionRef}
           placement="right"
           container={{ selector: "main", margin: [56, 240, 0, 0], padding: 12 }}
-          offset={12}
-          arrow={{ size: 12 }}
+          offset={4}
+          arrow={{ size: 0 }}
           delay={900}
           className="max-w-[240px]"
         >

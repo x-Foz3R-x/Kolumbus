@@ -31,7 +31,7 @@ export default function ButtonTests() {
           <h1 className="w-full rounded-xl text-center font-medium text-gray-400">Scale</h1>
 
           {/* Default */}
-          <div className="flex min-w-min flex-col gap-2.5 rounded-xl bg-gray-50 p-4 shadow-insetSm">
+          <div className="flex min-w-min flex-col gap-2.5 rounded-xl bg-gray-50 p-4 px-6 shadow-insetSm">
             <div className="flex items-center justify-center gap-4">
               <Button variant="default" size="lg" whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }}>
                 Large

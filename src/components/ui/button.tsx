@@ -1,9 +1,11 @@
+"use client";
+
 import { forwardRef } from "react";
-import { VariantProps, cva } from "class-variance-authority";
 import { HTMLMotionProps, TargetAndTransition, VariantLabels, motion } from "framer-motion";
+import { VariantProps, cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const ButtonVariants = cva("group peer relative flex select-none items-center text-gray-900 outline-0 dark:text-gray-100", {
+const ButtonVariants = cva("group peer select-none text-gray-900 outline-0 dark:text-gray-100", {
   variants: {
     variant: {
       default: "bg-gray-100 shadow-button focus-visible:shadow-focus",

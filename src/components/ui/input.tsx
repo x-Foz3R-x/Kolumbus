@@ -1,3 +1,5 @@
+"use client";
+
 import { forwardRef, useEffect, useRef, useState } from "react";
 import { HTMLMotionProps, motion } from "framer-motion";
 import { cva, VariantProps } from "class-variance-authority";

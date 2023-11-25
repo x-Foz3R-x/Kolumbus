@@ -1,7 +1,6 @@
-"use client";
-import Icon from "@/components/icons";
-import { motion } from "framer-motion";
 import Link from "next/link";
+import Icon from "@/components/icons";
+import Button from "@/components/ui/button";
 
 export default function page() {
   return (
@@ -23,41 +22,52 @@ export default function page() {
         </div>
 
         <div className="grid grid-cols-4 gap-5">
-          <Link href="/playground/color" title="Playground" aria-label="Playground">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
+          <Link href="/playground/color" title="Color" aria-label="Color">
+            <Button
+              whileHover={{ scale: 1.07 }}
+              whileTap={{ scale: 0.97 }}
+              variant="unstyled"
+              size="lg"
+              className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >
               Color
-            </motion.button>
+            </Button>
           </Link>
-          <Link href="/playground/popover" title="Playground" aria-label="Playground">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
+
+          <Link href="/playground/popover" title="Popover" aria-label="Popover">
+            <Button
+              whileHover={{ scale: 1.07 }}
+              whileTap={{ scale: 0.97 }}
+              variant="unstyled"
+              size="lg"
+              className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >
               Popover
-            </motion.button>
+            </Button>
           </Link>
-          <Link href="/playground/dropdown" title="Playground" aria-label="Playground">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
+
+          <Link href="/playground/dropdown" title="Dropdown" aria-label="Dropdown">
+            <Button
+              whileHover={{ scale: 1.07 }}
+              whileTap={{ scale: 0.97 }}
+              variant="unstyled"
+              size="lg"
+              className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >
               Dropdown
-            </motion.button>
+            </Button>
           </Link>
-          <Link href="/playground/button" title="Playground" aria-label="Playground">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full rounded-xl bg-gray-50 p-10 text-center shadow-borderXL hover:bg-gray-100"
+
+          <Link href="/playground/button" title="Button" aria-label="Button">
+            <Button
+              whileHover={{ scale: 1.07 }}
+              whileTap={{ scale: 0.97 }}
+              variant="unstyled"
+              size="lg"
+              className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >
               Button
-            </motion.button>
+            </Button>
           </Link>
         </div>
       </main>
