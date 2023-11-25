@@ -57,7 +57,7 @@ export default function EventComposer() {
           if (!updatedEvent) return;
           dispatchUserTrips({
             type: UT.UPDATE_EVENT,
-            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
+            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event | any) } },
           });
         },
         onError(error) {
@@ -103,7 +103,7 @@ export default function EventComposer() {
                   payload: {
                     tripIndex: selectedTrip,
                     dayIndex: itineraryPosition.y_day,
-                    event: { ...event, ...(updatedEvent as Event) },
+                    event: { ...event, ...(updatedEvent as Event | any) },
                   },
                 });
               },
@@ -135,7 +135,7 @@ export default function EventComposer() {
           if (!updatedEvent) return;
           dispatchUserTrips({
             type: UT.UPDATE_EVENT,
-            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
+            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event | any) } },
           });
         },
         onError(error) {

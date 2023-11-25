@@ -112,7 +112,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
               if (!updatedEvent) return;
               dispatchUserTrips({
                 type: UT.UPDATE_EVENT,
-                payload: { tripIndex: selectedTrip, dayIndex, event: { ...event, ...(updatedEvent as Event) } },
+                payload: { tripIndex: selectedTrip, dayIndex, event: { ...event, ...(updatedEvent as Event | any) } },
               });
             },
             onError(error) {
@@ -414,7 +414,7 @@ const EventComponent = memo(
                 updatedEvents.forEach((event) => {
                   dispatchUserTrips({
                     type: UT.UPDATE_EVENT,
-                    payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event) } },
+                    payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
                   });
                 });
               },
