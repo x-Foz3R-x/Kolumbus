@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Arrow, Container, Flip, Motion, Offset, Placement, Popover, Position } from "./popover";
+import { Arrow, Container, Flip, Motion, Offset, Placement, Popover, Position, Prevent } from "./popover";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -31,12 +31,12 @@ export default function Tooltip({
 
   const arrowStyles = {
     arrow: cn("rounded-sm bg-gray-800", arrow.className?.arrow),
-    backdrop: cn("shadow-borderXLDark rounded-sm", arrow.className?.backdrop),
+    backdrop: cn("rounded-sm shadow-borderXLDark", arrow.className?.backdrop),
   };
 
   const extensions = position
-    ? [Position(position.x, position.y), Motion(TRANSITION.fade)]
-    : [Flip(), Offset(offset), Arrow(arrow.size, arrowStyles)];
+    ? [Position(position.x, position.y), Motion(TRANSITION.fade), Prevent({ pointer: true })]
+    : [Flip(), Offset(offset), Arrow(arrow.size, arrowStyles), Prevent({ pointer: true })];
 
   return (
     <Popover
@@ -47,9 +47,8 @@ export default function Tooltip({
       placement={placement}
       container={container}
       extensions={extensions}
-      className="pointer-events-none"
     >
-      <div className={cn("shadow-borderXLDark pointer-events-none max-w-xs rounded bg-gray-700 px-1 py-0.5 text-gray-200", className)}>
+      <div className={cn("pointer-events-none max-w-xs rounded bg-gray-700 px-1 py-0.5 text-gray-200 shadow-borderXLDark", className)}>
         {children}
       </div>
     </Popover>
@@ -71,7 +70,7 @@ export default function Tooltip({
  * @example
  * const [isOpen, setOpen, position, handleMouseEnter, handleMouseLeave, handleMouseMove] = useTooltip(500);
  */
-export function useTooltip(delay: number) {
+export function useTooltip(delay: number = 1000) {
   const [isOpen, setOpen] = useState(false);
   const [position, setTooltipPosition] = useState({ x: 0, y: 0 });
 
@@ -84,6 +83,7 @@ export function useTooltip(delay: number) {
     showTimeout = setTimeout(() => setOpen(true), delay);
   };
   const handleMouseMove = (event: React.MouseEvent) => {
+    if (!isOpen) return;
     if (moveTimeout) clearTimeout(moveTimeout);
 
     moveTimeout = setTimeout(() => setTooltipPosition({ x: event.clientY + 18, y: event.clientX }), 350);
@@ -100,6 +100,8 @@ export function useTooltip(delay: number) {
     return () => {
       if (showTimeout) clearTimeout(showTimeout);
       if (moveTimeout) clearTimeout(moveTimeout);
+
+      setOpen(false);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

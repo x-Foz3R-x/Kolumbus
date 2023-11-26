@@ -90,23 +90,25 @@ export function Popover({
     else if (mountedExtensions.backdrop.type === "blur-white") backdropStyles = "bg-white/25 backdrop-blur-sm backdrop-saturate-150";
 
     return (
-      <motion.div
-        role="presentation"
-        aria-hidden={true}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        variants={TRANSITION.fade}
-        onClick={!mountedExtensions.prevent?.closeTriggers ? handleClose : () => {}}
-        className={cn("fixed inset-0 -z-20", backdropStyles, mountedExtensions.backdrop?.className)}
-      />
+      <span className="absolute z-[100]">
+        <motion.div
+          role="presentation"
+          aria-hidden={true}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          variants={TRANSITION.fade}
+          onClick={!mountedExtensions.prevent?.closeTriggers ? handleClose : () => {}}
+          className={cn("fixed inset-0 -z-20", backdropStyles, mountedExtensions.backdrop?.className)}
+        />
+      </span>
     );
   }, [mountedExtensions.backdrop, mountedExtensions.prevent, handleClose]);
 
   // Apply transition when popover is opened and position is calculated for the first time.
   useEffect(() => {
     if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0)
-      useTransition.current = "duration-[250ms] ease-kolumb-flow";
+      setTimeout(() => (useTransition.current = "duration-[250ms] ease-kolumb-flow"), 0);
     else useTransition.current = "";
   }, [isOpen, props.popover.style]);
 
@@ -140,24 +142,30 @@ export function Popover({
     <AnimatePresence>
       {isOpen ? (
         <Portal containerSelector={container.selector}>
-          <div
+          {backdropContent}
+          <motion.div
             ref={popoverRef}
-            className={cn("absolute z-[100] min-h-fit min-w-fit appearance-none bg-transparent", useTransition.current)}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            variants={variants}
+            className={cn(
+              "absolute z-[100] min-h-fit min-w-fit appearance-none bg-transparent",
+              mountedExtensions.prevent?.pointer && "pointer-events-none",
+              useTransition.current,
+            )}
             data-placement={placement}
             {...props.popover}
           >
-            {backdropContent}
-            <motion.div initial="initial" animate="animate" exit="exit" variants={variants} {...props.motion}>
-              <RemoveScroll
-                enabled={mountedExtensions.prevent?.scroll === true && isOpen}
-                allowPinchZoom={mountedExtensions.prevent?.scroll === true && isOpen}
-                className={cn("relative", className)}
-              >
-                {arrowContent}
-                {children}
-              </RemoveScroll>
-            </motion.div>
-          </div>
+            <RemoveScroll
+              enabled={mountedExtensions.prevent?.scroll === true && isOpen}
+              allowPinchZoom={mountedExtensions.prevent?.scroll === true && isOpen}
+              className={cn("relative", className)}
+            >
+              {arrowContent}
+              {children}
+            </RemoveScroll>
+          </motion.div>
         </Portal>
       ) : null}
     </AnimatePresence>

@@ -105,7 +105,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
 }
 
 function Prediction({ index, prediction }: { index: number; prediction: PlaceAutocompletePrediction }) {
-  const { isOpen, setOpen, position, handleMouseEnter, handleMouseLeave, handleMouseMove } = useTooltip(900);
+  const { isOpen, setOpen, position, handleMouseEnter, handleMouseLeave, handleMouseMove } = useTooltip();
   const optionRef = useRef<HTMLLIElement>(null);
 
   return (
@@ -128,7 +128,7 @@ function Prediction({ index, prediction }: { index: number; prediction: PlaceAut
         </div>
       </Combobox.Option>
 
-      <Tooltip triggerRef={optionRef} isOpen={isOpen} setOpen={setOpen} position={position} className="max-w-fit">
+      <Tooltip triggerRef={optionRef} isOpen={isOpen} setOpen={setOpen} position={position}>
         <p className="text-xs">{prediction.structured_formatting.main_text}</p>
         {prediction.structured_formatting.secondary_text && (
           <p className="text-xs text-gray-400">{prediction.structured_formatting.secondary_text}</p>

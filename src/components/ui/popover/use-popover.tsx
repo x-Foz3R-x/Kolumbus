@@ -107,17 +107,14 @@ export default function usePopover(
   const props = useMemo(() => {
     const popover = {
       style: extensions.position
-        ? { top: extensions.position.x, left: extensions.position.y }
-        : { top: data.coords.y, left: data.coords.x },
+        ? { top: extensions.position.x, left: extensions.position.y, transformOrigin: extensions.position.transformOrigin }
+        : { top: data.coords.y, left: data.coords.x, transformOrigin: data.transformOrigin ?? "center" },
     };
 
     const arrowSize = `${(extensions.arrow?.size ?? 0) / 16}rem`;
     const arrow = { style: { top: data.arrowCoords.y, left: data.arrowCoords.x, width: arrowSize, height: arrowSize } };
 
-    const motion = {
-      style: { transformOrigin: extensions.position ? extensions.position.transformOrigin : data.transformOrigin ?? "center" },
-    };
-    return { popover, arrow, motion };
+    return { popover, arrow };
   }, [data, extensions.arrow, extensions.position]);
 
   return useMemo(() => ({ placement: data.placement, props }), [data.placement, props]);

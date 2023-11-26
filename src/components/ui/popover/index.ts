@@ -45,6 +45,6 @@ export function Backdrop(type: BackdropType, className?: string): Backdrop {
 export function Motion(transition: Variants | { top: Variants; right: Variants; bottom: Variants; left: Variants }): Motion {
   return { name: "motion", transition };
 }
-export function Prevent({ autofocus, closeTriggers, hide, scroll }: Omit<Prevent, "name">): Prevent {
-  return { name: "prevent", autofocus, closeTriggers, hide, scroll };
+export function Prevent({ autofocus, closeTriggers, hide, pointer, scroll }: Omit<Prevent, "name">): Prevent {
+  return { name: "prevent", autofocus, closeTriggers, hide, pointer, scroll };
 }
