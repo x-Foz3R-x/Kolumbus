@@ -4,7 +4,7 @@ import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  triggerRef: React.RefObject<HTMLElement>;
+  triggerRef?: React.RefObject<HTMLElement>;
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   placement?: Placement;
@@ -16,7 +16,7 @@ type Props = {
   children?: React.ReactNode;
 };
 export default function Tooltip({
-  triggerRef,
+  triggerRef: ref,
   isOpen,
   setOpen,
   placement,
@@ -27,6 +27,7 @@ export default function Tooltip({
   className,
   children,
 }: Props) {
+  const triggerRef = useRef<HTMLElement>(ref?.current ?? null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const arrowStyles = {
@@ -65,12 +66,12 @@ export default function Tooltip({
  *   - isOpen: A boolean indicating whether the tooltip is open or not.
  *   - setOpen: A function to set the tooltip open state.
  *   - position: An object representing the position of the tooltip.
- *   - handleMouseOver: A function to handle mouse over event.
- *   - handleMouseOut: A function to handle mouse out event.
+ *   - handleMouseEnter: A function to handle mouse enter event.
  *   - handleMouseMove: A function to handle mouse move event.
+ *   - handleMouseLeave: A function to handle mouse leave event.
  *
  * @example
- * const [isOpen, setOpen, position, handleMouseOver, handleMouseOut, handleMouseMove] = useTooltip();
+ * const [isOpen, setOpen, position, handleMouseEnter, handleMouseMove, handleMouseLeave] = useTooltip();
  */
 export function useTooltip(delay: number = 1000) {
   const [isOpen, setOpen] = useState(false);
@@ -79,7 +80,7 @@ export function useTooltip(delay: number = 1000) {
   const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const moveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMouseOver = () => {
+  const handleMouseEnter = () => {
     if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
     showTimeoutRef.current = setTimeout(() => setOpen(true), delay);
   };
@@ -87,7 +88,7 @@ export function useTooltip(delay: number = 1000) {
     if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current);
     moveTimeoutRef.current = setTimeout(() => setTooltipPosition({ x: event.clientY + 18, y: event.clientX }), 200);
   };
-  const handleMouseOut = () => {
+  const handleMouseLeave = () => {
     if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
     if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current);
     setOpen(false);
@@ -101,5 +102,5 @@ export function useTooltip(delay: number = 1000) {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { isOpen, setOpen, position, handleMouseOver, handleMouseOut, handleMouseMove };
+  return { isOpen, setOpen, position, handleMouseEnter, handleMouseMove, handleMouseLeave };
 }

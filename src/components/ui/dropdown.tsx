@@ -99,7 +99,7 @@ export function Dropdown({
   }, [list]);
 
   return (
-    <div className="relative">
+    <>
       <Button
         ref={buttonRef}
         id={buttonId}
@@ -140,7 +140,7 @@ export function Dropdown({
           </ul>
         </DropdownContext.Provider>
       </Popover>
-    </div>
+    </>
   );
 }
 

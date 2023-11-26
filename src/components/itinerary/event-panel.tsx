@@ -88,7 +88,7 @@ export default function EventPanel() {
           updatedEvents.forEach((event) => {
             dispatchUserTrips({
               type: UT.UPDATE_EVENT,
-              payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event) } },
+              payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
             });
           });
         },
