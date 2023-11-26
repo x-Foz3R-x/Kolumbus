@@ -1,4 +1,4 @@
-import { HTMLAttributes, createContext, forwardRef, useCallback, useContext, useEffect, useId, useRef } from "react";
+import { createContext, forwardRef, useCallback, useContext, useEffect, useId, useRef } from "react";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 
 import { useCloseTriggers, useListNavigation } from "@/hooks/use-accessibility-features";
@@ -6,10 +6,6 @@ import { EASING, TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 import Button from "./button";
 import Input from "./input";
-import { PlaceAutocompletePrediction } from "@/types";
-
-// type ComboboxOption = { index: number; onSelect?: () => void; data: string |object };
-// export type ComboboxList = ComboboxOption[];
 
 type ComboboxOption<T> = { index: number; onSelect?: () => void; data: string | T };
 export type ComboboxList<T> = ComboboxOption<T>[];
@@ -30,7 +26,7 @@ function useComboboxContext() {
   return context;
 }
 
-type Combobox = {
+type ComboboxProps<T extends string | number | readonly string[] | undefined> = {
   root: {
     isOpen: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,12 +35,16 @@ type Combobox = {
     className?: string;
     children: React.ReactNode;
   };
-  input: HTMLAttributes<HTMLInputElement> & { className?: string; children: React.ReactNode };
+  input: Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & {
+    // value: T;
+    setValue: React.Dispatch<React.SetStateAction<T>>;
+    children?: React.ReactNode;
+  };
   list: { className?: string; children: React.ReactNode };
   option: HTMLMotionProps<"li"> & { index: number; className?: string; children: React.ReactNode };
 };
 const Combobox = {
-  Root({ isOpen, setOpen, list, listHeight, className, children }: Combobox["root"]) {
+  Root({ isOpen, setOpen, list, listHeight, className, children }: ComboboxProps<undefined>["root"]) {
     const ref = useRef<HTMLDivElement>(null);
     const listItemsRef = useRef<(HTMLButtonElement | HTMLInputElement)[]>([]);
 
@@ -79,23 +79,13 @@ const Combobox = {
     );
   },
 
-  Input({
-    placeholder,
+  Input: <T extends string | number | readonly string[] | undefined>({
     value,
     setValue,
-    onInput,
-    onFocus,
     className,
     children,
-  }: {
-    placeholder?: string;
-    value: string;
-    setValue: React.Dispatch<React.SetStateAction<string>>;
-    onInput: React.ChangeEventHandler<HTMLInputElement>;
-    onFocus: React.FocusEventHandler<HTMLInputElement>;
-    className?: string;
-    children?: React.ReactNode;
-  }) {
+    ...props
+  }: ComboboxProps<T>["input"]) => {
     const { isOpen, listId, listItemsRef } = useComboboxContext();
     const childrenRef = useRef<HTMLSpanElement>(null);
 
@@ -106,11 +96,8 @@ const Combobox = {
           type="text"
           role="combobox"
           name="combobox-input"
-          placeholder={placeholder}
           value={value}
           setValue={setValue}
-          onInput={onInput}
-          onFocus={onFocus}
           aria-controls={listId}
           aria-expanded={isOpen}
           aria-autocomplete="list"
@@ -121,6 +108,7 @@ const Combobox = {
           size="unstyled"
           style={{ paddingRight: childrenRef.current?.offsetWidth ?? 0 }}
           className={cn("bg-transparent px-2 py-1.5", className)}
+          {...props}
         />
 
         <span ref={childrenRef} className="absolute inset-y-0 right-0 z-30 flex items-center">
@@ -133,7 +121,7 @@ const Combobox = {
   /**
    * listHeight = listLength * comboboxOptionHeight + padding
    */
-  List({ className, children }: Combobox["list"]) {
+  List({ className, children }: ComboboxProps<undefined>["list"]) {
     const { isOpen, listId, listHeight } = useComboboxContext();
 
     return (
@@ -158,7 +146,7 @@ const Combobox = {
     );
   },
 
-  Option: forwardRef<HTMLLIElement, Combobox["option"]>(function Option({ index, className, children, ...props }, ref) {
+  Option: forwardRef<HTMLLIElement, ComboboxProps<undefined>["option"]>(function Option({ index, className, children, ...props }, ref) {
     const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useComboboxContext();
 
     const handleClick = () => {
@@ -172,6 +160,7 @@ const Combobox = {
       <motion.li
         ref={ref}
         role="menuitem"
+        onClick={() => console.log("clicked")}
         initial="initial"
         animate="animate"
         exit="exit"

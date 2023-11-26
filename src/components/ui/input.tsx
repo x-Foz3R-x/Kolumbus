@@ -1,11 +1,6 @@
 "use client";
 
-declare module "react" {
-  function forwardGenericRef<T, P = {}>(
-    render: (props: P, ref: React.Ref<T>) => React.ReactNode | null,
-  ): (props: P & React.RefAttributes<T>) => React.ReactNode | null;
-}
-import { forwardGenericRef, forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Key } from "@/types";
@@ -141,12 +136,6 @@ function Input<T extends string | number | readonly string[] | undefined>(
 export default forwardRef(Input) as <T extends string | number | readonly string[] | undefined>(
   props: InputProps<T> & { ref?: React.ForwardedRef<HTMLInputElement> },
 ) => ReturnType<typeof Input>;
-// InputComponent.displayName = "Input";
-
-// const Input = forwardRef(InputComponent) as <T extends string | number | readonly string[] | undefined>(
-//   props: InputProps<T> & { ref?: React.ForwardedRef<HTMLInputElement> },
-// ) => ReturnType<typeof InputComponent>;
-// export default Input;
 
 type StatelessInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
   VariantProps<typeof InputVariants> & {

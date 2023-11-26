@@ -7,9 +7,8 @@ import Icon from "./icons";
 import Combobox, { ComboboxList } from "./ui/combobox";
 import Button from "./ui/button";
 import Divider from "./ui/divider";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 import Tooltip, { useTooltip } from "./ui/tooltip";
+import Input from "./ui/input";
 
 type LocationSearchBoxProps = {
   isOpen: boolean;
@@ -57,14 +56,22 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
     setOpen(false);
   };
 
+  // const handleIndexChange = (selectedPrediction: { searchValue: string } | PlaceAutocompletePrediction) => {
+  //   setSelectedPrediction(selectedPrediction);
+
+  //   if ("searchValue" in selectedPrediction) setSearchValue(selectedPrediction.searchValue);
+  //   else setSearchValue(selectedPrediction.structured_formatting.main_text);
+  // };
+
   return (
     <Combobox.Root isOpen={isOpen} setOpen={setOpen} list={list.current} className="shadow-smI">
+      <Input value={value} setValue={setValue} />
       <Combobox.Input
         placeholder={placeholder}
         value={value}
         setValue={setValue}
         onInput={handleSearchInput}
-        onFocus={() => !(value.length < 3) && setOpen(true)}
+        onFocus={() => !(typeof value === "string" && value.length < 3) && setOpen(true)}
         className={`bg-gray-50 text-sm shadow-sm duration-300 ease-kolumb-flow ${!isOpen && "rounded-b-lg"}`}
       >
         <Button
@@ -100,17 +107,15 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
 }
 
 function Prediction({ index, prediction }: { index: number; prediction: PlaceAutocompletePrediction }) {
-  const { isOpen, setOpen, position, handleMouseOver, handleMouseOut, handleMouseMove } = useTooltip();
-  const optionRef = useRef<HTMLLIElement>(null);
+  const { isOpen, setOpen, position, handleMouseEnter, handleMouseMove, handleMouseLeave } = useTooltip();
 
   return (
     <>
       <Combobox.Option
-        ref={optionRef}
         index={index}
-        onMouseOver={handleMouseOver}
-        onMouseOut={handleMouseOut}
+        onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         className="before:scale-x-50 before:scale-y-75 before:rounded-lg before:duration-200"
       >
         <Icon.pin className="w-2.5 fill-gray-400" />
@@ -123,7 +128,7 @@ function Prediction({ index, prediction }: { index: number; prediction: PlaceAut
         </div>
       </Combobox.Option>
 
-      <Tooltip triggerRef={optionRef} isOpen={isOpen} setOpen={setOpen} position={position}>
+      <Tooltip isOpen={isOpen} setOpen={setOpen} position={position}>
         <p className="text-xs">{prediction.structured_formatting.main_text}</p>
         {prediction.structured_formatting.secondary_text && (
           <p className="text-xs text-gray-400">{prediction.structured_formatting.secondary_text}</p>
