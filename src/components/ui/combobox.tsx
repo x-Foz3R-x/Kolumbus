@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, forwardRef, useCallback, useContext, useEffect, useId, useRef } from "react";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 
@@ -7,9 +9,7 @@ import { cn } from "@/lib/utils";
 import Button from "./button";
 import Input from "./input";
 
-type ComboboxOption<T> = { index: number; onSelect?: () => void; data: string | T };
-export type ComboboxList<T> = ComboboxOption<T>[];
-
+//#region ComboboxContext
 const ComboboxContext = createContext<{
   isOpen: boolean;
   list: ComboboxList<unknown>;
@@ -25,6 +25,10 @@ function useComboboxContext() {
   if (!context) throw new Error("useCombobox must be used within a ComboboxContext.Provider");
   return context;
 }
+//#endregion
+
+type ComboboxOption<T> = { index: number; onSelect?: () => void; data: string | T };
+export type ComboboxList<T> = ComboboxOption<T>[];
 
 type ComboboxProps<T extends string | number | readonly string[] | undefined> = {
   root: {
@@ -36,7 +40,6 @@ type ComboboxProps<T extends string | number | readonly string[] | undefined> = 
     children: React.ReactNode;
   };
   input: Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & {
-    // value: T;
     setValue: React.Dispatch<React.SetStateAction<T>>;
     children?: React.ReactNode;
   };
@@ -55,7 +58,6 @@ const Combobox = {
       listItemsRef,
       listLength: list.length,
       initialIndex: 0,
-      placement: "bottom",
       enabled: isOpen,
       useFocus: false,
     });

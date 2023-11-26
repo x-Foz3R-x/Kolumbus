@@ -140,9 +140,9 @@ export function useListNavigation({
   triggerRef: React.MutableRefObject<HTMLElement | null>;
   listItemsRef: React.MutableRefObject<(HTMLElement | null)[]>;
   listLength: number;
-  skipIndexes?: number[];
   initialIndex: number;
-  placement: Placement;
+  skipIndexes?: number[];
+  placement?: Placement;
   enabled: boolean;
   loop?: boolean;
   useFocus?: boolean;
@@ -194,7 +194,11 @@ export function useListNavigation({
             nextIndex = direction === Key.ArrowUp ? Math.max(nextIndex - 1, firstValidIndex) : Math.min(nextIndex + 1, lastValidIndex);
           }
         }
-      } else if ((activeIndex < 0 || hasFocus === "trigger") && (direction === Key.ArrowLeft || direction === Key.ArrowRight)) {
+      } else if (
+        (activeIndex < 0 || hasFocus === "trigger") &&
+        (direction === Key.ArrowLeft || direction === Key.ArrowRight) &&
+        placement
+      ) {
         const [side, alignment] = parsePlacement(placement);
 
         if (side === "top" || side === "bottom") return;
