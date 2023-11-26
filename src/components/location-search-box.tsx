@@ -24,33 +24,28 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
   const [value, setValue] = useState("");
   const list = useRef<ComboboxList<PlaceAutocompletePrediction>>([{ index: 0, data: "" }]);
 
+  // todo: Add <Toast> component to display errors
   const handleSearchInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length < 3) {
       ClearPredictions();
       return;
     }
 
-    // todo: handling all return data statuses
     getAutocomplete.mutate(
+      { searchValue: e.target.value, language: Language.English, sessionToken },
       {
-        searchValue: e.target.value,
-        language: Language.English,
-        sessionToken,
-      },
-      {
-        onSettled(data) {
-          if (typeof data === "undefined") return;
-
-          if (data.status === "OK" && data.predictions.length > 0) {
+        onSuccess(data) {
+          if (data.status === "OK") {
             const predictions = data.predictions.map((prediction, index) => ({ index: index + 1, data: prediction }));
             list.current = [{ index: 0, data: e.target.value }, ...predictions];
             setOpen(true);
+          } else if (data.status === "ZERO_RESULTS") {
+            list.current = [{ index: 0, data: e.target.value }];
+            setOpen(true);
+          } else {
+            console.error(`Google Places API returned status: ${data.status}.`);
+            console.error(`Please contact me at pawel@kolumbus.app with API status to resolve this issue.`);
           }
-          // else if(data.status === .ZERO_RESULTS){}
-          // else if(data.status === .INVALID_REQUEST){}
-          // else if(data.status === .OVER_QUERY_LIMIT){}
-          // else if(data.status === .REQUEST_DENIED){}
-          // else if(data.status === .UNKNOWN_ERROR){}
         },
       },
     );
@@ -62,8 +57,6 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
     setOpen(false);
   };
 
-  const [delayedHover, setDelayedHover] = useState(false);
-
   return (
     <Combobox.Root isOpen={isOpen} setOpen={setOpen} list={list.current} className="shadow-smI">
       <Combobox.Input
@@ -71,7 +64,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
         value={value}
         setValue={setValue}
         onInput={handleSearchInput}
-        onFocus={() => list.current.length > 1 && setOpen(true)}
+        onFocus={() => !(value.length < 3) && setOpen(true)}
         className={`bg-gray-50 text-sm shadow-sm duration-300 ease-kolumb-flow ${!isOpen && "rounded-b-lg"}`}
       >
         <Button
@@ -94,18 +87,20 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
         </Button>
       </Combobox.Input>
 
-      <Combobox.List className="rounded-b-lg">
+      <Combobox.List>
         {list.current.map((prediction, index) => {
-          if (prediction.index === 0 || typeof prediction.data === "string") return null;
+          if (typeof prediction.data === "string") return null;
           return <Prediction key={prediction.index} index={index} prediction={prediction.data} />;
         })}
+
+        {list.current.length === 1 && <p className="px-2 py-1 text-sm text-gray-400">No results found</p>}
       </Combobox.List>
     </Combobox.Root>
   );
 }
 
 function Prediction({ index, prediction }: { index: number; prediction: PlaceAutocompletePrediction }) {
-  const { isOpen, setOpen, position, handleMouseEnter, handleMouseLeave, handleMouseMove } = useTooltip();
+  const { isOpen, setOpen, position, handleMouseOver, handleMouseOut, handleMouseMove } = useTooltip();
   const optionRef = useRef<HTMLLIElement>(null);
 
   return (
@@ -113,9 +108,9 @@ function Prediction({ index, prediction }: { index: number; prediction: PlaceAut
       <Combobox.Option
         ref={optionRef}
         index={index}
-        onMouseEnter={handleMouseEnter}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
         onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
         className="before:scale-x-50 before:scale-y-75 before:rounded-lg before:duration-200"
       >
         <Icon.pin className="w-2.5 fill-gray-400" />

@@ -145,9 +145,9 @@ const Combobox = {
             initial={{ opacity: 0.3, scaleY: 0.3, scaleX: 0.95, translateY: -32 }}
             animate={{ opacity: 1, scaleY: 1, scaleX: 1, translateY: 0, transition: { duration: 0.25, ease: EASING.kolumbFlow } }}
             exit={{ opacity: 1, scaleY: 0, scaleX: 0.95, translateY: -32, transition: { duration: 0.15, ease: EASING.kolumbOut } }}
-            style={{ height: listHeight ? `${listHeight / 16}rem` : "auto" }}
+            style={{ height: listHeight && `${listHeight}px` }}
             className={cn(
-              "absolute -z-10 flex w-full origin-top flex-col bg-white p-1.5 pt-2 shadow-border2XL duration-300 ease-kolumb-flow dark:bg-gray-800",
+              "absolute -z-10 flex w-full origin-top flex-col rounded-b-lg bg-white p-1.5 pt-2 shadow-border2XL duration-300 ease-kolumb-flow dark:bg-gray-800",
               className,
             )}
           >

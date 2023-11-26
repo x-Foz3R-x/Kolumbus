@@ -132,7 +132,7 @@ export function Dropdown({
             aria-labelledby={buttonRef.current?.id}
             onFocus={() => setFocus("popover")}
             className={cn(
-              "flex flex-col rounded-lg bg-gray-700/80 p-1 shadow-border2XL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
+              "flex flex-col rounded-lg bg-gray-700/80 p-1 shadow-border2XLDark backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
               className,
             )}
           >

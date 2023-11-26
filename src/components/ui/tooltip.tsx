@@ -39,19 +39,21 @@ export default function Tooltip({
     : [Flip(), Offset(offset), Arrow(arrow.size, arrowStyles), Prevent({ pointer: true })];
 
   return (
-    <Popover
-      popoverRef={popoverRef}
-      triggerRef={triggerRef}
-      isOpen={isOpen}
-      setOpen={setOpen}
-      placement={placement}
-      container={container}
-      extensions={extensions}
-    >
-      <div className={cn("pointer-events-none max-w-xs rounded bg-gray-700 px-1 py-0.5 text-gray-200 shadow-borderXLDark", className)}>
-        {children}
-      </div>
-    </Popover>
+    isOpen && (
+      <Popover
+        popoverRef={popoverRef}
+        triggerRef={triggerRef}
+        isOpen={isOpen}
+        setOpen={setOpen}
+        placement={placement}
+        container={container}
+        extensions={extensions}
+      >
+        <div className={cn("pointer-events-none max-w-xs rounded bg-gray-700 px-1 py-0.5 text-gray-200 shadow-borderXLDark", className)}>
+          {children}
+        </div>
+      </Popover>
+    )
   );
 }
 
@@ -63,47 +65,41 @@ export default function Tooltip({
  *   - isOpen: A boolean indicating whether the tooltip is open or not.
  *   - setOpen: A function to set the tooltip open state.
  *   - position: An object representing the position of the tooltip.
- *   - handleMouseEnter: A function to handle mouse enter event.
- *   - handleMouseLeave: A function to handle mouse leave event.
+ *   - handleMouseOver: A function to handle mouse over event.
+ *   - handleMouseOut: A function to handle mouse out event.
  *   - handleMouseMove: A function to handle mouse move event.
  *
  * @example
- * const [isOpen, setOpen, position, handleMouseEnter, handleMouseLeave, handleMouseMove] = useTooltip(500);
+ * const [isOpen, setOpen, position, handleMouseOver, handleMouseOut, handleMouseMove] = useTooltip();
  */
 export function useTooltip(delay: number = 1000) {
   const [isOpen, setOpen] = useState(false);
   const [position, setTooltipPosition] = useState({ x: 0, y: 0 });
 
-  let showTimeout: NodeJS.Timeout | null = null;
-  let moveTimeout: NodeJS.Timeout | null = null;
+  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const moveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMouseEnter = () => {
-    if (showTimeout) clearTimeout(showTimeout);
-
-    showTimeout = setTimeout(() => setOpen(true), delay);
+  const handleMouseOver = () => {
+    if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+    showTimeoutRef.current = setTimeout(() => setOpen(true), delay);
   };
   const handleMouseMove = (event: React.MouseEvent) => {
-    if (!isOpen) return;
-    if (moveTimeout) clearTimeout(moveTimeout);
-
-    moveTimeout = setTimeout(() => setTooltipPosition({ x: event.clientY + 18, y: event.clientX }), 350);
+    if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current);
+    moveTimeoutRef.current = setTimeout(() => setTooltipPosition({ x: event.clientY + 18, y: event.clientX }), 200);
   };
-  const handleMouseLeave = () => {
-    if (showTimeout) clearTimeout(showTimeout);
-    if (moveTimeout) clearTimeout(moveTimeout);
-
+  const handleMouseOut = () => {
+    if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+    if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current);
     setOpen(false);
   };
 
   // Clear the timeouts on component unmount
   useEffect(() => {
     return () => {
-      if (showTimeout) clearTimeout(showTimeout);
-      if (moveTimeout) clearTimeout(moveTimeout);
-
-      setOpen(false);
+      if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
+      if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return { isOpen, setOpen, position, handleMouseEnter, handleMouseLeave, handleMouseMove };
+  return { isOpen, setOpen, position, handleMouseOver, handleMouseOut, handleMouseMove };
 }

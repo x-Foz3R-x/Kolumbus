@@ -108,7 +108,7 @@ export function Popover({
   // Apply transition when popover is opened and position is calculated for the first time.
   useEffect(() => {
     if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0)
-      setTimeout(() => (useTransition.current = "duration-[250ms] ease-kolumb-flow"), 0);
+      useTransition.current = "duration-[250ms] ease-kolumb-flow";
     else useTransition.current = "";
   }, [isOpen, props.popover.style]);
 
