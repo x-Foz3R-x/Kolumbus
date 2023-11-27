@@ -4,11 +4,11 @@ import { VariantProps, cva } from "class-variance-authority";
 import Button, { Props } from "./button";
 import { Backdrop, Motion, Popover, Position, Prevent } from "./popover";
 import { cn } from "@/lib/utils";
+import useScopeTabNavigation from "@/hooks/use-scope-tab-navigation";
 import useKeyPress from "@/hooks/use-key-press";
 import { Key } from "@/types";
 import { TRANSITION } from "@/lib/framer-motion";
 import { BackdropType } from "./popover/types";
-import { useScopedTabNavigation } from "@/hooks/use-accessibility-features";
 
 const ModalVariants = cva("mx-3 min-w-min overflow-hidden", {
   variants: {
@@ -46,7 +46,7 @@ export function Modal({ isOpen, setOpen, backdrop, variant, size, className, rem
     isOpen && tabEvent?.preventDefault();
   }, [isOpen]); // eslint-disable-line
 
-  useScopedTabNavigation(modalRef, isOpen);
+  useScopeTabNavigation(modalRef, isOpen);
 
   return (
     <div className="relative">

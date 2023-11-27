@@ -6,7 +6,7 @@ import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
 import { useDndData } from "@/components/dnd-itinerary";
 
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import useCloseTriggers from "@/hooks/use-close-triggers";
 import type { UpdateEvent } from "@/server/routers/event";
 import { GetDayIndex } from "@/lib/dnd";
 import { Event, UT } from "@/types";

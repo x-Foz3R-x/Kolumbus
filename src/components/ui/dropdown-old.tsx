@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import Icon from "../icons";
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import useCloseTriggers from "@/hooks/use-close-triggers";
 
 interface DropdownProps {
   isModalOpen: boolean;

@@ -4,7 +4,7 @@ import { VariantProps, cva } from "class-variance-authority";
 import { motion } from "framer-motion";
 
 import { Popover, Placement, Flip, Offset, Prevent, Motion, Container } from "./popover";
-import { useListNavigation } from "@/hooks/use-accessibility-features";
+import useListNavigation from "@/hooks/use-list-navigation";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -73,7 +73,8 @@ export function Dropdown({
     skipIndexes,
     placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
     enabled: isOpen,
-    loop: false,
+    preventLoop: true,
+    preventArrowDefault: { v: true, h: true },
   });
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

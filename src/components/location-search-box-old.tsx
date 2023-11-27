@@ -1,12 +1,13 @@
 import React, { useRef, useState } from "react";
 
 import api from "@/app/_trpc/client";
-import { useCloseTriggers, useListNavigationOld } from "@/hooks/use-accessibility-features";
+import { useListNavigationOld } from "@/hooks/use-accessibility-features";
 import { Language, PlaceAutocompletePrediction } from "@/types";
 
 import Divider from "./ui/divider";
 import Icon from "./icons";
 import ComboboxOld from "./ui/combobox-old";
+import useCloseTriggers from "@/hooks/use-close-triggers";
 
 type List = [searchValue: { searchValue: string }, ...predictions: PlaceAutocompletePrediction[]];
 

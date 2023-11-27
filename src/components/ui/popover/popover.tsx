@@ -6,7 +6,7 @@ import { RemoveScroll } from "react-remove-scroll";
 
 import usePopover, { parsePlacement } from "./use-popover";
 import { Arrow, Backdrop, Container, Extensions, Flip, Motion, Offset, Placement, Position, Prevent } from "./types";
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import useCloseTriggers from "@/hooks/use-close-triggers";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
