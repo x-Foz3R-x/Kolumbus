@@ -1,8 +1,7 @@
 import { httpBatchLink } from "@trpc/client";
 import { appRouter } from "@/server";
-
-const url = process.env.NODE_ENV === "production" ? "https://kolumbus.app/api/trpc" : "http://localhost:3000/api/trpc";
+import { BASE_URL } from "@/lib/config";
 
 export const serverApi = appRouter.createCaller({
-  links: [httpBatchLink({ url })],
+  links: [httpBatchLink({ url: `${BASE_URL}/api/trpc` })],
 });

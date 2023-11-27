@@ -23,7 +23,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           `}
         >
           <TrpcProvider>{children}</TrpcProvider>
-          <Analytics mode={"production"} />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
