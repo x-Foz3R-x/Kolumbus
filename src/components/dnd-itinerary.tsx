@@ -55,8 +55,8 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const [isEventComposerDisplayed, setEventComposerDisplay] = useState(false);
-  const [isEventPanelDisplayed, setEventPanelDisplay] = useState(false);
+  const [isEventComposerOpen, setEventComposerOpen] = useState(false);
+  const [isEventPanelOpen, setEventPanelOpen] = useState(false);
   const [itineraryPosition, setItineraryPosition] = useState({ y_day: 0, x_event: 0 });
 
   // to delete/change
@@ -190,10 +190,10 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
     eventsId,
     events,
 
-    isEventComposerDisplayed,
-    setEventComposerDisplay,
-    isEventPanelDisplayed,
-    setEventPanelDisplay,
+    isEventComposerDisplayed: isEventComposerOpen,
+    setEventComposerDisplay: setEventComposerOpen,
+    isEventPanelDisplayed: isEventPanelOpen,
+    setEventPanelDisplay: setEventPanelOpen,
 
     itineraryPosition,
     setItineraryPosition,

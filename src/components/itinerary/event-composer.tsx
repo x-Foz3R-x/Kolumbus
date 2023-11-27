@@ -3,17 +3,17 @@
 import { useRef, useState } from "react";
 import cuid2 from "@paralleldrive/cuid2";
 
-import LocationSearchBox from "../location-search-box";
-
 import api from "@/app/_trpc/client";
 import { useUser } from "@clerk/nextjs";
 import { useDndData } from "../dnd-itinerary";
 
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import useCloseTriggers from "@/hooks/use-close-triggers";
 import { eventTemplate } from "@/data/template-data";
 import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@/types";
 import useAppdata from "@/context/appdata";
 import { cn } from "@/lib/utils";
+
+import LocationSearchBox from "../location-search-box";
 
 export default function EventComposer() {
   const { user } = useUser();
@@ -33,7 +33,7 @@ export default function EventComposer() {
    * Handles adding a new event to the itinerary.
    * @param eventData - The data for the new event, either a search value or a PlaceAutocompletePrediction.
    */
-  const handleAddEvent = (eventData: { searchValue: string } | PlaceAutocompletePrediction) => {
+  const handleAddEvent = (eventData: string | PlaceAutocompletePrediction) => {
     const event: Event = {
       ...eventTemplate,
       id: cuid2.createId(),
@@ -43,113 +43,115 @@ export default function EventComposer() {
       createdBy: user?.id ?? "unknown",
     };
 
-    setSaving(true);
-    if ("searchValue" in eventData) {
-      event.name = eventData.searchValue;
+    // if (typeof eventData === "string") {
+    //   event.name = eventData;
 
-      setSaving(true);
-      dispatchUserTrips({
-        type: UT.CREATE_EVENT,
-        payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
-      });
-      createEvent.mutate(event, {
-        onSuccess(updatedEvent) {
-          if (!updatedEvent) return;
-          dispatchUserTrips({
-            type: UT.UPDATE_EVENT,
-            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event | any) } },
-          });
-        },
-        onError(error) {
-          console.error(error);
-          dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-        },
-        onSettled() {
-          setSaving(false);
-        },
-      });
-    } else if (eventData.place_id) {
-      event.placeId = eventData.place_id;
+    //   setSaving(true);
+    //   dispatchUserTrips({
+    //     type: UT.CREATE_EVENT,
+    //     payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
+    //   });
+    //   createEvent.mutate(event, {
+    //     onSuccess(updatedEvent) {
+    //       if (!updatedEvent) return;
 
-      setSaving(true);
-      getPlaceDetails.mutate(
-        {
-          place_id: eventData.place_id,
-          fields: FieldsGroup.Basic + FieldsGroup.Contact,
-          language: Language.English,
-          sessionToken,
-        },
-        {
-          onSuccess(data) {
-            const place = data?.result ?? {};
+    //       dispatchUserTrips({
+    //         type: UT.UPDATE_EVENT,
+    //         payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event | any) } },
+    //       });
+    //     },
+    //     onError(error) {
+    //       console.error(error);
+    //       dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+    //     },
+    //     onSettled() {
+    //       setSaving(false);
+    //     },
+    //   });
+    // } else if (eventData.place_id) {
+    //   event.placeId = eventData.place_id;
 
-            event.name = place.name ?? event.name;
-            event.photo = place.photos?.[0]?.photo_reference ?? event.photo;
-            event.address = place.formatted_address ?? event.address;
-            event.phoneNumber = place.international_phone_number ?? place.formatted_phone_number ?? event.phoneNumber;
-            event.url = place.url ?? event.url;
-            event.website = place.website ?? event.website;
-            event.openingHours = place.opening_hours ?? event.openingHours;
+    //   setSaving(true);
+    //   getPlaceDetails.mutate(
+    //     {
+    //       place_id: eventData.place_id,
+    //       fields: FieldsGroup.Basic + FieldsGroup.Contact,
+    //       language: Language.English,
+    //       sessionToken,
+    //     },
+    //     {
+    //       onSuccess(data) {
+    //         const place = data?.result ?? {};
 
-            dispatchUserTrips({
-              type: UT.CREATE_EVENT,
-              payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
-            });
-            createEvent.mutate(event, {
-              onSuccess(updatedEvent) {
-                if (!updatedEvent) return;
-                dispatchUserTrips({
-                  type: UT.UPDATE_EVENT,
-                  payload: {
-                    tripIndex: selectedTrip,
-                    dayIndex: itineraryPosition.y_day,
-                    event: { ...event, ...(updatedEvent as Event | any) },
-                  },
-                });
-              },
-              onError(error) {
-                console.error(error);
-                dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-              },
-            });
-          },
-          onError(error) {
-            console.error(error);
-            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-          },
-          onSettled() {
-            setSaving(false);
-          },
-        },
-      );
-    } else if (!eventData.place_id) {
-      event.name = eventData.structured_formatting.main_text;
+    //         event.name = place.name ?? event.name;
+    //         event.photo = place.photos?.[0]?.photo_reference ?? event.photo;
+    //         event.address = place.formatted_address ?? event.address;
+    //         event.phoneNumber = place.international_phone_number ?? place.formatted_phone_number ?? event.phoneNumber;
+    //         event.url = place.url ?? event.url;
+    //         event.website = place.website ?? event.website;
+    //         event.openingHours = place.opening_hours ?? event.openingHours;
 
-      setSaving(true);
-      dispatchUserTrips({
-        type: UT.CREATE_EVENT,
-        payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
-      });
-      createEvent.mutate(event, {
-        onSuccess(updatedEvent) {
-          if (!updatedEvent) return;
-          dispatchUserTrips({
-            type: UT.UPDATE_EVENT,
-            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event | any) } },
-          });
-        },
-        onError(error) {
-          console.error(error);
-          dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-        },
-        onSettled() {
-          setSaving(false);
-        },
-      });
-    }
+    //         dispatchUserTrips({
+    //           type: UT.CREATE_EVENT,
+    //           payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
+    //         });
+    //         createEvent.mutate(event, {
+    //           onSuccess(updatedEvent) {
+    //             if (!updatedEvent) return;
+    //             dispatchUserTrips({
+    //               type: UT.UPDATE_EVENT,
+    //               payload: {
+    //                 tripIndex: selectedTrip,
+    //                 dayIndex: itineraryPosition.y_day,
+    //                 event: { ...event, ...(updatedEvent as Event | any) },
+    //               },
+    //             });
+    //           },
+    //           onError(error) {
+    //             console.error(error);
+    //             dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+    //           },
+    //         });
+    //       },
+    //       onError(error) {
+    //         console.error(error);
+    //         dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+    //       },
+    //       onSettled() {
+    //         setSaving(false);
+    //       },
+    //     },
+    //   );
+    // } else if (!eventData.place_id) {
+    //   event.name = eventData.structured_formatting.main_text;
 
-    setEventComposerDisplay(false);
-    setSessionToken(cuid2.createId());
+    //   setSaving(true);
+    //   dispatchUserTrips({
+    //     type: UT.CREATE_EVENT,
+    //     payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
+    //   });
+    //   createEvent.mutate(event, {
+    //     onSuccess(updatedEvent) {
+    //       if (!updatedEvent) return;
+
+    //       dispatchUserTrips({
+    //         type: UT.UPDATE_EVENT,
+    //         payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event | any) } },
+    //       });
+    //     },
+    //     onError(error) {
+    //       console.error(error);
+    //       dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+    //     },
+    //     onSettled() {
+    //       setSaving(false);
+    //     },
+    //   });
+    // }
+
+    // setOpen(false);
+    // setEventComposerDisplay(false);
+    // setSessionToken(cuid2.createId());
   };
 
   return (
