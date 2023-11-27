@@ -5,8 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import api from "./client";
 
-const url =
-  process.env.NODE_ENV === "production" ? "kolumbus.app/api/trpc" : "http://localhost:3000/api/trpc";
+const url = process.env.NODE_ENV === "production" ? "https://kolumbus.app/api/trpc" : "http://localhost:3000/api/trpc";
 
 export default function TrpcProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -17,7 +16,7 @@ export default function TrpcProvider({ children }: { children: React.ReactNode }
           url: url,
         }),
       ],
-    })
+    }),
   );
 
   return (

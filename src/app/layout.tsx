@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { inter, gordita, adso, inconsolata } from "../assets/fonts/fonts";
 import { ClerkProvider } from "@clerk/nextjs";
 import TrpcProvider from "./_trpc/Provider";
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           `}
         >
           <TrpcProvider>{children}</TrpcProvider>
+          <Analytics mode={"production"} />
         </body>
       </html>
     </ClerkProvider>
