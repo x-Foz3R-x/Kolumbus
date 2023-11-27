@@ -17,7 +17,13 @@ import Icon from "../icons";
 
 export default function EventPanel() {
   const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
-  const { activeTrip, activeEvent, isEventPanelDisplayed, setEventPanelDisplay, itineraryPosition } = useDndData();
+  const {
+    activeTrip,
+    activeEvent,
+    isEventPanelOpen: isEventPanelDisplayed,
+    setEventPanelOpen: setEventPanelDisplay,
+    itineraryPosition,
+  } = useDndData();
   const updateEvent = api.event.update.useMutation();
   const deleteEvent = api.event.delete.useMutation();
 

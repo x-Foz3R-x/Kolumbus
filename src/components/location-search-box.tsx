@@ -114,7 +114,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
         <Divider orientation="vertical" gradient className="absolute left-6 h-6" />
 
         <Button
-          onClick={onAdd(activeItemRef.current)}
+          onClick={() => onAdd(activeItemRef.current)}
           variant="unstyled"
           className="flex h-8 items-center justify-center gap-1 fill-gray-400 pl-1 pr-2 text-gray-400 duration-100 hover:fill-gray-700 hover:text-gray-700"
         >

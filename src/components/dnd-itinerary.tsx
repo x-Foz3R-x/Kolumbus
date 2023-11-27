@@ -31,10 +31,10 @@ const DndDataContext = createContext<{
   eventsId: string[];
   events: Event[];
 
-  isEventComposerDisplayed: boolean;
-  setEventComposerDisplay: React.Dispatch<React.SetStateAction<boolean>>;
-  isEventPanelDisplayed: boolean;
-  setEventPanelDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+  isEventComposerOpen: boolean;
+  setEventComposerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isEventPanelOpen: boolean;
+  setEventPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
   itineraryPosition: { y_day: number; x_event: number };
   setItineraryPosition: React.Dispatch<React.SetStateAction<{ y_day: number; x_event: number }>>;
@@ -190,10 +190,10 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
     eventsId,
     events,
 
-    isEventComposerDisplayed: isEventComposerOpen,
-    setEventComposerDisplay: setEventComposerOpen,
-    isEventPanelDisplayed: isEventPanelOpen,
-    setEventPanelDisplay: setEventPanelOpen,
+    isEventComposerOpen,
+    setEventComposerOpen,
+    isEventPanelOpen,
+    setEventPanelOpen,
 
     itineraryPosition,
     setItineraryPosition,
@@ -283,7 +283,7 @@ type DayComponentProps = {
 };
 const DayComponent = memo(
   forwardRef(function DndDayContentComponent({ day, dragOverlay, ...props }: DayComponentProps, ref: ForwardedRef<HTMLDivElement>) {
-    const { activeTrip, activeId, setEventComposerDisplay, setItineraryPosition } = useDndData();
+    const { activeTrip, activeId, setEventComposerOpen: setEventComposerDisplay, setItineraryPosition } = useDndData();
     const { id, date, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
@@ -326,7 +326,7 @@ const DayComponent = memo(
 
 //#region Event
 const DndEvent = memo(({ event }: { event: Event }) => {
-  const { activeId, activeEvent, isEventPanelDisplayed } = useDndData();
+  const { activeId, activeEvent, isEventPanelOpen } = useDndData();
   const id = event.id;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
@@ -348,7 +348,7 @@ const DndEvent = memo(({ event }: { event: Event }) => {
       className={`h-28 rounded-lg duration-500 ease-kolumb-flow ${
         id !== activeId ? "z-10" : "z-20 border-2 border-dashed border-gray-300 bg-gray-50"
       }
-      ${isEventPanelDisplayed && activeEvent?.id === id ? "w-80 opacity-0" : "w-40 opacity-100"}
+      ${isEventPanelOpen && activeEvent?.id === id ? "w-80 opacity-0" : "w-40 opacity-100"}
       `}
     >
       {id !== activeId && <EventComponent event={event} {...listeners} {...attributes} />}
@@ -364,7 +364,7 @@ type EventComponentProps = {
 const EventComponent = memo(
   forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
     const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
-    const { activeTrip, setActiveEvent, isEventPanelDisplayed, setEventPanelDisplay, setItineraryPosition } = useDndData();
+    const { activeTrip, setActiveEvent, isEventPanelOpen, setEventPanelOpen, setItineraryPosition } = useDndData();
     const deleteEvent = api.event.delete.useMutation();
 
     const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -381,10 +381,10 @@ const EventComponent = memo(
       setActiveEvent(event);
       setItineraryPosition({ y_day: dayIndex, x_event: event.position });
 
-      if (isEventPanelDisplayed) {
-        setEventPanelDisplay(false);
-        setTimeout(() => setEventPanelDisplay(true), 350);
-      } else setEventPanelDisplay(true);
+      if (isEventPanelOpen) {
+        setEventPanelOpen(false);
+        setTimeout(() => setEventPanelOpen(true), 350);
+      } else setEventPanelOpen(true);
     };
 
     const dropdownList: DropdownList = [
@@ -404,7 +404,7 @@ const EventComponent = memo(
           events.map((_, index) => ({ position: index }));
 
           setSaving(true);
-          setEventPanelDisplay(false);
+          setEventPanelOpen(false);
           dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
           deleteEvent.mutate(
             { eventId: event.id, events },
