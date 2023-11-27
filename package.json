@@ -1,6 +1,10 @@
 {
   "name": "kolumbus",
+<<<<<<< HEAD
   "version": "0.0.103",
+=======
+  "version": "0.0.104",
+>>>>>>> cde7939 (Update API URLs to use HTTPS in production)
   "private": true,
   "scripts": {
     "dev": "next dev",
