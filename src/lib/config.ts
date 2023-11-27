@@ -1,5 +1,3 @@
-"use client";
-
 export const BASE_URL = process.env.NODE_ENV === "production" ? "https://www.kolumbus.app" : "http://localhost:3000";
 
 // There are some issues with this navigator.
