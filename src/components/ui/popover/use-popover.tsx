@@ -107,8 +107,8 @@ export default function usePopover(
   const props = useMemo(() => {
     const popover = {
       style: extensions.position
-        ? { top: extensions.position.x, left: extensions.position.y, transformOrigin: extensions.position.transformOrigin }
-        : { top: data.coords.y, left: data.coords.x, transformOrigin: data.transformOrigin ?? "center" },
+        ? { top: extensions.position.y, left: extensions.position.x, transformOrigin: extensions.position.transformOrigin }
+        : { top: data.coords.y, left: data.coords.x, transformOrigin: data.transformOrigin },
     };
 
     const arrowSize = `${(extensions.arrow?.size ?? 0) / 16}rem`;

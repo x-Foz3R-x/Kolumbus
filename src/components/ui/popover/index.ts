@@ -25,7 +25,7 @@ export function usePopover() {
 }
 
 // Extensions
-export function Position(x: string | number, y: string | number, transformOrigin?: string): Position {
+export function Position(x: string | number, y: string | number, transformOrigin = "center"): Position {
   return { name: "position", x, y, transformOrigin };
 }
 

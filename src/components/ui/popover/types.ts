@@ -16,18 +16,21 @@ export type Container = {
   margin: number | [number, number, number, number];
   padding: number | [number, number, number, number];
 };
-export type Extensions = (Offset | Flip | Arrow | Backdrop | Motion | Prevent)[] | (Position | Backdrop | Motion | Prevent)[];
+export type Extensions = (Flip | Offset | Arrow | Backdrop | Motion | Prevent)[] | (Position | Backdrop | Motion | Prevent)[];
 export type MountedExtensions = {
-  offset?: Offset;
   position?: Position;
+
   flip?: Flip;
   arrow?: Arrow;
+  offset?: Offset;
+
   backdrop?: Backdrop;
+  motion?: Motion;
   prevent?: Prevent;
 };
 
 // Extensions
-export type Position = { name: "position"; x: string | number; y: string | number; transformOrigin?: string };
+export type Position = { name: "position"; x: string | number; y: string | number; transformOrigin: string };
 
 export type Flip = { name: "flip" };
 export type Offset = { name: "offset"; value: number };

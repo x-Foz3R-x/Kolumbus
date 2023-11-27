@@ -5,7 +5,8 @@ import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 
 import usePopover, { parsePlacement } from "./use-popover";
-import { Arrow, Backdrop, Container, Extensions, Flip, Motion, Offset, Placement, Position, Prevent } from "./types";
+import { Container, Extensions, MountedExtensions, Placement } from "./types";
+
 import useCloseTriggers from "@/hooks/use-close-triggers";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,7 @@ import Portal from "@/components/portal";
 
 type PopoverContentProps = {
   popoverRef: React.RefObject<HTMLDivElement>;
-  triggerRef: React.RefObject<HTMLElement>;
+  triggerRef?: React.RefObject<HTMLElement>;
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   placement?: Placement;
@@ -25,7 +26,7 @@ type PopoverContentProps = {
 };
 export function Popover({
   popoverRef,
-  triggerRef,
+  triggerRef: triggerRefProp,
   isOpen,
   setOpen,
   placement: initialPlacement = "bottom",
@@ -34,16 +35,12 @@ export function Popover({
   className,
   children,
 }: PopoverContentProps) {
+  const triggerRef = useRef(triggerRefProp?.current ?? null);
   const useTransition = useRef("");
-  const mountedExtensions: {
-    offset?: Offset;
-    position?: Position;
-    flip?: Flip;
-    arrow?: Arrow;
-    backdrop?: Backdrop;
-    motion?: Motion;
-    prevent?: Prevent;
-  } = extensions.reduce((acc, extension) => ({ ...acc, [extension.name]: extension }), {});
+
+  const mountedExtensions: MountedExtensions = extensions.reduce((acc, extension) => {
+    return { ...acc, [extension.name]: extension };
+  }, {});
   const handleClose = useCallback(() => {
     if (!isOpen) return;
 
@@ -105,6 +102,11 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, mountedExtensions.prevent, handleClose]);
 
+  // Update triggerRef when triggerRefProp changes
+  useEffect(() => {
+    triggerRef.current = triggerRefProp?.current ?? null;
+  }, [triggerRefProp]);
+
   // Apply transition when popover is opened and position is calculated for the first time.
   useEffect(() => {
     if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0)
@@ -112,19 +114,19 @@ export function Popover({
     else useTransition.current = "";
   }, [isOpen, props.popover.style]);
 
-  // Focus first element in popover when opened
+  // Focus first focusable element when popover is opened.
   useEffect(() => {
-    if (isOpen && !mountedExtensions.prevent?.autofocus && popoverRef.current) {
-      const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
-        "a, area, button, input, object, select, textarea, [tabindex]:not([tabindex='-1'])",
-      );
-      Array.from(focusableElements)[0]?.focus({ preventScroll: true });
-    }
-  }, [isOpen, mountedExtensions.prevent?.autofocus, popoverRef]);
+    if (!isOpen || !popoverRef.current || mountedExtensions.prevent?.autofocus) return;
+
+    const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
+      "a, area, button, input, object, select, textarea, [tabindex]:not([tabindex='-1'])",
+    );
+    Array.from(focusableElements)[0]?.focus({ preventScroll: true });
+  }, [popoverRef, isOpen, mountedExtensions.prevent?.autofocus]);
 
   // Observe triggerRef's visibility to close the popover when out of view.
   useEffect(() => {
-    if (mountedExtensions.prevent?.hide) return;
+    if (!isOpen || mountedExtensions.prevent?.hide) return;
 
     const triggerElement = triggerRef.current;
     const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && setOpen(false), { threshold: 0.1 });
@@ -134,9 +136,9 @@ export function Popover({
     return () => {
       triggerElement && observer.unobserve(triggerElement);
     };
-  }, [triggerRef, setOpen, container.selector, mountedExtensions.prevent?.hide]);
+  }, [triggerRef, isOpen, setOpen, container.selector, mountedExtensions.prevent?.hide]);
 
-  useCloseTriggers([triggerRef, popoverRef], handleClose, mountedExtensions.prevent?.closeTriggers);
+  useCloseTriggers([triggerRef, popoverRef], handleClose, !isOpen || mountedExtensions.prevent?.closeTriggers);
 
   return (
     <AnimatePresence>
