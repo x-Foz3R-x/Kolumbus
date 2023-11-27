@@ -11,7 +11,6 @@ import useCloseTriggers from "@/hooks/use-close-triggers";
 import { eventTemplate } from "@/data/template-data";
 import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@/types";
 import useAppdata from "@/context/appdata";
-import { cn } from "@/lib/utils";
 
 import LocationSearchBox from "../location-search-box";
 import { Motion, Popover, Position } from "../ui/popover";
