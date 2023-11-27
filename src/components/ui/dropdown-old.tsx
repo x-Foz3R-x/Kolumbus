@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import Icon from "../icons";
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import useCloseTriggers from "@/hooks/use-close-triggers";
 
 interface DropdownProps {
   isModalOpen: boolean;
@@ -11,7 +11,7 @@ interface DropdownProps {
   className?: string;
   children: React.ReactNode;
 }
-export function Dropdown({ isModalOpen, setIsModalOpen, className, children }: DropdownProps) {
+export function DropdownOld({ isModalOpen, setIsModalOpen, className, children }: DropdownProps) {
   const modalRef: any = useRef(null);
 
   useLayoutEffect(() => {

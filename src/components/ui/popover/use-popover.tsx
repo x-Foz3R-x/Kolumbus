@@ -1,27 +1,40 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
-import { Alignment, Container, Coords, MountedExtensions, Placement, Rect, Inset, Side, Axis, Length, PositionCoords } from "./types";
+import {
+  Alignment,
+  Container,
+  Coords,
+  MountedExtensions,
+  Placement,
+  Rect,
+  Inset,
+  Side,
+  Axis,
+  Length,
+  DynamicCoords,
+  SideMap,
+} from "./types";
 
 /**
- * A hook that calculates the position of a popover relative to a target element.
+ * A hook that calculates the position of a popover relative to a trigger element.
  *
  * @remarks
- * This hook uses the `computePosition` function to calculate the position of the popover based on the target element, the popover element, and the specified placement. It also updates the position of the popover when the window is resized or scrolled.
+ * This hook uses the `computePosition` function to calculate the position of the popover based on the trigger element, the popover element, and the specified placement. It also updates the position of the popover when the window is resized or scrolled.
  *
  * @param popoverRef - A ref to the popover element.
- * @param targetRef - A ref to the target element.
+ * @param triggerRef - A ref to the trigger element.
  * @param isOpen - Whether the popover is currently open.
- * @param initialPlacement - The placement of the popover relative to the target element.
+ * @param initialPlacement - The placement of the popover relative to the trigger element.
  * @param container - The container element for the popover.
  * @param extensions - Additional options for the popover.
  * @returns An object containing the popover, arrow, and motion styles, as well as an `update` function to update the position of the popover.
  *
  * @example
  * function MyComponent() {
- *   const targetRef = useRef(null);
+ *   const triggerRef = useRef(null);
  *   const popoverRef = useRef(null);
  *   const { props } = usePopover({
  *     popoverRef,
- *     targetRef,
+ *     triggerRef,
  *     isOpen: true,
  *     placement: 'bottom',
  *     container: { selector: '#container', margin: 10, padding: 10 },
@@ -30,7 +43,7 @@ import { Alignment, Container, Coords, MountedExtensions, Placement, Rect, Inset
  *
  *   return (
  *     <div id="container">
- *       <div ref={targetRef}>Target element</div>
+ *       <button ref={triggerRef}>Trigger element</button>
  *       <div ref={popoverRef} style={props.popover.style}>
  *         Popover content
  *         <div ref={arrowRef} style={props.arrow.style} />
@@ -40,56 +53,46 @@ import { Alignment, Container, Coords, MountedExtensions, Placement, Rect, Inset
  * }
  */
 export default function usePopover(
+  triggerRef: React.RefObject<HTMLElement>,
   popoverRef: React.RefObject<HTMLElement>,
-  targetRef: React.RefObject<HTMLElement>,
   isOpen: boolean,
   initialPlacement: Placement,
   container: Container,
-  extensions: MountedExtensions
+  extensions: MountedExtensions,
 ) {
-  type Data = { placement: Placement; coords: PositionCoords; arrowCoords: Coords; transformOrigin?: string };
+  type Data = { placement: Placement; coords: DynamicCoords; arrowCoords: Coords; transformOrigin?: string };
   const [data, setData] = useState<Data>({
     placement: initialPlacement,
-    coords: extensions.position ? { x: extensions.position.x, y: extensions.position.y } : { x: 0, y: 0 },
+    coords: { x: 0, y: 0 },
     arrowCoords: { x: 0, y: 0 },
-    transformOrigin: extensions.position ? extensions.position.transformOrigin : undefined,
+    transformOrigin: undefined,
   });
 
+  const containerMargin = useMemo(() => getInsetValues(container.margin), [container.margin]);
+  const containerPadding = useMemo(() => getInsetValues(container.padding), [container.padding]);
+
   const update = useCallback(() => {
-    if (!targetRef?.current || !popoverRef?.current || !isOpen || extensions.position) return;
-
-    const containerMargin =
-      typeof container.margin === "number"
-        ? { top: container.margin, right: container.margin, bottom: container.margin, left: container.margin }
-        : { top: container.margin[0], right: container.margin[1], bottom: container.margin[2], left: container.margin[3] };
-    const containerPadding =
-      typeof container.padding === "number"
-        ? { top: container.padding, right: container.padding, bottom: container.padding, left: container.padding }
-        : { top: container.padding[0], right: container.padding[1], bottom: container.padding[2], left: container.padding[3] };
-
-    const offset = extensions.offset?.value ?? 0;
-    const flip = !!extensions.flip ?? false;
-    const arrowSize = extensions.arrow?.size ?? 0;
+    if (!triggerRef?.current || !popoverRef?.current || !isOpen || extensions.position) return;
 
     const computedPosition = computePosition(
       document.querySelector(container.selector) ?? document.body,
-      targetRef.current,
+      triggerRef.current,
       popoverRef.current,
       initialPlacement,
       containerMargin,
       containerPadding,
-      offset,
-      flip,
-      arrowSize
+      !!extensions.flip ?? false,
+      extensions.offset?.value ?? 0,
+      extensions.arrow?.size ?? 0,
     );
 
     setData(computedPosition);
-  }, [popoverRef, targetRef, isOpen, initialPlacement, container, extensions]);
+  }, [popoverRef, triggerRef, isOpen, initialPlacement, container.selector, containerMargin, containerPadding, extensions]);
 
-  // Update position when popover is opened, closed or any of the dependencies change
-  useLayoutEffect(update, [popoverRef, targetRef, isOpen, initialPlacement]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Update position when popover is opened
+  useLayoutEffect(update, [popoverRef, triggerRef, isOpen, initialPlacement]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Update position when window is resized or scrolled (if prevent.scroll is false)
+  // Update position when window is resized or scrolled
   useLayoutEffect(() => {
     window.addEventListener("resize", update);
     if (!extensions.prevent?.scroll) window.addEventListener("scroll", update, true);
@@ -102,42 +105,45 @@ export default function usePopover(
 
   // Calculate and memoize the popover, arrow, and motion styles
   const props = useMemo(() => {
-    const popover = { style: { top: data.coords.y, left: data.coords.x } };
+    const popover = {
+      style: extensions.position
+        ? { top: extensions.position.y, left: extensions.position.x, transformOrigin: extensions.position.transformOrigin }
+        : { top: data.coords.y, left: data.coords.x, transformOrigin: data.transformOrigin },
+    };
 
     const arrowSize = `${(extensions.arrow?.size ?? 0) / 16}rem`;
     const arrow = { style: { top: data.arrowCoords.y, left: data.arrowCoords.x, width: arrowSize, height: arrowSize } };
 
-    const motion = { style: { transformOrigin: data.transformOrigin } };
-    return { popover, arrow, motion };
-  }, [data, extensions.arrow]);
+    return { popover, arrow };
+  }, [data, extensions.arrow, extensions.position]);
 
-  return useMemo(() => ({ placement: data.placement, props, update }), [data.placement, props, update]);
+  return useMemo(() => ({ placement: data.placement, props }), [data.placement, props]);
 }
 
 /**
- * Computes the position of a popover element relative to a target element and a container element.
+ * Computes the position of a popover element relative to a trigger element and a container element.
  *
  * @param container - The container element that the popover is positioned within.
- * @param target - The target element that the popover is positioned relative to.
+ * @param trigger - The trigger element that the popover is positioned relative to.
  * @param popover - The popover element that is being positioned.
- * @param placement - The initial placement of the popover relative to the target element.
+ * @param placement - The initial placement of the popover relative to the trigger element.
  * @param margin - The margin of the popover element.
  * @param padding - The padding of the popover element.
- * @param offset - The offset of the popover element from the target element.
- * @param shouldFlip - Whether or not the popover should flip to the opposite side if there is not enough space.
+ * @param offset - The offset of the popover element from the trigger element.
+ * @param flip - Whether or not the popover should flip to the opposite side if there is not enough space.
  * @param arrowSize - The size of the arrow element on the popover.
  * @returns An object containing the computed placement, coordinates, arrow coordinates, and transform origin of the popover element.
  */
 function computePosition(
   container: Element,
-  target: Element,
+  trigger: Element,
   popover: Element,
   placement: Placement,
   margin: Inset,
   padding: Inset,
+  flip: boolean,
   offset: number,
-  shouldFlip: boolean,
-  arrowSize: number
+  arrowSize: number,
 ) {
   const documentRect = document.documentElement.getBoundingClientRect();
   const boundary: Inset = {
@@ -148,15 +154,12 @@ function computePosition(
   };
   const elementsRect = {
     container: getElementRect(container),
-    target: getElementRect(target, getElementRect(container)),
+    trigger: getElementRect(trigger, getElementRect(container)),
     popover: getElementRect(popover, getElementRect(container)),
   };
 
-  if (shouldFlip) {
-    const elementsAbsoluteRect = {
-      target: getElementRect(target),
-      popover: getElementRect(popover),
-    };
+  if (flip) {
+    const elementsAbsoluteRect = { trigger: getElementRect(trigger), popover: getElementRect(popover) };
 
     const { coords: absoluteCoords } = computeCoords(elementsAbsoluteRect, placement, offset, arrowSize);
     elementsRect.popover = { ...elementsRect.popover, ...absoluteCoords };
@@ -171,22 +174,22 @@ function computePosition(
 }
 
 /**
- * Computes the coordinates for a popover based on the target element's position and the desired placement.
+ * Computes the coordinates for a popover based on the trigger element's position and the desired placement.
  *
- * @param rects An object containing the target element's and popover's size and positions.
- * @param placement The desired placement of the popover relative to the target element.
- * @param offset The offset distance between the popover and the target element.
+ * @param rects An object containing the trigger element's and popover's size and positions.
+ * @param placement The desired placement of the popover relative to the trigger element.
+ * @param offset The offset distance between the popover and the trigger element.
  * @param arrowSize The size of the arrow on the popover.
  * @returns An object containing the coordinates for the popover and its arrow.
  */
-function computeCoords(rects: { target: Rect; popover: Rect }, placement: Placement, offset: number, arrowSize: number) {
+function computeCoords(rects: { trigger: Rect; popover: Rect }, placement: Placement, offset: number, arrowSize: number) {
   const [side, alignment] = parsePlacement(placement);
   const oppositeAxis = getOppositeAxis(placement);
   const oppositeLength = getOppositeAxisLength(placement);
 
-  const commonX = rects.target.x + rects.target.width / 2 - rects.popover.width / 2;
-  const commonY = rects.target.y + rects.target.height / 2 - rects.popover.height / 2;
-  const commonAlign = rects.target[oppositeLength] / 2 - rects.popover[oppositeLength] / 2;
+  const commonX = rects.trigger.x + rects.trigger.width / 2 - rects.popover.width / 2;
+  const commonY = rects.trigger.y + rects.trigger.height / 2 - rects.popover.height / 2;
+  const commonAlign = rects.trigger[oppositeLength] / 2 - rects.popover[oppositeLength] / 2;
   const arrowCommonX = rects.popover.width / 2 - arrowSize / 2;
   const arrowCommonY = rects.popover.height / 2 - arrowSize / 2;
 
@@ -194,23 +197,23 @@ function computeCoords(rects: { target: Rect; popover: Rect }, placement: Placem
   let arrowCoords: Coords;
   switch (side) {
     case "top":
-      coords = { x: commonX, y: rects.target.y - rects.popover.height };
+      coords = { x: commonX, y: rects.trigger.y - rects.popover.height };
       arrowCoords = { x: arrowCommonX, y: rects.popover.height - arrowSize / 1.5 };
       break;
     case "bottom":
-      coords = { x: commonX, y: rects.target.y + rects.target.height };
+      coords = { x: commonX, y: rects.trigger.y + rects.trigger.height };
       arrowCoords = { x: arrowCommonX, y: -arrowSize / 3 };
       break;
     case "right":
-      coords = { x: rects.target.x + rects.target.width, y: commonY };
+      coords = { x: rects.trigger.x + rects.trigger.width, y: commonY };
       arrowCoords = { x: -arrowSize / 3, y: arrowCommonY };
       break;
     case "left":
-      coords = { x: rects.target.x - rects.popover.width, y: commonY };
+      coords = { x: rects.trigger.x - rects.popover.width, y: commonY };
       arrowCoords = { x: rects.popover.width - arrowSize / 1.5, y: arrowCommonY };
       break;
     default:
-      coords = { x: rects.target.y, y: rects.target.x };
+      coords = { x: rects.trigger.y, y: rects.trigger.x };
       arrowCoords = { x: 0, y: 0 };
   }
   switch (alignment) {
@@ -238,14 +241,9 @@ function computeCoords(rects: { target: Rect; popover: Rect }, placement: Placem
  * @returns The computed transform origin.
  */
 function computeTransformOrigin([side, alignment]: [Side, Alignment | undefined], axis: Axis) {
-  const oppositeSideMap = {
-    top: "bottom",
-    bottom: "top",
-    left: "right",
-    right: "left",
-  };
+  const oppositeSideMap: SideMap = { top: "bottom", right: "left", bottom: "top", left: "right" };
 
-  let transformOrigin = oppositeSideMap[side];
+  let transformOrigin: string = oppositeSideMap[side];
   if (alignment === "start") transformOrigin = axis === "y" ? `${transformOrigin} left` : `top ${transformOrigin}`;
   else if (alignment === "end") transformOrigin = axis === "y" ? `${transformOrigin} right` : `bottom ${transformOrigin}`;
 
@@ -270,7 +268,7 @@ function Offset(side: Side, offset: number, coords: Coords) {
 }
 
 /**
- * Determines the best placement for a popover based on the target and popover rectangles,
+ * Determines the best placement for a popover based on the trigger and popover rectangles,
  * the boundary of the container, and an set placement.
  *
  * @remarks
@@ -280,11 +278,11 @@ function Offset(side: Side, offset: number, coords: Coords) {
  * returns the best placement.
  *
  * @param boundary - The boundary of the container.
- * @param rects - The target and popover rectangles.
+ * @param rects - The trigger and popover rectangles.
  * @param placement - The initial placement.
  * @returns The best placement for the popover.
  */
-function Flip(boundary: Inset, rects: { target: Rect; popover: Rect }, placement: Placement): Placement {
+function Flip(boundary: Inset, rects: { trigger: Rect; popover: Rect }, placement: Placement): Placement {
   const PLACEMENTS = getFallbackPlacements(placement);
   const OVERFLOW = DetectOverflow(boundary, rects.popover);
 
@@ -393,31 +391,23 @@ function getOppositeAxisLength(placement: Placement): Length {
  * ```
  */
 function getFallbackPlacements(placement: Placement): Placement[] {
-  const oppositeSideMap: { top: Side; bottom: Side; right: Side; left: Side } = {
-    top: "bottom",
-    bottom: "top",
-    right: "left",
-    left: "right",
-  };
-  const oppositeAlignmentMap: { start: Alignment; end: Alignment } = {
-    start: "end",
-    end: "start",
-  };
+  const oppositeSideMap: SideMap = { top: "bottom", right: "left", bottom: "top", left: "right" };
+  const oppositeAlignmentMap: { start: Alignment; end: Alignment } = { start: "end", end: "start" };
 
   const [side, alignment] = placement.split("-") as [Side, Alignment];
-  const [oppositeSide, oppositeAlignment] = placement
-    .replace(/left|right|bottom|top/g, (side) => oppositeSideMap[side as Side])
-    .split("-") as [Side, Alignment];
+  const oppositeSide = oppositeSideMap[side];
+  const oppositeAlignment = alignment && oppositeAlignmentMap[alignment];
 
-  let list: Placement[] = [];
+  const placements: Placement[] = alignment
+    ? [
+        `${side}-${alignment}`,
+        `${side}-${oppositeAlignmentMap[alignment]}`,
+        `${oppositeSide}-${oppositeAlignment}`,
+        `${oppositeSide}-${oppositeAlignmentMap[oppositeAlignment]}`,
+      ]
+    : [side, `${side}-start`, `${side}-end`, oppositeSide, `${oppositeSide}-start`, `${oppositeSide}-end`];
 
-  if (alignment) list.push(`${side}-${alignment}`, `${side}-${oppositeAlignmentMap[alignment]}`);
-  else list.push(side, `${side}-start`, `${side}-end`);
-
-  if (oppositeAlignment) list.push(`${oppositeSide}-${oppositeAlignment}`, `${oppositeSide}-${oppositeAlignmentMap[oppositeAlignment]}`);
-  else list.push(oppositeSide, `${oppositeSide}-start`, `${oppositeSide}-end`);
-
-  return list;
+  return placements;
 }
 
 /**
@@ -476,6 +466,27 @@ function getElementRect(element: Element, containerRect?: Rect): Rect {
 }
 
 /**
+ * Converts a number or an array of numbers into an `Inset` object.
+ *
+ * @param value - The number or array of numbers to convert.
+ * @returns The `Inset` object with the converted values.
+ *
+ * @example
+ * // Single number
+ * const inset1 = getInsetValues(10);
+ * // inset1 = { top: 10, right: 10, bottom: 10, left: 10 }
+ *
+ * // Array of numbers
+ * const inset2 = getInsetValues([5, 10, 15, 20]);
+ * // inset2 = { top: 5, right: 10, bottom: 15, left: 20 }
+ */
+function getInsetValues(value: number | [number, number, number, number]): Inset {
+  return typeof value === "number"
+    ? { top: value, right: value, bottom: value, left: value }
+    : { top: value[0], right: value[1], bottom: value[2], left: value[3] };
+}
+
+/**
  * Calculates the overflow of a popover element relative to a boundary element.
  * Values above 0 indicate overflow, values below 0 indicate underflow.
  *
@@ -483,7 +494,7 @@ function getElementRect(element: Element, containerRect?: Rect): Rect {
  * @param popoverRect The popover element's rect.
  * @returns An object containing the overflow values for top, bottom, left, and right.
  */
-function DetectOverflow(boundary: Inset, popoverRect: Rect) {
+function DetectOverflow(boundary: Inset, popoverRect: Rect): Inset {
   const popoverClientRect = {
     ...popoverRect,
     top: popoverRect.y,

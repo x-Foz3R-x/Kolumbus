@@ -72,14 +72,14 @@ export enum UT {
 }
 
 /**
- * DispatchAction is a union type that represents all possible actions that can be dispatched to the store.
+ * DispatchAction is a union type that represents all possible actions that can be dispatched to the state.
  * Each action has a `type` property that specifies the type of action being performed, as well as any additional
  * properties required for that action.
  */
 export type DispatchAction =
   | {
       type: UT.REPLACE;
-      userTrips: Trip[];
+      trips: Trip[];
     }
   | {
       type: UT.CREATE_TRIP;
@@ -95,13 +95,13 @@ export type DispatchAction =
     }
   | {
       type: UT.CREATE_EVENT;
-      payload: { selectedTrip: number; dayPosition: number; placeAt: "start" | "end"; event: Event };
+      payload: { tripIndex: number; dayIndex: number; event: Event; placeAt: "start" | "end" };
     }
   | {
       type: UT.UPDATE_EVENT;
-      payload: { selectedTrip: number; dayPosition: number; event: Event };
+      payload: { tripIndex: number; dayIndex: number; event: Event };
     }
   | {
       type: UT.DELETE_EVENT;
-      payload: { selectedTrip: number; dayPosition: number; event: Event };
+      payload: { tripIndex: number; dayIndex: number; event: Event };
     };

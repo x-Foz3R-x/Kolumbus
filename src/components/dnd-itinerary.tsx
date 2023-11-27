@@ -9,15 +9,16 @@ import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifi
 import { CSS } from "@dnd-kit/utilities";
 
 import api from "@/app/_trpc/client";
-import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayPosition } from "@/lib/dnd";
+import useAppdata from "@/context/appdata";
+import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayIndex } from "@/lib/dnd";
+import { Trip, Day, Event, UT } from "@/types";
 
+import Icon from "./icons";
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
 import EventPanel from "./itinerary/event-panel";
-import Icon from "./icons";
-
-import { type Trip, type Day, type Event, UT } from "@/types";
-import useAppdata from "@/context/appdata";
+import { Dropdown, DropdownLink, DropdownList, DropdownOption } from "./ui/dropdown";
+import Divider from "./ui/divider";
 
 //#region Context
 const DndDataContext = createContext<{
@@ -30,10 +31,10 @@ const DndDataContext = createContext<{
   eventsId: string[];
   events: Event[];
 
-  isEventComposerDisplayed: boolean;
-  setEventComposerDisplay: React.Dispatch<React.SetStateAction<boolean>>;
-  isEventPanelDisplayed: boolean;
-  setEventPanelDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+  isEventComposerOpen: boolean;
+  setEventComposerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isEventPanelOpen: boolean;
+  setEventPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
   itineraryPosition: { y_day: number; x_event: number };
   setItineraryPosition: React.Dispatch<React.SetStateAction<{ y_day: number; x_event: number }>>;
@@ -54,8 +55,8 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const [isEventComposerDisplayed, setEventComposerDisplay] = useState(false);
-  const [isEventPanelDisplayed, setEventPanelDisplay] = useState(false);
+  const [isEventComposerOpen, setEventComposerOpen] = useState(false);
+  const [isEventPanelOpen, setEventPanelOpen] = useState(false);
   const [itineraryPosition, setItineraryPosition] = useState({ y_day: 0, x_event: 0 });
 
   // to delete/change
@@ -91,7 +92,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
     // todo: optimize not to update all events, only the changed ones
     // todo: sync with db, if update fails, revert to previous state
     const iteratedDate = new Date(tripInfo.startDate);
-    itinerary.forEach((day, dayPosition) => {
+    itinerary.forEach((day, dayIndex) => {
       day.events.forEach((event, index) => {
         event.date = iteratedDate.toISOString();
         event.position = index;
@@ -99,7 +100,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
         setSaving(true);
         dispatchUserTrips({
           type: UT.UPDATE_EVENT,
-          payload: { selectedTrip, dayPosition, event },
+          payload: { tripIndex: selectedTrip, dayIndex, event },
         });
         updateEvent.mutate(
           {
@@ -111,7 +112,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
               if (!updatedEvent) return;
               dispatchUserTrips({
                 type: UT.UPDATE_EVENT,
-                payload: { selectedTrip, dayPosition, event: { ...event, ...(updatedEvent as Event) } },
+                payload: { tripIndex: selectedTrip, dayIndex, event: { ...event, ...(updatedEvent as Event | any) } },
               });
             },
             onError(error) {
@@ -121,7 +122,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
             onSettled() {
               setSaving(false);
             },
-          }
+          },
         );
       });
 
@@ -189,17 +190,17 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
     eventsId,
     events,
 
-    isEventComposerDisplayed,
-    setEventComposerDisplay,
-    isEventPanelDisplayed,
-    setEventPanelDisplay,
+    isEventComposerOpen,
+    setEventComposerOpen,
+    isEventPanelOpen,
+    setEventPanelOpen,
 
     itineraryPosition,
     setItineraryPosition,
   };
 
   return (
-    <div className="relative flex flex-col gap-10">
+    <div className="relative flex flex-col gap-10 px-6">
       <DndDataContext.Provider value={value}>
         <DndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
           <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
@@ -207,9 +208,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
             <EventPanel />
 
             <ul className="flex w-full min-w-fit flex-col">
-              {daysId?.map((dayId) => (
-                <DndDay key={dayId} day={GetDay(itinerary, dayId)} />
-              ))}
+              {daysId?.map((dayId) => <DndDay key={dayId} day={GetDay(itinerary, dayId)} />)}
               <CalendarEnd totalDays={daysId.length} />
             </ul>
           </SortableContext>
@@ -284,21 +283,21 @@ type DayComponentProps = {
 };
 const DayComponent = memo(
   forwardRef(function DndDayContentComponent({ day, dragOverlay, ...props }: DayComponentProps, ref: ForwardedRef<HTMLDivElement>) {
-    const { activeTrip, activeId, setEventComposerDisplay, setItineraryPosition } = useDndData();
+    const { activeTrip, activeId, setEventComposerOpen: setEventComposerDisplay, setItineraryPosition } = useDndData();
     const { id, date, events } = day;
 
     const dayEventsId = events?.map((event) => event.id);
-    const dayPosition = GetDayPosition(activeTrip.itinerary, date);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, date);
 
     const handleAddEvent = () => {
       setEventComposerDisplay(true);
-      setItineraryPosition({ y_day: dayPosition, x_event: 0 });
+      setItineraryPosition({ y_day: dayIndex, x_event: 0 });
     };
 
     const eventWidthAndGap = 168;
     return (
       <div ref={ref} className="group/day flex w-full gap-5">
-        <Calendar dayPosition={dayPosition} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
+        <Calendar index={dayIndex} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
 
         <ul
           className={`flex h-32 origin-left list-none gap-2 pt-5 duration-300 ease-kolumb-flow ${
@@ -306,9 +305,7 @@ const DayComponent = memo(
           }`}
         >
           <SortableContext items={dayEventsId} strategy={horizontalListSortingStrategy}>
-            {dayEventsId?.map((eventId) => (
-              <DndEvent key={eventId} event={events.find((event) => event.id === eventId)!} />
-            ))}
+            {dayEventsId?.map((eventId) => <DndEvent key={eventId} event={events.find((event) => event.id === eventId)!} />)}
           </SortableContext>
 
           <button
@@ -323,13 +320,13 @@ const DayComponent = memo(
         </ul>
       </div>
     );
-  })
+  }),
 );
 //#endregion
 
 //#region Event
 const DndEvent = memo(({ event }: { event: Event }) => {
-  const { activeId, activeEvent, isEventPanelDisplayed } = useDndData();
+  const { activeId, activeEvent, isEventPanelOpen } = useDndData();
   const id = event.id;
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
@@ -351,7 +348,7 @@ const DndEvent = memo(({ event }: { event: Event }) => {
       className={`h-28 rounded-lg duration-500 ease-kolumb-flow ${
         id !== activeId ? "z-10" : "z-20 border-2 border-dashed border-gray-300 bg-gray-50"
       }
-      ${isEventPanelDisplayed && activeEvent?.id === id ? "w-80 opacity-0" : "w-40 opacity-100"}
+      ${isEventPanelOpen && activeEvent?.id === id ? "w-80 opacity-0" : "w-40 opacity-100"}
       `}
     >
       {id !== activeId && <EventComponent event={event} {...listeners} {...attributes} />}
@@ -366,15 +363,73 @@ type EventComponentProps = {
 };
 const EventComponent = memo(
   forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
-    const { activeTrip, setActiveEvent, isEventPanelDisplayed, setEventPanelDisplay, setItineraryPosition } = useDndData();
-    const dayPosition = GetDayPosition(activeTrip.itinerary, event.date);
+    const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
+    const { activeTrip, setActiveEvent, isEventPanelOpen, setEventPanelOpen, setItineraryPosition } = useDndData();
+    const deleteEvent = api.event.delete.useMutation();
 
-    const getImageUrl = (): string => {
+    const [isDropdownOpen, setDropdownOpen] = useState(false);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+
+    const getImage = (): string => {
       if (!event.photo) return "/images/event-placeholder.png";
       if (event.photo.startsWith("http")) return event.photo;
 
       return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=312&maxheight=160&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
     };
+
+    const openEventPanel = () => {
+      setActiveEvent(event);
+      setItineraryPosition({ y_day: dayIndex, x_event: event.position });
+
+      if (isEventPanelOpen) {
+        setEventPanelOpen(false);
+        setTimeout(() => setEventPanelOpen(true), 350);
+      } else setEventPanelOpen(true);
+    };
+
+    const dropdownList: DropdownList = [
+      { index: 0, onSelect: openEventPanel },
+      { index: 1, onSelect: () => event.address && navigator.clipboard.writeText(event.address) },
+      { index: 2, skip: !event?.url },
+      { index: 3, skip: true },
+      {
+        index: 4,
+        onSelect: () => {
+          if (!event) return;
+
+          const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+
+          const events = [...activeTrip.itinerary[dayIndex].events];
+          events.splice(event.position, 1);
+          events.map((_, index) => ({ position: index }));
+
+          setSaving(true);
+          setEventPanelOpen(false);
+          dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
+          deleteEvent.mutate(
+            { eventId: event.id, events },
+            {
+              onSuccess(updatedEvents) {
+                if (!updatedEvents) return;
+                updatedEvents.forEach((event) => {
+                  dispatchUserTrips({
+                    type: UT.UPDATE_EVENT,
+                    payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
+                  });
+                });
+              },
+              onError(error) {
+                console.error(error);
+                dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+              },
+              onSettled() {
+                setSaving(false);
+              },
+            },
+          );
+        },
+      },
+    ];
 
     return (
       <div
@@ -383,30 +438,62 @@ const EventComponent = memo(
         }`}
       >
         {!dragOverlay && (
-          <span className="absolute right-1 top-1 z-20 flex h-6 w-14 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 opacity-0 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow">
-            <button
-              onClick={() => {
-                setActiveEvent(event);
-                setItineraryPosition({ y_day: dayPosition, x_event: event.position });
+          <span
+            className={`absolute right-1 top-1 z-20 grid h-6 w-14 grid-cols-2 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow ${
+              isDropdownOpen ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <button onClick={openEventPanel} className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100">
+              <Icon.eventPanel className="m-auto h-3" />
+            </button>
 
-                if (isEventPanelDisplayed) {
-                  setEventPanelDisplay(false);
-                  setTimeout(() => setEventPanelDisplay(true), 350);
-                } else setEventPanelDisplay(true);
+            <Dropdown
+              isOpen={isDropdownOpen}
+              setOpen={setDropdownOpen}
+              list={dropdownList}
+              container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
+              offset={8}
+              preventScroll
+              className="w-44"
+              buttonProps={{
+                variant: "unstyled",
+                size: "unstyled",
+                className: "h-full w-full rounded-none duration-200 ease-kolumb-flow hover:bg-gray-100 focus-visible:bg-kolumblue-100",
+                children: <Icon.horizontalDots className="m-auto w-4" />,
               }}
-              className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100"
             >
-              <Icon.pinPen className="m-auto h-3" />
-            </button>
+              <DropdownOption index={0}>
+                <Icon.eventPanel className="h-3.5 w-3.5 fill-gray-100" />
+                Event panel
+              </DropdownOption>
+              <DropdownOption index={1}>
+                <Icon.clipboardPin className="h-3.5 w-3.5 fill-gray-100" />
+                Copy address
+              </DropdownOption>
 
-            <button className="w-full duration-200 ease-kolumb-flow hover:bg-gray-100">
-              <Icon.horizontalDots className="m-auto w-4" />
-            </button>
+              <Divider className="my-1 rounded bg-white/25" />
+
+              <DropdownLink index={2} href={event?.url} size="sm" className="flex items-center justify-center gap-1">
+                Find in Google Maps
+                <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-100" />
+              </DropdownLink>
+
+              <Divider className="my-1 rounded bg-white/25" />
+
+              <DropdownOption index={3}>
+                <Icon.duplicate className="h-3.5 w-3.5 fill-gray-100" />
+                Duplicate
+              </DropdownOption>
+              <DropdownOption index={4} variant="danger">
+                <Icon.trash className="h-3.5 w-3.5 fill-gray-100" />
+                Delete
+              </DropdownOption>
+            </Dropdown>
           </span>
         )}
 
         <div ref={ref} onClick={() => setActiveEvent(event)} className="flex-1 cursor-pointer" {...props}>
-          <Image src={getImageUrl()} alt="Event Image" width={156} height={80} priority className="h-20 object-cover object-center" />
+          <Image src={getImage()} alt="Event Image" width={156} height={80} priority className="h-20 object-cover object-center" />
         </div>
 
         <input
@@ -420,6 +507,6 @@ const EventComponent = memo(
         />
       </div>
     );
-  })
+  }),
 );
 //#endregion

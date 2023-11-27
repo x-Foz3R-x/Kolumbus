@@ -9,8 +9,8 @@ import { CalculateDays, GenerateItinerary } from "@/lib/utils";
 import { UT, Event } from "@/types";
 
 import Icon from "../icons";
-import { EventsOnExcludedDaysModal } from "./modal";
-import { Dropdown, DropdownButton } from "@/components/ui/dropdown-old";
+import { EventsOnExcludedDaysModal } from "./modalOld";
+import { DropdownOld, DropdownButton } from "@/components/ui/dropdown-old";
 
 interface Props {
   maxTripsDays: number;
@@ -58,7 +58,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
           onSettled() {
             setSaving(false);
           },
-        }
+        },
       );
       return;
     }
@@ -91,7 +91,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
           onSettled() {
             setSaving(false);
           },
-        }
+        },
       );
       return;
     }
@@ -114,7 +114,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
           onSettled() {
             setSaving(false);
           },
-        }
+        },
       );
       setModalShown(false);
     };
@@ -133,7 +133,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
         <div className="absolute bottom-0 m-auto w-9 text-sm font-medium">{CalculateDays(activeTrip.startDate, activeTrip.endDate)}</div>
       </button>
 
-      <Dropdown isModalOpen={isDisplayed} setIsModalOpen={setDisplay} className="relative max-h-56 w-9 gap-1 rounded-sm">
+      <DropdownOld isModalOpen={isDisplayed} setIsModalOpen={setDisplay} className="relative max-h-56 w-9 gap-1 rounded-sm">
         <div className="flex snap-y snap-mandatory flex-col overflow-y-scroll rounded-sm bg-kolumblue-50">
           {[...Array(maxTripsDays)].map((el, index) => (
             <div key={`day-${index + 1}`}>
@@ -147,7 +147,7 @@ export default function DaysPicker({ maxTripsDays }: Props) {
             </div>
           ))}
         </div>
-      </Dropdown>
+      </DropdownOld>
     </div>
   );
 }

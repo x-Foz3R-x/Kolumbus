@@ -1,22 +1,31 @@
 import { useRef, useState } from "react";
 
-import { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop } from "./types";
+import type { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop, BackdropType } from "./types";
 import { Variants } from "framer-motion";
 
 export { Popover } from "./popover";
 export type { Placement, Container } from "./types";
 
+/**
+ * Custom Hook for handling popovers.
+ *
+ * @returns An array of references and state values for managing popovers.
+ *
+ * @example
+ * // Use the hook to get references and state values.
+ * const [triggerRef, popoverRef, isOpen, setOpen, inputType, setInputType] = usePopover();
+ */
 export function usePopover() {
-  const targetRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [isOpen, setOpen] = useState(false);
-  const [activationType, setActivationType] = useState<"mouse" | "keyboard">("mouse");
+  const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
 
-  return [targetRef, popoverRef, isOpen, setOpen, activationType, setActivationType] as const;
+  return [triggerRef, popoverRef, isOpen, setOpen, inputType, setInputType] as const;
 }
 
 // Extensions
-export function position(x: string | number, y: string | number, transformOrigin: string): Position {
+export function Position(x: string | number, y: string | number, transformOrigin = "center"): Position {
   return { name: "position", x, y, transformOrigin };
 }
 
@@ -26,16 +35,16 @@ export function Flip(): Flip {
 export function Offset(value: number): Offset {
   return { name: "offset", value };
 }
-export function Arrow(value: number, className: { arrow: string; backdrop: string }): Arrow {
-  return { name: "arrow", size: value, className };
+export function Arrow(size: number, className?: { arrow?: string; backdrop?: string }): Arrow {
+  return { name: "arrow", size, className };
 }
 
-export function Backdrop(type: "opaque" | "opaque-white" | "blur" | "blur-white", className?: string): Backdrop {
+export function Backdrop(type: BackdropType, className?: string): Backdrop {
   return { name: "backdrop", type, className };
 }
-export function Motion(transition: Variants | { top: Variants; bottom: Variants; left: Variants; right: Variants }): Motion {
+export function Motion(transition: Variants | { top: Variants; right: Variants; bottom: Variants; left: Variants }): Motion {
   return { name: "motion", transition };
 }
-export function Prevent({ scroll, autofocus }: { scroll?: boolean; autofocus?: boolean }): Prevent {
-  return { name: "prevent", scroll, autofocus };
+export function Prevent({ autofocus, closeTriggers, hide, pointer, scroll }: Omit<Prevent, "name">): Prevent {
+  return { name: "prevent", autofocus, closeTriggers, hide, pointer, scroll };
 }

@@ -1,30 +1,32 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+"use client";
+
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
-import { Arrow, Backdrop, Container, Extensions, Flip, Motion, Offset, Placement, Position, Prevent } from "./types";
-import usePopover, { parsePlacement } from "./use-popover";
 
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import usePopover, { parsePlacement } from "./use-popover";
+import { Container, Extensions, MountedExtensions, Placement } from "./types";
+
+import useCloseTriggers from "@/hooks/use-close-triggers";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
+
 import Portal from "@/components/portal";
 
 type PopoverContentProps = {
-  popoverRef: React.RefObject<HTMLElement>;
-  targetRef: React.RefObject<HTMLElement>;
-
+  popoverRef: React.RefObject<HTMLDivElement>;
+  triggerRef?: React.RefObject<HTMLElement>;
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   placement?: Placement;
   container?: Container;
   extensions?: Extensions;
-
   className?: string;
   children: React.ReactNode;
 };
 export function Popover({
   popoverRef,
-  targetRef,
+  triggerRef: triggerRefProp,
   isOpen,
   setOpen,
   placement: initialPlacement = "bottom",
@@ -33,57 +35,20 @@ export function Popover({
   className,
   children,
 }: PopoverContentProps) {
-  const mountedExtensions: {
-    offset?: Offset;
-    position?: Position;
-    flip?: Flip;
-    arrow?: Arrow;
-    backdrop?: Backdrop;
-    motion?: Motion;
-    prevent?: Prevent;
-  } = {
-    offset: undefined,
-    position: undefined,
-    flip: undefined,
-    arrow: undefined,
-    backdrop: undefined,
-    motion: undefined,
-    prevent: undefined,
-  };
-  extensions.forEach((extension) => {
-    switch (extension.name) {
-      case "offset":
-        mountedExtensions.offset = extension as Offset;
-        break;
-      case "position":
-        mountedExtensions.position = extension as Position;
-        break;
-      case "flip":
-        mountedExtensions.flip = extension as Flip;
-        break;
-      case "arrow":
-        mountedExtensions.arrow = extension as Arrow;
-        break;
-      case "backdrop":
-        mountedExtensions.backdrop = extension as Backdrop;
-        break;
-      case "motion":
-        mountedExtensions.motion = extension as Motion;
-        break;
-      case "prevent":
-        mountedExtensions.prevent = extension as Prevent;
-        break;
-    }
-  });
+  const triggerRef = useRef(triggerRefProp?.current ?? null);
+  const useTransition = useRef("");
 
-  const { props, placement } = usePopover(popoverRef, targetRef, isOpen, initialPlacement, container, mountedExtensions);
-
+  const mountedExtensions: MountedExtensions = extensions.reduce((acc, extension) => {
+    return { ...acc, [extension.name]: extension };
+  }, {});
   const handleClose = useCallback(() => {
-    if (isOpen) {
-      setOpen(false), [setOpen];
-      targetRef.current?.focus();
-    }
-  }, [targetRef, isOpen, setOpen]);
+    if (!isOpen) return;
+
+    setOpen(false);
+    triggerRef.current?.focus();
+  }, [triggerRef, isOpen, setOpen]);
+
+  const { placement, props } = usePopover(triggerRef, popoverRef, isOpen, initialPlacement, container, mountedExtensions);
 
   const variants = useMemo(() => {
     if (!mountedExtensions.motion?.transition) return TRANSITION.fadeInOut[parsePlacement(placement)[0]] as Variants;
@@ -98,14 +63,14 @@ export function Popover({
         <span
           role="presentation"
           aria-hidden={true}
-          className={cn("absolute rotate-45", mountedExtensions.arrow.className?.arrow)}
+          className={cn("absolute z-10 rotate-45", mountedExtensions.arrow.className?.arrow, useTransition.current)}
           {...props.arrow}
         ></span>
         {mountedExtensions.arrow.className?.backdrop ? (
           <span
             role="presentation"
             aria-hidden={true}
-            className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className.backdrop)}
+            className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className.backdrop, useTransition.current)}
             {...props.arrow}
           ></span>
         ) : null}
@@ -117,62 +82,92 @@ export function Popover({
 
     let backdropStyles;
     if (mountedExtensions.backdrop.type === "opaque") backdropStyles = "bg-black/25";
-    if (mountedExtensions.backdrop.type === "opaque-white") backdropStyles = "bg-white/25";
-    if (mountedExtensions.backdrop.type === "blur") backdropStyles = "bg-black/25 backdrop-blur-sm backdrop-saturate-150";
-    if (mountedExtensions.backdrop.type === "blur-white") backdropStyles = "bg-white/25 backdrop-blur-sm backdrop-saturate-150";
+    else if (mountedExtensions.backdrop.type === "opaque-white") backdropStyles = "bg-white/25";
+    else if (mountedExtensions.backdrop.type === "blur") backdropStyles = "bg-black/25 backdrop-blur-sm backdrop-saturate-150";
+    else if (mountedExtensions.backdrop.type === "blur-white") backdropStyles = "bg-white/25 backdrop-blur-sm backdrop-saturate-150";
 
     return (
-      <motion.div
-        role="presentation"
-        aria-hidden={true}
-        initial="initial"
-        animate="enter"
-        exit="exit"
-        variants={TRANSITION.fade}
-        onClick={handleClose}
-        className={cn("fixed inset-0 -z-20", backdropStyles, mountedExtensions.backdrop?.className)}
-      />
+      <span className="absolute z-[100]">
+        <motion.div
+          role="presentation"
+          aria-hidden={true}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          variants={TRANSITION.fade}
+          onClick={!mountedExtensions.prevent?.closeTriggers ? handleClose : () => {}}
+          className={cn("fixed inset-0 -z-20", backdropStyles, mountedExtensions.backdrop?.className)}
+        />
+      </span>
     );
-  }, [mountedExtensions.backdrop, handleClose]);
+  }, [mountedExtensions.backdrop, mountedExtensions.prevent, handleClose]);
 
-  // Close popover when user clicks outside
-  useCloseTriggers([targetRef, popoverRef], handleClose);
-
-  // Focus first element in popover when opened
+  // Update triggerRef when triggerRefProp changes
   useEffect(() => {
-    if (isOpen && !mountedExtensions.prevent?.autofocus && popoverRef.current) {
-      const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
-        "input, select, textarea, button, object, a, area, [tabindex]"
-      );
-      Array.from(focusableElements)[0]?.focus({ preventScroll: true });
-    }
-  }, [isOpen, mountedExtensions.prevent?.autofocus, popoverRef]);
+    triggerRef.current = triggerRefProp?.current ?? null;
+  }, [triggerRefProp]);
+
+  // Apply transition when popover is opened and position is calculated for the first time.
+  useEffect(() => {
+    if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0)
+      useTransition.current = "duration-[250ms] ease-kolumb-flow";
+    else useTransition.current = "";
+  }, [isOpen, props.popover.style]);
+
+  // Focus first focusable element when popover is opened.
+  useEffect(() => {
+    if (!isOpen || !popoverRef.current || mountedExtensions.prevent?.autofocus) return;
+
+    const focusableElements = popoverRef.current.querySelectorAll<HTMLElement>(
+      "a, area, button, input, object, select, textarea, [tabindex]:not([tabindex='-1'])",
+    );
+    Array.from(focusableElements)[0]?.focus({ preventScroll: true });
+  }, [popoverRef, isOpen, mountedExtensions.prevent?.autofocus]);
+
+  // Observe triggerRef's visibility to close the popover when out of view.
+  useEffect(() => {
+    if (!isOpen || mountedExtensions.prevent?.hide) return;
+
+    const triggerElement = triggerRef.current;
+    const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && setOpen(false), { threshold: 0.1 });
+
+    if (triggerElement) observer.observe(triggerElement);
+
+    return () => {
+      triggerElement && observer.unobserve(triggerElement);
+    };
+  }, [triggerRef, isOpen, setOpen, container.selector, mountedExtensions.prevent?.hide]);
+
+  useCloseTriggers([triggerRef, popoverRef], handleClose, !isOpen || mountedExtensions.prevent?.closeTriggers);
 
   return (
     <AnimatePresence>
       {isOpen ? (
         <Portal containerSelector={container.selector}>
-          <RemoveScroll
+          {backdropContent}
+          <motion.div
             ref={popoverRef}
-            enabled={mountedExtensions.prevent?.scroll === true && isOpen}
-            allowPinchZoom={mountedExtensions.prevent?.scroll === true && isOpen}
-            className="absolute z-[100] min-h-fit min-w-fit appearance-none bg-transparent"
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            variants={variants}
+            className={cn(
+              "absolute z-[100] min-h-fit min-w-fit appearance-none bg-transparent",
+              mountedExtensions.prevent?.pointer && "pointer-events-none",
+              useTransition.current,
+            )}
             data-placement={placement}
             {...props.popover}
           >
-            {backdropContent}
-            <motion.div
-              initial={"initial"}
-              animate={"animate"}
-              exit={"exit"}
-              variants={variants}
+            <RemoveScroll
+              enabled={mountedExtensions.prevent?.scroll === true && isOpen}
+              allowPinchZoom={mountedExtensions.prevent?.scroll === true && isOpen}
               className={cn("relative", className)}
-              {...props.motion}
             >
               {arrowContent}
               {children}
-            </motion.div>
-          </RemoveScroll>
+            </RemoveScroll>
+          </motion.div>
         </Portal>
       ) : null}
     </AnimatePresence>

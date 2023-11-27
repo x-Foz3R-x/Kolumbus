@@ -1,200 +1,168 @@
 import React, { useRef, useState } from "react";
 
 import api from "@/app/_trpc/client";
-import { useCloseTriggers, useListNavigation } from "@/hooks/use-accessibility-features";
 import { Language, PlaceAutocompletePrediction } from "@/types";
 
-import Combobox from "./ui/combobox";
-import Divider from "./ui/divider";
 import Icon from "./icons";
-
-type List = [searchValue: { searchValue: string }, ...predictions: PlaceAutocompletePrediction[]];
+import Combobox, { ComboboxList } from "./ui/combobox";
+import Button from "./ui/button";
+import Divider from "./ui/divider";
+import Tooltip, { useTooltip } from "./ui/tooltip";
 
 type LocationSearchBoxProps = {
+  isOpen: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onAdd: Function;
   placeholder: string;
   sessionToken: string;
 };
-export default function LocationSearchBox({ onAdd, placeholder, sessionToken }: LocationSearchBoxProps) {
+export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder, sessionToken }: LocationSearchBoxProps) {
   const getAutocomplete = api.google.autocomplete.useMutation();
 
-  const [searchValue, setSearchValue] = useState("");
-  const [predictionList, setPredictionList] = useState<List>([{ searchValue }]);
-  const [selectedPrediction, setSelectedPrediction] = useState<{ searchValue: string } | PlaceAutocompletePrediction>({ searchValue });
-  const [isListDisplayed, setListDisplay] = useState(false);
+  const [value, setValue] = useState("");
+  const listRef = useRef<ComboboxList<PlaceAutocompletePrediction>>([{ index: 0, data: "" }]);
+  const activeItemRef = useRef<string | PlaceAutocompletePrediction>("");
 
-  //#region Handlers
-  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    setSearchValue(e.target.value);
+  // todo: Add <Toast> component to display errors
+  const handleInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    activeItemRef.current = e.target.value;
 
     if (e.target.value.length < 3) {
       ClearPredictions();
       return;
     }
 
-    // todo: handling all return data statuses
     getAutocomplete.mutate(
+      { searchValue: e.target.value, language: Language.English, sessionToken },
       {
-        searchValue: e.target.value,
-        language: Language.English,
-        sessionToken,
-      },
-      {
-        onSettled(data) {
-          if (typeof data === "undefined") return;
-
-          console.log(data);
-
-          if (data.status === "OK" && data.predictions.length > 0) {
-            setPredictionList([{ searchValue: e.target.value }, ...data.predictions]);
-            setSelectedIndex(0);
-            setListDisplay(true);
+        onSuccess(data) {
+          if (data.status === "OK") {
+            const predictions = data.predictions.map((prediction, index) => ({ index: index + 1, data: prediction }));
+            listRef.current = [{ index: 0, data: e.target.value }, ...predictions];
+            setOpen(true);
+          } else if (data.status === "ZERO_RESULTS") {
+            listRef.current = [{ index: 0, data: e.target.value }];
+            setOpen(true);
+          } else {
+            listRef.current = [{ index: 0, data: e.target.value }];
+            console.error(`Google Places API status: ${data.status}.`);
+            console.error(`Please contact me at pawel@kolumbus.app with API status to resolve this issue.`);
           }
-          // else if(data.status === .ZERO_RESULTS){}
-          // else if(data.status === .INVALID_REQUEST){}
-          // else if(data.status === .OVER_QUERY_LIMIT){}
-          // else if(data.status === .REQUEST_DENIED){}
-          // else if(data.status === .UNKNOWN_ERROR){}
         },
-      }
+        onError(error) {
+          listRef.current = [{ index: 0, data: e.target.value }];
+          console.error(`Unexpected error occurred: ${error.message}`);
+        },
+      },
     );
   };
 
-  const handleInputFocus = () => {
-    if (predictionList.length > 1) setListDisplay(true);
+  const handleIndexChange = (index: number) => {
+    const selectedData = listRef.current[index].data;
+    activeItemRef.current = selectedData;
+
+    if (typeof selectedData === "string") setValue(selectedData);
+    else setValue(selectedData.structured_formatting.main_text);
   };
 
-  const handleIndexChange = (selectedPrediction: { searchValue: string } | PlaceAutocompletePrediction) => {
-    setSelectedPrediction(selectedPrediction);
+  const handlePredictionSelect = (index: number) => {
+    const selectedData = listRef.current[index].data;
+    activeItemRef.current = selectedData;
 
-    if ("searchValue" in selectedPrediction) setSearchValue(selectedPrediction.searchValue);
-    else setSearchValue(selectedPrediction.structured_formatting.main_text);
+    if (typeof selectedData === "string") return;
+
+    setValue(selectedData.structured_formatting.main_text);
+    listRef.current[0] = { index: 0, data: selectedData.structured_formatting.main_text };
+
+    setOpen(false);
   };
 
-  const handlePredictionSelect = (selectedPrediction: { searchValue: string } | PlaceAutocompletePrediction) => {
-    setSelectedPrediction(selectedPrediction);
-    setListDisplay(false);
-
-    if ("searchValue" in selectedPrediction) return;
-
-    setSearchValue(selectedPrediction.structured_formatting.main_text);
-    setPredictionList([{ searchValue: selectedPrediction.structured_formatting.main_text }]);
-    setSelectedIndex(0);
+  const ClearPredictions = (reset = false) => {
+    if (reset) {
+      setValue("");
+      activeItemRef.current = "";
+    }
+    listRef.current = [{ index: 0, data: value }];
+    setOpen(false);
   };
-  //#endregion
-
-  const ClearPredictions = () => {
-    setPredictionList([{ searchValue }]);
-    setListDisplay(false);
-    setSelectedIndex(0);
-  };
-
-  const ref = useRef<HTMLDivElement | null>(null);
-  useCloseTriggers([ref], () => setListDisplay(false));
-  const [selectedIndex, setSelectedIndex] = useListNavigation(predictionList, isListDisplayed, {
-    onSelect: handlePredictionSelect,
-    onChange: handleIndexChange,
-  });
 
   return (
-    <Combobox.Root ref={ref} name="PlaceAutocomplete" isExpanded={isListDisplayed}>
+    <Combobox.Root
+      isOpen={isOpen}
+      setOpen={setOpen}
+      list={listRef.current}
+      onClick={handlePredictionSelect}
+      onChange={handleIndexChange}
+      className="shadow-smI"
+    >
       <Combobox.Input
         placeholder={placeholder}
-        value={searchValue}
-        onChange={handleInputChange}
-        onFocus={handleInputFocus}
-        className={`bg-gray-50 fill-gray-400 text-sm text-gray-400 outline-0 ${
-          isListDisplayed ? "duration-[375ms] ease-kolumb-flow" : "rounded-b-lg duration-300 ease-kolumb-leave"
-        }`}
+        value={value}
+        setValue={setValue}
+        onInput={handleInput}
+        onFocus={() => !(typeof value === "string" && value.length < 3) && setOpen(true)}
+        className={`bg-gray-50 text-sm shadow-sm duration-300 ease-kolumb-flow ${!isOpen && "rounded-b-lg"}`}
       >
-        <button
-          onClick={() => {
-            setSearchValue("");
-            ClearPredictions();
-          }}
-          className="h-8 w-6 px-2 duration-100 hover:fill-gray-700"
+        <Button
+          onClick={() => ClearPredictions(true)}
+          variant="unstyled"
+          className="h-8 w-6 fill-gray-400 px-2 duration-100 hover:fill-gray-700"
         >
-          <Icon.x className="w-2 " />
-        </button>
+          <Icon.x className="w-2" />
+        </Button>
 
-        <Divider orientation="vertical" className="absolute left-6 h-4" />
+        <Divider orientation="vertical" gradient className="absolute left-6 h-6" />
 
-        <button
-          onClick={() => onAdd("searchValue" in selectedPrediction ? { searchValue } : selectedPrediction)}
-          className="flex h-8 items-center justify-center gap-1 px-2 duration-100 hover:fill-gray-700 hover:text-gray-700"
+        <Button
+          onClick={() => onAdd(activeItemRef.current)}
+          variant="unstyled"
+          className="flex h-8 items-center justify-center gap-1 fill-gray-400 pl-1 pr-2 text-gray-400 duration-100 hover:fill-gray-700 hover:text-gray-700"
         >
-          <Icon.plus className="w-[10px]" />
+          <Icon.plus className="w-2.5" />
           <p className="text-xs font-medium">Add</p>
-        </button>
+        </Button>
       </Combobox.Input>
 
-      {
-        // todo: correct animations when using arrows (when index = 0 and arrow up is pressed div should show up from bottom)
-      }
-      <Combobox.List
-        listHeight={(predictionList.length - 1) * 52 + 12} // numberOfPredictions * comboboxOptionHeight + padding
-        className={`rounded-b-[0.625rem] p-1.5 shadow-borderXL ${
-          isListDisplayed
-            ? "scale-y-100 duration-[375ms] ease-kolumb-flow"
-            : "-translate-y-6 scale-x-95 scale-y-[0.3] duration-300 ease-kolumb-leave"
-        }`}
-      >
-        <Predictions
-          predictionList={predictionList}
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-          handleClick={handlePredictionSelect}
-        />
-        <div
-          style={{ top: (selectedIndex - 1) * 52 + 6 }}
-          className={`absolute left-1.5 right-1.5 -z-10 h-[3.25rem] rounded bg-gray-100 shadow-select duration-200 ease-kolumb-flow ${
-            selectedIndex === 0 && "opacity-0 duration-0"
-          }`}
-        ></div>
+      <Combobox.List listHeight={listRef.current.length - 1 * 52 + 14}>
+        {listRef.current.map((prediction, index) => {
+          if (typeof prediction.data === "string") return null;
+          return <Prediction key={prediction.index} index={index} prediction={prediction.data} />;
+        })}
+
+        {listRef.current.length === 1 && <p className="px-2 py-1 text-sm text-gray-400">No results found</p>}
       </Combobox.List>
     </Combobox.Root>
   );
 }
 
-// todo: include flags countries
-type PredictionsProps = {
-  predictionList: List;
-  selectedIndex: number;
-  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
-  handleClick: (prediction: PlaceAutocompletePrediction) => void;
-};
-function Predictions({ predictionList, selectedIndex, setSelectedIndex, handleClick }: PredictionsProps) {
-  const predictions = predictionList.slice(1) as PlaceAutocompletePrediction[];
+function Prediction({ index, prediction }: { index: number; prediction: PlaceAutocompletePrediction }) {
+  const { isOpen, setOpen, position, handleMouseEnter, handleMouseMove, handleMouseLeave } = useTooltip();
 
   return (
     <>
-      {predictions.map((prediction, index) => {
-        const key = index + prediction.description;
-        const animationDelay = index * 50;
+      <Combobox.Option
+        index={index}
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="before:scale-x-50 before:scale-y-75 before:rounded-lg before:duration-200"
+      >
+        <Icon.pin className="w-2.5 fill-gray-400" />
 
-        return (
-          <Combobox.Option
-            key={key}
-            onClick={() => handleClick(prediction)}
-            onMouseMove={() => setSelectedIndex(index + 1)} // +1 to omit first index as its user input not prediction
-            onMouseLeave={() => setSelectedIndex(0)}
-            animationDelay={animationDelay}
-            className="animate-slideIn gap-4 rounded fill-gray-400 px-4 py-2"
-          >
-            <Icon.pin className="w-[0.625rem] flex-shrink-0" />
+        <div className="group/option flex h-9 w-44 flex-col justify-center text-left text-sm">
+          <p className="pointer-events-none w-full truncate">{prediction.structured_formatting.main_text}</p>
+          {prediction.structured_formatting.secondary_text && (
+            <p className="pointer-events-none w-full truncate text-xs text-gray-500">{prediction.structured_formatting.secondary_text}</p>
+          )}
+        </div>
+      </Combobox.Option>
 
-            <div className="h-9 w-[10.625rem] text-left">
-              <div className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-900">
-                {prediction.structured_formatting.main_text}
-              </div>
-              <div className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs text-gray-500">
-                {prediction.structured_formatting.secondary_text}
-              </div>
-            </div>
-          </Combobox.Option>
-        );
-      })}
+      <Tooltip isOpen={isOpen} setOpen={setOpen} position={position}>
+        <p className="text-xs">{prediction.structured_formatting.main_text}</p>
+        {prediction.structured_formatting.secondary_text && (
+          <p className="text-xs text-gray-400">{prediction.structured_formatting.secondary_text}</p>
+        )}
+      </Tooltip>
     </>
   );
 }

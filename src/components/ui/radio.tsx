@@ -18,13 +18,7 @@ export function RadioIconsInline({ title, name, setValue, options }: RadioListPr
             }}
             className="flex items-center"
           >
-            <input
-              type="radio"
-              name={name}
-              id={`${name}-${index}`}
-              defaultChecked={index === 0}
-              className="peer hidden"
-            />
+            <input type="radio" name={name} id={`${name}-${index}`} defaultChecked={index === 0} className="peer hidden" />
 
             <label
               htmlFor={`${name}-${index}`}
@@ -54,17 +48,11 @@ export function RadioGridCards({ title, options }: radioGridCardsProps) {
       <ul className="flex w-32 flex-col items-start">
         {options.map((option, index) => (
           <li key={`option_${index}`} className="duration-200 ease-kolumb-overflow hover:scale-105">
-            <input
-              type="radio"
-              name={title}
-              id={option}
-              defaultChecked={index === 0}
-              className="peer hidden"
-            />
+            <input type="radio" name={title} id={option} defaultChecked={index === 0} className="peer hidden" />
 
             <label
               htmlFor={option}
-              className="flex-1 select-none rounded-lg bg-gray-100 px-2 py-1 capitalize text-gray-800 shadow-btn peer-checked:bg-kolumblue-300 "
+              className="flex-1 select-none rounded-lg bg-gray-100 px-2 py-1 capitalize text-gray-800 shadow-button peer-checked:bg-kolumblue-300 "
             >
               {option}
             </label>

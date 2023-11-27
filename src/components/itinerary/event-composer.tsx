@@ -7,33 +7,35 @@ import api from "@/app/_trpc/client";
 import { useUser } from "@clerk/nextjs";
 import { useDndData } from "../dnd-itinerary";
 
-import LocationSearchBox from "../location-search-box";
-
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import useCloseTriggers from "@/hooks/use-close-triggers";
 import { eventTemplate } from "@/data/template-data";
 import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@/types";
 import useAppdata from "@/context/appdata";
+import { cn } from "@/lib/utils";
+
+import LocationSearchBox from "../location-search-box";
+import { Motion, Popover, Position } from "../ui/popover";
+import { TRANSITION } from "@/lib/framer-motion";
 
 export default function EventComposer() {
   const { user } = useUser();
   const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
-  const { activeTrip, isEventComposerDisplayed, setEventComposerDisplay, itineraryPosition } = useDndData();
+  const { activeTrip, isEventComposerOpen, setEventComposerOpen, itineraryPosition } = useDndData();
+
   const createEvent = api.event.create.useMutation();
   const getPlaceDetails = api.google.details.useMutation();
 
-  // console.log(cuid2.init({ length: 14 })());
-
+  const [isOpen, setOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState(cuid2.createId());
 
-  // todo - fill type of useRef
-  const ref = useRef<any>(null);
-  useCloseTriggers([ref], () => isEventComposerDisplayed && setEventComposerDisplay(false));
+  const ref = useRef<HTMLDivElement>(null);
+  useCloseTriggers([ref], () => isEventComposerOpen && setEventComposerOpen(false));
 
   /**
-   * Handles adding a new event to the itinerary.
-   * @param eventData - The data for the new event, either a search value or a PlaceAutocompletePrediction.
+   * Handles the addition of an event to the itinerary.
+   * @param eventData - The data for the event to be added. It can be either a string or a PlaceAutocompletePrediction object.
    */
-  const handleAddEvent = (eventData: { searchValue: string } | PlaceAutocompletePrediction) => {
+  const handleAddEvent = (eventData: string | PlaceAutocompletePrediction) => {
     const event: Event = {
       ...eventTemplate,
       id: cuid2.createId(),
@@ -43,21 +45,21 @@ export default function EventComposer() {
       createdBy: user?.id ?? "unknown",
     };
 
-    setSaving(true);
-    if ("searchValue" in eventData) {
-      event.name = eventData.searchValue;
+    if (typeof eventData === "string") {
+      event.name = eventData;
 
       setSaving(true);
       dispatchUserTrips({
         type: UT.CREATE_EVENT,
-        payload: { selectedTrip, dayPosition: itineraryPosition.y_day, placeAt: "end", event },
+        payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
       });
       createEvent.mutate(event, {
         onSuccess(updatedEvent) {
           if (!updatedEvent) return;
+
           dispatchUserTrips({
             type: UT.UPDATE_EVENT,
-            payload: { selectedTrip, dayPosition: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
+            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event | any) } },
           });
         },
         onError(error) {
@@ -93,14 +95,18 @@ export default function EventComposer() {
 
             dispatchUserTrips({
               type: UT.CREATE_EVENT,
-              payload: { selectedTrip, dayPosition: itineraryPosition.y_day, placeAt: "end", event },
+              payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
             });
             createEvent.mutate(event, {
               onSuccess(updatedEvent) {
                 if (!updatedEvent) return;
                 dispatchUserTrips({
                   type: UT.UPDATE_EVENT,
-                  payload: { selectedTrip, dayPosition: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
+                  payload: {
+                    tripIndex: selectedTrip,
+                    dayIndex: itineraryPosition.y_day,
+                    event: { ...event, ...(updatedEvent as Event | any) },
+                  },
                 });
               },
               onError(error) {
@@ -116,7 +122,7 @@ export default function EventComposer() {
           onSettled() {
             setSaving(false);
           },
-        }
+        },
       );
     } else if (!eventData.place_id) {
       event.name = eventData.structured_formatting.main_text;
@@ -124,14 +130,15 @@ export default function EventComposer() {
       setSaving(true);
       dispatchUserTrips({
         type: UT.CREATE_EVENT,
-        payload: { selectedTrip, dayPosition: itineraryPosition.y_day, placeAt: "end", event: event },
+        payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event, placeAt: "end" },
       });
       createEvent.mutate(event, {
         onSuccess(updatedEvent) {
           if (!updatedEvent) return;
+
           dispatchUserTrips({
             type: UT.UPDATE_EVENT,
-            payload: { selectedTrip, dayPosition: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event) } },
+            payload: { tripIndex: selectedTrip, dayIndex: itineraryPosition.y_day, event: { ...event, ...(updatedEvent as Event | any) } },
           });
         },
         onError(error) {
@@ -144,25 +151,28 @@ export default function EventComposer() {
       });
     }
 
-    setEventComposerDisplay(false);
+    setEventComposerOpen(false);
     setSessionToken(cuid2.createId());
   };
 
   return (
-    <section
-      ref={ref}
-      style={{
-        left: 172,
-        transform: `translate(0,${itineraryPosition.y_day * 132 + 20}px)`,
-      }}
-      className={`absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-borderXL transition-opacity duration-300 ease-kolumb-flow  ${
-        isEventComposerDisplayed ? "opacity-100" : "pointer-events-none select-none opacity-0"
-      } 
-      `}
+    <Popover
+      popoverRef={ref}
+      isOpen={isEventComposerOpen}
+      setOpen={setEventComposerOpen}
+      container={{ selector: "main > div ", margin: [56, 0, 0, 224], padding: [56, 12, 0, 12] }}
+      extensions={[Position(172, itineraryPosition.y_day * 132 + 20, "left"), Motion(TRANSITION.fadeInScale)]}
+      className={`z-20 flex w-60 flex-col rounded-lg bg-white shadow-borderXL duration-500 ease-kolumb-flow ${isOpen && "rounded-b-none"}`}
     >
-      <section className={`flex flex-1 items-end justify-between p-2 pb-[10px] text-center text-sm`}>Event Composer</section>
+      <span className="w-full p-2 text-center text-sm font-medium text-gray-600">Event Composer</span>
 
-      <LocationSearchBox onAdd={handleAddEvent} placeholder="Find interesting places" sessionToken={sessionToken} />
-    </section>
+      <LocationSearchBox
+        isOpen={isOpen}
+        setOpen={setOpen}
+        onAdd={handleAddEvent}
+        placeholder="Search or enter name"
+        sessionToken={sessionToken}
+      />
+    </Popover>
   );
 }

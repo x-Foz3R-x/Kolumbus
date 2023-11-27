@@ -1,0 +1,4 @@
+{
+  "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)"], ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  "cSpell.ignoreWords": ["Appdata", "datasources", "datetime", "easepick", "paralleldrive", "tailwindcss", "tanstack", "trpc"]
+}

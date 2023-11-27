@@ -1,44 +1,23 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { SetStateAction, createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
+import Link from "next/link";
 import { VariantProps, cva } from "class-variance-authority";
 import { motion } from "framer-motion";
-import cuid2 from "@paralleldrive/cuid2";
 
-import { Popover, Placement, Flip, Offset, Prevent, Motion } from "./popover";
-import { useDropdownNavigation } from "@/hooks/use-accessibility-features";
+import { Popover, Placement, Flip, Offset, Prevent, Motion, Container } from "./popover";
+import useListNavigation from "@/hooks/use-list-navigation";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
-export type DropdownOption = { onSelect: () => void; index: number };
-export type DropdownList = DropdownOption[];
+import Divider from "./divider";
+import Button, { Props } from "./button";
 
-// Style variants
-const DropdownVariants = cva("flex flex-col shadow-borderXL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter ", {
-  variants: {
-    variant: {
-      default: "text-gray-100 bg-gray-700/80 rounded-md p-1.5 gap-1",
-      unstyled: "",
-    },
-  },
-  defaultVariants: { variant: "default" },
-});
-const OptionVariants = cva("flex w-full items-center z-10 cursor-default text-left whitespace-nowrap", {
-  variants: {
-    optionVariant: {
-      default:
-        "gap-2 rounded fill-gray-100 pl-3 pr-10 py-1.5 text-sm text-gray-100 duration-200 ease-kolumb-flow focus:bg-white/20 focus:shadow-select",
-      danger:
-        "gap-2 rounded fill-gray-100 pl-3 pr-10 py-1.5 text-sm text-gray-100 duration-200 ease-kolumb-flow focus:bg-red-500 focus:shadow-select",
-      blue: "gap-2 rounded fill-gray-100 pl-3 pr-10 py-1.5 text-sm text-gray-100 duration-200 ease-kolumb-flow focus:bg-kolumblue-500 focus:shadow-select",
-      unstyled: "",
-    },
-  },
-  defaultVariants: { optionVariant: "default" },
-});
+type DropdownOption = { index: number; onSelect?: () => void; skip?: boolean };
+export type DropdownList = DropdownOption[];
 
 //#region Context
 const DropdownContext = createContext<{
-  dropdownList: DropdownList;
-  listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLLIElement | null)[]>;
+  list: DropdownList;
+  listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLAnchorElement | HTMLLIElement | null)[]>;
   activeIndex: number;
   setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
   handleClose: () => void;
@@ -50,147 +29,168 @@ export function useDropdownContext() {
 }
 //#endregion
 
-type MenuProps = VariantProps<typeof DropdownVariants> & {
+type DropdownProps = {
+  isOpen: boolean;
+  setOpen: React.Dispatch<SetStateAction<boolean>>;
   list: DropdownList;
   placement?: Placement;
-  margin?: number | [number, number, number, number];
-  padding?: number | [number, number, number, number];
+  container?: Container;
   offset?: number;
   preventScroll?: boolean;
-  className?: { dropdown?: string; button?: string; option?: string };
-  buttonChildren?: React.ReactNode;
+  className?: string;
+  buttonProps?: Props;
   children?: React.ReactNode;
 };
-export default function Dropdown({
+export function Dropdown({
+  isOpen,
+  setOpen,
   list,
   placement = "right-start",
-  margin = 0,
-  padding = 0,
+  container = { selector: "body", margin: 0, padding: 0 },
   offset = 6,
   preventScroll = false,
-  variant,
   className,
-  buttonChildren,
+  buttonProps,
   children,
-}: MenuProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+}: DropdownProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listItemsRef = useRef<HTMLButtonElement[]>([]);
 
-  const containerId = useRef(`dropdown-container-${cuid2.init({ length: 3 })()}`);
-  const buttonId = useRef(`dropdown-button-${cuid2.init({ length: 3 })()}`);
-  const dropdownId = useRef(`dropdown-${cuid2.init({ length: 3 })()}`);
+  const buttonId = useId();
+  const listId = useId();
 
-  const [isOpen, setOpen] = useState(false);
-  const [hasFocus, setFocus] = useState<false | "button" | "dropdown">(false);
-  const [activationType, setActivationType] = useState<"mouse" | "keyboard">("mouse");
-  const [activeIndex, setActiveIndex] = useDropdownNavigation({
-    list,
-    listItemsRef,
-    placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
-    initialIndex: activationType === "keyboard" ? 0 : -1,
-    enabled: isOpen,
-    loop: false,
+  const [hasFocus, setFocus] = useState<false | "trigger" | "popover">(false);
+  const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
+  const [skipIndexes, setSkipIndexes] = useState<number[]>([]);
+  const [activeIndex, setActiveIndex] = useListNavigation({
     hasFocus,
     setFocus,
+    triggerRef: buttonRef,
+    listItemsRef,
+    listLength: list.length,
+    initialIndex: inputType === "keyboard" ? 0 : -1,
+    skipIndexes,
+    placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
+    enabled: isOpen,
+    preventLoop: true,
+    preventArrowDefault: { v: true, h: true },
   });
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setOpen(!isOpen);
-    setActivationType(e.detail === 0 ? "keyboard" : "mouse");
+    setInputType(e.detail === 0 ? "keyboard" : "mouse");
   };
   const handleClose = useCallback(() => {
-    setOpen(false), [setOpen];
+    setOpen(false);
     buttonRef.current?.focus({ preventScroll: true });
   }, [buttonRef, setOpen]);
 
   useEffect(() => {
-    isOpen && setActiveIndex(activationType === "keyboard" ? 0 : -1);
-  }, [isOpen, activationType, setActiveIndex]);
+    isOpen && setActiveIndex(inputType === "keyboard" ? 0 : -1);
+  }, [isOpen, inputType, setActiveIndex]);
 
   useEffect(() => {
-    if (hasFocus === false) setOpen(false);
-  }, [hasFocus]);
+    !hasFocus && setOpen(false);
+  }, [hasFocus, setOpen]);
 
-  // todo - add printable character navigation (e.g. type "a" to select the first option that starts with "a")
+  useEffect(() => {
+    // Find indexes with skip value as true
+    setSkipIndexes(list.map((item, index) => (item.skip === true ? index : undefined)).filter((index) => index !== undefined) as number[]);
+  }, [list]);
 
   return (
-    <div ref={containerRef} id={containerId.current} className="relative">
-      <motion.button
+    <>
+      <Button
         ref={buttonRef}
-        id={buttonId.current}
+        id={buttonId}
         onClick={handleClick}
-        onFocus={() => setFocus("button")}
-        whileTap={{ scale: 0.95 }}
-        className={cn(
-          "rounded-md border border-gray-600 bg-gray-700 px-2 py-1 text-gray-100 focus-visible:shadow-focus",
-          className?.button
-        )}
+        onFocus={() => setFocus("trigger")}
         aria-haspopup="menu"
-        aria-controls={dropdownRef.current?.id}
+        aria-controls={listId}
         {...(isOpen && { "aria-expanded": true })}
-      >
-        {buttonChildren}
-      </motion.button>
+        {...buttonProps}
+      />
 
       <Popover
         popoverRef={dropdownRef}
-        targetRef={buttonRef}
+        triggerRef={buttonRef}
         isOpen={isOpen}
         setOpen={setOpen}
         placement={placement}
-        container={{ selector: `#${containerRef.current?.id}`, margin, padding }}
+        container={container}
         extensions={[
           Flip(),
           Offset(offset),
-          Prevent({ scroll: preventScroll, autofocus: activationType !== "keyboard" }),
           Motion(TRANSITION.fadeInScale),
+          Prevent({ autofocus: inputType !== "keyboard", scroll: preventScroll }),
         ]}
       >
-        <ul
-          id={dropdownId.current}
-          role="menu"
-          aria-labelledby={buttonRef.current?.id}
-          onFocus={() => setFocus("dropdown")}
-          className={cn(DropdownVariants({ variant, className: className?.dropdown }))}
-        >
-          <DropdownContext.Provider value={{ dropdownList: list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
+        <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
+          <ul
+            id={listId}
+            role="menu"
+            aria-labelledby={buttonRef.current?.id}
+            onFocus={() => setFocus("popover")}
+            className={cn(
+              "flex flex-col rounded-lg bg-gray-700/80 p-1 shadow-border2XLDark backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
+              className,
+            )}
+          >
             {children}
-          </DropdownContext.Provider>
-        </ul>
+          </ul>
+        </DropdownContext.Provider>
       </Popover>
-    </div>
+    </>
   );
 }
 
-type DropdownGroupProps = {
+type DropdownGroupTitleProps = {
   title: string;
+  divider?: boolean;
   className?: string;
-  children?: React.ReactNode;
 };
-export function DropdownGroup({ title, className, children }: DropdownGroupProps) {
+export function DropdownGroupTitle({ title, divider = false, className }: DropdownGroupTitleProps) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <span className="px-1 text-xs text-gray-300">{title}</span>
-      <ul className={`${className}`}>{children}</ul>
+    <div className="pb-0.5">
+      {divider && <Divider className="mt-1 bg-white/25" />}
+      <div className={cn("px-1 pt-1 text-xs text-gray-300", className)}>{title}</div>
     </div>
   );
 }
 
+const OptionVariants = cva("z-10 flex w-full cursor-default items-center text-left focus-visible:shadow-none", {
+  variants: {
+    variant: {
+      default: "fill-gray-100 text-gray-100 focus:bg-white/20 focus:shadow-select",
+      primary: "fill-gray-100 text-gray-100 focus:bg-kolumblue-500 focus:shadow-select",
+      danger: "fill-gray-100 text-gray-100 focus:bg-red-500 focus:shadow-select",
+      unstyled: "",
+    },
+    size: {
+      sm: "gap-2 rounded px-2 py-1 text-xs",
+      default: "gap-3 rounded-[5px] px-3 py-1.5 text-sm",
+      unstyled: "",
+    },
+  },
+  defaultVariants: { variant: "default", size: "default" },
+});
 type DropdownOptionProps = VariantProps<typeof OptionVariants> & {
   index: number;
   className?: string;
   children?: React.ReactNode;
 };
-export function DropdownOption({ index, optionVariant, className, children }: DropdownOptionProps) {
-  const { dropdownList, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
+export function DropdownOption({ index, variant, size, className, children }: DropdownOptionProps) {
+  const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
 
   const handleClick = () => {
-    dropdownList[index].onSelect();
+    const onSelect = list[index]?.onSelect;
+    if (onSelect) onSelect();
+
     handleClose();
   };
-  const handleMouseEnter = () => {
+  const handleMouseMove = () => {
+    // on mouse move is used because safari has some problems with detecting mouse enter
     setActiveIndex(index);
     if (listItemsRef.current[index]) listItemsRef.current[index]?.focus({ preventScroll: true });
   };
@@ -200,17 +200,59 @@ export function DropdownOption({ index, optionVariant, className, children }: Dr
   };
 
   return (
-    <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" variants={TRANSITION.appearInSequence} custom={{ index }}>
-      <button
+    <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" className="group/option">
+      <Button
         ref={(node) => (listItemsRef.current[index] = node)}
-        onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
+        onClick={!list[index].skip ? handleClick : () => {}}
+        onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={cn(OptionVariants({ optionVariant, className }))}
+        variant="appear"
+        size="unstyled"
+        className={cn("w-full", OptionVariants({ variant, size, className }), list[index].skip && "opacity-40")}
+        tabIndex={activeIndex === index ? 0 : -1}
+        disabled={list[index].skip}
+      >
+        {children}
+      </Button>
+    </motion.li>
+  );
+}
+
+type DropdownLinkProps = VariantProps<typeof OptionVariants> & {
+  index: number;
+  href?: string | null;
+  className?: string;
+  children?: React.ReactNode;
+};
+export function DropdownLink({ index, href, variant, size, className, children }: DropdownLinkProps) {
+  const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
+
+  const handleMouseMove = () => {
+    // on mouse move is used because safari has some problems with detecting mouse enter
+    setActiveIndex(index);
+    if (listItemsRef.current[index]) listItemsRef.current[index]?.focus({ preventScroll: true });
+  };
+  const handleMouseLeave = () => {
+    setActiveIndex(-1);
+    if (listItemsRef.current[index]) listItemsRef.current[index]?.blur();
+  };
+
+  const disabled = href === null || list[index].skip ? true : false;
+
+  return (
+    <motion.li role="menuitem" initial="initial" animate="animate" exit="exit" className="group/option">
+      <Link
+        href={href ?? ""}
+        target="_blank"
+        ref={(node) => (listItemsRef.current[index] = node)}
+        onClick={!disabled ? handleClose : () => {}}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={cn("w-full", OptionVariants({ variant, size, className }), disabled && "pointer-events-none opacity-40")}
         tabIndex={activeIndex === index ? 0 : -1}
       >
         {children}
-      </button>
+      </Link>
     </motion.li>
   );
 }

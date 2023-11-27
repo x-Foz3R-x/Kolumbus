@@ -3,20 +3,17 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { Popover, Offset, Flip, Arrow, position, Motion } from "@/components/ui/popover";
+import { TRANSITION } from "@/lib/framer-motion";
+
+import { Popover, Offset, Flip, Arrow, Position, Motion, usePopover, Prevent } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
-import { TRANSITION } from "@/lib/framer-motion";
+import Button from "@/components/ui/button";
 
 export default function PopoverTests() {
-  const [areOptionsOpen, setOptionsOpen] = useState(false);
-  const optionsTargetRef = useRef(null);
-  const optionsPopoverRef = useRef(null);
-
-  const [isOpen, setOpen] = useState(false);
-  const targetRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef(null);
+  const [optionsTriggerRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
+  const [triggerRef, popoverRef, isOpen, setOpen, inputType, setInputType] = usePopover();
 
   const [placement, setPlacement] = useState("top" as Placement);
   const [padding, setPadding] = useState(100);
@@ -27,8 +24,8 @@ export default function PopoverTests() {
 
   const handleClose = useCallback(() => {
     setOpen(false), [setOpen];
-    targetRef.current?.focus({ preventScroll: true });
-  }, [targetRef, setOpen]);
+    triggerRef.current?.focus({ preventScroll: true });
+  }, [triggerRef, setOpen]);
 
   //#region centering logic
   window.addEventListener("load", () => {
@@ -47,53 +44,12 @@ export default function PopoverTests() {
   //#endregion
 
   return (
-    <div className="h-screen w-screen bg-red-200">
-      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-medium text-gray-800">
+    <div className="h-screen w-screen bg-red-100">
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-bold text-gray-800">
         Popover
       </h1>
 
-      <div
-        id="center"
-        ref={centerRef}
-        style={{ insetInline: 200, top: 150, bottom: 50 }}
-        className="absolute z-20 overflow-auto rounded-b-xl"
-      >
-        <main style={{ width: "calc(200% - 59px)", height: "calc(200% - 34px)" }} className="relative flex items-center justify-center">
-          <button
-            ref={targetRef}
-            aria-haspopup="dialog"
-            {...(isOpen && { "aria-expanded": true })}
-            onClick={() => setOpen(!isOpen)}
-            className="rounded-md border border-gray-600 bg-gray-700 px-2 py-1 text-gray-100 focus:bg-kolumblue-600"
-          >
-            open
-          </button>
-
-          <Popover
-            popoverRef={popoverRef}
-            targetRef={targetRef}
-            isOpen={isOpen}
-            setOpen={setOpen}
-            placement={placement}
-            container={{ selector: "main", margin: [150, 200, 50, 200], padding }}
-            extensions={[Offset(offset), Flip(), Arrow(arrowSize, arrowStyles)]}
-            className="rounded-md text-gray-100 shadow-borderXL"
-          >
-            <div className="relative z-10 flex items-center justify-center gap-3 rounded-md bg-gray-800 px-4 py-3">
-              <button onClick={handleClose} className="h-8 w-8 rounded border border-gray-600 bg-gray-700 focus:bg-kolumblue-600">
-                X
-              </button>
-              popover
-            </div>
-          </Popover>
-
-          {/* Rulers */}
-          <div style={{ paddingBlock: "15px" }} className="absolute -z-10 w-full border-y-4 border-double border-black/10" />
-          <div style={{ paddingInline: "27px" }} className="absolute -z-10 h-full border-x-4 border-double border-black/10" />
-        </main>
-      </div>
-
-      <div style={{ insetInline: 200, top: 106, bottom: 50 }} className="absolute rounded-xl border-gray-50 bg-green-100 shadow-borderXL" />
+      <div style={{ insetInline: 200, top: 106, bottom: 50 }} className="absolute rounded-xl bg-green-100 shadow-borderXL" />
       <span className="pointer-events-none absolute left-52 top-14 select-none p-3 text-red-600">margin</span>
       <span className="pointer-events-none absolute left-52 top-36 select-none p-3 text-green-600">padding</span>
 
@@ -103,18 +59,24 @@ export default function PopoverTests() {
       >
         <span className="rounded-br-lg bg-gray-200 p-1 pr-1.5">Boundary</span>
       </div>
-      <div style={{ insetInline: 200, top: 106 }} className="absolute flex h-11 items-center justify-center rounded-t-xl bg-gray-50">
+      <div
+        style={{ insetInline: 200, top: 106 }}
+        className="absolute flex h-11 items-center justify-center rounded-t-xl border-b border-gray-100 bg-gray-50"
+      >
         <div className="absolute left-4 flex gap-2">
-          <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="h-3 w-3 cursor-default rounded-full bg-red-500"></Link>
-          <span className="h-3 w-3 rounded-full bg-yellow-500" />
-          <span className="h-3 w-3 rounded-full bg-green-500" />
+          <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="h-3 w-3 cursor-default rounded-full bg-red-450" />
+          <span className="h-3 w-3 rounded-full bg-orange-500" />
+          <span className="h-3 w-3 rounded-full bg-green-600" />
         </div>
 
         <button
-          ref={optionsTargetRef}
+          ref={optionsTriggerRef}
           aria-haspopup="menu"
           {...(areOptionsOpen && { "aria-expanded": true })}
-          onClick={() => setOptionsOpen(!areOptionsOpen)}
+          onClick={(e) => {
+            setOptionsOpen(!areOptionsOpen);
+            setOptionsInputType(e.detail === 0 ? "keyboard" : "mouse");
+          }}
           className="flex items-center gap-1.5"
         >
           <h2 className="font-medium text-gray-800">Container</h2>
@@ -122,11 +84,15 @@ export default function PopoverTests() {
         </button>
         <Popover
           popoverRef={optionsPopoverRef}
-          targetRef={optionsTargetRef}
+          triggerRef={optionsTriggerRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
           placement="bottom"
-          extensions={[position("calc(50% - 88px)", 150, "top"), Motion(TRANSITION.fadeInScale)]}
+          extensions={[
+            Position("calc(50% - 88px)", 149, "top"),
+            Motion(TRANSITION.fadeInScaleY),
+            Prevent({ autofocus: optionsInputType !== "keyboard" }),
+          ]}
           className="z-50 flex w-44 flex-col gap-3 rounded-b-xl bg-gray-50 px-4 py-2 text-xs"
         >
           <div className="flex flex-col items-center gap-1 text-sm">
@@ -206,6 +172,55 @@ export default function PopoverTests() {
         </Popover>
 
         <p className="absolute right-4 flex gap-2 text-sm font-medium text-gray-800">Tip: use scroll</p>
+      </div>
+
+      <div
+        id="center"
+        ref={centerRef}
+        style={{ insetInline: 200, top: 150, bottom: 50 }}
+        className="absolute z-20 overflow-auto rounded-b-xl"
+      >
+        <main style={{ width: "calc(200% - 59px)", height: "calc(200% - 34px)" }} className="relative flex items-center justify-center">
+          <Button
+            ref={triggerRef}
+            aria-haspopup="dialog"
+            {...(isOpen && { "aria-expanded": true })}
+            onClick={(e) => {
+              setOpen(!isOpen);
+              setInputType(e.detail === 0 ? "keyboard" : "mouse");
+            }}
+            className="border border-gray-600 bg-gray-700 font-medium text-gray-100"
+          >
+            open
+          </Button>
+
+          <Popover
+            popoverRef={popoverRef}
+            triggerRef={triggerRef}
+            isOpen={isOpen}
+            setOpen={setOpen}
+            placement={placement}
+            container={{ selector: "main", margin: [150, 200, 50, 200], padding }}
+            extensions={[Offset(offset), Flip(), Arrow(arrowSize, arrowStyles), Prevent({ autofocus: inputType !== "keyboard" })]}
+            className="rounded-md text-gray-100 shadow-borderXL"
+          >
+            <div className="relative z-10 flex items-center justify-center gap-3 rounded-md bg-gray-800 px-4 py-3">
+              <Button
+                onClick={handleClose}
+                variant="button"
+                size="icon"
+                className="border border-gray-600 bg-gray-700 fill-gray-300 p-2 focus:fill-gray-100"
+              >
+                <Icon.x className="h-3.5 w-3.5" />
+              </Button>
+              popover
+            </div>
+          </Popover>
+
+          {/* Rulers */}
+          <div style={{ paddingBlock: "15px" }} className="absolute -z-10 w-full border-y-4 border-double border-black/10" />
+          <div style={{ paddingInline: "29px" }} className="absolute -z-10 h-full border-x-4 border-double border-black/10" />
+        </main>
       </div>
     </div>
   );

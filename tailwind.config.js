@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-import colors from "tailwindcss/colors";
 
 module.exports = {
   content: ["./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {
@@ -55,8 +55,13 @@ module.exports = {
       none: "0 0 #000000",
       border: "0 0 0 1px hsl(232, 9%, 90%)",
       focus: "0 0 0 1px hsla(210, 78%, 60%), 0 0 0 3px hsla(210, 78%, 60%, 0.3)",
-      softSm: "0px 1px 2px rgba(15, 15, 15, 0.1)",
+      focusError: "0 0 0 1px hsla(354, 90%, 60%), 0 0 0 3px hsla(354, 90%, 60%, 0.3)",
       soft: "0px 1px 4px rgba(15, 15, 15, 0.1)",
+      softSm: "0px 1px 2px rgba(15, 15, 15, 0.1)",
+
+      button: "0px 0px 0px 1px rgba(15,15,15,0.05), 0px 2px 4px rgba(15,15,15,0.1), 0px 5px 10px rgba(15,15,15,0.05)",
+      select:
+        "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.01), 0 5px 6px rgba(15,15,15,0.01), 0 6px 8px rgba(15,15,15,0.01)",
 
       xs: "0 1px 2px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.01), 0 2px 3px rgba(15,15,15,0.01)",
       sm: "0 2px 2px rgba(15,15,15,0.02), 0 3px 3px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02)",
@@ -79,12 +84,15 @@ module.exports = {
       border3XL:
         "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 12px 12px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.05)",
 
+      borderXLDark:
+        "0 0 0 1px hsl(232, 9%, 46%), 0 0 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.02)",
+      border2XLDark:
+        "0 0 0 1px hsl(232, 9%, 46%), 0 0 5px rgba(15,15,15,0.03), 0 2px 2px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 12px 12px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03)",
+      border3XLDark:
+        "0 0 0 1px hsl(232, 9%, 46%), 0 0 5px rgba(15,15,15,0.1), 0 2px 2px rgba(15,15,15,0.05), 0 4px 4px rgba(15,15,15,0.05), 0 8px 8px rgba(15,15,15,0.05), 0 12px 12px rgba(15,15,15,0.05), 0 16px 16px rgba(15,15,15,0.05), 0 20px 20px rgba(15,15,15,0.05), 0 24px 24px rgba(15,15,15,0.05)",
+
       borderSplashXl:
         "0 0 0 1px hsla(232, 9%, 90%, 0.4), 0 0 5px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02), 4px 0 4px rgba(15,15,15,0.02), 8px 0 8px rgba(15,15,15,0.02), -4px 0 4px rgba(15,15,15,0.02), -8px 0 8px rgba(15,15,15,0.02)",
-
-      btn: "0px 0px 0px 1px rgba(15,15,15,.02), 0px 2px 4px rgba(15,15,15,.1), 0px 5px 10px rgba(15,15,15,.05)",
-      select:
-        "0 0px 3px rgba(15,15,15,0.05), 0 1px 1px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.01), 0 5px 6px rgba(15,15,15,0.01), 0 6px 8px rgba(15,15,15,0.01)",
 
       insetSm:
         "inset 0 0px 5px rgba(15,15,15,.02), inset 0 1px 1px rgba(15,15,15,.02), inset 0 1px 2px rgba(15,15,15,.02), inset 0 2px 4px rgba(15,15,15,.02)",
@@ -103,8 +111,8 @@ module.exports = {
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      black: colors.black,
-      white: colors.white,
+      black: "#000000",
+      white: "#ffffff",
       kolumblue: {
         50: "hsl(210, 78%, 98%)",
         100: "hsl(210, 78%, 94%)",
@@ -145,19 +153,20 @@ module.exports = {
         950: "hsl(48, 6%, 11%)",
       },
       red: {
-        50: "hsl(354, 91%, 98%)",
-        100: "hsl(354, 91%, 94%)",
-        200: "hsl(354, 91%, 90%)",
-        300: "hsl(354, 91%, 84%)",
-        400: "hsl(354, 91%, 71%)",
-        500: "hsl(354, 91%, 60%)",
-        600: "hsl(354, 91%, 46%)",
-        700: "hsl(354, 91%, 34%)",
-        800: "hsl(354, 91%, 27%)",
-        900: "hsl(354, 91%, 17%)",
-        950: "hsl(354, 91%, 11%)",
+        50: "hsl(354, 90%, 98%)",
+        100: "hsl(354, 90%, 94%)",
+        200: "hsl(354, 90%, 90%)",
+        300: "hsl(354, 90%, 84%)",
+        400: "hsl(354, 90%, 71%)",
+        450: "hsl(354, 90%, 67%)",
+        500: "hsl(354, 90%, 60%)",
+        600: "hsl(354, 90%, 46%)",
+        700: "hsl(354, 90%, 34%)",
+        800: "hsl(354, 90%, 27%)",
+        900: "hsl(354, 90%, 17%)",
+        950: "hsl(354, 90%, 11%)",
       },
-      yellow: {
+      orange: {
         50: "hsl(41, 88%, 98%)",
         100: "hsl(41, 88%, 94%)",
         200: "hsl(41, 88%, 90%)",
@@ -169,6 +178,19 @@ module.exports = {
         800: "hsl(41, 88%, 27%)",
         900: "hsl(41, 88%, 17%)",
         950: "hsl(41, 88%, 11%)",
+      },
+      yellow: {
+        50: "hsl(59, 96%, 98%)",
+        100: "hsl(59, 96%, 94%)",
+        200: "hsl(59, 96%, 90%)",
+        300: "hsl(59, 96%, 84%)",
+        400: "hsl(59, 96%, 71%)",
+        500: "hsl(59, 96%, 60%)",
+        600: "hsl(59, 96%, 46%)",
+        700: "hsl(59, 96%, 34%)",
+        800: "hsl(59, 96%, 27%)",
+        900: "hsl(59, 96%, 17%)",
+        950: "hsl(59, 96%, 11%)",
       },
       green: {
         50: "hsl(120, 78%, 98%)",
@@ -186,5 +208,7 @@ module.exports = {
     },
   },
   plugins: [],
-  darkMode: "darkMode",
+  experimental: {
+    classRegex: [["clsx\\(([^)]*)\\)"], ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  },
 };

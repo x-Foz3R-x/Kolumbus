@@ -3,28 +3,23 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { Popover, position, Motion, usePopover } from "@/components/ui/popover";
+import { TRANSITION } from "@/lib/framer-motion";
+
+import { Dropdown, DropdownGroupTitle, DropdownList, DropdownOption } from "@/components/ui/dropdown";
+import { Popover, Position, Motion, usePopover, Prevent } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
-import Dropdown, { DropdownGroup, DropdownList, DropdownOption } from "@/components/ui/dropdown";
-import { TRANSITION } from "@/lib/framer-motion";
 
 export default function DropdownTests() {
-  const [optionsTargetRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen] = usePopover();
+  const [optionsTriggerRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
 
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [placement, setPlacement] = useState("right-start" as Placement);
-  const [padding, setPadding] = useState(100);
+  const [padding, setPadding] = useState(50);
   const [offset, setOffset] = useState(5);
 
-  const dropdownList: DropdownList = [
-    { onSelect: () => {}, index: 0 },
-    { onSelect: () => {}, index: 1 },
-    { onSelect: () => {}, index: 2 },
-    { onSelect: () => {}, index: 3 },
-    { onSelect: () => {}, index: 4 },
-    { onSelect: () => {}, index: 5 },
-  ];
+  const dropdownList: DropdownList = [{ index: 0 }, { index: 1, skip: true }, { index: 2 }, { index: 3 }, { index: 4 }, { index: 5 }];
 
   //#region centering logic
   window.addEventListener("load", () => {
@@ -44,11 +39,11 @@ export default function DropdownTests() {
 
   return (
     <div className="h-screen w-screen bg-gray-50">
-      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-medium text-gray-800">
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-bold text-gray-800">
         Dropdown
       </h1>
 
-      <div style={{ insetInline: 200, top: 106, bottom: 50 }} className="absolute rounded-xl border-gray-50 bg-green-100 shadow-borderXL" />
+      <div style={{ insetInline: 200, top: 106, bottom: 50 }} className="absolute rounded-xl bg-green-100 shadow-borderXL" />
       <span className="pointer-events-none absolute left-52 top-36 select-none p-3 text-green-600">padding</span>
 
       <div
@@ -57,18 +52,24 @@ export default function DropdownTests() {
       >
         <span className="rounded-br-lg bg-gray-200 p-1 pr-1.5">Boundary</span>
       </div>
-      <div style={{ insetInline: 200, top: 106 }} className="absolute z-[110] flex h-11 items-center justify-center rounded-t-xl bg-white">
+      <div
+        style={{ insetInline: 200, top: 106 }}
+        className="absolute flex h-11 items-center justify-center rounded-t-xl border-b border-gray-100 bg-gray-50"
+      >
         <div className="absolute left-4 flex gap-2">
-          <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="h-3 w-3 cursor-default rounded-full bg-red-500"></Link>
-          <span className="h-3 w-3 rounded-full bg-yellow-500" />
-          <span className="h-3 w-3 rounded-full bg-green-500" />
+          <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="h-3 w-3 cursor-default rounded-full bg-red-450" />
+          <span className="h-3 w-3 rounded-full bg-orange-500" />
+          <span className="h-3 w-3 rounded-full bg-green-600" />
         </div>
 
         <button
-          ref={optionsTargetRef}
+          ref={optionsTriggerRef}
           aria-haspopup="menu"
           {...(areOptionsOpen && { "aria-expanded": true })}
-          onClick={() => setOptionsOpen(!areOptionsOpen)}
+          onClick={(e) => {
+            setOptionsOpen(!areOptionsOpen);
+            setOptionsInputType(e.detail === 0 ? "keyboard" : "mouse");
+          }}
           className="flex items-center gap-1.5"
         >
           <h2 className="font-medium text-gray-800">Container</h2>
@@ -76,12 +77,16 @@ export default function DropdownTests() {
         </button>
         <Popover
           popoverRef={optionsPopoverRef}
-          targetRef={optionsTargetRef}
+          triggerRef={optionsTriggerRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
           placement="bottom"
-          extensions={[position("calc(50% - 88px)", 150, "top"), Motion(TRANSITION.fadeInScale)]}
-          className="flex w-44 flex-col gap-3 rounded-b-xl bg-white px-4 py-2 text-xs shadow-md"
+          extensions={[
+            Position("calc(50% - 88px)", 149, "top"),
+            Motion(TRANSITION.fadeInScaleY),
+            Prevent({ autofocus: optionsInputType !== "keyboard" }),
+          ]}
+          className="z-50 flex w-44 flex-col gap-3 rounded-b-xl border border-t-0 border-gray-100 bg-gray-50 px-4 py-2 text-xs"
         >
           {/* Placement */}
           <div className="flex flex-col items-center gap-1 text-sm">
@@ -155,38 +160,45 @@ export default function DropdownTests() {
       >
         <main style={{ width: "calc(200% - 59px)", height: "calc(200% - 34px)" }} className="relative flex items-center justify-center">
           <Dropdown
+            isOpen={isDropdownOpen}
+            setOpen={setDropdownOpen}
             list={dropdownList}
             placement={placement}
-            margin={[150, 200, 50, 200]}
-            padding={padding}
+            container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
             offset={offset}
-            buttonChildren={<span>open</span>}
             preventScroll
+            className="w-40"
+            buttonProps={{
+              className: "border border-gray-600 bg-gray-700 font-medium text-gray-100",
+              children: <span>open</span>,
+            }}
           >
-            <p className="rounded-lg bg-yellow-500/20 text-center text-xs leading-relaxed text-gray-300 shadow-soft">Tip: use arrow keys</p>
-            <DropdownOption index={0} optionVariant={"blue"}>
-              Option 1
+            <span className="mb-1 rounded-lg bg-yellow-200/10 text-center text-xs leading-relaxed text-yellow-400/70 shadow-soft">
+              Tip: use arrow keys
+            </span>
+            <DropdownOption index={0} variant="primary">
+              Open file
             </DropdownOption>
-            <DropdownOption index={1} optionVariant={"blue"}>
-              Option 2
+            <DropdownOption index={1} variant="primary">
+              Open preview
             </DropdownOption>
 
-            <DropdownGroup title="Actions">
-              <DropdownOption index={2}>New file</DropdownOption>
-              <DropdownOption index={3}>Edit file</DropdownOption>
-              <DropdownOption index={4}>Replace file</DropdownOption>
-            </DropdownGroup>
+            <DropdownGroupTitle title="Actions" divider />
+            <DropdownOption index={2}>New file</DropdownOption>
+            <DropdownOption index={3}>Edit file</DropdownOption>
 
-            <DropdownGroup title="Danger">
-              <DropdownOption index={5} optionVariant="danger">
-                Delete file
-              </DropdownOption>
-            </DropdownGroup>
+            <DropdownGroupTitle title="Danger" divider />
+            <DropdownOption index={4} variant="danger">
+              Block file
+            </DropdownOption>
+            <DropdownOption index={5} variant="danger" className="rounded-b-lg">
+              Delete file
+            </DropdownOption>
           </Dropdown>
 
           {/* Rulers */}
           <div style={{ paddingBlock: "15px" }} className="absolute -z-10 w-full border-y-4 border-double border-black/10" />
-          <div style={{ paddingInline: "27px" }} className="absolute -z-10 h-full border-x-4 border-double border-black/10" />
+          <div style={{ paddingInline: "29px" }} className="absolute -z-10 h-full border-x-4 border-double border-black/10" />
         </main>
       </div>
     </div>

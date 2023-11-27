@@ -87,7 +87,7 @@ export function AppdataProvider({ trips, children }: AppdataProviderProps) {
 function TripsReducer(trips: Trip[], action: DispatchAction) {
   switch (action.type) {
     case UT.REPLACE:
-      if (action.userTrips) return action.userTrips;
+      if (action.trips) return action.trips;
       return trips;
     case UT.CREATE_TRIP:
       if (action.trip) {
@@ -114,14 +114,26 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
       return trips;
     case UT.DELETE_TRIP:
       if (action.trip) {
+        const newTrips = [...trips];
+        const trip = action.trip;
+
+        // Update the position of the trips that are after the trip being deleted
+        const tripsToUpdate = newTrips.slice(trip.position + 1);
+        tripsToUpdate.forEach((trip, i) => {
+          trip.position = trip.position + i;
+        });
+
+        // Remove the deleted trip from the state
+        newTrips.splice(trip.position, 1);
+        return newTrips;
       }
       return trips;
     case UT.CREATE_EVENT:
       if (action.payload) {
         const newTrips = [...trips];
-        const { selectedTrip, dayPosition, placeAt, event } = action.payload;
+        const { tripIndex, dayIndex, event, placeAt } = action.payload;
 
-        const dayEvents = newTrips[selectedTrip].itinerary[dayPosition].events;
+        const dayEvents = newTrips[tripIndex].itinerary[dayIndex].events;
 
         if (placeAt === "start") dayEvents.unshift(event);
         else if (placeAt === "end") dayEvents.push(event);
@@ -133,10 +145,10 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
     case UT.UPDATE_EVENT:
       if (action.payload) {
         const newTrips = [...trips];
-        const { selectedTrip, dayPosition, event } = action.payload;
+        const { tripIndex, dayIndex, event } = action.payload;
 
-        if (newTrips[selectedTrip].itinerary[dayPosition].events[event.position].id !== event.id) return trips;
-        newTrips[selectedTrip].itinerary[dayPosition].events[event.position] = event;
+        if (newTrips[tripIndex].itinerary[dayIndex].events[event.position].id !== event.id) return trips;
+        newTrips[tripIndex].itinerary[dayIndex].events[event.position] = event;
 
         return newTrips;
       }
@@ -144,12 +156,12 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
     case UT.DELETE_EVENT:
       if (action.payload) {
         const newTrips = [...trips];
-        const { selectedTrip, dayPosition, event } = action.payload;
+        const { tripIndex, dayIndex, event } = action.payload;
 
-        if (newTrips[selectedTrip].itinerary[dayPosition].events[event.position].id !== event.id) return trips;
+        if (newTrips[tripIndex].itinerary[dayIndex].events[event.position].id !== event.id) return trips;
 
-        newTrips[selectedTrip].itinerary[dayPosition].events.splice(event.position, 1);
-        newTrips[selectedTrip].itinerary[dayPosition].events.forEach((event, index) => (event.position = index));
+        newTrips[tripIndex].itinerary[dayIndex].events.splice(event.position, 1);
+        newTrips[tripIndex].itinerary[dayIndex].events.forEach((event, index) => (event.position = index));
 
         return newTrips;
       }

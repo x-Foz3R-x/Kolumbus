@@ -6,18 +6,24 @@ import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
 import { useDndData } from "@/components/dnd-itinerary";
 
-import { useCloseTriggers } from "@/hooks/use-accessibility-features";
+import useCloseTriggers from "@/hooks/use-close-triggers";
 import type { UpdateEvent } from "@/server/routers/event";
-import { GetDayPosition } from "@/lib/dnd";
+import { GetDayIndex } from "@/lib/dnd";
 import { Event, UT } from "@/types";
 
-import Input from "../ui/input";
+import { StatelessInput } from "../ui/input";
 import Divider from "../ui/divider";
 import Icon from "../icons";
 
 export default function EventPanel() {
   const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
-  const { activeTrip, activeEvent, isEventPanelDisplayed, setEventPanelDisplay, itineraryPosition } = useDndData();
+  const {
+    activeTrip,
+    activeEvent,
+    isEventPanelOpen: isEventPanelDisplayed,
+    setEventPanelOpen: setEventPanelDisplay,
+    itineraryPosition,
+  } = useDndData();
   const updateEvent = api.event.update.useMutation();
   const deleteEvent = api.event.delete.useMutation();
 
@@ -40,10 +46,13 @@ export default function EventPanel() {
   const handleUpdate = (data: UpdateEvent) => {
     if (!activeEvent) return;
 
-    const dayPosition = GetDayPosition(activeTrip.itinerary, activeEvent.date);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, activeEvent.date);
 
     setSaving(true);
-    dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { selectedTrip, dayPosition, event: { ...activeEvent, ...data } } });
+    dispatchUserTrips({
+      type: UT.UPDATE_EVENT,
+      payload: { tripIndex: selectedTrip, dayIndex, event: { ...activeEvent, ...data } },
+    });
     updateEvent.mutate(
       { eventId: activeEvent.id, data: data },
       {
@@ -51,7 +60,7 @@ export default function EventPanel() {
           if (!updatedEvent) return;
           dispatchUserTrips({
             type: UT.UPDATE_EVENT,
-            payload: { selectedTrip, dayPosition, event: { ...activeEvent, ...data, updatedAt: updatedEvent.updatedAt } },
+            payload: { tripIndex: selectedTrip, dayIndex, event: { ...activeEvent, ...data, updatedAt: updatedEvent.updatedAt } },
           });
         },
         onError(error) {
@@ -61,29 +70,32 @@ export default function EventPanel() {
         onSettled() {
           setSaving(false);
         },
-      }
+      },
     );
   };
 
   const handleDelete = () => {
     if (!activeEvent) return;
 
-    const dayPosition = GetDayPosition(activeTrip.itinerary, activeEvent.date);
+    const dayIndex = GetDayIndex(activeTrip.itinerary, activeEvent.date);
 
-    const events = [...activeTrip.itinerary[dayPosition].events];
+    const events = [...activeTrip.itinerary[dayIndex].events];
     events.splice(activeEvent.position, 1);
     events.map((event, index) => ({ position: index }));
 
     setSaving(true);
     setEventPanelDisplay(false);
-    dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { selectedTrip, dayPosition, event: activeEvent } });
+    dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event: activeEvent } });
     deleteEvent.mutate(
       { eventId: activeEvent.id, events },
       {
         onSuccess(updatedEvents) {
           if (!updatedEvents) return;
           updatedEvents.forEach((event) => {
-            dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { selectedTrip, dayPosition, event: { ...(event as Event) } } });
+            dispatchUserTrips({
+              type: UT.UPDATE_EVENT,
+              payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
+            });
           });
         },
         onError(error) {
@@ -93,7 +105,7 @@ export default function EventPanel() {
         onSettled() {
           setSaving(false);
         },
-      }
+      },
     );
   };
 
@@ -134,7 +146,7 @@ export default function EventPanel() {
               <Image src={getImageUrl()} alt="Event Image" width={312} height={160} priority className="h-40 object-cover object-center" />
             </div>
 
-            <Input
+            <StatelessInput
               type="text"
               placeholder="Event Name"
               value={activeEvent?.name ?? ""}
@@ -159,7 +171,7 @@ export default function EventPanel() {
               <div className="flex w-full gap-3">
                 <div className="relative flex items-center">
                   <Icon.x className="absolute left-4 h-3" />
-                  <Input
+                  <StatelessInput
                     type="tel"
                     placeholder="Phone number"
                     value={activeEvent?.phoneNumber ?? ""}
@@ -169,7 +181,7 @@ export default function EventPanel() {
                 </div>
 
                 <div className="relative flex w-2/5 items-center">
-                  <Input
+                  <StatelessInput
                     type="number"
                     placeholder="0.00"
                     value={activeEvent?.cost ?? ""}
@@ -181,7 +193,7 @@ export default function EventPanel() {
 
               <div className="relative flex w-full items-center">
                 <Icon.x className="absolute left-4 h-3" />
-                <Input
+                <StatelessInput
                   type="text"
                   placeholder="www.example.com"
                   value={activeEvent?.website ?? ""}
