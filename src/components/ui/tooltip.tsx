@@ -16,7 +16,7 @@ type Props = {
   children?: React.ReactNode;
 };
 export default function Tooltip({
-  triggerRef: ref,
+  triggerRef,
   isOpen,
   setOpen,
   placement,
@@ -27,8 +27,7 @@ export default function Tooltip({
   className,
   children,
 }: Props) {
-  const triggerRef = useRef<HTMLElement>(ref?.current ?? null);
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const arrowStyles = {
     arrow: cn("rounded-sm bg-gray-800", arrow.className?.arrow),
@@ -42,7 +41,7 @@ export default function Tooltip({
   return (
     isOpen && (
       <Popover
-        popoverRef={popoverRef}
+        popoverRef={ref}
         triggerRef={triggerRef}
         isOpen={isOpen}
         setOpen={setOpen}
@@ -86,7 +85,7 @@ export function useTooltip(delay: number = 1000) {
   };
   const handleMouseMove = (event: React.MouseEvent) => {
     if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current);
-    moveTimeoutRef.current = setTimeout(() => setTooltipPosition({ x: event.clientY + 18, y: event.clientX }), 200);
+    moveTimeoutRef.current = setTimeout(() => setTooltipPosition({ x: event.clientX, y: event.clientY + 18 }), 200);
   };
   const handleMouseLeave = () => {
     if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);

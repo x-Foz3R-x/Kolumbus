@@ -200,7 +200,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
   };
 
   return (
-    <div className="relative flex flex-col gap-10">
+    <div className="relative flex flex-col gap-10 px-6">
       <DndDataContext.Provider value={value}>
         <DndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
           <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
@@ -453,6 +453,7 @@ const EventComponent = memo(
               list={dropdownList}
               container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
               offset={8}
+              preventScroll
               className="w-44"
               buttonProps={{
                 variant: "unstyled",

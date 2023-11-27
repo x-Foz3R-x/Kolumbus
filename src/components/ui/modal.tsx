@@ -1,14 +1,15 @@
 import { useEffect, useId, useRef } from "react";
 import { VariantProps, cva } from "class-variance-authority";
 
-import Button, { Props } from "./button";
 import { Backdrop, Motion, Popover, Position, Prevent } from "./popover";
-import { cn } from "@/lib/utils";
 import useScopeTabNavigation from "@/hooks/use-scope-tab-navigation";
 import useKeyPress from "@/hooks/use-key-press";
-import { Key } from "@/types";
 import { TRANSITION } from "@/lib/framer-motion";
+import { cn } from "@/lib/utils";
 import { BackdropType } from "./popover/types";
+import { Key } from "@/types";
+
+import Button, { Props } from "./button";
 
 const ModalVariants = cva("mx-3 min-w-min overflow-hidden", {
   variants: {

@@ -14,6 +14,8 @@ import useAppdata from "@/context/appdata";
 import { cn } from "@/lib/utils";
 
 import LocationSearchBox from "../location-search-box";
+import { Motion, Popover, Position } from "../ui/popover";
+import { TRANSITION } from "@/lib/framer-motion";
 
 export default function EventComposer() {
   const { user } = useUser();
@@ -26,7 +28,7 @@ export default function EventComposer() {
   const [isOpen, setOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState(cuid2.createId());
 
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   useCloseTriggers([ref], () => isEventComposerOpen && setEventComposerOpen(false));
 
   /**
@@ -154,24 +156,23 @@ export default function EventComposer() {
   };
 
   return (
-    <section
-      ref={ref}
-      style={{ left: 172, transform: `translateY(${itineraryPosition.y_day * 132 + 20}px)` }}
-      className={cn(
-        "absolute z-20 flex w-60 flex-col justify-end rounded-lg bg-white shadow-borderXL duration-300 ease-kolumb-flow",
-        isEventComposerOpen ? "opacity-100" : "pointer-events-none select-none opacity-0",
-        isOpen && "rounded-b-none",
-      )}
+    <Popover
+      popoverRef={ref}
+      isOpen={isEventComposerOpen}
+      setOpen={setEventComposerOpen}
+      container={{ selector: "main > div ", margin: [56, 0, 0, 224], padding: [56, 12, 0, 12] }}
+      extensions={[Position(172, itineraryPosition.y_day * 132 + 20, "left"), Motion(TRANSITION.fadeInScale)]}
+      className={`z-20 flex w-60 flex-col rounded-lg bg-white shadow-borderXL duration-500 ease-kolumb-flow ${isOpen && "rounded-b-none"}`}
     >
-      <span className="flex flex-1 items-end justify-between p-2 pb-[10px] text-center text-sm">Event Composer</span>
+      <span className="w-full p-2 text-center text-sm font-medium text-gray-600">Event Composer</span>
 
       <LocationSearchBox
         isOpen={isOpen}
         setOpen={setOpen}
         onAdd={handleAddEvent}
-        placeholder="Find interesting places"
+        placeholder="Search or enter name"
         sessionToken={sessionToken}
       />
-    </section>
+    </Popover>
   );
 }
