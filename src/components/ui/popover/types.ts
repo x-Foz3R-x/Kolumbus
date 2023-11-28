@@ -10,12 +10,10 @@ export type Coords = { x: number; y: number };
 export type DynamicCoords = { x: number | string; y: number | string };
 export type Rect = { x: number; y: number; width: number; height: number };
 export type Inset = { top: number; right: number; bottom: number; left: number };
+export type NumericVariant = number | [number, number, number, number];
 
-export type Container = {
-  selector: string;
-  margin: number | [number, number, number, number];
-  padding: number | [number, number, number, number];
-};
+export type Strategy = "absolute" | "fixed";
+export type Container = { selector: string; margin?: NumericVariant; padding?: NumericVariant };
 export type Extensions = (Flip | Offset | Arrow | Backdrop | Motion | Prevent)[] | (Position | Backdrop | Motion | Prevent)[];
 export type MountedExtensions = {
   position?: Position;

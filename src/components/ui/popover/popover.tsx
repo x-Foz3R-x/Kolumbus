@@ -5,7 +5,7 @@ import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 
 import usePopover, { parsePlacement } from "./use-popover";
-import { Container, Extensions, MountedExtensions, Placement } from "./types";
+import { Container, Extensions, MountedExtensions, Placement, Strategy } from "./types";
 
 import useCloseTriggers from "@/hooks/use-close-triggers";
 import { TRANSITION } from "@/lib/framer-motion";
@@ -14,27 +14,30 @@ import { cn } from "@/lib/utils";
 import Portal from "@/components/portal";
 
 type PopoverContentProps = {
-  popoverRef: React.RefObject<HTMLDivElement>;
+  popoverRef?: React.RefObject<HTMLDivElement>;
   triggerRef?: React.RefObject<HTMLElement>;
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   placement?: Placement;
+  strategy?: Strategy;
   container?: Container;
   extensions?: Extensions;
   className?: string;
   children: React.ReactNode;
 };
 export function Popover({
-  popoverRef,
+  popoverRef: popoverRefProp,
   triggerRef: triggerRefProp,
   isOpen,
   setOpen,
   placement: initialPlacement = "bottom",
+  strategy = "absolute",
   container = { selector: "body", margin: 0, padding: 0 },
   extensions = [],
   className,
   children,
 }: PopoverContentProps) {
+  const popoverRef = useRef(popoverRefProp?.current ?? null);
   const triggerRef = useRef(triggerRefProp?.current ?? null);
   const useTransition = useRef("");
 
@@ -107,6 +110,11 @@ export function Popover({
     triggerRef.current = triggerRefProp?.current ?? null;
   }, [triggerRefProp]);
 
+  // Update popoverRef when popoverRefProp changes
+  useEffect(() => {
+    popoverRef.current = popoverRefProp?.current ?? null;
+  }, [popoverRefProp]);
+
   // Apply transition when popover is opened and position is calculated for the first time.
   useEffect(() => {
     if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0)
@@ -152,7 +160,8 @@ export function Popover({
             exit="exit"
             variants={variants}
             className={cn(
-              "absolute z-[100] min-h-fit min-w-fit appearance-none bg-transparent",
+              strategy,
+              "z-[100] min-h-fit min-w-fit appearance-none bg-transparent",
               mountedExtensions.prevent?.pointer && "pointer-events-none",
               useTransition.current,
             )}
@@ -162,7 +171,7 @@ export function Popover({
             <RemoveScroll
               enabled={mountedExtensions.prevent?.scroll === true && isOpen}
               allowPinchZoom={mountedExtensions.prevent?.scroll === true && isOpen}
-              className={cn("relative", className)}
+              className={cn("relative font-inter", className)}
             >
               {arrowContent}
               {children}

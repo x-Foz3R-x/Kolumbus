@@ -4,7 +4,7 @@ import type { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop, Backdrop
 import { Variants } from "framer-motion";
 
 export { Popover } from "./popover";
-export type { Placement, Container } from "./types";
+export type { Placement, Strategy, Container } from "./types";
 
 /**
  * Custom Hook for handling popovers.

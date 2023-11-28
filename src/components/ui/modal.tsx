@@ -68,6 +68,7 @@ export function Modal({ isOpen, setOpen, backdrop, variant, size, className, rem
         triggerRef={ButtonRef}
         isOpen={isOpen}
         setOpen={setOpen}
+        strategy="fixed"
         extensions={[
           Position("50%", "50%", "top left"),
           Motion(TRANSITION.scaleInOut),

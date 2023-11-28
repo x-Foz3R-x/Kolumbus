@@ -1,13 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import cuid2 from "@paralleldrive/cuid2";
 
 import api from "@/app/_trpc/client";
 import { useUser } from "@clerk/nextjs";
 import { useDndData } from "../dnd-itinerary";
 
-import useCloseTriggers from "@/hooks/use-close-triggers";
 import { eventTemplate } from "@/data/template-data";
 import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@/types";
 import useAppdata from "@/context/appdata";
@@ -26,9 +25,6 @@ export default function EventComposer() {
 
   const [isOpen, setOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState(cuid2.createId());
-
-  const ref = useRef<HTMLDivElement>(null);
-  useCloseTriggers([ref], () => isEventComposerOpen && setEventComposerOpen(false));
 
   /**
    * Handles the addition of an event to the itinerary.
@@ -156,7 +152,6 @@ export default function EventComposer() {
 
   return (
     <Popover
-      popoverRef={ref}
       isOpen={isEventComposerOpen}
       setOpen={setEventComposerOpen}
       container={{ selector: "main > div ", margin: [56, 0, 0, 224], padding: [56, 12, 0, 12] }}

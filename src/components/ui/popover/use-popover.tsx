@@ -68,8 +68,8 @@ export default function usePopover(
     transformOrigin: undefined,
   });
 
-  const containerMargin = useMemo(() => getInsetValues(container.margin), [container.margin]);
-  const containerPadding = useMemo(() => getInsetValues(container.padding), [container.padding]);
+  const containerMargin = useMemo(() => getInsetValues(container.margin ?? 0), [container.margin]);
+  const containerPadding = useMemo(() => getInsetValues(container.padding ?? 0), [container.padding]);
 
   const update = useCallback(() => {
     if (!triggerRef?.current || !popoverRef?.current || !isOpen || extensions.position) return;
