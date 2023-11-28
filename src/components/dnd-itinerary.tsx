@@ -463,29 +463,27 @@ const EventComponent = memo(
               }}
             >
               <DropdownOption index={0}>
-                <Icon.eventPanel className="h-3.5 w-3.5 fill-gray-100" />
+                <Icon.eventPanel className="h-3.5 w-3.5" />
                 Event panel
               </DropdownOption>
               <DropdownOption index={1}>
-                <Icon.clipboardPin className="h-3.5 w-3.5 fill-gray-100" />
+                <Icon.clipboardPin className="h-3.5 w-3.5" />
                 Copy address
               </DropdownOption>
 
-              <Divider className="my-1 rounded bg-white/25" />
-
-              <DropdownLink index={2} href={event?.url} size="sm" className="flex items-center justify-center gap-1">
+              <DropdownLink index={2} href={event?.url} className="justify-center gap-1 text-xs">
                 Find in Google Maps
-                <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-100" />
+                <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-900 dark:fill-gray-100" />
               </DropdownLink>
 
-              <Divider className="my-1 rounded bg-white/25" />
+              <Divider className="my-1 bg-gray-100" />
 
               <DropdownOption index={3}>
-                <Icon.duplicate className="h-3.5 w-3.5 fill-gray-100" />
+                <Icon.duplicate className="h-3.5 w-3.5" />
                 Duplicate
               </DropdownOption>
               <DropdownOption index={4} variant="danger">
-                <Icon.trash className="h-3.5 w-3.5 fill-gray-100" />
+                <Icon.trash className="h-3.5 w-3.5" />
                 Delete
               </DropdownOption>
             </Dropdown>

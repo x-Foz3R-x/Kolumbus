@@ -93,7 +93,7 @@ export default function useListNavigation({
       if (direction === Key.ArrowUp || direction === Key.ArrowDown) {
         if (activeIndex < 0 || hasFocus === "trigger") {
           nextIndex = direction === Key.ArrowUp ? lastValidIndex : firstValidIndex;
-        } else if (preventLoop) {
+        } else if (!preventLoop) {
           nextIndex = (direction === Key.ArrowUp ? activeIndex + listLength - 1 : activeIndex + 1) % listLength;
 
           // Determine the nextIndex by skipping the indexes specified in skipArray.

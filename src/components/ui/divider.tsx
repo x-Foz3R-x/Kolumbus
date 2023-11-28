@@ -15,8 +15,8 @@ export default function Divider({ orientation = "horizontal", gradient, classNam
           ? orientation === "horizontal"
             ? "bg-gradient-to-r from-transparent via-gray-200 to-transparent"
             : "bg-gradient-to-b from-transparent via-gray-200 to-transparent"
-          : "bg-gray-200",
-        className
+          : "bg-gray-200 dark:bg-white/25",
+        className,
       )}
     />
   );

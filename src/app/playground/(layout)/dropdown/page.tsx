@@ -12,9 +12,9 @@ import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
 
 export default function DropdownTests() {
-  const [optionsTriggerRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
+  const [optionsTriggerRef, _, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
 
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false);
   const [placement, setPlacement] = useState("right-start" as Placement);
   const [padding, setPadding] = useState(50);
   const [offset, setOffset] = useState(5);
@@ -65,18 +65,17 @@ export default function DropdownTests() {
         <button
           ref={optionsTriggerRef}
           aria-haspopup="menu"
-          {...(areOptionsOpen && { "aria-expanded": true })}
           onClick={(e) => {
             setOptionsOpen(!areOptionsOpen);
             setOptionsInputType(e.detail === 0 ? "keyboard" : "mouse");
           }}
+          {...(areOptionsOpen && { "aria-expanded": true })}
           className="flex items-center gap-1.5"
         >
           <h2 className="font-medium text-gray-800">Container</h2>
           <Icon.chevron className={`h-[5px] duration-300 ease-kolumb-flow ${areOptionsOpen && "rotate-180"}`} />
         </button>
         <Popover
-          popoverRef={optionsPopoverRef}
           triggerRef={optionsTriggerRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
@@ -160,8 +159,8 @@ export default function DropdownTests() {
       >
         <main style={{ width: "calc(200% - 59px)", height: "calc(200% - 34px)" }} className="relative flex items-center justify-center">
           <Dropdown
-            isOpen={isDropdownOpen}
-            setOpen={setDropdownOpen}
+            isOpen={isOpen}
+            setOpen={setOpen}
             list={dropdownList}
             placement={placement}
             container={{ selector: "body", margin: [150, 200, 50, 200], padding }}

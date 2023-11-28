@@ -12,8 +12,8 @@ import Icon from "@/components/icons";
 import Button from "@/components/ui/button";
 
 export default function PopoverTests() {
-  const [optionsTriggerRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
-  const [triggerRef, popoverRef, isOpen, setOpen, inputType, setInputType] = usePopover();
+  const [optionsTriggerRef, _, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
+  const [triggerRef, __, isOpen, setOpen, inputType, setInputType] = usePopover();
 
   const [placement, setPlacement] = useState("top" as Placement);
   const [padding, setPadding] = useState(100);
@@ -23,7 +23,7 @@ export default function PopoverTests() {
   const arrowStyles = { arrow: "bg-gray-800 rounded-[3px]", backdrop: "shadow-borderXL rounded-[3px]" };
 
   const handleClose = useCallback(() => {
-    setOpen(false), [setOpen];
+    setOpen(false);
     triggerRef.current?.focus({ preventScroll: true });
   }, [triggerRef, setOpen]);
 
@@ -71,19 +71,18 @@ export default function PopoverTests() {
 
         <button
           ref={optionsTriggerRef}
-          aria-haspopup="menu"
-          {...(areOptionsOpen && { "aria-expanded": true })}
           onClick={(e) => {
             setOptionsOpen(!areOptionsOpen);
             setOptionsInputType(e.detail === 0 ? "keyboard" : "mouse");
           }}
+          aria-haspopup="menu"
+          {...(areOptionsOpen && { "aria-expanded": true })}
           className="flex items-center gap-1.5"
         >
           <h2 className="font-medium text-gray-800">Container</h2>
           <Icon.chevron className={`h-[5px] duration-300 ease-kolumb-flow ${areOptionsOpen && "rotate-180"}`} />
         </button>
         <Popover
-          popoverRef={optionsPopoverRef}
           triggerRef={optionsTriggerRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
@@ -195,7 +194,6 @@ export default function PopoverTests() {
           </Button>
 
           <Popover
-            popoverRef={popoverRef}
             triggerRef={triggerRef}
             isOpen={isOpen}
             setOpen={setOpen}

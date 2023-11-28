@@ -150,13 +150,12 @@ const Combobox = {
     );
   },
 
+  // ! Keyboard on click does not works since combobox does not use focus.
   Option: forwardRef<HTMLLIElement, ComboboxProps<undefined>["option"]>(function Option({ index, className, children, ...props }, ref) {
     const { onClick, listItemsRef, activeIndex, setActiveIndex, handleClose } = useComboboxContext();
 
     const handleClick = () => {
       onClick && onClick(index);
-      console.log("clicked");
-
       handleClose();
     };
 
@@ -180,7 +179,7 @@ const Combobox = {
           variant="baseScale"
           size="unstyled"
           className={cn(
-            "z-10 w-full cursor-default p-2 text-left text-sm before:bg-gray-100 before:shadow-select before:dark:bg-gray-700",
+            "z-10 w-full cursor-default p-2 text-left text-sm before:bg-black/5 before:shadow-select before:dark:bg-gray-700",
             className,
             activeIndex === index && "before:scale-100 before:scale-x-100 before:scale-y-100 before:opacity-100",
           )}

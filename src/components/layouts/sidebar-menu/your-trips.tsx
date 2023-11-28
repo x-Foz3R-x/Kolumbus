@@ -240,15 +240,15 @@ export default function YourTrips() {
               variant="scale"
               size="default"
               className={cn(
-                "flex w-full items-center gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
+                "flex w-full cursor-default items-center gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
                 index !== selectedTrip
-                  ? "fill-tintedGray-400"
+                  ? "fill-tintedGray-400 hover:fill-tintedGray-600"
                   : "fill-kolumblue-500 text-kolumblue-500 group-hover/trip:fill-kolumblue-500 group-hover/trip:text-kolumblue-500",
               )}
               animatePress
             >
-              <Icon.defaultTrip className="h-4 w-4 duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5 group-hover:translate-x-1.5" />
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5 group-hover:translate-x-1.5">
+              <Icon.defaultTrip className="h-4 w-4 duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5" />
+              <p className="overflow-hidden text-ellipsis whitespace-nowrap duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5">
                 {trip.name}
               </p>
             </Button>
