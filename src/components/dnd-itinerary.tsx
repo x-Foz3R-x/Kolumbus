@@ -363,7 +363,7 @@ type EventComponentProps = {
 };
 const EventComponent = memo(
   forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
-    const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
+    const { dispatchUserTrips, selectedTrip } = useAppdata();
     const { activeTrip, setActiveEvent, isEventPanelOpen, setEventPanelOpen, setItineraryPosition } = useDndData();
     const deleteEvent = api.event.delete.useMutation();
 
@@ -403,7 +403,6 @@ const EventComponent = memo(
           events.splice(event.position, 1);
           events.map((_, index) => ({ position: index }));
 
-          setSaving(true);
           setEventPanelOpen(false);
           dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
           deleteEvent.mutate(
@@ -421,9 +420,6 @@ const EventComponent = memo(
               onError(error) {
                 console.error(error);
                 dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-              },
-              onSettled() {
-                setSaving(false);
               },
             },
           );

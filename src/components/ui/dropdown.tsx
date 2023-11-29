@@ -1,7 +1,7 @@
 import { SetStateAction, createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import { Variants, motion } from "framer-motion";
 import { VariantProps, cva } from "class-variance-authority";
-import { motion } from "framer-motion";
 
 import { Popover, Placement, Flip, Offset, Prevent, Motion, Container, Position, Strategy } from "./popover";
 import useListNavigation from "@/hooks/use-list-navigation";
@@ -38,6 +38,7 @@ type DropdownProps = {
   container?: Container;
   position?: { x: string | number; y: string | number; transformOrigin?: string };
   offset?: number;
+  motion?: Variants | { top: Variants; right: Variants; bottom: Variants; left: Variants };
   preventScroll?: boolean;
   className?: string;
   buttonProps?: Props;
@@ -52,6 +53,7 @@ export function Dropdown({
   container,
   position,
   offset = 6,
+  motion = TRANSITION.fadeInScale,
   preventScroll = false,
   className,
   buttonProps,
@@ -81,7 +83,7 @@ export function Dropdown({
     preventArrowDefault: { v: true, h: true },
   });
 
-  const baseExtensions = [Motion(TRANSITION.fadeInScale), Prevent({ autofocus: inputType !== "keyboard", scroll: preventScroll })];
+  const baseExtensions = [Motion(motion), Prevent({ autofocus: inputType !== "keyboard", scroll: preventScroll })];
   const extensions = position
     ? [Position(position.x, position.y, position.transformOrigin), ...baseExtensions]
     : [Flip(), Offset(offset), ...baseExtensions];
@@ -161,25 +163,6 @@ export function DropdownGroupTitle({ title, divider = false, className }: Dropdo
   );
 }
 
-// const OptionVariants = cva(
-//   "z-10 flex w-full cursor-default items-center fill-tintedGray-400 text-left text-gray-900 focus:shadow-select focus-visible:shadow-select dark:fill-gray-400 dark:text-gray-100",
-//   {
-//     variants: {
-//       variant: {
-//         default: "focus:bg-black/5 focus:fill-tintedGray-700 dark:focus:bg-white/10 dark:focus:fill-gray-100",
-//         primary: "focus:bg-kolumblue-500 focus:fill-kolumblue-100 focus:text-kolumblue-100",
-//         danger: "fill-red-500 text-red-500 focus:bg-red-500 focus:fill-red-100 focus:text-red-100",
-//         unstyled: "",
-//       },
-//       size: {
-//         sm: "gap-2 rounded px-2 py-1 text-xs",
-//         default: "gap-3 rounded-[5px] px-3 py-1.5 text-sm",
-//         unstyled: "",
-//       },
-//     },
-//     defaultVariants: { variant: "default", size: "default" },
-//   },
-// );
 const OptionWrapperVariants = cva(
   "relative z-10 bg-transparent before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:scale-50 before:opacity-0 before:shadow-select before:duration-300 before:ease-kolumb-flow focus-within:before:scale-100 focus-within:before:scale-x-100 focus-within:before:scale-y-100 focus-within:before:opacity-100",
   {

@@ -45,4 +45,4 @@ export type Prevent = {
   scroll?: boolean;
 };
 
-export type BackdropType = "opaque" | "opaque-white" | "blur" | "blur-white" | "none";
+export type BackdropType = "opaque" | "opaque-white" | "blur" | "blur-white";

@@ -193,15 +193,16 @@ export default function YourTrips() {
         <Modal
           isOpen={isModalOpen}
           setOpen={setModalOpen}
-          backdrop={{ type: "none" }}
-          className="max-w-md shadow-border3XL"
+          size="sm"
+          className="shadow-border3XL"
           buttonProps={{
             variant: "unstyled",
-            className: "h-6 w-6 fill-tintedGray-400 text-tintedGray-400",
+            size: "unstyled",
+            className: "relative h-6 w-6",
             children: (
               <>
-                <Icon.plus className="absolute right-0 h-6 w-6 flex-shrink-0 flex-grow p-1.5 duration-200 ease-kolumb-flow group-hover:right-14" />
-                <span className="absolute right-0 h-6 origin-right scale-x-0 select-none whitespace-nowrap pt-0.5 font-medium opacity-0 duration-200 ease-kolumb-flow group-hover:scale-x-100 group-hover:opacity-100">
+                <Icon.plus className="absolute right-0 top-0 h-6 w-6 fill-tintedGray-400 p-1.5 duration-200 ease-kolumb-flow group-hover:right-14" />
+                <span className="absolute right-0 top-0 h-6 origin-right scale-x-0 select-none whitespace-nowrap pt-0.5 text-sm font-medium text-tintedGray-400 opacity-0 duration-200 ease-kolumb-flow group-hover:scale-x-100 group-hover:opacity-100">
                   New Trip
                 </span>
               </>

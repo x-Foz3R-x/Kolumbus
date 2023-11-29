@@ -6,9 +6,9 @@ import Image from "next/image";
 
 import { useClerk, useUser } from "@clerk/nextjs";
 import Icon from "./icons";
-import { Dropdown, DropdownList, DropdownOption } from "./ui/dropdown";
-import { DropdownButton, DropdownOld, DropdownProfile, DropdownSeparator } from "./ui/dropdown-old";
+import { Dropdown, DropdownLink, DropdownList, DropdownOption } from "./ui/dropdown";
 import Divider from "./ui/divider";
+import { TRANSITION } from "@/lib/framer-motion";
 
 export default function ProfileButton() {
   const { user } = useUser();
@@ -26,12 +26,7 @@ export default function ProfileButton() {
     { index: 0, skip: true },
     { index: 1, skip: true },
     { index: 2, skip: true },
-    {
-      index: 3,
-      onSelect: () => {
-        router.push("https://accounts.kolumbus.app/user");
-      },
-    },
+    { index: 3 },
     { index: 4, onSelect: handleSignOut },
   ]);
 
@@ -42,7 +37,8 @@ export default function ProfileButton() {
       list={list.current}
       placement="bottom-end"
       strategy="fixed"
-      position={{ x: "calc(100% - 244px)", y: "48px" }}
+      position={{ x: "calc(100% - 244px)", y: "48px", transformOrigin: "top" }}
+      motion={TRANSITION.fadeInOut}
       className="w-56 rounded-xl p-1.5"
       buttonProps={{
         variant: "unstyled",
@@ -74,24 +70,24 @@ export default function ProfileButton() {
       <Divider className="my-2" />
 
       <DropdownOption index={0} className="gap-5">
-        <Icon.x className="w-4" />
+        <Icon.userSwitch className="w-4" />
         Switch Account
       </DropdownOption>
       <DropdownOption index={1} className="gap-5">
-        <Icon.x className="w-4" />
+        <Icon.appearance className="w-4" />
         Appearance: Light
       </DropdownOption>
       <DropdownOption index={2} className="gap-5">
-        <Icon.x className="w-4" />
+        <Icon.globe className="w-4" />
         Language: English
       </DropdownOption>
 
       <Divider className="my-2" />
 
-      <DropdownOption index={3} className="gap-5">
-        <Icon.x className="w-4" />
+      <DropdownLink index={3} href="https://accounts.kolumbus.app/user" className="gap-5">
+        <Icon.userSettings className="w-4" />
         Account settings
-      </DropdownOption>
+      </DropdownLink>
       <DropdownOption index={4} className="gap-5" wrapperClassName="before:rounded-b-lg">
         <Icon.signOut className="w-4" />
         Sign out

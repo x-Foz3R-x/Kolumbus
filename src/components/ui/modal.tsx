@@ -11,20 +11,17 @@ import { Key } from "@/types";
 
 import Button, { Props } from "./button";
 
-const ModalVariants = cva("mx-3 min-w-min overflow-hidden", {
+const ModalVariants = cva("mx-3 overflow-hidden rounded-xl bg-white shadow-borderXL", {
   variants: {
-    variant: {
-      default: "bg-white shadow-borderXL backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter",
-      unstyled: "",
-    },
     size: {
-      default: "max-w-lg rounded-xl",
-      sm: "max-w-md rounded-md",
-      lg: "max-w-xl rounded-2xl",
+      default: "max-w-lg",
+      sm: "max-w-md",
+      lg: "max-w-xl",
+      fit: "min-w-min",
       unstyled: "",
     },
   },
-  defaultVariants: { variant: "default", size: "default" },
+  defaultVariants: { size: "default" },
 });
 type ModalProps = VariantProps<typeof ModalVariants> & {
   isOpen: boolean;
@@ -35,7 +32,7 @@ type ModalProps = VariantProps<typeof ModalVariants> & {
   buttonProps?: Props;
   children: React.ReactNode;
 };
-export function Modal({ isOpen, setOpen, backdrop, variant, size, className, removeButton, buttonProps, children }: ModalProps) {
+export function Modal({ isOpen, setOpen, backdrop, size, className, removeButton, buttonProps, children }: ModalProps) {
   const ButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +47,7 @@ export function Modal({ isOpen, setOpen, backdrop, variant, size, className, rem
   useScopeTabNavigation(modalRef, isOpen);
 
   return (
-    <div className="relative">
+    <>
       {!removeButton && (
         <Button
           ref={ButtonRef}
@@ -72,16 +69,16 @@ export function Modal({ isOpen, setOpen, backdrop, variant, size, className, rem
         extensions={[
           Position("50%", "50%", "top left"),
           Motion(TRANSITION.scaleInOut),
-          Prevent({ closeTriggers: backdrop?.type !== "none", hide: true, scroll: true }),
-          backdrop ? Backdrop(backdrop?.type, backdrop?.className) : Backdrop("none"),
+          Prevent({ closeTriggers: !!backdrop, hide: true, scroll: true }),
+          ...(backdrop ? [Backdrop(backdrop.type, backdrop.className)] : []),
         ]}
         className="-translate-x-1/2 -translate-y-1/2"
       >
-        <div id={contentId} role="dialog" aria-modal className={cn(ModalVariants({ variant, size, className }))}>
+        <div id={contentId} role="dialog" aria-modal className={cn(ModalVariants({ size, className }))}>
           {children}
         </div>
       </Popover>
-    </div>
+    </>
   );
 }
 
