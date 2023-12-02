@@ -13,9 +13,9 @@ import { cn } from "@/lib/utils";
 
 import Portal from "@/components/portal";
 
-type PopoverContentProps = {
-  popoverRef?: React.RefObject<HTMLDivElement>;
-  triggerRef?: React.RefObject<HTMLElement>;
+type Props = {
+  popoverRef: React.RefObject<HTMLDivElement>;
+  triggerRef: React.RefObject<HTMLElement>;
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   placement?: Placement;
@@ -23,11 +23,11 @@ type PopoverContentProps = {
   container?: Container;
   extensions?: Extensions;
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 export function Popover({
-  popoverRef: popoverRefProp,
-  triggerRef: triggerRefProp,
+  popoverRef,
+  triggerRef,
   isOpen,
   setOpen,
   placement: initialPlacement = "bottom",
@@ -36,11 +36,7 @@ export function Popover({
   extensions = [],
   className,
   children,
-}: PopoverContentProps) {
-  const popoverRef = useRef(popoverRefProp?.current ?? null);
-  const triggerRef = useRef(triggerRefProp?.current ?? null);
-  const useTransition = useRef("");
-
+}: Props) {
   const mountedExtensions: MountedExtensions = extensions.reduce((acc, extension) => {
     return { ...acc, [extension.name]: extension };
   }, {});
@@ -53,8 +49,9 @@ export function Popover({
 
   const { placement, props } = usePopover(triggerRef, popoverRef, isOpen, initialPlacement, container, mountedExtensions);
 
+  const transition = useRef("");
   const variants = useMemo(() => {
-    if (!mountedExtensions.motion?.transition) return TRANSITION.fadeInOut[parsePlacement(placement)[0]] as Variants;
+    if (!mountedExtensions.motion?.transition) return TRANSITION.fadeToPosition[parsePlacement(placement)[0]] as Variants;
     if (typeof mountedExtensions.motion.transition.top === "undefined") return mountedExtensions.motion.transition as Variants;
     return mountedExtensions.motion.transition[parsePlacement(placement)[0]] as Variants;
   }, [placement, mountedExtensions.motion]);
@@ -66,14 +63,14 @@ export function Popover({
         <span
           role="presentation"
           aria-hidden={true}
-          className={cn("absolute z-10 rotate-45", mountedExtensions.arrow.className?.arrow, useTransition.current)}
+          className={cn("absolute z-10 rotate-45", mountedExtensions.arrow.className?.arrow, transition.current)}
           {...props.arrow}
         ></span>
         {mountedExtensions.arrow.className?.backdrop ? (
           <span
             role="presentation"
             aria-hidden={true}
-            className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className.backdrop, useTransition.current)}
+            className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className.backdrop, transition.current)}
             {...props.arrow}
           ></span>
         ) : null}
@@ -105,21 +102,10 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, mountedExtensions.prevent, handleClose]);
 
-  // Update triggerRef when triggerRefProp changes
-  useEffect(() => {
-    triggerRef.current = triggerRefProp?.current ?? null;
-  }, [triggerRefProp]);
-
-  // Update popoverRef when popoverRefProp changes
-  useEffect(() => {
-    popoverRef.current = popoverRefProp?.current ?? null;
-  }, [popoverRefProp]);
-
   // Apply transition when popover is opened and position is calculated for the first time.
   useEffect(() => {
-    if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0)
-      useTransition.current = "duration-[250ms] ease-kolumb-flow";
-    else useTransition.current = "";
+    if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0) transition.current = "duration-[250ms] ease-kolumb-flow";
+    else transition.current = "";
   }, [isOpen, props.popover.style]);
 
   // Focus first focusable element when popover is opened.
@@ -161,9 +147,9 @@ export function Popover({
             variants={variants}
             className={cn(
               strategy,
-              "z-[100] min-h-fit min-w-fit appearance-none bg-transparent",
+              "left-0 top-0 z-[100] min-h-fit min-w-fit appearance-none bg-transparent",
               mountedExtensions.prevent?.pointer && "pointer-events-none",
-              useTransition.current,
+              transition.current,
             )}
             data-placement={placement}
             {...props.popover}

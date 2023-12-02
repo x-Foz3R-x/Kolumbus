@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import cuid2 from "@paralleldrive/cuid2";
 
 import api from "@/app/_trpc/client";
 import { useUser } from "@clerk/nextjs";
 import { useDndData } from "../dnd-itinerary";
 
+import useAppdata from "@/context/appdata";
+import { TRANSITION } from "@/lib/framer-motion";
 import { eventTemplate } from "@/data/template-data";
 import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@/types";
-import useAppdata from "@/context/appdata";
 
 import LocationSearchBox from "../location-search-box";
 import { Motion, Popover, Position } from "../ui/popover";
-import { TRANSITION } from "@/lib/framer-motion";
 
 export default function EventComposer() {
   const { user } = useUser();
@@ -152,6 +152,8 @@ export default function EventComposer() {
 
   return (
     <Popover
+      popoverRef={useRef(null)}
+      triggerRef={useRef(null)}
       isOpen={isEventComposerOpen}
       setOpen={setEventComposerOpen}
       container={{ selector: "main > div ", margin: [56, 0, 0, 224], padding: [56, 12, 0, 12] }}

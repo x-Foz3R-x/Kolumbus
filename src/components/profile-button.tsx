@@ -10,7 +10,7 @@ import { Dropdown, DropdownLink, DropdownList, DropdownOption } from "./ui/dropd
 import Divider from "./ui/divider";
 import { TRANSITION } from "@/lib/framer-motion";
 
-export default function ProfileButton() {
+export default function ProfileButton({ dark = false }: { dark?: boolean }) {
   const { user } = useUser();
   const { signOut } = useClerk();
 
@@ -30,16 +30,18 @@ export default function ProfileButton() {
     { index: 4, onSelect: handleSignOut },
   ]);
 
-  return true ? (
+  return user ? (
     <Dropdown
       isOpen={isOpen}
       setOpen={setOpen}
       list={list.current}
       placement="bottom-end"
       strategy="fixed"
-      position={{ x: "calc(100% - 244px)", y: "48px", transformOrigin: "top" }}
-      motion={TRANSITION.fadeInOut}
-      className="w-56 rounded-xl p-1.5"
+      offset={4}
+      motion={TRANSITION.fadeToPosition}
+      preventFlip
+      dark={dark}
+      className="w-56 translate-x-2 rounded-xl p-1.5"
       buttonProps={{
         variant: "unstyled",
         size: "unstyled",

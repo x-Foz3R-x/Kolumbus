@@ -4,7 +4,7 @@ import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  triggerRef?: React.RefObject<HTMLElement>;
+  triggerRef: React.RefObject<HTMLElement>;
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   placement?: Placement;
@@ -27,6 +27,7 @@ export default function Tooltip({
   className,
   children,
 }: Props) {
+  const popoverRef = useRef(null);
   const arrowStyles = {
     arrow: cn("rounded-sm bg-gray-800", arrow.className?.arrow),
     backdrop: cn("rounded-sm shadow-borderXLDark", arrow.className?.backdrop),
@@ -35,6 +36,7 @@ export default function Tooltip({
   return (
     isOpen && (
       <Popover
+        popoverRef={popoverRef}
         triggerRef={triggerRef}
         isOpen={isOpen}
         setOpen={setOpen}

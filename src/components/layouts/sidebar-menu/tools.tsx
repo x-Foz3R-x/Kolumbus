@@ -7,7 +7,7 @@ import Icon from "@/components/icons";
 import { CompareURLs, cn } from "@/lib/utils";
 
 export default function Tools({ tripId }: { tripId: string }) {
-  const Tile = forwardRef<HTMLAnchorElement, { href: string; className?: string; children: React.ReactNode }>(
+  const Tile = forwardRef<HTMLAnchorElement, { href: string; className?: string; children?: React.ReactNode }>(
     ({ href, className, children }, ref) => {
       return (
         <Link

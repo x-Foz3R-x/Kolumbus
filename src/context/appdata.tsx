@@ -34,7 +34,7 @@ export default function useAppdata() {
 
 type AppdataProviderProps = {
   trips: Trip[];
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 /**
  * Provider component for appdata context.

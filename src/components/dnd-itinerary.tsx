@@ -374,7 +374,7 @@ const EventComponent = memo(
       if (!event.photo) return "/images/event-placeholder.png";
       if (event.photo.startsWith("http")) return event.photo;
 
-      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=312&maxheight=160&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
+      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=624&maxheight=320&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
     };
 
     const openEventPanel = () => {

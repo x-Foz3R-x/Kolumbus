@@ -6,7 +6,7 @@ import Link from "next/link";
 import { TRANSITION } from "@/lib/framer-motion";
 
 import { Dropdown, DropdownGroupTitle, DropdownList, DropdownOption } from "@/components/ui/dropdown";
-import { Popover, Position, Motion, usePopover, Prevent } from "@/components/ui/popover";
+import { Popover, Position, Motion, usePopover, Prevent, PopoverTrigger } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
@@ -62,20 +62,24 @@ export default function DropdownTests() {
           <span className="h-3 w-3 rounded-full bg-green-600" />
         </div>
 
-        <button
+        <PopoverTrigger
           ref={optionsTriggerRef}
+          id="optionsTrigger"
+          aria-controls="options"
+          isOpen={areOptionsOpen}
+          setOpen={setOptionsOpen}
+          setInputType={setOptionsInputType}
           aria-haspopup="menu"
-          onClick={(e) => {
-            setOptionsOpen(!areOptionsOpen);
-            setOptionsInputType(e.detail === 0 ? "keyboard" : "mouse");
-          }}
-          {...(areOptionsOpen && { "aria-expanded": true })}
+          variant="unstyled"
+          size="unstyled"
           className="flex items-center gap-1.5"
         >
           <h2 className="font-medium text-gray-800">Container</h2>
           <Icon.chevron className={`h-[5px] duration-300 ease-kolumb-flow ${areOptionsOpen && "rotate-180"}`} />
-        </button>
+        </PopoverTrigger>
+
         <Popover
+          popoverRef={useRef(null)}
           triggerRef={optionsTriggerRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
@@ -85,66 +89,70 @@ export default function DropdownTests() {
             Motion(TRANSITION.fadeInScaleY),
             Prevent({ autofocus: optionsInputType !== "keyboard" }),
           ]}
-          className="z-50 flex w-44 flex-col gap-3 rounded-b-xl border border-t-0 border-gray-100 bg-gray-50 px-4 py-2 text-xs"
         >
-          {/* Placement */}
-          <div className="flex flex-col items-center gap-1 text-sm">
-            Placement
-            <select
-              value={placement}
-              onChange={(e) => setPlacement(e.target.value as Placement)}
-              className="appearance-none rounded-md border px-2 text-center"
-            >
-              <option value="top">top</option>
-              <option value="top-start">top-start</option>
-              <option value="top-end">top-end</option>
+          <div
+            id="options"
+            className="z-50 flex w-44 flex-col gap-3 rounded-b-xl border border-t-0 border-gray-100 bg-gray-50 px-4 py-2 text-xs"
+          >
+            {/* Placement */}
+            <div className="flex flex-col items-center gap-1 text-sm">
+              Placement
+              <select
+                value={placement}
+                onChange={(e) => setPlacement(e.target.value as Placement)}
+                className="appearance-none rounded-md border px-2 text-center"
+              >
+                <option value="top">top</option>
+                <option value="top-start">top-start</option>
+                <option value="top-end">top-end</option>
 
-              <option value="bottom">bottom</option>
-              <option value="bottom-start">bottom-start</option>
-              <option value="bottom-end">bottom-end</option>
+                <option value="bottom">bottom</option>
+                <option value="bottom-start">bottom-start</option>
+                <option value="bottom-end">bottom-end</option>
 
-              <option value="right">right</option>
-              <option value="right-start">right-start</option>
-              <option value="right-end">right-end</option>
+                <option value="right">right</option>
+                <option value="right-start">right-start</option>
+                <option value="right-end">right-end</option>
 
-              <option value="left">left</option>
-              <option value="left-start">left-start</option>
-              <option value="left-end">left-end</option>
-            </select>
-          </div>
-
-          {/* Sliders */}
-          <div className="relative flex flex-col items-center justify-center">
-            <span className="pb-1">Padding</span>
-            <div className="absolute left-0 right-0 top-0 flex justify-between">
-              <span>0</span>
-              <span>500</span>
+                <option value="left">left</option>
+                <option value="left-start">left-start</option>
+                <option value="left-end">left-end</option>
+              </select>
             </div>
-            <BasicInput
-              type="range"
-              step={25}
-              min={0}
-              max={500}
-              value={padding}
-              onChange={(e) => setPadding(Number(e.target.value))}
-              className="w-full rounded p-0.5"
-            />
-          </div>
-          <div className="relative flex flex-col items-center justify-center text-xs">
-            <span className="pb-1">Offset</span>
-            <div className="absolute left-0 right-0 top-0 flex justify-between">
-              <span>0</span>
-              <span>30</span>
+
+            {/* Sliders */}
+            <div className="relative flex flex-col items-center justify-center">
+              <span className="pb-1">Padding</span>
+              <div className="absolute left-0 right-0 top-0 flex justify-between">
+                <span>0</span>
+                <span>500</span>
+              </div>
+              <BasicInput
+                type="range"
+                step={25}
+                min={0}
+                max={500}
+                value={padding}
+                onChange={(e) => setPadding(Number(e.target.value))}
+                className="w-full rounded p-0.5"
+              />
             </div>
-            <BasicInput
-              type="range"
-              step={3}
-              min={0}
-              max={30}
-              value={offset}
-              onChange={(e) => setOffset(Number(e.target.value))}
-              className="w-full rounded p-0.5"
-            />
+            <div className="relative flex flex-col items-center justify-center text-xs">
+              <span className="pb-1">Offset</span>
+              <div className="absolute left-0 right-0 top-0 flex justify-between">
+                <span>0</span>
+                <span>30</span>
+              </div>
+              <BasicInput
+                type="range"
+                step={3}
+                min={0}
+                max={30}
+                value={offset}
+                onChange={(e) => setOffset(Number(e.target.value))}
+                className="w-full rounded p-0.5"
+              />
+            </div>
           </div>
         </Popover>
 
@@ -165,6 +173,7 @@ export default function DropdownTests() {
             placement={placement}
             container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
             offset={offset}
+            strategy="fixed"
             preventScroll
             className="w-40"
             buttonProps={{
@@ -172,7 +181,7 @@ export default function DropdownTests() {
               children: <span>open</span>,
             }}
           >
-            <span className="mb-1 rounded-lg bg-yellow-200/10 text-center text-xs leading-relaxed text-yellow-400/70 shadow-soft">
+            <span className="absolute inset-x-2 -top-8 rounded-lg bg-orange-200 text-center text-xs leading-relaxed shadow-borderXL">
               Tip: use arrow keys
             </span>
             <DropdownOption index={0} variant="primary">

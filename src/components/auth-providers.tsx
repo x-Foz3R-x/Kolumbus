@@ -1,24 +1,43 @@
-// import UserSVG from "@/assets/svg/User.svg";
-// import GoogleSVG from "@/assets/svg/brands/Google.svg";
+import { useSignIn } from "@clerk/nextjs";
 
 import Icon from "./icons";
+import Button from "./ui/button";
 
 export default function AuthProviders() {
-  const className =
-    "flex h-9 w-80 select-none items-center justify-center gap-2 rounded-md border border-gray-200 px-4 shadow-softSm hover:bg-gray-200";
+  const { signIn, isLoaded } = useSignIn();
+
+  const signInWithGoogle = () => {
+    if (!isLoaded) return;
+    signIn.authenticateWithRedirect({
+      strategy: "oauth_google",
+      redirectUrl: "/oauth_callback",
+      redirectUrlComplete: "/library",
+    });
+  };
 
   return (
-    <section className="relative flex flex-col items-center justify-center gap-2 text-[0.8125rem]">
+    <section className="relative flex flex-col items-center gap-2 text-sm">
       <p className="absolute -top-9 z-10 w-14 cursor-default select-none bg-white text-center">or</p>
-      <button className={className}>
+
+      <Button
+        variant="unstyled"
+        className="flex h-9 w-80 items-center justify-center gap-2 border border-gray-200 shadow-softSm duration-200 ease-kolumb-flow hover:bg-gray-100"
+        disabled
+      >
         <Icon.user className="h-3 w-3" />
         Try kolumbus as a Guest
-      </button>
+      </Button>
 
-      <button className={className}>
+      <Button
+        onClick={signInWithGoogle}
+        variant="unstyled"
+        className="flex h-9 w-80 items-center justify-center gap-2 border border-gray-200 shadow-softSm duration-200 ease-kolumb-flow hover:bg-gray-100"
+        // disabled={!isLoaded}
+        disabled
+      >
         <Icon.google className="h-3 w-3" />
         Continue with Google
-      </button>
+      </Button>
     </section>
   );
 }

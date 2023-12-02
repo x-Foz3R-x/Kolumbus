@@ -36,11 +36,11 @@ export default function EventPanel() {
   const topPosition = itineraryPosition.y_day * 132 + 20;
   const leftPosition = 148 + itineraryPosition.x_event * 168;
 
-  const getImageUrl = (): string => {
+  const getImage = (): string => {
     if (!activeEvent?.photo) return "/images/event-placeholder.png";
     if (activeEvent.photo.startsWith("http")) return activeEvent.photo;
 
-    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=624&maxheight=320&photo_reference=${activeEvent.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
+    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1600&maxheight=1600&photo_reference=${activeEvent.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
   };
 
   const handleUpdate = (data: UpdateEvent) => {
@@ -143,7 +143,7 @@ export default function EventPanel() {
         >
           <div className="flex w-80 flex-col overflow-hidden rounded-2xl border-4 border-white bg-white shadow-border3XL">
             <div className="w-80 bg-transparent">
-              <Image src={getImageUrl()} alt="Event Image" width={312} height={160} priority className="h-40 object-cover object-center" />
+              <Image src={getImage()} alt="Event Image" width={312} height={160} priority className="h-40 object-cover object-center" />
             </div>
 
             <StatelessInput

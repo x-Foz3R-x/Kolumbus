@@ -1,15 +1,16 @@
 import { SetStateAction, createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
-import Link from "next/link";
-import { Variants, motion } from "framer-motion";
 import { VariantProps, cva } from "class-variance-authority";
+import { Variants, motion } from "framer-motion";
+import Link from "next/link";
 
-import { Popover, Placement, Flip, Offset, Prevent, Motion, Container, Position, Strategy } from "./popover";
+import { Popover, Placement, Flip, Offset, Prevent, Motion, Container, Strategy } from "./popover";
 import useListNavigation from "@/hooks/use-list-navigation";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
 import Divider from "./divider";
-import Button, { Props } from "./button";
+import Button, { Props as ButtonProps } from "./button";
+import { PopoverTrigger } from "./popover/popover-trigger";
 
 //#region Context
 const DropdownContext = createContext<{
@@ -29,19 +30,20 @@ export function useDropdownContext() {
 type DropdownOption = { index: number; onSelect?: () => void; skip?: boolean };
 export type DropdownList = DropdownOption[];
 
-type DropdownProps = {
+type Props = {
   isOpen: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
   list: DropdownList;
   placement?: Placement;
   strategy?: Strategy;
   container?: Container;
-  position?: { x: string | number; y: string | number; transformOrigin?: string };
   offset?: number;
   motion?: Variants | { top: Variants; right: Variants; bottom: Variants; left: Variants };
+  preventFlip?: boolean;
   preventScroll?: boolean;
+  dark?: boolean;
   className?: string;
-  buttonProps?: Props;
+  buttonProps?: ButtonProps;
   children?: React.ReactNode;
 };
 export function Dropdown({
@@ -51,16 +53,16 @@ export function Dropdown({
   placement = "right-start",
   strategy = "absolute",
   container,
-  position,
   offset = 6,
   motion = TRANSITION.fadeInScale,
+  preventFlip = false,
   preventScroll = false,
+  dark = false,
   className,
   buttonProps,
   children,
-}: DropdownProps) {
+}: Props) {
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const listItemsRef = useRef<HTMLButtonElement[]>([]);
 
   const buttonId = useId();
@@ -77,21 +79,11 @@ export function Dropdown({
     listLength: list.length,
     initialIndex: inputType === "keyboard" ? 0 : -1,
     skipIndexes,
-    placement: dropdownRef.current?.getAttribute("data-placement") as Placement,
     enabled: isOpen,
     preventLoop: true,
     preventArrowDefault: { v: true, h: true },
   });
 
-  const baseExtensions = [Motion(motion), Prevent({ autofocus: inputType !== "keyboard", scroll: preventScroll })];
-  const extensions = position
-    ? [Position(position.x, position.y, position.transformOrigin), ...baseExtensions]
-    : [Flip(), Offset(offset), ...baseExtensions];
-
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    setOpen(!isOpen);
-    setInputType(e.detail === 0 ? "keyboard" : "mouse");
-  };
   const handleClose = useCallback(() => {
     setOpen(false);
     buttonRef.current?.focus({ preventScroll: true });
@@ -112,10 +104,12 @@ export function Dropdown({
 
   return (
     <>
-      <Button
+      <PopoverTrigger
         ref={buttonRef}
         id={buttonId}
-        onClick={handleClick}
+        isOpen={isOpen}
+        setOpen={setOpen}
+        setInputType={setInputType}
         onFocus={() => setFocus("trigger")}
         aria-haspopup="menu"
         aria-controls={listId}
@@ -124,14 +118,20 @@ export function Dropdown({
       />
 
       <Popover
-        popoverRef={dropdownRef}
+        popoverRef={useRef(null)}
         triggerRef={buttonRef}
         isOpen={isOpen}
         setOpen={setOpen}
         placement={placement}
         strategy={strategy}
         container={container}
-        extensions={extensions}
+        extensions={[
+          ...(!preventFlip ? [Flip()] : []),
+          Offset(offset),
+          Motion(motion),
+          Prevent({ autofocus: inputType !== "keyboard", scroll: preventScroll }),
+        ]}
+        className={dark ? "dark" : ""}
       >
         <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
           <ul
@@ -139,7 +139,10 @@ export function Dropdown({
             role="menu"
             aria-labelledby={buttonRef.current?.id}
             onFocus={() => setFocus("popover")}
-            className={cn("flex flex-col rounded-lg bg-white p-1 shadow-border2XL dark:bg-gray-600 dark:shadow-border2XLDark", className)}
+            className={cn(
+              "flex flex-col rounded-lg bg-white p-1 shadow-border2XL dark:bg-gray-900 dark:text-gray-100 dark:shadow-border2XLDark",
+              className,
+            )}
           >
             {children}
           </ul>
@@ -158,7 +161,7 @@ export function DropdownGroupTitle({ title, divider = false, className }: Dropdo
   return (
     <div className="pb-0.5">
       {divider && <Divider className="mt-1 bg-white/25" />}
-      <div className={cn("px-1 pt-1 text-xs text-gray-300", className)}>{title}</div>
+      <div className={cn("cursor-default select-none px-1 pt-1 text-xs font-medium text-gray-500", className)}>{title}</div>
     </div>
   );
 }
@@ -182,7 +185,7 @@ const OptionWrapperVariants = cva(
     defaultVariants: { variant: "default", size: "default" },
   },
 );
-const OptionVariants = cva("fill-tintedGray-400 text-left text-gray-900 dark:fill-gray-400 dark:text-gray-100", {
+const OptionVariants = cva("fill-tintedGray-400 text-left text-gray-900 dark:fill-gray-600 dark:text-gray-100", {
   variants: {
     variant: {
       default: "focus:fill-tintedGray-700 dark:focus:fill-gray-100",
@@ -230,7 +233,11 @@ export function DropdownOption({ index, variant, size, className, wrapperClassNa
       initial="initial"
       animate="animate"
       exit="exit"
-      className={cn(OptionWrapperVariants({ variant, size }), list[index].skip && "pointer-events-none opacity-40", wrapperClassName)}
+      className={cn(
+        OptionWrapperVariants({ variant, size }),
+        list[index].skip && "pointer-events-none opacity-40 dark:opacity-[0.35]",
+        wrapperClassName,
+      )}
     >
       <Button
         ref={(node) => (listItemsRef.current[index] = node)}

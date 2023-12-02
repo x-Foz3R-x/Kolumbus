@@ -25,6 +25,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
 
   // todo: Add <Toast> component to display errors
   const handleInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
     activeItemRef.current = e.target.value;
 
     if (e.target.value.length < 3) {
@@ -98,7 +99,6 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
       <Combobox.Input
         placeholder={placeholder}
         value={value}
-        setValue={setValue}
         onInput={handleInput}
         onFocus={() => !(typeof value === "string" && value.length < 3) && setOpen(true)}
         className={`bg-gray-50 text-sm shadow-sm duration-300 ease-kolumb-flow ${!isOpen && "rounded-b-lg"}`}

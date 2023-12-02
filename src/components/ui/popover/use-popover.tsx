@@ -145,7 +145,7 @@ function computePosition(
   offset: number,
   arrowSize: number,
 ) {
-  const documentRect = document.documentElement.getBoundingClientRect();
+  const documentRect = document.body.getBoundingClientRect();
   const boundary: Inset = {
     top: margin.top + padding.top,
     bottom: documentRect.height - (margin.bottom + padding.bottom),
@@ -267,6 +267,7 @@ function Offset(side: Side, offset: number, coords: Coords) {
   return { ...coords, ...offsetMap[side] };
 }
 
+// TODO: instead of finding and returning the best placement, return x, y translate values to modify existing placement rather than recalculating new placement positions.
 /**
  * Determines the best placement for a popover based on the trigger and popover rectangles,
  * the boundary of the container, and an set placement.
@@ -446,8 +447,8 @@ function getElementRect(element: Element, containerRect?: Rect): Rect {
   const { scrollTop, scrollLeft } = element;
 
   if (!containerRect) {
-    const { top, left, width, height } = document.documentElement.getBoundingClientRect();
-    const { scrollTop, scrollLeft } = document.documentElement;
+    const { top, left, width, height } = document.body.getBoundingClientRect();
+    const { scrollTop, scrollLeft } = document.body;
 
     containerRect = {
       y: top - scrollTop,

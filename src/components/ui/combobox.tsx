@@ -33,7 +33,7 @@ function useComboboxContext() {
 type ComboboxOption<T> = { index: number; data: string | T };
 export type ComboboxList<T> = ComboboxOption<T>[];
 
-type ComboboxProps<T extends string | number | readonly string[] | undefined> = {
+type ComboboxProps = {
   root: {
     isOpen: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,17 +41,14 @@ type ComboboxProps<T extends string | number | readonly string[] | undefined> = 
     onClick: (index: number) => void;
     onChange?: (index: number) => void;
     className?: string;
-    children: React.ReactNode;
-  };
-  input: Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & {
-    setValue: React.Dispatch<React.SetStateAction<T>>;
     children?: React.ReactNode;
   };
-  list: { listHeight?: number; className?: string; children: React.ReactNode };
-  option: HTMLMotionProps<"li"> & { index: number; className?: string; children: React.ReactNode };
+  input: Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">;
+  list: { listHeight?: number; className?: string; children?: React.ReactNode };
+  option: HTMLMotionProps<"li"> & { index: number; className?: string; children?: React.ReactNode };
 };
 const Combobox = {
-  Root({ isOpen, setOpen, list, onClick, onChange, className, children }: ComboboxProps<undefined>["root"]) {
+  Root({ isOpen, setOpen, list, onClick, onChange, className, children }: ComboboxProps["root"]) {
     const ref = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const listId = useId();
@@ -94,13 +91,7 @@ const Combobox = {
     );
   },
 
-  Input: <T extends string | number | readonly string[] | undefined>({
-    value,
-    setValue,
-    className,
-    children,
-    ...props
-  }: ComboboxProps<T>["input"]) => {
+  Input({ value, className, children, ...props }: ComboboxProps["input"]) {
     const { inputRef, isOpen, listId } = useComboboxContext();
     const childrenRef = useRef<HTMLSpanElement>(null);
 
@@ -112,7 +103,6 @@ const Combobox = {
           role="combobox"
           name="combobox-input"
           value={value}
-          setValue={setValue}
           aria-controls={listId}
           aria-expanded={isOpen}
           aria-autocomplete="list"
@@ -136,7 +126,7 @@ const Combobox = {
   /**
    * listHeight = listLength * comboboxOptionHeight + padding
    */
-  List({ listHeight, className, children }: ComboboxProps<undefined>["list"]) {
+  List({ listHeight, className, children }: ComboboxProps["list"]) {
     const { isOpen, listId } = useComboboxContext();
 
     return (
@@ -161,7 +151,7 @@ const Combobox = {
     );
   },
 
-  Option: forwardRef<HTMLLIElement, ComboboxProps<undefined>["option"]>(function Option({ index, className, children, ...props }, ref) {
+  Option: forwardRef<HTMLLIElement, ComboboxProps["option"]>(function Option({ index, className, children, ...props }, ref) {
     const { activeIndex, setActiveIndex, handleClick } = useComboboxContext();
 
     return (
