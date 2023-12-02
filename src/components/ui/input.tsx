@@ -25,10 +25,9 @@ const InputVariants = cva(
   },
 );
 
-type InputProps<T extends string | number | readonly string[] | undefined> = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
+type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
   VariantProps<typeof InputVariants> & {
     label?: string;
-    setValue: React.Dispatch<React.SetStateAction<T>>;
     onChange?: (e: React.FocusEvent<HTMLInputElement>) => void;
     fullWidth?: boolean;
     fullHeight?: boolean;
@@ -40,102 +39,87 @@ type InputProps<T extends string | number | readonly string[] | undefined> = Omi
  *
  * @example
  * ```tsx
- * function App() {
- *   const [value, setValue] = useState<string | number | readonly string[] | undefined>();
- *
- *   return (
- *     <div>
- *       <Input
- *         ref={ref}
- *         label=""
- *         value=={value}
- *         setValue={setValue}
- *         variant="default"
- *         fullWidth
- *         fullHeight
- *         dynamicWidth
- *         preventEmpty
- *       />
- *     </div>
- *   );
- * }
+ * <Input
+ *   ref={ref}
+ *   label=""
+ *   value=""
+ *   onChange={(e) => console.log(e.target.value)}
+ *   variant="default"
+ *   size="default"
+ *   className=""
+ *   stateful
+ *   fullWidth
+ *   fullHeight
+ *   dynamicWidth
+ *   preventEmpty
+ * />
  * ```
  */
-function Input<T extends string | number | readonly string[] | undefined>(
-  {
-    label,
-    value,
-    setValue,
-    onChange,
-    variant,
-    size,
-    className,
-    fullWidth,
-    fullHeight,
-    dynamicWidth,
-    preventEmpty,
-    ...props
-  }: InputProps<T>,
-  ref: React.ForwardedRef<HTMLInputElement>,
-) {
-  const previousInputValue = useRef(value);
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    { label, value, defaultValue, onChange, variant, size, className, fullWidth, fullHeight, dynamicWidth, preventEmpty, ...props },
+    ref,
+  ) => {
+    const previousValue = useRef(value || defaultValue);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value as T);
-  const handleUpdate = async (e: React.FocusEvent<HTMLInputElement>) => {
-    if (e.target.value === previousInputValue.current) return;
-    if (preventEmpty && e.target.value.length < 1) {
-      setValue(previousInputValue.current as T);
-      return;
-    }
-
-    previousInputValue.current = e.target.value;
-    if (onChange) onChange(e);
-  };
-
-  const getLabelStyle = () => {
-    const baseStyle =
-      "pointer-events-none select-none absolute inset-0 flex origin-top-left items-center overflow-hidden text-sm text-gray-700 duration-100 ease-in ";
-
-    const variantStyles: { [key: string]: string } = {
-      insetLabel: `ml-4 peer-focus:-translate-y-2.5 peer-focus:scale-90 ${
-        value && value.toString().length > 0 && "-translate-y-2.5 scale-90"
-      }`,
-      insetLabelSm: `ml-3 peer-focus:-translate-y-1.5 peer-focus:scale-[0.84] ${
-        value && value.toString().length > 0 && "-translate-y-1.5 scale-[0.84]"
-      }`,
+    const handleChange = (e: React.FocusEvent<HTMLInputElement>) => {
+      if (e.target.value === previousValue.current || (preventEmpty && e.target.value.length < 1)) return;
+      if (onChange) onChange(e);
+      previousValue.current = e.target.value;
     };
 
-    return label ? baseStyle + (variant && variantStyles[variant]) : "";
-  };
+    const getLabelStyle = () => {
+      const baseStyle =
+        "pointer-events-none select-none absolute inset-0 flex origin-top-left items-center overflow-hidden text-sm text-gray-700 duration-100 ease-in ";
 
-  return (
-    <div
-      style={{ ...(fullWidth && { width: "100%" }), ...(fullHeight && { height: "100%" }) }}
-      className={cn("focus-within:z-30", (dynamicWidth || label) && "relative")}
-    >
-      {/* dynamic width of input */}
-      {dynamicWidth && (
-        <p className={cn(InputVariants({ variant, size, className }), "invisible w-fit whitespace-pre border-r")}>{value}</p>
-      )}
+      const variantStyles: { [key: string]: string } = {
+        insetLabel: `ml-4 peer-focus:-translate-y-2.5 peer-focus:scale-90 ${
+          value && value.toString().length > 0 && "-translate-y-2.5 scale-90"
+        }`,
+        insetLabelSm: `ml-3 peer-focus:-translate-y-1.5 peer-focus:scale-[0.84] ${
+          value && value.toString().length > 0 && "-translate-y-1.5 scale-[0.84]"
+        }`,
+      };
 
-      <input
-        ref={ref}
-        value={value}
-        onChange={handleChange}
-        onBlur={handleUpdate}
-        onKeyDown={(e) => (e.key === Key.Escape || e.key === Key.Enter) && e.currentTarget.blur()}
-        className={cn(InputVariants({ variant, size, className }), dynamicWidth && "absolute inset-0 h-full text-center")}
-        {...props}
-      />
+      return label ? baseStyle + (variant && variantStyles[variant]) : "";
+    };
 
-      {/* inset label */}
-      {label && <label className={getLabelStyle()}>{label}</label>}
-    </div>
-  );
-}
-export default forwardRef(Input) as <T extends string | number | readonly string[] | undefined>(
-  props: InputProps<T> & { ref?: React.ForwardedRef<HTMLInputElement> },
-) => ReturnType<typeof Input>;
+    return (
+      <div
+        style={{ ...(fullWidth && { width: "100%" }), ...(fullHeight && { height: "100%" }) }}
+        className={cn("focus-within:z-30", (dynamicWidth || label) && "relative")}
+      >
+        {/* dynamic width of input */}
+        {dynamicWidth && (
+          <p className={cn(InputVariants({ variant, size, className }), "invisible w-fit whitespace-pre border-r")}>
+            {value || defaultValue}
+          </p>
+        )}
+
+        <input
+          ref={ref}
+          value={value}
+          defaultValue={defaultValue}
+          onChange={(e) => {}}
+          onBlur={handleChange}
+          onKeyDown={(e) => e.key === Key.Enter && e.currentTarget.blur()}
+          className={cn(InputVariants({ variant, size, className }), dynamicWidth && "absolute inset-0 h-full text-center")}
+          {...props}
+        />
+
+        {/* inset label */}
+        {label && <label className={getLabelStyle()}>{label}</label>}
+      </div>
+    );
+  },
+);
+Input.displayName = "Input";
+
+export default Input;
+
+//
+// OLD IMPLEMENTATIONS
+//
 
 type StatelessInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
   VariantProps<typeof InputVariants> & {

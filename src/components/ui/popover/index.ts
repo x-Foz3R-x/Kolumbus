@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
-
-import type { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop, BackdropType } from "./types";
 import { Variants } from "framer-motion";
+import type { Arrow, Offset, Prevent, Flip, Position, Motion, Backdrop, BackdropType } from "./types";
 
 export { Popover } from "./popover";
-export type { Placement, Container } from "./types";
+export { parsePlacement } from "./use-popover";
+export { PopoverTrigger } from "./popover-trigger";
+export type { BackdropType, Container, Placement, Strategy } from "./types";
 
 /**
  * Custom Hook for handling popovers.

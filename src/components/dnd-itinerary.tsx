@@ -363,7 +363,7 @@ type EventComponentProps = {
 };
 const EventComponent = memo(
   forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
-    const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
+    const { dispatchUserTrips, selectedTrip } = useAppdata();
     const { activeTrip, setActiveEvent, isEventPanelOpen, setEventPanelOpen, setItineraryPosition } = useDndData();
     const deleteEvent = api.event.delete.useMutation();
 
@@ -374,7 +374,7 @@ const EventComponent = memo(
       if (!event.photo) return "/images/event-placeholder.png";
       if (event.photo.startsWith("http")) return event.photo;
 
-      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=312&maxheight=160&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
+      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=624&maxheight=320&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
     };
 
     const openEventPanel = () => {
@@ -403,7 +403,6 @@ const EventComponent = memo(
           events.splice(event.position, 1);
           events.map((_, index) => ({ position: index }));
 
-          setSaving(true);
           setEventPanelOpen(false);
           dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
           deleteEvent.mutate(
@@ -421,9 +420,6 @@ const EventComponent = memo(
               onError(error) {
                 console.error(error);
                 dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-              },
-              onSettled() {
-                setSaving(false);
               },
             },
           );
@@ -463,29 +459,27 @@ const EventComponent = memo(
               }}
             >
               <DropdownOption index={0}>
-                <Icon.eventPanel className="h-3.5 w-3.5 fill-gray-100" />
+                <Icon.eventPanel className="h-3.5 w-3.5" />
                 Event panel
               </DropdownOption>
               <DropdownOption index={1}>
-                <Icon.clipboardPin className="h-3.5 w-3.5 fill-gray-100" />
+                <Icon.clipboardPin className="h-3.5 w-3.5" />
                 Copy address
               </DropdownOption>
 
-              <Divider className="my-1 rounded bg-white/25" />
-
-              <DropdownLink index={2} href={event?.url} size="sm" className="flex items-center justify-center gap-1">
+              <DropdownLink index={2} href={event?.url} className="justify-center gap-1 text-xs">
                 Find in Google Maps
-                <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-100" />
+                <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-900 dark:fill-gray-100" />
               </DropdownLink>
 
-              <Divider className="my-1 rounded bg-white/25" />
+              <Divider className="my-1 bg-gray-100" />
 
               <DropdownOption index={3}>
-                <Icon.duplicate className="h-3.5 w-3.5 fill-gray-100" />
+                <Icon.duplicate className="h-3.5 w-3.5" />
                 Duplicate
               </DropdownOption>
               <DropdownOption index={4} variant="danger">
-                <Icon.trash className="h-3.5 w-3.5 fill-gray-100" />
+                <Icon.trash className="h-3.5 w-3.5" />
                 Delete
               </DropdownOption>
             </Dropdown>

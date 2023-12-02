@@ -44,11 +44,11 @@ export type Props = HTMLMotionProps<"button"> &
  * @property className - Additional CSS classes.
  */
 const Button = forwardRef<HTMLButtonElement, Props>(
-  ({ variant, size, whileTap, className, animatePress = false, children, ...props }, ref) => {
+  ({ variant, size, whileTap, className, animatePress = false, disabled, children, ...props }, ref) => {
     return (
       <motion.button
         ref={ref}
-        className={cn(ButtonVariants({ variant, size, className }))}
+        className={cn(ButtonVariants({ variant: disabled ? "disabled" : variant, size, className }))}
         {...(!animatePress ? { whileTap } : { whileTap: { scale: 0.94 } })}
         {...props}
       >

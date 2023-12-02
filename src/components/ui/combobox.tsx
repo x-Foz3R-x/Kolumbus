@@ -1,25 +1,27 @@
 "use client";
 
-import { createContext, forwardRef, useCallback, useContext, useEffect, useId, useRef } from "react";
+import { createContext, forwardRef, useContext, useEffect, useId, useRef } from "react";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 
 import useListNavigation from "@/hooks/use-list-navigation";
 import useCloseTriggers from "@/hooks/use-close-triggers";
+import useKeyPress from "@/hooks/use-key-press";
 import { EASING, TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
+import { Key } from "@/types";
+
 import Button from "./button";
 import Input from "./input";
 
 //#region ComboboxContext
 const ComboboxContext = createContext<{
+  inputRef: React.RefObject<HTMLInputElement>;
   isOpen: boolean;
   list: ComboboxList<unknown>;
   listId: string;
-  listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLInputElement | null)[]>;
   activeIndex: number;
   setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
-  onClick?: (index: number) => void;
-  handleClose: Function;
+  handleClick: () => void;
 } | null>(null);
 function useComboboxContext() {
   const context = useContext(ComboboxContext);
@@ -31,30 +33,27 @@ function useComboboxContext() {
 type ComboboxOption<T> = { index: number; data: string | T };
 export type ComboboxList<T> = ComboboxOption<T>[];
 
-type ComboboxProps<T extends string | number | readonly string[] | undefined> = {
+type ComboboxProps = {
   root: {
     isOpen: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     list: ComboboxList<unknown>;
-    onClick?: (index: number) => void;
+    onClick: (index: number) => void;
     onChange?: (index: number) => void;
     className?: string;
-    children: React.ReactNode;
-  };
-  input: Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> & {
-    setValue: React.Dispatch<React.SetStateAction<T>>;
     children?: React.ReactNode;
   };
-  list: { listHeight?: number; className?: string; children: React.ReactNode };
-  option: HTMLMotionProps<"li"> & { index: number; className?: string; children: React.ReactNode };
+  input: Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">;
+  list: { listHeight?: number; className?: string; children?: React.ReactNode };
+  option: HTMLMotionProps<"li"> & { index: number; className?: string; children?: React.ReactNode };
 };
 const Combobox = {
-  Root({ isOpen, setOpen, list, onClick, onChange, className, children }: ComboboxProps<undefined>["root"]) {
+  Root({ isOpen, setOpen, list, onClick, onChange, className, children }: ComboboxProps["root"]) {
     const ref = useRef<HTMLDivElement>(null);
-    const listItemsRef = useRef<(HTMLButtonElement | HTMLInputElement)[]>([]);
-
+    const inputRef = useRef<HTMLInputElement>(null);
     const listId = useId();
 
+    const [enterPressed] = useKeyPress(Key.Enter);
     const [activeIndex, setActiveIndex] = useListNavigation({
       onChange,
       listLength: list.length,
@@ -64,10 +63,18 @@ const Combobox = {
       preventArrowDefault: { v: true },
     });
 
-    const handleClose = useCallback(() => {
+    const handleClick = () => {
+      onClick(activeIndex);
+      inputRef.current?.focus({ preventScroll: true });
       setOpen(false);
-      ref.current?.focus({ preventScroll: true });
-    }, [ref, setOpen]);
+    };
+
+    useEffect(() => {
+      if (!enterPressed) return;
+      if (isOpen) handleClick();
+      if (!isOpen && inputRef.current === document.activeElement) setOpen(true);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [enterPressed]);
 
     useEffect(() => {
       setActiveIndex(0);
@@ -75,7 +82,8 @@ const Combobox = {
 
     useCloseTriggers([ref], () => setOpen(false));
 
-    const value = { isOpen, list, listId, listItemsRef, activeIndex, setActiveIndex, onClick, handleClose };
+    const value = { inputRef, isOpen, list, listId, activeIndex, setActiveIndex, handleClick };
+
     return (
       <div ref={ref} className={cn("relative", className)} data-open={isOpen}>
         <ComboboxContext.Provider value={value}>{children}</ComboboxContext.Provider>
@@ -83,25 +91,18 @@ const Combobox = {
     );
   },
 
-  Input: <T extends string | number | readonly string[] | undefined>({
-    value,
-    setValue,
-    className,
-    children,
-    ...props
-  }: ComboboxProps<T>["input"]) => {
-    const { isOpen, listId, listItemsRef } = useComboboxContext();
+  Input({ value, className, children, ...props }: ComboboxProps["input"]) {
+    const { inputRef, isOpen, listId } = useComboboxContext();
     const childrenRef = useRef<HTMLSpanElement>(null);
 
     return (
       <>
         <Input
-          ref={(node) => (listItemsRef.current[0] = node)}
+          ref={inputRef}
           type="text"
           role="combobox"
           name="combobox-input"
           value={value}
-          setValue={setValue}
           aria-controls={listId}
           aria-expanded={isOpen}
           aria-autocomplete="list"
@@ -125,7 +126,7 @@ const Combobox = {
   /**
    * listHeight = listLength * comboboxOptionHeight + padding
    */
-  List({ listHeight, className, children }: ComboboxProps<undefined>["list"]) {
+  List({ listHeight, className, children }: ComboboxProps["list"]) {
     const { isOpen, listId } = useComboboxContext();
 
     return (
@@ -150,15 +151,8 @@ const Combobox = {
     );
   },
 
-  Option: forwardRef<HTMLLIElement, ComboboxProps<undefined>["option"]>(function Option({ index, className, children, ...props }, ref) {
-    const { onClick, listItemsRef, activeIndex, setActiveIndex, handleClose } = useComboboxContext();
-
-    const handleClick = () => {
-      onClick && onClick(index);
-      console.log("clicked");
-
-      handleClose();
-    };
+  Option: forwardRef<HTMLLIElement, ComboboxProps["option"]>(function Option({ index, className, children, ...props }, ref) {
+    const { activeIndex, setActiveIndex, handleClick } = useComboboxContext();
 
     return (
       <motion.li
@@ -173,14 +167,13 @@ const Combobox = {
         {...props}
       >
         <Button
-          ref={(node) => (listItemsRef.current[index] = node)}
           onClick={handleClick}
           onMouseMove={() => setActiveIndex(index)}
           onMouseLeave={() => setActiveIndex(0)}
           variant="baseScale"
           size="unstyled"
           className={cn(
-            "z-10 w-full cursor-default p-2 text-left text-sm before:bg-gray-100 before:shadow-select before:dark:bg-gray-700",
+            "z-10 w-full cursor-default p-2 text-left text-sm before:bg-black/5 before:shadow-select before:dark:bg-white/10",
             className,
             activeIndex === index && "before:scale-100 before:scale-x-100 before:scale-y-100 before:opacity-100",
           )}

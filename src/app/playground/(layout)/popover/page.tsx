@@ -5,15 +5,15 @@ import Link from "next/link";
 
 import { TRANSITION } from "@/lib/framer-motion";
 
-import { Popover, Offset, Flip, Arrow, Position, Motion, usePopover, Prevent } from "@/components/ui/popover";
+import { Popover, Offset, Flip, Arrow, Position, Motion, usePopover, Prevent, PopoverTrigger } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
 import Button from "@/components/ui/button";
 
 export default function PopoverTests() {
-  const [optionsTriggerRef, optionsPopoverRef, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
-  const [triggerRef, popoverRef, isOpen, setOpen, inputType, setInputType] = usePopover();
+  const [optionsTriggerRef, _, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();
+  const [triggerRef, __, isOpen, setOpen, inputType, setInputType] = usePopover();
 
   const [placement, setPlacement] = useState("top" as Placement);
   const [padding, setPadding] = useState(100);
@@ -23,7 +23,7 @@ export default function PopoverTests() {
   const arrowStyles = { arrow: "bg-gray-800 rounded-[3px]", backdrop: "shadow-borderXL rounded-[3px]" };
 
   const handleClose = useCallback(() => {
-    setOpen(false), [setOpen];
+    setOpen(false);
     triggerRef.current?.focus({ preventScroll: true });
   }, [triggerRef, setOpen]);
 
@@ -69,21 +69,24 @@ export default function PopoverTests() {
           <span className="h-3 w-3 rounded-full bg-green-600" />
         </div>
 
-        <button
+        <PopoverTrigger
           ref={optionsTriggerRef}
+          id="optionsTrigger"
+          aria-controls="options"
+          isOpen={areOptionsOpen}
+          setOpen={setOptionsOpen}
+          setInputType={setOptionsInputType}
           aria-haspopup="menu"
-          {...(areOptionsOpen && { "aria-expanded": true })}
-          onClick={(e) => {
-            setOptionsOpen(!areOptionsOpen);
-            setOptionsInputType(e.detail === 0 ? "keyboard" : "mouse");
-          }}
+          variant="unstyled"
+          size="unstyled"
           className="flex items-center gap-1.5"
         >
           <h2 className="font-medium text-gray-800">Container</h2>
           <Icon.chevron className={`h-[5px] duration-300 ease-kolumb-flow ${areOptionsOpen && "rotate-180"}`} />
-        </button>
+        </PopoverTrigger>
+
         <Popover
-          popoverRef={optionsPopoverRef}
+          popoverRef={useRef(null)}
           triggerRef={optionsTriggerRef}
           isOpen={areOptionsOpen}
           setOpen={setOptionsOpen}
@@ -93,81 +96,82 @@ export default function PopoverTests() {
             Motion(TRANSITION.fadeInScaleY),
             Prevent({ autofocus: optionsInputType !== "keyboard" }),
           ]}
-          className="z-50 flex w-44 flex-col gap-3 rounded-b-xl bg-gray-50 px-4 py-2 text-xs"
         >
-          <div className="flex flex-col items-center gap-1 text-sm">
-            Placement
-            <select
-              value={placement}
-              onChange={(e) => setPlacement(e.target.value as Placement)}
-              className="appearance-none rounded-md border px-2 text-center"
-            >
-              <option value="top">top</option>
-              <option value="top-start">top-start</option>
-              <option value="top-end">top-end</option>
+          <div id="options" className="z-50 flex w-44 flex-col gap-3 rounded-b-xl bg-gray-50 px-4 py-2 text-xs">
+            <div className="flex flex-col items-center gap-1 text-sm">
+              Placement
+              <select
+                value={placement}
+                onChange={(e) => setPlacement(e.target.value as Placement)}
+                className="appearance-none rounded-md border px-2 text-center"
+              >
+                <option value="top">top</option>
+                <option value="top-start">top-start</option>
+                <option value="top-end">top-end</option>
 
-              <option value="bottom">bottom</option>
-              <option value="bottom-start">bottom-start</option>
-              <option value="bottom-end">bottom-end</option>
+                <option value="bottom">bottom</option>
+                <option value="bottom-start">bottom-start</option>
+                <option value="bottom-end">bottom-end</option>
 
-              <option value="right">right</option>
-              <option value="right-start">right-start</option>
-              <option value="right-end">right-end</option>
+                <option value="right">right</option>
+                <option value="right-start">right-start</option>
+                <option value="right-end">right-end</option>
 
-              <option value="left">left</option>
-              <option value="left-start">left-start</option>
-              <option value="left-end">left-end</option>
-            </select>
-          </div>
-
-          {/* Sliders */}
-          <div className="relative flex flex-col items-center justify-center">
-            <span className="pb-1">Padding</span>
-            <div className="absolute left-0 right-0 top-0 flex justify-between">
-              <span>0</span>
-              <span>500</span>
+                <option value="left">left</option>
+                <option value="left-start">left-start</option>
+                <option value="left-end">left-end</option>
+              </select>
             </div>
-            <BasicInput
-              type="range"
-              step={25}
-              min={0}
-              max={500}
-              value={padding}
-              onChange={(e) => setPadding(Number(e.target.value))}
-              className="w-full rounded p-0.5"
-            />
-          </div>
-          <div className="relative flex flex-col items-center justify-center text-xs">
-            <span className="pb-1">Offset</span>
-            <div className="absolute left-0 right-0 top-0 flex justify-between">
-              <span>0</span>
-              <span>30</span>
+
+            {/* Sliders */}
+            <div className="relative flex flex-col items-center justify-center">
+              <span className="pb-1">Padding</span>
+              <div className="absolute left-0 right-0 top-0 flex justify-between">
+                <span>0</span>
+                <span>500</span>
+              </div>
+              <BasicInput
+                type="range"
+                step={25}
+                min={0}
+                max={500}
+                value={padding}
+                onChange={(e) => setPadding(Number(e.target.value))}
+                className="w-full rounded p-0.5"
+              />
             </div>
-            <BasicInput
-              type="range"
-              step={3}
-              min={0}
-              max={30}
-              value={offset}
-              onChange={(e) => setOffset(Number(e.target.value))}
-              className="w-full rounded p-0.5"
-            />
-          </div>
-          <div className="relative flex flex-col items-center justify-center">
-            <span className="pb-1">Arrow</span>
-            <div className="absolute left-0 right-0 top-0 flex justify-between">
-              <span>0</span>
-              <span>10</span>
+            <div className="relative flex flex-col items-center justify-center text-xs">
+              <span className="pb-1">Offset</span>
+              <div className="absolute left-0 right-0 top-0 flex justify-between">
+                <span>0</span>
+                <span>30</span>
+              </div>
+              <BasicInput
+                type="range"
+                step={3}
+                min={0}
+                max={30}
+                value={offset}
+                onChange={(e) => setOffset(Number(e.target.value))}
+                className="w-full rounded p-0.5"
+              />
             </div>
-            <BasicInput
-              type="range"
-              step={3}
-              min={0}
-              max={30}
-              value={arrowSize}
-              onChange={(e) => setArrowSize(Number(e.target.value))}
-              className="w-full rounded p-0.5"
-            />
+            <div className="relative flex flex-col items-center justify-center">
+              <span className="pb-1">Arrow</span>
+              <div className="absolute left-0 right-0 top-0 flex justify-between">
+                <span>0</span>
+                <span>10</span>
+              </div>
+              <BasicInput
+                type="range"
+                step={3}
+                min={0}
+                max={30}
+                value={arrowSize}
+                onChange={(e) => setArrowSize(Number(e.target.value))}
+                className="w-full rounded p-0.5"
+              />
+            </div>
           </div>
         </Popover>
 
@@ -181,21 +185,21 @@ export default function PopoverTests() {
         className="absolute z-20 overflow-auto rounded-b-xl"
       >
         <main style={{ width: "calc(200% - 59px)", height: "calc(200% - 34px)" }} className="relative flex items-center justify-center">
-          <Button
+          <PopoverTrigger
             ref={triggerRef}
-            aria-haspopup="dialog"
-            {...(isOpen && { "aria-expanded": true })}
-            onClick={(e) => {
-              setOpen(!isOpen);
-              setInputType(e.detail === 0 ? "keyboard" : "mouse");
-            }}
+            id="trigger"
+            isOpen={isOpen}
+            setOpen={setOpen}
+            setInputType={setInputType}
+            aria-haspopup="menu"
+            aria-controls="popover"
             className="border border-gray-600 bg-gray-700 font-medium text-gray-100"
           >
             open
-          </Button>
+          </PopoverTrigger>
 
           <Popover
-            popoverRef={popoverRef}
+            popoverRef={useRef(null)}
             triggerRef={triggerRef}
             isOpen={isOpen}
             setOpen={setOpen}
@@ -204,16 +208,16 @@ export default function PopoverTests() {
             extensions={[Offset(offset), Flip(), Arrow(arrowSize, arrowStyles), Prevent({ autofocus: inputType !== "keyboard" })]}
             className="rounded-md text-gray-100 shadow-borderXL"
           >
-            <div className="relative z-10 flex items-center justify-center gap-3 rounded-md bg-gray-800 px-4 py-3">
+            <div id="popover" className="flex items-center justify-center gap-3 rounded-md bg-gray-800 px-4 py-3 text-lg">
               <Button
                 onClick={handleClose}
                 variant="button"
                 size="icon"
-                className="border border-gray-600 bg-gray-700 fill-gray-300 p-2 focus:fill-gray-100"
+                className="rounded-md border border-gray-600 bg-gray-700 fill-gray-300 p-2 focus:fill-gray-100"
               >
-                <Icon.x className="h-3.5 w-3.5" />
+                <Icon.x className="h-2.5 w-2.5" />
               </Button>
-              popover
+              Popover
             </div>
           </Popover>
 

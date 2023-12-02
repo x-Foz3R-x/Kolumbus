@@ -1,8 +1,6 @@
-import { Placement } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
 import useKeyPress from "./use-key-press";
 import { Key } from "@/types";
-import { parsePlacement } from "@/components/ui/popover/use-popover";
 
 type ListNavigationOptions = {
   onChange?: (index: number) => void;
@@ -11,9 +9,8 @@ type ListNavigationOptions = {
   triggerRef?: React.MutableRefObject<HTMLElement | null>;
   listItemsRef?: React.MutableRefObject<(HTMLElement | null)[]>;
   listLength: number;
-  skipIndexes?: number[];
   initialIndex?: number;
-  placement?: Placement;
+  skipIndexes?: number[];
   enabled: boolean;
   preventLoop?: boolean;
   preventFocus?: boolean;
@@ -54,14 +51,13 @@ export default function useListNavigation({
   listItemsRef,
   listLength,
   skipIndexes,
-  initialIndex,
-  placement,
+  initialIndex = -1,
   enabled,
   preventLoop = false,
-  preventArrowDefault = { v: false, h: false },
   preventFocus = false,
+  preventArrowDefault = { v: false, h: false },
 }: ListNavigationOptions) {
-  const [activeIndex, setActiveIndex] = useState(initialIndex ?? -1);
+  const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [firstValidIndex, setFirstValidIndex] = useState(0);
   const [lastValidIndex, setLastValidIndex] = useState(listLength - 1);
 
@@ -75,7 +71,17 @@ export default function useListNavigation({
 
   const [tabPressed, tabEvent] = useKeyPress(Key.Tab);
 
-  // Update firstValidIndex, and lastValidIndex whenever skipArray or listLength changes
+  /**
+   * Focuses on a specific list item by its index.
+   * @param index - The index of the list item to focus on.
+   */
+  const focusOnListItem = (index: number) => {
+    if (!preventFocus) listItemsRef?.current[index]?.focus();
+    setActiveIndex(index);
+    onChange?.(index);
+  };
+
+  // Handle valid indexes for the first and last list items.
   useEffect(() => {
     const newExcludedIndexes = Array.from({ length: listLength }, (_, i) => (skipIndexes?.includes(i) ? "x" : "valid_index"));
 
@@ -87,82 +93,50 @@ export default function useListNavigation({
   useEffect(() => {
     if (!enabled) return;
 
-    const handleArrowPress = (direction: Key.ArrowUp | Key.ArrowDown | Key.ArrowLeft | Key.ArrowRight) => {
+    // Handles Up & Down arrow keys for navigating within a list.
+    const handleYArrowPress = (direction: Key.ArrowUp | Key.ArrowDown) => {
       let nextIndex = activeIndex;
 
-      if (direction === Key.ArrowUp || direction === Key.ArrowDown) {
-        if (activeIndex < 0 || hasFocus === "trigger") {
-          nextIndex = direction === Key.ArrowUp ? lastValidIndex : firstValidIndex;
-        } else if (preventLoop) {
-          nextIndex = (direction === Key.ArrowUp ? activeIndex + listLength - 1 : activeIndex + 1) % listLength;
+      if (activeIndex < 0 || hasFocus === "trigger") {
+        nextIndex = direction === Key.ArrowUp ? lastValidIndex : firstValidIndex;
+      } else if (!preventLoop) {
+        nextIndex = (direction === Key.ArrowUp ? activeIndex + listLength - 1 : activeIndex + 1) % listLength;
 
-          // Determine the nextIndex by skipping the indexes specified in skipArray.
-          while (skipIndexes?.includes(nextIndex)) {
-            nextIndex = (direction === Key.ArrowUp ? nextIndex + listLength - 1 : nextIndex + 1) % listLength;
-          }
-        } else {
-          nextIndex = direction === Key.ArrowUp ? Math.max(activeIndex - 1, firstValidIndex) : Math.min(activeIndex + 1, lastValidIndex);
-
-          // Determine the nextIndex by skipping the indexes specified in skipArray.
-          while (skipIndexes?.includes(nextIndex)) {
-            nextIndex = direction === Key.ArrowUp ? Math.max(nextIndex - 1, firstValidIndex) : Math.min(nextIndex + 1, lastValidIndex);
-          }
+        // Determine the nextIndex by skipping the indexes specified in skipArray.
+        while (skipIndexes?.includes(nextIndex)) {
+          nextIndex = (direction === Key.ArrowUp ? nextIndex + listLength - 1 : nextIndex + 1) % listLength;
         }
-      } else if (
-        (activeIndex < 0 || hasFocus === "trigger") &&
-        (direction === Key.ArrowLeft || direction === Key.ArrowRight) &&
-        placement &&
-        !preventFocus
-      ) {
-        const [side, alignment] = parsePlacement(placement);
+      } else {
+        nextIndex = direction === Key.ArrowUp ? Math.max(activeIndex - 1, firstValidIndex) : Math.min(activeIndex + 1, lastValidIndex);
 
-        if (side === "top" || side === "bottom") return;
-
-        const startIndex = alignment !== "end" ? firstValidIndex : lastValidIndex;
-        const endIndex = alignment !== "end" ? lastValidIndex : firstValidIndex;
-
-        nextIndex =
-          side === "left"
-            ? direction === Key.ArrowLeft
-              ? startIndex
-              : endIndex
-            : side === "right"
-              ? direction === Key.ArrowRight
-                ? startIndex
-                : endIndex
-              : nextIndex;
+        // Determine the nextIndex by skipping the indexes specified in skipArray.
+        while (skipIndexes?.includes(nextIndex)) {
+          nextIndex = direction === Key.ArrowUp ? Math.max(nextIndex - 1, firstValidIndex) : Math.min(nextIndex + 1, lastValidIndex);
+        }
       }
 
-      // Focus on the list item at the nextIndex if it exists,
-      // update the activeIndex with the new value, and trigger the onChangeCallback if available.
-      !preventFocus && listItemsRef && listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
-      setActiveIndex(nextIndex);
-      if (onChange) onChange(nextIndex);
+      focusOnListItem(nextIndex);
     };
 
-    if (arrowUpPressed) handleArrowPress(Key.ArrowUp);
-    else if (arrowDownPressed) handleArrowPress(Key.ArrowDown);
-    else if (arrowLeftPressed) handleArrowPress(Key.ArrowLeft);
-    else if (arrowRightPressed) handleArrowPress(Key.ArrowRight);
+    // Handles Left & Right arrow keys for navigating within a list.
+    const handleXArrowPress = (direction: Key.ArrowLeft | Key.ArrowRight) => {
+      if ((activeIndex < 0 || hasFocus === "trigger") && !preventFocus) {
+        focusOnListItem(direction === Key.ArrowRight ? firstValidIndex : lastValidIndex);
+      }
+    };
+
+    if (arrowUpPressed) handleYArrowPress(Key.ArrowUp);
+    else if (arrowDownPressed) handleYArrowPress(Key.ArrowDown);
+    else if (arrowLeftPressed) handleXArrowPress(Key.ArrowLeft);
+    else if (arrowRightPressed) handleXArrowPress(Key.ArrowRight);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arrowUpPressed, arrowDownPressed, arrowLeftPressed, arrowRightPressed]);
 
   // Handles Home and End key press events for navigating to the first or last not skipped list item.
   useEffect(() => {
     if (!enabled) return;
-
-    const handleHomeEndPress = (direction: Key.Home | Key.End) => {
-      let nextIndex = direction === Key.Home ? firstValidIndex : lastValidIndex;
-
-      // Focus on the list item at the nextIndex if it exists,
-      // update the activeIndex with the new value, and trigger the onChangeCallback if available.
-      !preventFocus && listItemsRef && listItemsRef.current[nextIndex]?.focus({ preventScroll: true });
-      setActiveIndex(nextIndex);
-      if (onChange) onChange(nextIndex);
-    };
-
-    if (homePressed) handleHomeEndPress(Key.Home);
-    else if (endPressed) handleHomeEndPress(Key.End);
+    if (homePressed) focusOnListItem(firstValidIndex);
+    else if (endPressed) focusOnListItem(lastValidIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [homePressed, endPressed]);
 
@@ -173,28 +147,17 @@ export default function useListNavigation({
     const handleTabPress = () => {
       if (hasFocus === "trigger" && !tabEvent?.shiftKey) {
         tabEvent?.preventDefault();
-
-        let nextIndex = activeIndex < firstValidIndex ? firstValidIndex : activeIndex;
-
-        // Focus on the list item at the nextIndex if it exists,
-        // update the activeIndex with the new value, and call the onChangeCallback if available.
-        listItemsRef && listItemsRef.current[nextIndex]?.focus();
-        setActiveIndex(nextIndex);
-        if (onChange) onChange(nextIndex);
-      } else if (hasFocus === "popover") {
-        if (tabEvent?.shiftKey) {
-          tabEvent?.preventDefault();
-          triggerRef && triggerRef.current?.focus();
-        } else if (activeIndex < firstValidIndex) {
-          tabEvent?.preventDefault();
-
-          // Focus on the first list item (at index firstValidIndex),
-          // reset the activeIndex to firstValidIndex, and call the onChangeCallback if available.
-          listItemsRef && listItemsRef.current[firstValidIndex]?.focus();
-          setActiveIndex(firstValidIndex);
-          if (onChange) onChange(firstValidIndex);
-        } else setFocus && setFocus(false);
-      } else setFocus && setFocus(false);
+        const nextIndex = activeIndex < firstValidIndex ? firstValidIndex : activeIndex;
+        focusOnListItem(nextIndex);
+      } else if (hasFocus === "popover" && tabEvent?.shiftKey) {
+        tabEvent?.preventDefault();
+        triggerRef?.current?.focus();
+      } else if (hasFocus === "popover" && activeIndex < firstValidIndex) {
+        tabEvent?.preventDefault();
+        focusOnListItem(firstValidIndex);
+      } else {
+        setFocus?.(false);
+      }
     };
 
     if (tabPressed) handleTabPress();

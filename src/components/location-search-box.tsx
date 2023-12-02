@@ -25,6 +25,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
 
   // todo: Add <Toast> component to display errors
   const handleInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
     activeItemRef.current = e.target.value;
 
     if (e.target.value.length < 3) {
@@ -98,7 +99,6 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
       <Combobox.Input
         placeholder={placeholder}
         value={value}
-        setValue={setValue}
         onInput={handleInput}
         onFocus={() => !(typeof value === "string" && value.length < 3) && setOpen(true)}
         className={`bg-gray-50 text-sm shadow-sm duration-300 ease-kolumb-flow ${!isOpen && "rounded-b-lg"}`}
@@ -106,7 +106,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
         <Button
           onClick={() => ClearPredictions(true)}
           variant="unstyled"
-          className="h-8 w-6 fill-gray-400 px-2 duration-100 hover:fill-gray-700"
+          className="h-8 w-6 rounded-none fill-gray-400 px-2 duration-100 hover:fill-gray-700 focus-visible:fill-gray-700 focus-visible:text-gray-700"
         >
           <Icon.x className="w-2" />
         </Button>
@@ -116,7 +116,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
         <Button
           onClick={() => onAdd(activeItemRef.current)}
           variant="unstyled"
-          className="flex h-8 items-center justify-center gap-1 fill-gray-400 pl-1 pr-2 text-gray-400 duration-100 hover:fill-gray-700 hover:text-gray-700"
+          className="flex h-8 items-center justify-center gap-1 rounded-none rounded-br-lg fill-gray-400 pl-1 pr-2 text-gray-400 duration-100 hover:fill-gray-700 hover:text-gray-700 focus-visible:fill-gray-700 focus-visible:text-gray-700"
         >
           <Icon.plus className="w-2.5" />
           <p className="text-xs font-medium">Add</p>
@@ -157,7 +157,7 @@ function Prediction({ index, prediction }: { index: number; prediction: PlaceAut
         </div>
       </Combobox.Option>
 
-      <Tooltip isOpen={isOpen} setOpen={setOpen} position={position}>
+      <Tooltip triggerRef={useRef(null)} isOpen={isOpen} setOpen={setOpen} position={position}>
         <p className="text-xs">{prediction.structured_formatting.main_text}</p>
         {prediction.structured_formatting.secondary_text && (
           <p className="text-xs text-gray-400">{prediction.structured_formatting.secondary_text}</p>

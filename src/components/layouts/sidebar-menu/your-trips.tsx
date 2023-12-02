@@ -193,15 +193,16 @@ export default function YourTrips() {
         <Modal
           isOpen={isModalOpen}
           setOpen={setModalOpen}
-          backdrop={{ type: "none" }}
-          className="max-w-md shadow-border3XL"
+          size="sm"
+          className="shadow-border3XL"
           buttonProps={{
             variant: "unstyled",
-            className: "h-6 w-6 fill-tintedGray-400 text-tintedGray-400",
+            size: "unstyled",
+            className: "relative h-6 w-6",
             children: (
               <>
-                <Icon.plus className="absolute right-0 h-6 w-6 flex-shrink-0 flex-grow p-1.5 duration-200 ease-kolumb-flow group-hover:right-14" />
-                <span className="absolute right-0 h-6 origin-right scale-x-0 select-none whitespace-nowrap pt-0.5 font-medium opacity-0 duration-200 ease-kolumb-flow group-hover:scale-x-100 group-hover:opacity-100">
+                <Icon.plus className="absolute right-0 top-0 h-6 w-6 fill-tintedGray-400 p-1.5 duration-200 ease-kolumb-flow group-hover:right-14" />
+                <span className="absolute right-0 top-0 h-6 origin-right scale-x-0 select-none whitespace-nowrap pt-0.5 text-sm font-medium text-tintedGray-400 opacity-0 duration-200 ease-kolumb-flow group-hover:scale-x-100 group-hover:opacity-100">
                   New Trip
                 </span>
               </>
@@ -240,15 +241,15 @@ export default function YourTrips() {
               variant="scale"
               size="default"
               className={cn(
-                "flex w-full items-center gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
+                "flex w-full cursor-default items-center gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
                 index !== selectedTrip
-                  ? "fill-tintedGray-400"
+                  ? "fill-tintedGray-400 hover:fill-tintedGray-600"
                   : "fill-kolumblue-500 text-kolumblue-500 group-hover/trip:fill-kolumblue-500 group-hover/trip:text-kolumblue-500",
               )}
               animatePress
             >
-              <Icon.defaultTrip className="h-4 w-4 duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5 group-hover:translate-x-1.5" />
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5 group-hover:translate-x-1.5">
+              <Icon.defaultTrip className="h-4 w-4 duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5" />
+              <p className="overflow-hidden text-ellipsis whitespace-nowrap duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5">
                 {trip.name}
               </p>
             </Button>

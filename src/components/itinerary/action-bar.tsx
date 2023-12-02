@@ -53,7 +53,7 @@ export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
 
   return (
     <ActionBarContext.Provider value={{ activeTrip }}>
-      <section className="sticky left-0 right-0 top-0 z-[999] flex w-full min-w-min p-3 pt-0">
+      <section className="sticky left-0 right-0 top-0 z-[999] flex w-full min-w-min pb-3 pl-3 pr-6">
         <div className="flex h-14 w-full items-center justify-between gap-5 rounded-lg border border-gray-100 bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
           <section className="flex h-full w-full items-center gap-1.5 overflow-x-auto pl-3">
             <StatelessInput

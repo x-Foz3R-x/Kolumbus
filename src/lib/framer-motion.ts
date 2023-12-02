@@ -1,8 +1,17 @@
 export const EASING = {
-  ease: [0.36, 0.66, 0.4, 1],
-  easeIn: [0.4, 0, 1, 1],
-  easeOut: [0, 0, 0.2, 1],
-  easeInOut: [0.4, 0, 0.2, 1],
+  anticipate: "anticipate",
+
+  backIn: "backIn",
+  backInOut: "backInOut",
+  backOut: "backOut",
+
+  circIn: "circIn",
+  circInOut: "circInOut",
+  circOut: "circOut",
+
+  easeIn: "easeIn",
+  easeInOut: "easeInOut",
+  easeOut: "easeOut",
 
   kolumbFlow: [0.175, 0.885, 0.32, 1],
   kolumbOverflow: [0.175, 0.885, 0.32, 1.275],
@@ -25,13 +34,18 @@ export const TRANSITION = {
     animate: {
       scale: 1,
       opacity: 1,
-      transition: { opacity: { duration: 0.3, ease: EASING.kolumbFlow }, scale: { duration: 0.4, ease: EASING.kolumbOverflow } },
+      transition: { opacity: { duration: 0.3, ease: EASING.kolumbFlow }, scale: { duration: 0.3, ease: EASING.circOut } },
     },
     exit: {
       scale: 0,
       opacity: 0,
-      transition: { opacity: { duration: 0.3, ease: EASING.kolumbFlow }, scale: { duration: 0.3, ease: EASING.kolumbOut } },
+      transition: { opacity: { duration: 0.3, ease: EASING.kolumbFlow }, scale: { duration: 0.3, ease: EASING.circIn } },
     },
+  },
+  fade: {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: 0.15, ease: EASING.easeIn } },
+    exit: { opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
   },
   fadeInScaleY: {
     initial: { scaleY: 0, scaleX: 0.75 },
@@ -39,30 +53,25 @@ export const TRANSITION = {
     exit: { scaleY: 0, scaleX: 0.75, transition: { duration: 0.25, ease: EASING.kolumbOut } },
   },
   fadeInScale: {
-    initial: { scale: 0.7, opacity: 0 },
-    animate: { scale: 1, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
-    exit: { scale: 0.5, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
+    initial: { scale: 0.5, opacity: 0 },
+    animate: { scale: 1, opacity: 1, transition: { duration: 0.2, ease: EASING.anticipate } },
+    exit: { scale: 0.5, opacity: 0, transition: { duration: 0.3, ease: EASING.anticipate } },
   },
-  fade: {
-    initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.15, ease: EASING.easeIn } },
-    exit: { opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
-  },
-  fadeInOut: {
+  fadeToPosition: {
     top: {
       initial: { y: -4, opacity: 0 },
-      animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
-      exit: { y: -4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
+      animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.anticipate } },
+      exit: { y: -4, opacity: 0, transition: { duration: 0.15, ease: EASING.anticipate } },
     },
     right: {
       initial: { x: 4, opacity: 0 },
-      animate: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
-      exit: { x: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
+      animate: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.anticipate } },
+      exit: { x: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.anticipate } },
     },
     bottom: {
       initial: { y: 4, opacity: 0 },
-      animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
-      exit: { y: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
+      animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.anticipate } },
+      exit: { y: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.anticipate } },
     },
     left: {
       initial: { x: -4, opacity: 0 },

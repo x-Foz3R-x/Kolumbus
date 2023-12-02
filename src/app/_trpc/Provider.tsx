@@ -6,7 +6,7 @@ import { BASE_URL } from "@/lib/config";
 
 import api from "./client";
 
-export default function TrpcProvider({ children }: { children: React.ReactNode }) {
+export default function TrpcProvider({ children }: { children?: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     api.createClient({

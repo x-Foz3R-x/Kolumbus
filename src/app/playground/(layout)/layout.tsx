@@ -1,7 +1,7 @@
 import Icon from "@/components/icons";
 import Link from "next/link";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function PlaygroundLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <nav className="fixed left-0 right-0 top-0 z-10 flex h-14 items-center justify-center bg-white shadow-xs">
