@@ -157,7 +157,7 @@ function Prediction({ index, prediction }: { index: number; prediction: PlaceAut
         </div>
       </Combobox.Option>
 
-      <Tooltip isOpen={isOpen} setOpen={setOpen} position={position}>
+      <Tooltip triggerRef={useRef(null)} isOpen={isOpen} setOpen={setOpen} position={position}>
         <p className="text-xs">{prediction.structured_formatting.main_text}</p>
         {prediction.structured_formatting.secondary_text && (
           <p className="text-xs text-gray-400">{prediction.structured_formatting.secondary_text}</p>
