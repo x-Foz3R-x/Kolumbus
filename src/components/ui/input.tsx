@@ -82,7 +82,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) => {
 
   const getLabelStyle = () => {
     const baseStyle =
-      "pointer-events-none select-none absolute inset-0 flex origin-top-left items-center overflow-hidden text-sm text-gray-700 duration-100 ease-in";
+      "pointer-events-none select-none absolute inset-0 flex origin-top-left items-center overflow-hidden text-sm text-gray-600 duration-100 ease-in";
 
     const variantStyles: { [key: string]: string } = {
       insetLabel: `mx-4 peer-focus:-translate-y-2.5 peer-focus:scale-90 ${
