@@ -159,7 +159,7 @@ export default function YourTrips() {
         </Dropdown>
 
         <Modal isOpen={isModalOpen} setOpen={setModalOpen} backdrop={{ type: "blur" }} removeButton>
-          <ModalBodyWithIcon variant="danger" icon={<Icon.exclamationTriangle />}>
+          <ModalBodyWithIcon variant="danger" icon={<Icon.triangleExclamation />}>
             <ModalTitle>Delete Trip</ModalTitle>
 
             <ModalMessage>Are you sure you want to delete this trip?</ModalMessage>

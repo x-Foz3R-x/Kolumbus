@@ -32,7 +32,8 @@ export default function AuthProviders() {
         onClick={signInWithGoogle}
         variant="unstyled"
         className="flex h-9 w-80 items-center justify-center gap-2 border border-gray-200 shadow-softSm duration-200 ease-kolumb-flow hover:bg-gray-100"
-        disabled={!isLoaded}
+        // disabled={!isLoaded}
+        disabled
       >
         <Icon.google className="h-3 w-3" />
         Continue with Google

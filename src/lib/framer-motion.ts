@@ -60,18 +60,18 @@ export const TRANSITION = {
   fadeToPosition: {
     top: {
       initial: { y: -4, opacity: 0 },
-      animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.anticipate } },
-      exit: { y: -4, opacity: 0, transition: { duration: 0.15, ease: EASING.anticipate } },
+      animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
+      exit: { y: -4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
     },
     right: {
       initial: { x: 4, opacity: 0 },
-      animate: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.anticipate } },
-      exit: { x: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.anticipate } },
+      animate: { x: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
+      exit: { x: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
     },
     bottom: {
       initial: { y: 4, opacity: 0 },
-      animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.anticipate } },
-      exit: { y: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.anticipate } },
+      animate: { y: 0, opacity: 1, transition: { duration: 0.2, ease: EASING.easeOut } },
+      exit: { y: 4, opacity: 0, transition: { duration: 0.15, ease: EASING.easeIn } },
     },
     left: {
       initial: { x: -4, opacity: 0 },

@@ -227,8 +227,8 @@ function computeCoords(rects: { trigger: Rect; popover: Rect }, placement: Place
       break;
   }
 
-  offset += arrowSize / 2;
-  if (offset !== 0) coords = Offset(side, offset, coords);
+  offset += arrowSize / 3;
+  if (offset !== 0) coords = Offset(coords, side, offset);
 
   return { coords, arrowCoords };
 }
@@ -257,7 +257,7 @@ function computeTransformOrigin([side, alignment]: [Side, Alignment | undefined]
  * @param coords - The original coordinates of the popover.
  * @returns The new coordinates of the popover with the applied offset.
  */
-function Offset(side: Side, offset: number, coords: Coords) {
+function Offset(coords: Coords, side: Side, offset: number) {
   const offsetMap = {
     top: { y: coords.y - offset },
     bottom: { y: coords.y + offset },

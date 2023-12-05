@@ -50,10 +50,24 @@ module.exports = {
         "kolumb-flow": "cubic-bezier(0.175, 0.885, 0.32, 1)",
         "kolumb-leave": "cubic-bezier(0.885, 0.175, 0.5, 1)",
       },
+      transitionDuration: {
+        250: "250ms",
+        400: "400ms",
+      },
+      width: {
+        4.5: "1.125rem",
+      },
+      height: {
+        4.5: "1.125rem",
+      },
+      padding: {
+        4.5: "1.125rem",
+      },
     },
     boxShadow: {
       none: "0 0 #000000",
       border: "0 0 0 1px hsl(232, 9%, 90%)",
+      borderError: "0 0 0 1px hsla(354, 90%, 60%)",
       focus: "0 0 0 1px hsla(210, 78%, 60%), 0 0 0 3px hsla(210, 78%, 60%, 0.3)",
       focusError: "0 0 0 1px hsla(354, 90%, 60%), 0 0 0 3px hsla(354, 90%, 60%, 0.3)",
       soft: "0px 1px 4px rgba(15, 15, 15, 0.1)",
@@ -199,6 +213,7 @@ module.exports = {
         200: "hsl(120, 78%, 90%)",
         300: "hsl(120, 78%, 84%)",
         400: "hsl(120, 78%, 71%)",
+        450: "hsl(120, 78%, 67%)",
         500: "hsl(120, 78%, 60%)",
         600: "hsl(120, 78%, 46%)",
         700: "hsl(120, 78%, 34%)",
