@@ -376,18 +376,24 @@ export default function SignUp() {
                   }
                 }}
                 variant={
-                  !isLoaded ||
-                  isUsernameValid?.every((validation) => !validation) ||
-                  !isEmailValid ||
-                  isPasswordValid?.every((validation) => !validation) ||
-                  !isConfirmPasswordValid
-                    ? "disabled"
-                    : "unstyled"
+                  isLoaded &&
+                  isUsernameValid?.every((validation) => validation) &&
+                  isEmailValid &&
+                  isPasswordValid?.every((validation) => validation) &&
+                  isConfirmPasswordValid
+                    ? "unstyled"
+                    : "disabled"
                 }
                 size="unstyled"
                 className={cn(
                   "pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 shadow-soft duration-100 ease-in",
-                  isConfirmPasswordValid ? "focus:shadow-focus" : "cursor-default focus:shadow-focusError",
+                  isLoaded &&
+                    isUsernameValid?.every((validation) => validation) &&
+                    isEmailValid &&
+                    isPasswordValid?.every((validation) => validation) &&
+                    isConfirmPasswordValid
+                    ? "focus:shadow-focus"
+                    : "cursor-default focus:shadow-focusError",
                 )}
               >
                 <Icon.arrowRight className="h-full w-4 fill-gray-700" />

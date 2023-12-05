@@ -11,6 +11,8 @@ import Input from "@/components/ui/input";
 import Icon from "@/components/icons";
 import Divider from "@/components/ui/divider";
 import Button from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { isEmail } from "@/lib/validation";
 
 export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
@@ -18,6 +20,8 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isEmailValid, setEmailValid] = useState<boolean>();
+
   const router = useRouter();
 
   const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -80,7 +84,7 @@ export default function SignIn() {
             placeholder="E-mail"
             onChange={(e) => {
               setEmail(e.target.value);
-              console.log("validate email");
+              setEmailValid(isEmail(e.target.value));
             }}
             autoComplete="email"
             autoCorrect="off"
@@ -97,10 +101,7 @@ export default function SignIn() {
             name="password"
             type="password"
             placeholder="Password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-              console.log("validate password");
-            }}
+            onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
             autoCorrect="off"
             spellCheck="false"
@@ -110,10 +111,12 @@ export default function SignIn() {
           <span className="absolute inset-y-0 right-4 z-30 flex items-center">
             <Button
               onClick={handleSignIn}
-              variant="unstyled"
+              variant={isLoaded && isEmailValid && password.length >= 8 ? "unstyled" : "disabled"}
               size="unstyled"
-              className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 shadow-soft duration-150 ease-in focus:shadow-focus"
-              disabled={!isLoaded}
+              className={cn(
+                "pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 shadow-soft duration-100 ease-in",
+                isLoaded && isEmailValid && password.length >= 8 ? "focus:shadow-focus" : "cursor-default focus:shadow-focusError",
+              )}
             >
               <Icon.arrowRight className="h-full w-4 fill-gray-700" />
             </Button>
