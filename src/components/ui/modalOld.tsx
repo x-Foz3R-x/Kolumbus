@@ -58,7 +58,7 @@ export function ModalBody({ type, children }: ModalBodyProps) {
   return (
     <div className="mt-3 flex gap-2 px-6 py-3">
       <div className="h-10 w-10 flex-shrink-0 rounded-full bg-red-100 fill-red-500 p-2">
-        {type === "exclamation" && <Icon.exclamationTriangle />}
+        {type === "exclamation" && <Icon.triangleExclamation />}
       </div>
       <div className="ml-2 w-[calc(100%-3.5rem)]">{children}</div>
     </div>

@@ -65,7 +65,7 @@ export default function SignIn() {
   // };
 
   return (
-    <>
+    <main className="flex h-screen w-screen min-w-fit flex-col items-center justify-center overflow-hidden">
       <Link href="/">
         <Icon.logo className="h-8" />
       </Link>
@@ -139,6 +139,6 @@ export default function SignIn() {
           </Link>
         </div>
       </div>
-    </>
+    </main>
   );
 }

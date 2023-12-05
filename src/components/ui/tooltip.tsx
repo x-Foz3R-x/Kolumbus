@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Arrow, Container, Flip, Motion, Offset, Placement, Popover, Position, Prevent } from "./popover";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
+import Button, { Props as ButtonProps } from "./button";
 
 type Props = {
   triggerRef: React.RefObject<HTMLElement>;
@@ -23,7 +24,7 @@ export default function Tooltip({
   container,
   position,
   offset = 6,
-  arrow = { size: 10 },
+  arrow = { size: 12 },
   className,
   children,
 }: Props) {
@@ -34,31 +35,77 @@ export default function Tooltip({
   };
 
   return (
-    isOpen && (
-      <Popover
-        popoverRef={popoverRef}
-        triggerRef={triggerRef}
-        isOpen={isOpen}
-        setOpen={setOpen}
-        placement={placement}
-        strategy="fixed"
-        container={container}
-        extensions={
-          position
-            ? [Position(position.x, position.y, position.transformOrigin), Motion(TRANSITION.fade), Prevent({ pointer: true })]
-            : [Flip(), Offset(offset), Arrow(arrow.size, arrowStyles), Prevent({ pointer: true })]
-        }
-      >
-        <div className={cn("pointer-events-none max-w-xs rounded bg-gray-700 px-1 py-0.5 text-gray-200 shadow-borderXLDark", className)}>
-          {children}
-        </div>
-      </Popover>
-    )
+    <Popover
+      popoverRef={popoverRef}
+      triggerRef={triggerRef}
+      isOpen={isOpen}
+      setOpen={setOpen}
+      placement={placement}
+      strategy="fixed"
+      container={container}
+      extensions={
+        position
+          ? [Position(position.x, position.y, position.transformOrigin), Motion(TRANSITION.fade), Prevent({ pointer: true })]
+          : [Flip(), Offset(offset), Arrow(arrow.size, arrowStyles), Prevent({ pointer: true })]
+      }
+    >
+      <div className={cn("pointer-events-none max-w-xs rounded-md bg-gray-800 px-1.5 py-1 text-gray-200 shadow-borderXLDark", className)}>
+        {children}
+      </div>
+    </Popover>
+  );
+}
+
+type TooltipTriggerProps = {
+  placement?: Placement;
+  container?: Container;
+  offset?: number;
+  arrow?: { size: number; className?: { arrow?: string; backdrop?: string } };
+  className?: string;
+  buttonProps?: ButtonProps;
+  children?: React.ReactNode;
+};
+/**
+ * Tooltip trigger component.
+ *
+ * @param button - The button props.
+ * @param tooltip - The tooltip props.
+ * @returns A tooltip trigger component.
+ *
+ * @example
+ * <TooltipTrigger
+ *   button={{ children: "Tooltip" }}
+ *   tooltip={{ children: "Tooltip content" }}
+ * />
+ */
+export function TooltipTrigger({ buttonProps, ...tooltip }: TooltipTriggerProps) {
+  const [isOpen, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    if (buttonProps?.onClick) buttonProps.onClick(e);
+    setOpen(!isOpen);
+  };
+  const onMouseEnter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (buttonProps?.onMouseEnter) buttonProps.onMouseEnter(e);
+    setOpen(true);
+  };
+  const onMouseLeave = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (buttonProps?.onMouseLeave) buttonProps.onMouseLeave(e);
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <Button ref={ref} {...buttonProps} onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} />
+      <Tooltip triggerRef={ref} isOpen={isOpen} setOpen={setOpen} {...tooltip} />
+    </>
   );
 }
 
 /**
- * Custom hook for managing tooltip behavior.
+ * Custom hook for managing tooltip behavior aligned to mouse position.
  *
  * @param delay - The delay in milliseconds before the tooltip is shown.
  * @returns An array containing the following values:
@@ -70,7 +117,7 @@ export default function Tooltip({
  *   - handleMouseLeave: A function to handle mouse leave event.
  *
  * @example
- * const [isOpen, setOpen, position, handleMouseEnter, handleMouseMove, handleMouseLeave] = useTooltip();
+ * const {isOpen, setOpen, position, handleMouseEnter, handleMouseMove, handleMouseLeave} = useTooltip();
  */
 export function useTooltip(delay: number = 1000) {
   const [isOpen, setOpen] = useState(false);
