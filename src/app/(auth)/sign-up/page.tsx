@@ -1,19 +1,20 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useClerk } from "@clerk/clerk-react";
 import { useSignUp } from "@clerk/nextjs";
 
-import Input from "@/components/ui/input";
-import Icon from "@/components/icons";
-import Button from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { TooltipTrigger } from "@/components/ui/tooltip";
-import Divider from "@/components/ui/divider";
 import { isEmail, validatePassword, validateUsername } from "@/lib/validation";
 import { cn } from "@/lib/utils";
+
+import Icon from "@/components/icons";
+import Input from "@/components/ui/input";
+import Button from "@/components/ui/button";
+import Divider from "@/components/ui/divider";
+import { TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function SignUp() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -35,6 +36,39 @@ export default function SignUp() {
 
   const router = useRouter();
 
+  const handleContinueToAgreement = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+
+    if (username.length === 0) setUsernameValid([false, false, false]);
+    if (email.length === 0) setEmailValid(false);
+    if (password.length === 0) setPasswordValid([false, false, false, false]);
+    if (confirmPassword !== password) setConfirmPasswordValid(false);
+
+    if (
+      isLoaded &&
+      isUsernameValid?.every((validation) => validation) &&
+      isEmailValid &&
+      isPasswordValid?.every((validation) => validation) &&
+      isConfirmPasswordValid
+    ) {
+      setAgreement(true);
+    }
+  };
+  const handleCancel = () => {
+    setUsername("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+
+    setUsernameValid(undefined);
+    setEmailValid(undefined);
+    setPasswordValid(undefined);
+    setConfirmPasswordValid(undefined);
+
+    setAgreement(false);
+    setVerification(false);
+    setCode("");
+  };
   const handleSignUp = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (!isLoaded) return;
@@ -68,21 +102,6 @@ export default function SignUp() {
     } catch (err: any) {
       console.error(JSON.stringify(err, null, 2));
     }
-  };
-  const handleCancel = () => {
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-
-    setUsernameValid(undefined);
-    setEmailValid(undefined);
-    setPasswordValid(undefined);
-    setConfirmPasswordValid(undefined);
-
-    setAgreement(false);
-    setVerification(false);
-    setCode("");
   };
 
   const getIcon = (isValid?: boolean) => {
@@ -357,24 +376,7 @@ export default function SignUp() {
 
             <span className="absolute inset-y-0 right-4 z-30 flex items-center">
               <Button
-                onClick={(e) => {
-                  e.preventDefault();
-
-                  if (username.length === 0) setUsernameValid([false, false, false]);
-                  if (email.length === 0) setEmailValid(false);
-                  if (password.length === 0) setPasswordValid([false, false, false, false]);
-                  if (confirmPassword !== password) setConfirmPasswordValid(false);
-
-                  if (
-                    isLoaded &&
-                    isUsernameValid?.every((validation) => validation) &&
-                    isEmailValid &&
-                    isPasswordValid?.every((validation) => validation) &&
-                    isConfirmPasswordValid
-                  ) {
-                    setAgreement(true);
-                  }
-                }}
+                onClick={handleContinueToAgreement}
                 variant={
                   isLoaded &&
                   isUsernameValid?.every((validation) => validation) &&

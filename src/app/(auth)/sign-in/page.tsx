@@ -6,13 +6,14 @@ import Link from "next/link";
 import { useClerk } from "@clerk/clerk-react";
 import { useSignIn } from "@clerk/nextjs";
 
-import AuthProviders from "@/components/auth-providers";
-import Input from "@/components/ui/input";
-import Icon from "@/components/icons";
-import Divider from "@/components/ui/divider";
-import Button from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { isEmail } from "@/lib/validation";
+
+import Icon from "@/components/icons";
+import Input from "@/components/ui/input";
+import Button from "@/components/ui/button";
+import Divider from "@/components/ui/divider";
+import AuthProviders from "@/components/auth-providers";
 
 export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
