@@ -1,5 +1,5 @@
 import Icon from "@/components/icons";
-import Divider from "@/components/ui/divider";
+import { Divider } from "@/components/ui";
 import Link from "next/link";
 
 export default function Legal() {

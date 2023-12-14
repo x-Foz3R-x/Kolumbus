@@ -9,7 +9,7 @@ import DaysPicker from "@/components/ui/days-picker";
 import Icon from "@/components/icons";
 
 import { Trip, UT } from "@/types";
-import Button from "../ui/button";
+import { Button } from "../ui";
 
 const ActionBarContext = createContext<{
   activeTrip: Trip;
