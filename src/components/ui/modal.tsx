@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { VariantProps, cva } from "class-variance-authority";
 
 import { Backdrop, BackdropType, Motion, Popover, PopoverTrigger, Position, Prevent } from "./popover";
@@ -8,7 +8,7 @@ import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 import { Key } from "@/types";
 
-import { Props as ButtonProps } from "./button";
+import { ButtonProps } from "./";
 
 const ModalVariants = cva("mx-3 overflow-hidden rounded-xl bg-white shadow-borderXL", {
   variants: {
