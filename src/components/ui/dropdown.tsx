@@ -1,4 +1,14 @@
-import { SetStateAction, createContext, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
+import {
+  HTMLAttributeAnchorTarget,
+  SetStateAction,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { VariantProps, cva } from "class-variance-authority";
 import { Variants, motion } from "framer-motion";
 import Link from "next/link";
@@ -8,32 +18,29 @@ import useListNavigation from "@/hooks/use-list-navigation";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
-import Divider from "./divider";
-import Button, { Props as ButtonProps } from "./button";
+import { Divider, Button, ButtonProps } from "./";
 import { PopoverTrigger } from "./popover/popover-trigger";
 
 //#region Context
 const DropdownContext = createContext<{
-  list: DropdownList;
+  skipIndexes?: number[];
   listItemsRef: React.MutableRefObject<(HTMLButtonElement | HTMLAnchorElement | HTMLLIElement | null)[]>;
   activeIndex: number;
   setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
   handleClose: () => void;
 } | null>(null);
-export function useDropdownContext() {
+function useDropdownContext() {
   const context = useContext(DropdownContext);
   if (!context) throw new Error("useDropdownContext must be used within a DropdownContext.Provider");
   return context;
 }
 //#endregion
 
-type DropdownOption = { index: number; onSelect?: () => void; skip?: boolean };
-export type DropdownList = DropdownOption[];
-
 type Props = {
   isOpen: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
-  list: DropdownList;
+  listLength: number;
+  skipIndexes?: number[];
   placement?: Placement;
   strategy?: Strategy;
   container?: Container;
@@ -49,7 +56,8 @@ type Props = {
 export function Dropdown({
   isOpen,
   setOpen,
-  list,
+  listLength,
+  skipIndexes,
   placement = "right-start",
   strategy = "absolute",
   container,
@@ -68,18 +76,15 @@ export function Dropdown({
   const buttonId = useId();
   const listId = useId();
 
-  const [hasFocus, setFocus] = useState<false | "trigger" | "popover">(false);
   const [inputType, setInputType] = useState<"mouse" | "keyboard">("mouse");
-  const [skipIndexes, setSkipIndexes] = useState<number[]>([]);
-  const [activeIndex, setActiveIndex] = useListNavigation({
-    hasFocus,
-    setFocus,
+  const [activeIndex, setActiveIndex, setFocus] = useListNavigation({
+    isOpen,
+    setOpen,
     triggerRef: buttonRef,
     listItemsRef,
-    listLength: list.length,
-    initialIndex: inputType === "keyboard" ? 0 : -1,
+    listLength,
     skipIndexes,
-    enabled: isOpen,
+    selectFirstIndex: inputType === "keyboard",
     preventLoop: true,
     preventArrowDefault: { v: true, h: true },
   });
@@ -88,19 +93,6 @@ export function Dropdown({
     setOpen(false);
     buttonRef.current?.focus({ preventScroll: true });
   }, [buttonRef, setOpen]);
-
-  useEffect(() => {
-    isOpen && setActiveIndex(inputType === "keyboard" ? 0 : -1);
-  }, [isOpen, inputType, setActiveIndex]);
-
-  useEffect(() => {
-    !hasFocus && setOpen(false);
-  }, [hasFocus, setOpen]);
-
-  useEffect(() => {
-    // Find indexes with skip value as true
-    setSkipIndexes(list.map((item, index) => (item.skip === true ? index : undefined)).filter((index) => index !== undefined) as number[]);
-  }, [list]);
 
   return (
     <>
@@ -133,14 +125,14 @@ export function Dropdown({
         ]}
         className={dark ? "dark" : ""}
       >
-        <DropdownContext.Provider value={{ list, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
+        <DropdownContext.Provider value={{ skipIndexes, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
           <ul
             id={listId}
             role="menu"
             aria-labelledby={buttonRef.current?.id}
             onFocus={() => setFocus("popover")}
             className={cn(
-              "flex flex-col rounded-lg bg-white p-1 shadow-border2XL dark:bg-gray-900 dark:text-gray-100 dark:shadow-border2XLDark",
+              "flex flex-col rounded-xl bg-white p-1.5 shadow-border2XL dark:bg-gray-900 dark:text-gray-100 dark:shadow-border2XLDark",
               className,
             )}
           >
@@ -178,17 +170,17 @@ const OptionWrapperVariants = cva(
       },
       size: {
         sm: "before:rounded",
-        default: "before:rounded-[5px]",
+        default: "before:rounded-md",
         unstyled: "",
       },
     },
     defaultVariants: { variant: "default", size: "default" },
   },
 );
-const OptionVariants = cva("fill-tintedGray-400 text-left text-gray-900 dark:fill-gray-600 dark:text-gray-100", {
+const OptionVariants = cva("fill-gray-400 text-left text-gray-700 dark:fill-gray-600 dark:text-gray-300", {
   variants: {
     variant: {
-      default: "focus:fill-tintedGray-700 dark:focus:fill-gray-100",
+      default: "focus:fill-gray-700 dark:focus:fill-gray-300",
       primary: "focus:fill-kolumblue-100 focus:text-kolumblue-100",
       danger: "fill-red-500 text-red-500 focus:fill-red-100 focus:text-red-100",
       unstyled: "",
@@ -204,17 +196,16 @@ const OptionVariants = cva("fill-tintedGray-400 text-left text-gray-900 dark:fil
 type DropdownOptionProps = VariantProps<typeof OptionVariants> &
   VariantProps<typeof OptionWrapperVariants> & {
     index: number;
+    onClick?: () => void;
     className?: string;
     wrapperClassName?: string;
     children?: React.ReactNode;
   };
-export function DropdownOption({ index, variant, size, className, wrapperClassName, children }: DropdownOptionProps) {
-  const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
+export function DropdownOption({ index, onClick, variant, size, className, wrapperClassName, children }: DropdownOptionProps) {
+  const { skipIndexes, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
 
   const handleClick = () => {
-    const onSelect = list[index]?.onSelect;
-    if (onSelect) onSelect();
-
+    onClick?.();
     handleClose();
   };
   const handleMouseMove = () => {
@@ -235,13 +226,13 @@ export function DropdownOption({ index, variant, size, className, wrapperClassNa
       exit="exit"
       className={cn(
         OptionWrapperVariants({ variant, size }),
-        list[index].skip && "pointer-events-none opacity-40 dark:opacity-[0.35]",
+        skipIndexes?.includes(index) && "pointer-events-none opacity-40 dark:opacity-[0.35]",
         wrapperClassName,
       )}
     >
       <Button
         ref={(node) => (listItemsRef.current[index] = node)}
-        onClick={!list[index]?.skip ? handleClick : () => {}}
+        onClick={!skipIndexes?.includes(index) ? handleClick : () => {}}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         variant="unstyled"
@@ -251,7 +242,7 @@ export function DropdownOption({ index, variant, size, className, wrapperClassNa
           OptionVariants({ variant, size, className }),
         )}
         tabIndex={activeIndex === index ? 0 : -1}
-        disabled={list[index].skip}
+        disabled={skipIndexes?.includes(index)}
       >
         {children}
       </Button>
@@ -262,12 +253,14 @@ export function DropdownOption({ index, variant, size, className, wrapperClassNa
 type DropdownLinkProps = VariantProps<typeof OptionVariants> &
   VariantProps<typeof OptionWrapperVariants> & {
     index: number;
-    href?: string | null;
+    href?: string;
+    target?: HTMLAttributeAnchorTarget;
     className?: string;
+    wrapperClassName?: string;
     children?: React.ReactNode;
   };
-export function DropdownLink({ index, href, variant, size, className, children }: DropdownLinkProps) {
-  const { list, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
+export function DropdownLink({ index, href, target, variant, size, className, wrapperClassName, children }: DropdownLinkProps) {
+  const { skipIndexes, listItemsRef, activeIndex, setActiveIndex, handleClose } = useDropdownContext();
 
   const handleMouseMove = () => {
     // on mouse move is used because safari has some problems with detecting mouse enter
@@ -279,7 +272,7 @@ export function DropdownLink({ index, href, variant, size, className, children }
     if (listItemsRef.current[index]) listItemsRef.current[index]?.blur();
   };
 
-  const disabled = href === null || list[index].skip ? true : false;
+  const disabled = href === undefined || skipIndexes?.includes(index) ? true : false;
 
   return (
     <motion.li
@@ -287,11 +280,11 @@ export function DropdownLink({ index, href, variant, size, className, children }
       initial="initial"
       animate="animate"
       exit="exit"
-      className={cn(OptionWrapperVariants({ variant, size, className }), disabled && "pointer-events-none opacity-40")}
+      className={cn(OptionWrapperVariants({ variant, size, className: wrapperClassName }), disabled && "pointer-events-none opacity-40")}
     >
       <Link
         href={href ?? ""}
-        target="_blank"
+        target={target}
         ref={(node) => (listItemsRef.current[index] = node)}
         onClick={!disabled ? handleClose : () => {}}
         onMouseMove={handleMouseMove}
