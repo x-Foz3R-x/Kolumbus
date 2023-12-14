@@ -1,8 +1,20 @@
-/** @type {import('next').NextConfig} */
-
-module.exports = {
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["maps.googleapis.com", "img.clerk.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+      },
+      {
+        protocol: "https",
+        hostname: "maps.googleapis.com",
+      },
+    ],
   },
 };
+
+module.exports = nextConfig;

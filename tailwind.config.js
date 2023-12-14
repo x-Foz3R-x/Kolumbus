@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        inter: "var(--font-inter)",
         gordita: "var(--font-gordita)",
         adso: "var(--font-adso)",
-        inter: "var(--font-inter)",
         inconsolata: "var(--font-inconsolata)",
       },
       animation: {
@@ -91,6 +91,7 @@ module.exports = {
       splashXL:
         "0 0 5px rgba(15,15,15,0.03), 0 4px 4px rgba(15,15,15,0.03), 0 8px 8px rgba(15,15,15,0.03), 0 16px 16px rgba(15,15,15,0.03), 0 24px 24px rgba(15,15,15,0.02), 4px 0 4px rgba(15,15,15,0.02), 8px 0 8px rgba(15,15,15,0.02), -4px 0 4px rgba(15,15,15,0.02), -8px 0 8px rgba(15,15,15,0.02)",
 
+      borderXS: "0 0 0 1px rgba(15,15,15,0.1), 0 1px 2px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.01), 0 2px 3px rgba(15,15,15,0.01)",
       borderXL:
         "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(15,15,15,0.02), 0 2px 2px rgba(15,15,15,0.02), 0 4px 4px rgba(15,15,15,0.02), 0 8px 8px rgba(15,15,15,0.02), 0 16px 16px rgba(15,15,15,0.02)",
       border2XL:
