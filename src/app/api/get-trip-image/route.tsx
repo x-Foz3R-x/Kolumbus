@@ -120,5 +120,5 @@ export async function GET(request: Request) {
     );
   }
 
-  return null;
+  return new Response("Invalid request", { status: 400 });
 }
