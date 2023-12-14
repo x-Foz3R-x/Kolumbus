@@ -7,12 +7,10 @@ import { useClerk } from "@clerk/clerk-react";
 import { useSignIn } from "@clerk/nextjs";
 
 import { cn } from "@/lib/utils";
-import { isEmail } from "@/lib/validation";
+import { IsEmail } from "@/lib/validation";
 
 import Icon from "@/components/icons";
-import Input from "@/components/ui/input";
-import Button from "@/components/ui/button";
-import Divider from "@/components/ui/divider";
+import { Button, Divider, Input } from "@/components/ui";
 import AuthProviders from "@/components/auth-providers";
 
 export default function SignIn() {
@@ -85,7 +83,7 @@ export default function SignIn() {
             placeholder="E-mail"
             onChange={(e) => {
               setEmail(e.target.value);
-              setEmailValid(isEmail(e.target.value));
+              setEmailValid(IsEmail(e.target.value));
             }}
             autoComplete="email"
             autoCorrect="off"

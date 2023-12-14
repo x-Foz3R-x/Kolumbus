@@ -17,7 +17,7 @@ const google = router({
         await fetch(
           `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
             input.searchValue,
-          )}&radius=5000&language=${input.language}&sessiontoken=${input.sessionToken}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`,
+          )}&radius=5000&language=${input.language}&sessiontoken=${input.sessionToken}&key=${process.env.GOOGLE_KEY}`,
         )
       ).json();
 
@@ -36,11 +36,23 @@ const google = router({
     .mutation(async ({ input }) => {
       const response = await (
         await fetch(
-          `https://maps.googleapis.com/maps/api/place/details/json?place_id=${input.place_id}&fields=${input.fields}&language=${input.language}&sessiontoken=${input.sessionToken}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`,
+          `https://maps.googleapis.com/maps/api/place/details/json?place_id=${input.place_id}&fields=${input.fields}&language=${input.language}&sessiontoken=${input.sessionToken}&key=${process.env.GOOGLE_KEY}`,
         )
       ).json();
 
       return response;
+    }),
+  // Deprecated
+  photo: publicProcedure
+    .input(z.object({ photoReference: z.string().optional(), maxWidth: z.number().optional(), maxHeight: z.number().optional() }))
+    .query(async ({ input }) => {
+      if (!input.photoReference) return;
+
+      if (input.maxWidth) {
+        return `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${input.photoReference}&maxwidth=${input.maxWidth}&key=${process.env.GOOGLE_KEY}`;
+      } else if (input.maxHeight) {
+        return `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${input.photoReference}&maxheight=${input.maxHeight}&key=${process.env.GOOGLE_KEY}`;
+      }
     }),
 });
 

@@ -10,8 +10,7 @@ import { EASING, TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 import { Key } from "@/types";
 
-import Button from "./button";
-import Input from "./input";
+import { Button, Input } from "./";
 
 //#region ComboboxContext
 const ComboboxContext = createContext<{
@@ -55,10 +54,11 @@ const Combobox = {
 
     const [enterPressed] = useKeyPress(Key.Enter);
     const [activeIndex, setActiveIndex] = useListNavigation({
+      isOpen,
+      setOpen,
       onChange,
       listLength: list.length,
-      initialIndex: 0,
-      enabled: isOpen,
+      selectFirstIndex: true,
       preventFocus: true,
       preventArrowDefault: { v: true },
     });

@@ -1,7 +1,5 @@
 import { forwardRef } from "react";
-import Button from "../button";
-
-import type { Props as ButtonProps } from "../button";
+import { Button, ButtonProps } from "../button";
 
 type Props = ButtonProps & {
   isOpen: boolean;

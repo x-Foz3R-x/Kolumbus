@@ -56,7 +56,7 @@ type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
  * />
  * ```
  */
-const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) => {
   const {
     label,
     value,
@@ -129,8 +129,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) => {
   );
 });
 Input.displayName = "Input";
-
-export default Input;
 
 //
 //

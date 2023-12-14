@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Icon from "@/components/icons";
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/button/button";
 
 export default function page() {
   return (
     <>
       <nav className="fixed left-0 right-0 top-0 z-10 flex h-14 items-center justify-center bg-white shadow-xs">
-        <Link href="/" title="Home page" aria-label="Home page">
+        <Link href="/" title="Homepage" aria-label="Homepage">
           <Icon.logo className="h-6" />
         </Link>
       </nav>

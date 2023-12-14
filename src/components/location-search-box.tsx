@@ -4,9 +4,8 @@ import api from "@/app/_trpc/client";
 import { Language, PlaceAutocompletePrediction } from "@/types";
 
 import Icon from "./icons";
+import { Button, Divider } from "./ui";
 import Combobox, { ComboboxList } from "./ui/combobox";
-import Button from "./ui/button";
-import Divider from "./ui/divider";
 import Tooltip, { useTooltip } from "./ui/tooltip";
 
 type LocationSearchBoxProps = {

@@ -9,7 +9,7 @@ import { Popover, Offset, Flip, Arrow, Position, Motion, usePopover, Prevent, Po
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
 import Icon from "@/components/icons";
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function PopoverTests() {
   const [optionsTriggerRef, _, areOptionsOpen, setOptionsOpen, optionsInputType, setOptionsInputType] = usePopover();

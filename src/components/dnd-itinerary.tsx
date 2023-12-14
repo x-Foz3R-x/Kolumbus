@@ -17,8 +17,9 @@ import Icon from "./icons";
 import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
 import EventPanel from "./itinerary/event-panel";
-import { Dropdown, DropdownLink, DropdownList, DropdownOption } from "./ui/dropdown";
-import Divider from "./ui/divider";
+import { Dropdown, DropdownLink, DropdownOption } from "./ui/dropdown";
+import { Divider } from "./ui";
+import { EVENT_IMG_FALLBACK } from "@/lib/config";
 
 //#region Context
 const DndDataContext = createContext<{
@@ -370,13 +371,6 @@ const EventComponent = memo(
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
 
-    const getImage = (): string => {
-      if (!event.photo) return "/images/event-placeholder.png";
-      if (event.photo.startsWith("http")) return event.photo;
-
-      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=624&maxheight=320&photo_reference=${event.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
-    };
-
     const openEventPanel = () => {
       setActiveEvent(event);
       setItineraryPosition({ y_day: dayIndex, x_event: event.position });
@@ -387,45 +381,36 @@ const EventComponent = memo(
       } else setEventPanelOpen(true);
     };
 
-    const dropdownList: DropdownList = [
-      { index: 0, onSelect: openEventPanel },
-      { index: 1, onSelect: () => event.address && navigator.clipboard.writeText(event.address) },
-      { index: 2, skip: !event?.url },
-      { index: 3, skip: true },
-      {
-        index: 4,
-        onSelect: () => {
-          if (!event) return;
+    const handleEventDelete = () => {
+      if (!event) return;
 
-          const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+      const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
 
-          const events = [...activeTrip.itinerary[dayIndex].events];
-          events.splice(event.position, 1);
-          events.map((_, index) => ({ position: index }));
+      const events = [...activeTrip.itinerary[dayIndex].events];
+      events.splice(event.position, 1);
+      events.map((_, index) => ({ position: index }));
 
-          setEventPanelOpen(false);
-          dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
-          deleteEvent.mutate(
-            { eventId: event.id, events },
-            {
-              onSuccess(updatedEvents) {
-                if (!updatedEvents) return;
-                updatedEvents.forEach((event) => {
-                  dispatchUserTrips({
-                    type: UT.UPDATE_EVENT,
-                    payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
-                  });
-                });
-              },
-              onError(error) {
-                console.error(error);
-                dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-              },
-            },
-          );
+      setEventPanelOpen(false);
+      dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
+      deleteEvent.mutate(
+        { eventId: event.id, events },
+        {
+          onSuccess(updatedEvents) {
+            if (!updatedEvents) return;
+            updatedEvents.forEach((event) => {
+              dispatchUserTrips({
+                type: UT.UPDATE_EVENT,
+                payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
+              });
+            });
+          },
+          onError(error) {
+            console.error(error);
+            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+          },
         },
-      },
-    ];
+      );
+    };
 
     return (
       <div
@@ -446,10 +431,10 @@ const EventComponent = memo(
             <Dropdown
               isOpen={isDropdownOpen}
               setOpen={setDropdownOpen}
-              list={dropdownList}
+              listLength={5}
+              skipIndexes={[...(event?.url ? [] : [2]), 3]}
               container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
               offset={8}
-              preventScroll
               className="w-44"
               buttonProps={{
                 variant: "unstyled",
@@ -458,27 +443,27 @@ const EventComponent = memo(
                 children: <Icon.horizontalDots className="m-auto w-4" />,
               }}
             >
-              <DropdownOption index={0}>
+              <DropdownOption index={0} onClick={openEventPanel}>
                 <Icon.eventPanel className="h-3.5 w-3.5" />
                 Event panel
               </DropdownOption>
-              <DropdownOption index={1}>
+              <DropdownOption index={1} onClick={() => event.address && navigator.clipboard.writeText(event.address)}>
                 <Icon.clipboardPin className="h-3.5 w-3.5" />
                 Copy address
               </DropdownOption>
 
-              <DropdownLink index={2} href={event?.url} className="justify-center gap-1 text-xs">
+              <DropdownLink index={2} href={event?.url ?? undefined} target="_blank" className="justify-center gap-1 text-xs">
                 Find in Google Maps
                 <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-900 dark:fill-gray-100" />
               </DropdownLink>
 
-              <Divider className="my-1 bg-gray-100" />
+              <Divider className="my-1.5 bg-gray-100" />
 
               <DropdownOption index={3}>
                 <Icon.duplicate className="h-3.5 w-3.5" />
                 Duplicate
               </DropdownOption>
-              <DropdownOption index={4} variant="danger">
+              <DropdownOption index={4} onClick={handleEventDelete} variant="danger">
                 <Icon.trash className="h-3.5 w-3.5" />
                 Delete
               </DropdownOption>
@@ -486,8 +471,15 @@ const EventComponent = memo(
           </span>
         )}
 
-        <div ref={ref} onClick={() => setActiveEvent(event)} className="flex-1 cursor-pointer" {...props}>
-          <Image src={getImage()} alt="Event Image" width={156} height={80} priority className="h-20 object-cover object-center" />
+        <div ref={ref} onClick={() => setActiveEvent(event)} className="relative flex-1 cursor-pointer" {...props}>
+          <Image
+            src={`${event?.photo ? `/api/get-google-image?photoRef=${event.photo}&width=156&height=80` : EVENT_IMG_FALLBACK}`}
+            alt="Event Image"
+            className="h-20 object-cover object-center"
+            sizes="156px"
+            priority
+            fill
+          />
         </div>
 
         <input
