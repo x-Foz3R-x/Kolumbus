@@ -36,7 +36,7 @@ export default function GlobalNav() {
 
           <ScrollAnimation propertyName="scale" className="origin-top">
             <section className="h-12 w-24 flex-shrink-0 p-1">
-              <Link href="/" title="Home page" aria-label="Home page">
+              <Link href="/" title="Homepage" aria-label="Homepage">
                 <Icon.logo2 className="m-auto h-full" />
               </Link>
             </section>
