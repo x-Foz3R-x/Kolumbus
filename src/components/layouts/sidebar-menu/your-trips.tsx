@@ -14,8 +14,8 @@ import { Trip, UT } from "@/types";
 
 import Icon from "../../icons";
 import { Modal, ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle } from "../../ui/modal";
-import { Dropdown, DropdownList, DropdownOption } from "../../ui/dropdown";
-import Button from "../../ui/button";
+import { Dropdown, DropdownOption } from "../../ui/dropdown";
+import { Button } from "../../ui/button";
 import { StatelessInput } from "../../ui/input";
 
 export default function YourTrips() {
@@ -131,31 +131,32 @@ export default function YourTrips() {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
 
-    const dropdownList: DropdownList = [
-      { index: 0, onSelect: () => swapTripsPosition(index, index - 1), skip: index === 0 },
-      { index: 1, onSelect: () => swapTripsPosition(index, index + 1), skip: index === userTrips.length - 1 },
-      { index: 2, onSelect: () => {}, skip: true },
-      { index: 3, onSelect: () => setModalOpen(true) },
-    ];
-
     return (
       <>
         <Dropdown
           isOpen={isDropdownOpen}
           setOpen={setDropdownOpen}
-          list={dropdownList}
+          listLength={5}
+          skipIndexes={[...(index === 0 ? [0] : []), ...(index === userTrips.length - 1 ? [1] : []), 2, 3]}
           className="w-40"
           buttonProps={{
             variant: "scale",
             size: "icon",
-            className: "flex h-6 w-6 items-center justify-center p-0 before:bg-kolumblue-500/20",
+            className: "flex h-6 w-6 items-center justify-center p-0 before:bg-kolumblue-200",
             children: <Icon.horizontalDots className="w-3.5" />,
           }}
         >
-          <DropdownOption index={0}>Move up</DropdownOption>
-          <DropdownOption index={1}>Move down</DropdownOption>
+          <DropdownOption index={0} onClick={() => swapTripsPosition(index, index - 1)}>
+            Move up
+          </DropdownOption>
+          <DropdownOption index={1} onClick={() => swapTripsPosition(index, index + 1)}>
+            Move down
+          </DropdownOption>
+          <DropdownOption index={3}>Share</DropdownOption>
           <DropdownOption index={2}>Duplicate</DropdownOption>
-          <DropdownOption index={3}>Delete</DropdownOption>
+          <DropdownOption index={4} onClick={() => setModalOpen(true)}>
+            Delete
+          </DropdownOption>
         </Dropdown>
 
         <Modal isOpen={isModalOpen} setOpen={setModalOpen} backdrop={{ type: "blur" }} removeButton>
@@ -241,15 +242,15 @@ export default function YourTrips() {
               variant="scale"
               size="default"
               className={cn(
-                "flex w-full cursor-default items-center gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
+                "relative flex w-full cursor-default items-center gap-3 font-medium before:bg-kolumblue-100 before:shadow-kolumblueSelected group-hover/trip:before:scale-100 group-hover/trip:before:opacity-100",
                 index !== selectedTrip
-                  ? "fill-tintedGray-400 hover:fill-tintedGray-600"
+                  ? "fill-gray-700 text-gray-700"
                   : "fill-kolumblue-500 text-kolumblue-500 group-hover/trip:fill-kolumblue-500 group-hover/trip:text-kolumblue-500",
               )}
               animatePress
             >
-              <Icon.defaultTrip className="h-4 w-4 duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5" />
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5">
+              <Icon.defaultTrip className="h-4 w-4 flex-shrink-0 duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5" />
+              <p className="overflow-hidden text-ellipsis whitespace-nowrap text-left duration-300 ease-kolumb-overflow group-hover/trip:w-[7.5rem] group-hover/trip:translate-x-1.5">
                 {trip.name}
               </p>
             </Button>
