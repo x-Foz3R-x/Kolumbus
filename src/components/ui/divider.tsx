@@ -5,8 +5,7 @@ type DividerProps = {
   gradient?: boolean;
   className?: string;
 };
-
-export default function Divider({ orientation = "horizontal", gradient, className }: DividerProps) {
+export function Divider({ orientation = "horizontal", gradient, className }: DividerProps) {
   return (
     <div
       className={cn(
