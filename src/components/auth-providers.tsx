@@ -1,7 +1,7 @@
 import { useSignIn } from "@clerk/nextjs";
 
 import Icon from "./icons";
-import Button from "./ui/button";
+import { Button } from "./ui/button";
 
 export default function AuthProviders() {
   const { signIn, isLoaded } = useSignIn();
