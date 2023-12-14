@@ -1,14 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
 import { useClerk, useUser } from "@clerk/nextjs";
-import Icon from "./icons";
-import { Dropdown, DropdownLink, DropdownList, DropdownOption } from "./ui/dropdown";
-import Divider from "./ui/divider";
+
 import { TRANSITION } from "@/lib/framer-motion";
+
+import Icon from "./icons";
+import { Dropdown, DropdownLink, DropdownOption } from "./ui/dropdown";
+import { Divider } from "./ui";
+import Link from "next/link";
 
 export default function ProfileButton({ dark = false }: { dark?: boolean }) {
   const { user } = useUser();
@@ -22,94 +24,87 @@ export default function ProfileButton({ dark = false }: { dark?: boolean }) {
     router.push("/");
   };
 
-  const list = useRef<DropdownList>([
-    { index: 0, skip: true },
-    { index: 1, skip: true },
-    { index: 2, skip: true },
-    { index: 3 },
-    { index: 4, onSelect: handleSignOut },
-  ]);
+  // TODO: hover effect on profile picture
 
-  return user ? (
+  return (
     <Dropdown
       isOpen={isOpen}
       setOpen={setOpen}
-      list={list.current}
+      listLength={5}
+      skipIndexes={[1, 2, 3]}
       placement="bottom-end"
       strategy="fixed"
       offset={4}
       motion={TRANSITION.fadeToPosition}
       preventFlip
       dark={dark}
-      className="w-56 translate-x-2 rounded-xl p-1.5"
+      className="w-60 translate-x-2 rounded-xl p-2"
       buttonProps={{
         variant: "unstyled",
         size: "unstyled",
         className:
-          "relative h-8 w-8 overflow-hidden rounded-full shadow-xs outline-none duration-500 ease-kolumb-flow after:absolute after:inset-0 after:z-10 after:rounded-full after:border after:border-gray-200 hover:shadow-lg focus:after:border-kolumblue-500",
+          "relative h-8 w-8 overflow-hidden rounded-full shadow-borderXS outline-none duration-500 ease-kolumb-flow hover:shadow-lg focus-visible:border-kolumblue-500",
         children: (
           <>
             <span className="pointer-events-none absolute h-10 w-1 -translate-x-4 -translate-y-4 rotate-45 rounded-full bg-white/30 duration-200 ease-in-out group-hover:translate-x-4 group-hover:translate-y-4" />
             <span className="pointer-events-none absolute h-5 w-0.5 -translate-x-5 -translate-y-5 rotate-45 rounded-full bg-white/30 duration-300 ease-in-out group-hover:translate-x-5 group-hover:translate-y-5" />
 
-            <Image src={user ? user?.imageUrl : "/images/default-avatar.png"} alt="Profile picture" width={32} height={32} />
+            {user && <Image src={user.imageUrl} alt="Profile picture" loading="lazy" sizes="32px" fill />}
           </>
         ),
       }}
     >
-      <div className="flex w-full select-none flex-col items-center gap-1 p-3 pb-1">
-        <div className="overflow-hidden rounded-full shadow-xs duration-500 ease-kolumb-flow hover:shadow-lg">
-          <Image src={user ? user?.imageUrl : "/images/default-avatar.png"} alt="Profile picture" width={48} height={48} />
-        </div>
-        <div className="flex w-48 flex-none select-text flex-col justify-around text-center">
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap font-medium">{user?.username || "Guest"}</span>
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap text-xs text-gray-500">
-            {user?.primaryEmailAddress?.emailAddress || ""}
+      <div className="flex w-full select-none flex-col items-center gap-1 p-2.5 pb-1">
+        <Link
+          href={
+            process.env.NODE_ENV === "production"
+              ? "https://accounts.kolumbus.app/user/profile"
+              : "https://tender-gelding-62.accounts.dev/user/profile"
+          }
+          className="relative h-14 w-14 overflow-hidden rounded-full shadow-borderXS duration-500 ease-kolumb-flow hover:shadow-2xl"
+        >
+          {user && <Image src={user.imageUrl} alt="Profile picture" loading="lazy" sizes="56px" fill />}
+        </Link>
+        <div className="flex select-text flex-col justify-center overflow-hidden text-center">
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium">{user?.fullName}</span>
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap text-xs text-gray-400">
+            {user?.primaryEmailAddress?.emailAddress}
           </span>
         </div>
       </div>
 
-      <Divider className="my-2" />
+      <Divider className="my-2 border-x-2 border-white bg-gray-100 dark:border-gray-900 dark:bg-gray-800" />
 
-      <DropdownOption index={0} className="gap-5">
-        <Icon.userSwitch className="w-4" />
-        Switch Account
-      </DropdownOption>
-      <DropdownOption index={1} className="gap-5">
-        <Icon.appearance className="w-4" />
-        Appearance: Light
-      </DropdownOption>
-      <DropdownOption index={2} className="gap-5">
-        <Icon.globe className="w-4" />
-        Language: English
-      </DropdownOption>
-
-      <Divider className="my-2" />
-
-      <DropdownLink index={3} href="https://accounts.kolumbus.app/user" className="gap-5">
-        <Icon.userSettings className="w-4" />
-        Account settings
+      <DropdownLink
+        index={0}
+        href={process.env.NODE_ENV === "production" ? "https://accounts.kolumbus.app/user" : "https://tender-gelding-62.accounts.dev/user"}
+        className="gap-4"
+      >
+        <Icon.userSettings className="ml-2 w-4" />
+        My account
       </DropdownLink>
-      <DropdownOption index={4} className="gap-5" wrapperClassName="before:rounded-b-lg">
-        <Icon.signOut className="w-4" />
+      <DropdownOption index={1} className="gap-4">
+        <Icon.userSwitch className="ml-2 w-4" />
+        Switch account
+        <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
+      </DropdownOption>
+      <DropdownOption index={2} className="gap-4">
+        <Icon.appearance className="ml-2 w-4" />
+        Appearance
+        <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
+      </DropdownOption>
+      <DropdownOption index={3} className="gap-4">
+        <Icon.globe className="ml-2 w-4" />
+        English
+        <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
+      </DropdownOption>
+
+      <Divider className="my-2 border-x-2 border-white bg-gray-100 dark:border-gray-900 dark:bg-gray-800" />
+
+      <DropdownOption index={4} onClick={handleSignOut} className="gap-4">
+        <Icon.signOut className="ml-2 w-4" />
         Sign out
       </DropdownOption>
     </Dropdown>
-  ) : (
-    <section className="flex h-14 w-fit flex-none items-center px-2 font-medium">
-      <span className="flex flex-none cursor-default items-center gap-1 px-2">
-        <Icon.x className="h-4 w-4" />
-        <span className="w-10 text-center text-xs leading-3">Guest Mode</span>
-      </span>
-
-      <div className="m-2 h-5 border-r border-gray-200"></div>
-
-      <button
-        onClick={handleSignOut}
-        className="rounded-lg px-2 py-1 text-sm duration-200 ease-kolumb-flow hover:scale-110 hover:bg-kolumblue-100 hover:fill-kolumblue-500"
-      >
-        Sign in
-      </button>
-    </section>
   );
 }
