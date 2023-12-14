@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Arrow, Container, Flip, Motion, Offset, Placement, Popover, Position, Prevent } from "./popover";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
-import Button, { Props as ButtonProps } from "./button";
+import { Button, ButtonProps } from "./";
 
 type Props = {
   triggerRef: React.RefObject<HTMLElement>;
