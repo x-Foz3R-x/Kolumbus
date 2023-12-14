@@ -3,7 +3,8 @@ import { twMerge } from "tailwind-merge";
 import clsx, { ClassValue } from "clsx";
 import { z } from "zod";
 
-import type { Itinerary, Day, Event, EventDB } from "@/types";
+import type { Itinerary, Day, Event, EventDB, Trip } from "@/types";
+import type { ServerTrip } from "@/server/routers/trip";
 
 /**
  * Calculate the number of days between two dates.
@@ -136,6 +137,20 @@ export function generateErrorResponse(error: unknown) {
 //#endregion
 
 //#region misc
+/**
+ * Converts the date properties of a Trip or ServerTrip object to ISO string format.
+ * @param trip - The Trip or ServerTrip object to convert.
+ * @returns The converted Trip object.
+ */
+export function ConvertTripDatesToISOString(trip: Trip | ServerTrip): Trip {
+  if (trip.startDate instanceof Date) trip.startDate = trip.startDate.toISOString();
+  if (trip.endDate instanceof Date) trip.endDate = trip.endDate.toISOString();
+  if (trip.updatedAt instanceof Date) trip.updatedAt = trip.updatedAt.toISOString();
+  if (trip.createdAt instanceof Date) trip.createdAt = trip.createdAt.toISOString();
+
+  return trip as Trip;
+}
+
 /**
  * Calculate the size of a JavaScript object in kilobytes (KB).
  * @param object The object to calculate the size for.
