@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { TRANSITION } from "@/lib/framer-motion";
 
-import { Dropdown, DropdownGroupTitle, DropdownList, DropdownOption } from "@/components/ui/dropdown";
+import { Dropdown, DropdownGroupTitle, DropdownOption } from "@/components/ui/dropdown";
 import { Popover, Position, Motion, usePopover, Prevent, PopoverTrigger } from "@/components/ui/popover";
 import { Placement } from "@/components/ui/popover/types";
 import { BasicInput } from "@/components/ui/input";
@@ -18,8 +18,6 @@ export default function DropdownTests() {
   const [placement, setPlacement] = useState("right-start" as Placement);
   const [padding, setPadding] = useState(50);
   const [offset, setOffset] = useState(5);
-
-  const dropdownList: DropdownList = [{ index: 0 }, { index: 1, skip: true }, { index: 2 }, { index: 3 }, { index: 4 }, { index: 5 }];
 
   //#region centering logic
   window.addEventListener("load", () => {
@@ -169,7 +167,8 @@ export default function DropdownTests() {
           <Dropdown
             isOpen={isOpen}
             setOpen={setOpen}
-            list={dropdownList}
+            listLength={6}
+            skipIndexes={[1]}
             placement={placement}
             container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
             offset={offset}
