@@ -11,9 +11,10 @@ import type { UpdateEvent } from "@/server/routers/event";
 import { GetDayIndex } from "@/lib/dnd";
 import { Event, UT } from "@/types";
 
-import { StatelessInput } from "../ui/input";
-import Divider from "../ui/divider";
 import Icon from "../icons";
+import { Divider } from "../ui";
+import { StatelessInput } from "../ui/input";
+import { EVENT_IMG_FALLBACK } from "@/lib/config";
 
 export default function EventPanel() {
   const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
@@ -34,14 +35,7 @@ export default function EventPanel() {
   const noteRef = useRef<HTMLTextAreaElement>(null);
 
   const topPosition = itineraryPosition.y_day * 132 + 20;
-  const leftPosition = 148 + itineraryPosition.x_event * 168;
-
-  const getImage = (): string => {
-    if (!activeEvent?.photo) return "/images/event-placeholder.png";
-    if (activeEvent.photo.startsWith("http")) return activeEvent.photo;
-
-    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1600&maxheight=1600&photo_reference=${activeEvent.photo}&key=${process.env.NEXT_PUBLIC_GOOGLE_KEY}`;
-  };
+  const leftPosition = 172 + itineraryPosition.x_event * 168;
 
   const handleUpdate = (data: UpdateEvent) => {
     if (!activeEvent) return;
@@ -142,8 +136,18 @@ export default function EventPanel() {
           open
         >
           <div className="flex w-80 flex-col overflow-hidden rounded-2xl border-4 border-white bg-white shadow-border3XL">
-            <div className="w-80 bg-transparent">
-              <Image src={getImage()} alt="Event Image" width={312} height={160} priority className="h-40 object-cover object-center" />
+            <div className="relative h-40">
+              <Image
+                src={`${
+                  activeEvent?.photo ? `/api/get-google-image?photoRef=${activeEvent.photo}&width=312&height=160` : EVENT_IMG_FALLBACK
+                }`}
+                alt="Event Image"
+                className="object-cover object-center"
+                sizes="312px"
+                priority
+                fill
+              />
+              {/* <Image src={getImage()} alt="Event Image" width={312} height={160} priority className="h-40 object-cover object-center" /> */}
             </div>
 
             <StatelessInput
