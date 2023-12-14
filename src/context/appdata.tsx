@@ -21,10 +21,6 @@ type AppdataContext = {
   setModalChildren: React.Dispatch<React.SetStateAction<null>>;
 };
 const appdataContext = createContext<AppdataContext | null>(null);
-/**
- * Custom hook to access appdata context.
- * @returns The appdata context.
- */
 export default function useAppdata() {
   const context = useContext(appdataContext);
   if (!context) throw new Error("useAppdata must be used within a AppDataProvider");
@@ -32,17 +28,13 @@ export default function useAppdata() {
 }
 //#endregion
 
-type AppdataProviderProps = {
-  trips: Trip[];
-  children?: React.ReactNode;
-};
 /**
  * Provider component for appdata context.
  * @param serverTrips - The user's trips from the server.
  * @param children - The children components to render.
  * @returns The provider component.
  */
-export function AppdataProvider({ trips, children }: AppdataProviderProps) {
+export function AppdataProvider({ trips, children }: { trips: Trip[]; children?: React.ReactNode }) {
   const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, trips);
   const [selectedTrip, setSelectedTrip] = useState(-1);
   const [isLoading, setLoading] = useState(true);
@@ -119,9 +111,7 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
 
         // Update the position of the trips that are after the trip being deleted
         const tripsToUpdate = newTrips.slice(trip.position + 1);
-        tripsToUpdate.forEach((trip, i) => {
-          trip.position = trip.position + i;
-        });
+        tripsToUpdate.forEach((trip, i) => (trip.position = trip.position + i));
 
         // Remove the deleted trip from the state
         newTrips.splice(trip.position, 1);
