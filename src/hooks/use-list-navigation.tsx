@@ -2,69 +2,67 @@ import { useEffect, useState } from "react";
 import useKeyPress from "./use-key-press";
 import { Key } from "@/types";
 
+// todo - add printable character navigation (e.g. type "a" to select the first option that starts with "a")
+// todo - add arrow key navigation for nested dropdowns (e.g. left/right arrow keys to navigate between nested dropdowns)
+
 type ListNavigationOptions = {
+  isOpen: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onChange?: (index: number) => void;
-  hasFocus?: false | "trigger" | "popover";
-  setFocus?: React.Dispatch<React.SetStateAction<false | "trigger" | "popover">>;
   triggerRef?: React.MutableRefObject<HTMLElement | null>;
   listItemsRef?: React.MutableRefObject<(HTMLElement | null)[]>;
   listLength: number;
-  initialIndex?: number;
   skipIndexes?: number[];
-  enabled: boolean;
+  selectFirstIndex?: boolean;
   preventLoop?: boolean;
   preventFocus?: boolean;
-  /** v -> vertical, h -> horizontal */
   preventArrowDefault?: { v?: boolean; h?: boolean };
 };
-
-// todo - add printable character navigation (e.g. type "a" to select the first option that starts with "a")
-// todo - add arrow key navigation for nested dropdowns (e.g. left/right arrow keys to navigate between nested dropdowns)
 /**
  * Custom hook for list navigation.
  *
  * @example
- * const [hasFocus, setFocus] = useState(false)
+ * const [isOpen, setOpen] = useState(false);
  * const triggerRef = useRef(null);
  * const listItemsRef = useRef([]);
  *
- * const [activeIndex, setActiveIndex] = useListNavigation({
- *   onChangeCallback: (index) => console.log(`Active index changed to ${index}`);
- *   hasFocus,
- *   setFocus,
+ * const [activeIndex, setActiveIndex, setFocus] = useListNavigation({
+ *   isOpen,
+ *   setOpen,
+ *   onChange: (index) => console.log(`Active index changed to ${index}`);
  *   triggerRef,
  *   listItemsRef,
  *   listLength: 5,
- *   initialIndex: 0,
- *   skipIndexes: [2],
- *   placement: "bottom",
- *   enabled: true,
- *   loop: true,
- *   useFocus: true,
+ *   skipIndexes: [0, 2],
+ *   selectFirstIndex: false,
+ *   preventLoop: false,
+ *   preventFocus: false,
+ *   preventArrowDefault: { v: false, h: false },
  * });
  */
 export default function useListNavigation({
+  isOpen,
+  setOpen,
   onChange,
-  hasFocus,
-  setFocus,
   triggerRef,
   listItemsRef,
   listLength,
   skipIndexes,
-  initialIndex = -1,
-  enabled,
+  selectFirstIndex = false,
   preventLoop = false,
   preventFocus = false,
   preventArrowDefault = { v: false, h: false },
 }: ListNavigationOptions) {
-  const [activeIndex, setActiveIndex] = useState(initialIndex);
-  const [firstValidIndex, setFirstValidIndex] = useState(0);
-  const [lastValidIndex, setLastValidIndex] = useState(listLength - 1);
+  const [activeIndex, setActiveIndex] = useState(selectFirstIndex ? getValidIndexes(listLength, skipIndexes).first : -1);
+  const [hasFocus, setFocus] = useState<"trigger" | "popover">();
 
-  const [arrowUpPressed] = useKeyPress(Key.ArrowUp, enabled && preventArrowDefault.v);
-  const [arrowDownPressed] = useKeyPress(Key.ArrowDown, enabled && preventArrowDefault.v);
-  const [arrowLeftPressed] = useKeyPress(Key.ArrowLeft, enabled && preventArrowDefault.h);
-  const [arrowRightPressed] = useKeyPress(Key.ArrowRight, enabled && preventArrowDefault.h);
+  const [firstValidIndex, setFirstValidIndex] = useState(getValidIndexes(listLength, skipIndexes).first);
+  const [lastValidIndex, setLastValidIndex] = useState(getValidIndexes(listLength, skipIndexes).last);
+
+  const [arrowUpPressed] = useKeyPress(Key.ArrowUp, isOpen && preventArrowDefault.v);
+  const [arrowDownPressed] = useKeyPress(Key.ArrowDown, isOpen && preventArrowDefault.v);
+  const [arrowLeftPressed] = useKeyPress(Key.ArrowLeft, isOpen && preventArrowDefault.h);
+  const [arrowRightPressed] = useKeyPress(Key.ArrowRight, isOpen && preventArrowDefault.h);
 
   const [homePressed] = useKeyPress(Key.Home);
   const [endPressed] = useKeyPress(Key.End);
@@ -81,17 +79,9 @@ export default function useListNavigation({
     onChange?.(index);
   };
 
-  // Handle valid indexes for the first and last list items.
-  useEffect(() => {
-    const newExcludedIndexes = Array.from({ length: listLength }, (_, i) => (skipIndexes?.includes(i) ? "x" : "valid_index"));
-
-    setFirstValidIndex(newExcludedIndexes.indexOf("valid_index") ?? 0);
-    setLastValidIndex(newExcludedIndexes.lastIndexOf("valid_index") ?? listLength - 1);
-  }, [skipIndexes, listLength]);
-
   // Handle arrow key press events for navigating within or to a list.
   useEffect(() => {
-    if (!enabled) return;
+    if (!isOpen) return;
 
     // Handles Up & Down arrow keys for navigating within a list.
     const handleYArrowPress = (direction: Key.ArrowUp | Key.ArrowDown) => {
@@ -134,7 +124,7 @@ export default function useListNavigation({
 
   // Handles Home and End key press events for navigating to the first or last not skipped list item.
   useEffect(() => {
-    if (!enabled) return;
+    if (!isOpen) return;
     if (homePressed) focusOnListItem(firstValidIndex);
     else if (endPressed) focusOnListItem(lastValidIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,7 +132,7 @@ export default function useListNavigation({
 
   // Handles Tab key press events for managing focus transitions in different scenarios.
   useEffect(() => {
-    if (!enabled && preventFocus) return;
+    if (!isOpen && preventFocus) return;
 
     const handleTabPress = () => {
       if (hasFocus === "trigger" && !tabEvent?.shiftKey) {
@@ -156,7 +146,7 @@ export default function useListNavigation({
         tabEvent?.preventDefault();
         focusOnListItem(firstValidIndex);
       } else {
-        setFocus?.(false);
+        setOpen(false);
       }
     };
 
@@ -164,9 +154,38 @@ export default function useListNavigation({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabPressed]);
 
+  // Handle valid indexes for the first and last list items.
+  useEffect(() => {
+    const { first, last } = getValidIndexes(listLength, skipIndexes);
+
+    setFirstValidIndex(first);
+    setLastValidIndex(last);
+  }, [skipIndexes, listLength]);
+
+  // Handle open event for managing active index and focus.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const nextIndex = selectFirstIndex ? firstValidIndex : -1;
+
+    focusOnListItem(nextIndex);
+    setActiveIndex(nextIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+
   useEffect(() => {
     if (activeIndex > lastValidIndex) setActiveIndex(firstValidIndex);
   }, [activeIndex, firstValidIndex, lastValidIndex]);
 
-  return [activeIndex, setActiveIndex] as const;
+  return [activeIndex, setActiveIndex, setFocus] as const;
 }
+
+// Find first and last valid index and return them as an object with keys "first" and "last".
+const getValidIndexes = (listLength: number, skipIndexes?: number[]) => {
+  const newExcludedIndexes = Array.from({ length: listLength }, (_, i) => (skipIndexes?.includes(i) ? "invalid" : "valid"));
+
+  const firstValidIndex = newExcludedIndexes.indexOf("valid") ?? 0;
+  const lastValidIndex = newExcludedIndexes.lastIndexOf("valid") ?? listLength - 1;
+
+  return { first: firstValidIndex, last: lastValidIndex };
+};
