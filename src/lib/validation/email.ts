@@ -3,7 +3,7 @@ import { z } from "zod";
 const regex =
   /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 
-export function isEmail(email: string): boolean {
+export function IsEmail(email: string): boolean {
   if (!email) return false;
 
   const emailSplit = email.split("@");
