@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { easepick, AmpPlugin, RangePlugin, LockPlugin, DateTime } from "@easepick/bundle";
+import { easepick, AmpPlugin, RangePlugin, LockPlugin } from "@easepick/bundle";
 
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
