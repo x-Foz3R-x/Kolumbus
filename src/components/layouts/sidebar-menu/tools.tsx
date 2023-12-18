@@ -36,10 +36,10 @@ export default function Tools({ tripId }: { tripId: string }) {
         Itinerary
       </MotionTile>
 
-      <MotionTile href={`/t/${tripId}/structure`} whileTap={{ scale: 0.94 }}>
+      {/* <MotionTile href={`/t/${tripId}/structure`} whileTap={{ scale: 0.94 }}>
         <Icon.structure className="h-6 w-6 flex-none" />
         Structure
-      </MotionTile>
+      </MotionTile> */}
 
       <MotionTile href={`/t/${tripId}/map`} whileTap={{ scale: 0.94 }}>
         <Icon.map className="h-6 w-6 flex-none" />
@@ -51,7 +51,7 @@ export default function Tools({ tripId }: { tripId: string }) {
         Expenses
       </MotionTile>
 
-      <MotionTile href={`/t/${tripId}/packing-list`} className="col-span-2" whileTap={{ scale: 0.94 }}>
+      <MotionTile href={`/t/${tripId}/packing-list`} whileTap={{ scale: 0.94 }}>
         <Icon.packingList className="h-6 w-6 flex-none" />
         Packing List
       </MotionTile>

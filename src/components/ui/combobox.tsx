@@ -8,7 +8,7 @@ import useCloseTriggers from "@/hooks/use-close-triggers";
 import useKeyPress from "@/hooks/use-key-press";
 import { EASING, TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
-import { Key } from "@/types";
+import { KEY } from "@/types";
 
 import { Button, Input } from "./";
 
@@ -52,7 +52,7 @@ const Combobox = {
     const inputRef = useRef<HTMLInputElement>(null);
     const listId = useId();
 
-    const [enterPressed] = useKeyPress(Key.Enter);
+    const [enterPressed] = useKeyPress(KEY.Enter);
     const [activeIndex, setActiveIndex] = useListNavigation({
       isOpen,
       setOpen,

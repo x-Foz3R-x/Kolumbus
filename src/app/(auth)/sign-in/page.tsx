@@ -6,12 +6,12 @@ import Link from "next/link";
 import { useClerk } from "@clerk/clerk-react";
 import { useSignIn } from "@clerk/nextjs";
 
-import { cn } from "@/lib/utils";
 import { IsEmail } from "@/lib/validation";
+import { cn } from "@/lib/utils";
 
 import Icon from "@/components/icons";
-import { Button, Divider, Input } from "@/components/ui";
 import AuthProviders from "@/components/auth-providers";
+import { Button, Divider, Input } from "@/components/ui";
 
 export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
@@ -37,42 +37,12 @@ export default function SignIn() {
     }
   };
 
-  // const handleGoogleSignIn = async () => {
-  //   if (!isLoaded) return;
-
-  //   const baseGoogleUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-  //   const clientId = "852909021816-k2i9cqjpqhe0mk3vrc77tbtasm1bl2dr.apps.googleusercontent.com";
-
-  //   // const redirectUri = "https://clerk.kolumbus.app/v1/oauth_callback";
-  //   const redirectUri = "https://tender-gelding-62.clerk.accounts.dev/v1/oauth_callback";
-
-  //   const url = `${baseGoogleUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid%20https://www.googleapis.com/auth/userinfo.email%20https://www.googleapis.com/auth/userinfo.profile`;
-
-  //   console.log(url);
-
-  //   const redirectUrl = `https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?access_type=offline&client_id=787459168867-0v2orf3qo56uocsi84iroseoahhuovdm.apps.googleusercontent.com&prompt=consent&redirect_uri=https%3A%2F%2Fclerk.shared.lcl.dev%2Fv1%2Foauth_callback&response_type=code&scope=openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=wtxdmgotoaiyjv2v4p3m5d535ob5fpztc58ehzme&service=lso&o2v=1&theme=glif&flowName=GeneralOAuthFlow`;
-
-  //   try {
-  //     await signIn.authenticateWithRedirect({
-  //       strategy: "oauth_google",
-  //       redirectUrl: "/sso-callback",
-  //       redirectUrlComplete: `/`,
-  //     });
-  //   } catch (error: unknown) {
-  //     console.error(error);
-  //   }
-
-  //   // return signIn
-  //   //   .authenticateWithRedirect({ strategy: "oauth_google", redirectUrl: "/", redirectUrlComplete: "/" })
-  //   //   .catch((err) => console.error(err));
-  // };
-
   return (
     <main className="flex h-screen w-screen min-w-fit flex-col items-center justify-center overflow-hidden">
       <Link href="/">
-        <Icon.logo className="h-8" />
+        <Icon.logo className="h-6" />
       </Link>
-      <h1 className="my-6 text-2xl font-medium">Sign in to Kolumbus</h1>
+      <h1 className="my-4 pb-1 text-2xl font-medium text-gray-800">Sign in to Kolumbus</h1>
 
       <form className="w-80 rounded-lg shadow-soft">
         <div className="relative focus-within:z-10">

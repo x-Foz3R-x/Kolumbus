@@ -3,19 +3,19 @@ export * from "./google";
 
 export type SvgProps = React.SVGAttributes<HTMLOrSVGElement>;
 
-export enum Language {
+export enum LANGUAGE {
   English = "en",
   Polish = "pl",
 }
 
-export enum UserRole {
+export enum USER_ROLE {
   ADMIN = "ADMIN",
   TESTER = "TESTER",
   PREMIUM = "PREMIUM",
   USER = "USER",
 }
 
-export enum Key {
+export enum KEY {
   Backspace = "Backspace",
   Tab = "Tab",
   Enter = "Enter",

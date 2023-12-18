@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useKeyPress from "./use-key-press";
-import { Key } from "@/types";
+import { KEY } from "@/types";
 
 /**
  * Custom hook for scoping tab navigation.
@@ -12,7 +12,7 @@ export default function useScopeTabNavigation(elementRef: React.MutableRefObject
   const [activeIndex, setActiveIndex] = useState(0);
   const [focusableElements, setFocusableElements] = useState<HTMLElement[]>([]);
 
-  const [tabPressed, tabEvent] = useKeyPress(Key.Tab);
+  const [tabPressed, tabEvent] = useKeyPress(KEY.Tab);
 
   // Updates the focusable elements based on the current element ref and enabled state.
   useEffect(() => {

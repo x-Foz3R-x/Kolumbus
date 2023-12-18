@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Key } from "@/types";
+import { KEY } from "@/types";
 
-export default function useKeyPress(targetKey: Key, block?: boolean) {
+export default function useKeyPress(targetKey: KEY, block?: boolean) {
   const [keyPressed, setKeyPressed] = useState(false);
   const [event, setEvent] = useState<KeyboardEvent | null>(null);
 

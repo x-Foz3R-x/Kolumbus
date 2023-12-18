@@ -6,7 +6,7 @@ import useScopeTabNavigation from "@/hooks/use-scope-tab-navigation";
 import useKeyPress from "@/hooks/use-key-press";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
-import { Key } from "@/types";
+import { KEY } from "@/types";
 
 import { ButtonProps } from "./";
 
@@ -39,7 +39,7 @@ export function Modal({ isOpen, setOpen, backdrop, size, className, removeButton
   const buttonId = useId();
   const contentId = useId();
 
-  const [_, tabEvent] = useKeyPress(Key.Tab);
+  const [_, tabEvent] = useKeyPress(KEY.Tab);
   useEffect(() => {
     isOpen && tabEvent?.preventDefault();
   }, [isOpen]); // eslint-disable-line
