@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import api from "@/app/_trpc/client";
-import { Language, PlaceAutocompletePrediction } from "@/types";
+import { LANGUAGE, PlaceAutocompletePrediction } from "@/types";
 
 import Icon from "./icons";
 import { Button, Divider } from "./ui";
@@ -33,7 +33,7 @@ export default function LocationSearchBox({ isOpen, setOpen, onAdd, placeholder,
     }
 
     getAutocomplete.mutate(
-      { searchValue: e.target.value, language: Language.English, sessionToken },
+      { searchValue: e.target.value, language: LANGUAGE.English, sessionToken },
       {
         onSuccess(data) {
           if (data.status === "OK") {

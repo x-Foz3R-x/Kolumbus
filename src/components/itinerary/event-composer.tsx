@@ -10,7 +10,7 @@ import { useDndData } from "../dnd-itinerary";
 import useAppdata from "@/context/appdata";
 import { TRANSITION } from "@/lib/framer-motion";
 import { eventTemplate } from "@/data/template-data";
-import { PlaceAutocompletePrediction, Event, FieldsGroup, Language, UT } from "@/types";
+import { PlaceAutocompletePrediction, Event, FieldsGroup, LANGUAGE, UT } from "@/types";
 
 import LocationSearchBox from "../location-search-box";
 import { Motion, Popover, Position } from "../ui/popover";
@@ -73,7 +73,7 @@ export default function EventComposer() {
         {
           place_id: eventData.place_id,
           fields: FieldsGroup.Basic + FieldsGroup.Contact,
-          language: Language.English,
+          language: LANGUAGE.English,
           sessionToken,
         },
         {
