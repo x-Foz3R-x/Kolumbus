@@ -3,7 +3,7 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { Key } from "@/types";
+import { KEY } from "@/types";
 
 const InputVariants = cva(
   "peer w-full appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-gray-100 dark:placeholder:text-gray-600",
@@ -58,9 +58,11 @@ type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
  */
 export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) => {
   const {
+    id,
     label,
     value,
     defaultValue,
+    autoComplete,
     onChange,
     fullWidth,
     fullHeight,
@@ -99,7 +101,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
   return (
     <div
       style={{ ...(fullWidth && { width: "100%" }), ...(fullHeight && { height: "100%" }) }}
-      className={cn("focus-within:z-30", (dynamicWidth || label) && "relative")}
+      className={cn("focus-within:z-30", (dynamicWidth || autoComplete || label) && "relative")}
     >
       {/* dynamic width of input */}
       {dynamicWidth && (
@@ -108,20 +110,29 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
         </p>
       )}
 
+      {/* label for autocomplete identification */}
+      {!label && autoComplete && (
+        <label htmlFor={id} className="absolute -z-10 select-none text-transparent opacity-0">
+          {autoComplete}
+        </label>
+      )}
+
       <input
         ref={ref}
+        id={id}
         value={value}
         defaultValue={defaultValue}
-        onChange={(e) => {}}
+        autoComplete={autoComplete}
+        onChange={() => {}}
         onBlur={handleChange}
-        onKeyDown={(e) => e.key === Key.Enter && e.currentTarget.blur()}
+        onKeyDown={(e) => e.key === KEY.Enter && e.currentTarget.blur()}
         className={cn(InputVariants({ variant, size, className }), dynamicWidth && "absolute inset-0 h-full text-center")}
         {...props}
       />
 
       {/* inset label */}
       {label && (
-        <label className={cn(getLabelStyle(), labelClassName)}>
+        <label htmlFor={id} className={cn(getLabelStyle(), labelClassName)}>
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">{label}</span>
         </label>
       )}
@@ -240,7 +251,7 @@ export function StatelessInput({
         value={inputValue}
         onChange={handleChange}
         onBlur={handleUpdate}
-        onKeyDown={(e) => (e.key === Key.Escape || e.key === Key.Enter) && e.currentTarget.blur()}
+        onKeyDown={(e) => (e.key === KEY.Escape || e.key === KEY.Enter) && e.currentTarget.blur()}
         className={cn(InputVariants({ variant, size, className }), dynamicWidth && "absolute inset-0 h-full text-center")}
         {...props}
       />
