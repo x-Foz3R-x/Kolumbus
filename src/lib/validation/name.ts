@@ -1,4 +1,4 @@
-import isBlacklisted from "./username-blacklist";
+import isBlacklisted from "./name-blacklist";
 
 export function ValidateName(username: string) {
   const [first, last] = username.split(" ");
