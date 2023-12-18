@@ -34,7 +34,7 @@ const SignUpContext = createContext<{
 
   reset: () => void;
 } | null>(null);
-export function useSignUpContext() {
+function useSignUpContext() {
   const context = useContext(SignUpContext);
   if (!context) throw new Error("useSignUpContext must be used within a useSignUpContext.Provider");
   return context;
