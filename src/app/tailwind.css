@@ -31,6 +31,21 @@ input:-webkit-autofill:focus {
     0 0 0 3px hsla(210, 78%, 60%, 0.3);
 }
 
+.detectAutofill:-webkit-autofill {
+  animation-name: autofillstart;
+}
+.detectAutofill:not(:-webkit-autofill) {
+  animation-name: autofillcancel;
+}
+@keyframes autofillstart {
+  from {
+  }
+}
+@keyframes autofillcancel {
+  from {
+  }
+}
+
 /* Any component with className .sm-screen below 850px screen width will not be displayed */
 @media (max-width: 850px) {
   .supported-width {
