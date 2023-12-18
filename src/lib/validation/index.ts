@@ -1,3 +1,3 @@
 export { IsEmail } from "./email";
 export { ValidatePassword } from "./password";
-export { ValidateName } from "./username";
+export { ValidateName } from "./name";
