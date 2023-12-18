@@ -14,6 +14,15 @@ export default function Index() {
         <Map />
       </main>
 
+      {/* Watermark */}
+      <div className="fixed bottom-5 left-5 z-[60] rounded-full bg-red-300/60 p-3 text-center font-inter text-xs font-semibold text-red-700 backdrop-blur-sm">
+        <span className="absolute inset-0 -z-10 rounded-full bg-red-400 blur" />
+        <p>Found bug?</p>
+        <Link href="/contact" className="px-4 hover:underline">
+          Contact me
+        </Link>
+      </div>
+
       <section className="container mx-auto px-4 py-28">
         <div className="mb-8 text-center">
           <h2 className="mb-4 text-3xl font-bold">Plan Your Adventures with Ease</h2>

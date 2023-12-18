@@ -14,10 +14,10 @@ export default function GlobalNav() {
             <div className="flex h-6 w-full items-center justify-end gap-1">
               <h3 className="flex-none text-sm">From Dream to Itinerary</h3>
               <h2 className="flex-none text-base">From Dream to Itinerary</h2>
-              <h1 className="flex-none text-base text-gray-400">From Dream to Itinerary</h1>
+              <h1 className="flex-none text-base text-gray-300">From Dream to Itinerary</h1>
             </div>
             <div className="flex h-6 w-full items-center justify-start gap-1">
-              <h1 className="flex-none text-base text-gray-400">Your Journey, Your Way</h1>
+              <h1 className="flex-none text-base text-gray-300">Your Journey, Your Way</h1>
               <h2 className="flex-none text-base">Your Journey, Your Way</h2>
               <h3 className="flex-none text-sm">Your Journey, Your Way</h3>
             </div>
