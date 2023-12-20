@@ -8,6 +8,7 @@ import { useSignIn } from "@clerk/nextjs";
 
 import { IsEmail } from "@/lib/validation";
 import { cn } from "@/lib/utils";
+import { KEY } from "@/types";
 
 import Icon from "@/components/icons";
 import AuthProviders from "@/components/auth-providers";
@@ -17,18 +18,15 @@ export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const { signOut } = useClerk();
 
+  const [isEmailValid, setEmailValid] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const [isEmailValid, setEmailValid] = useState(false);
-
   const router = useRouter();
 
-  const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
+  const handleSignIn = async () => {
     if (!isLoaded) return;
-
     signOut();
 
     try {
@@ -96,6 +94,7 @@ export default function SignIn() {
             placeholder="Password"
             value={password}
             onInput={(e) => setPassword(e.currentTarget.value)}
+            onKeyDown={(e) => e.key === KEY.Enter}
             autoComplete="current-password"
             autoCorrect="off"
             spellCheck="false"
@@ -104,7 +103,10 @@ export default function SignIn() {
 
           <span className="absolute inset-y-0 right-4 z-30 flex items-center">
             <Button
-              onClick={handleSignIn}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSignIn();
+              }}
               variant={isLoaded && isEmailValid && password.length >= 8 ? "unstyled" : "disabled"}
               size="unstyled"
               className={cn(
