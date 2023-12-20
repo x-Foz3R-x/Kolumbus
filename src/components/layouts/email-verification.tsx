@@ -11,10 +11,9 @@ import { Button } from "../ui";
 
 export default function EmailVerification({ reset }: { reset: () => void }) {
   const { signUp, setActive, isLoaded } = useSignUp();
-  const router = useRouter();
-
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleVerification = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();

@@ -32,16 +32,16 @@ input:-webkit-autofill:focus {
 }
 
 .detectAutofill:-webkit-autofill {
-  animation-name: autofillstart;
+  animation-name: autofillStart;
 }
 .detectAutofill:not(:-webkit-autofill) {
-  animation-name: autofillcancel;
+  animation-name: autofillCancel;
 }
-@keyframes autofillstart {
+@keyframes autofillStart {
   from {
   }
 }
-@keyframes autofillcancel {
+@keyframes autofillCancel {
   from {
   }
 }
