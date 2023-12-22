@@ -1,4 +1,4 @@
-import { Event as prismaEvent } from "@prisma/client";
+import { Event as prismaEvent, Trip as prismaTrip } from "@prisma/client";
 import { z } from "zod";
 
 import { protectedProcedure, router } from "../trpc";
@@ -31,9 +31,16 @@ const trip = router({
       orderBy: [{ position: "asc" }],
     });
 
-    (trip as Trip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events));
+    return {
+      ...trip,
+      updatedAt: trip.updatedAt.toISOString(),
+      createdAt: trip.createdAt.toISOString(),
+      itinerary: GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events)),
+    } as Trip;
 
-    return trip as Trip;
+    // (trip as Trip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events));
+
+    // return trip as Trip;
   }),
 
   //#region Read
@@ -64,19 +71,22 @@ const trip = router({
       orderBy: { position: "asc" },
     });
 
-    for (let i = 0; i < trips.length; i++) {
-      const trip = trips[i];
+    return (await getTripsWithItinerary(trips)) as Trip[];
 
-      const events = await prisma.event.findMany({
-        where: { tripId: trip.id },
-        orderBy: [{ position: "asc" }],
-      });
+    // for (let i = 0; i < trips.length; i++) {
+    //   const trip = trips[i];
 
-      (trip as Trip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events));
-    }
+    //   const events = await prisma.event.findMany({
+    //     where: { tripId: trip.id },
+    //     orderBy: [{ position: "asc" }],
+    //   });
 
-    return trips as Trip[];
+    //   (trip as Trip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events));
+    // }
+
+    // return trips as Trip[];
   }),
+
   //#endregion
 
   update: protectedProcedure
@@ -100,6 +110,24 @@ const trip = router({
 });
 
 export default trip;
+
+async function getTripsWithItinerary(trips: prismaTrip[]): Promise<Trip[]> {
+  return Promise.all(
+    trips.map(async (trip) => {
+      const events = await prisma.event.findMany({
+        where: { tripId: trip.id },
+        orderBy: [{ position: "asc" }],
+      });
+
+      return {
+        ...trip,
+        updatedAt: trip.updatedAt.toISOString(),
+        createdAt: trip.createdAt.toISOString(),
+        itinerary: GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events)),
+      };
+    }),
+  );
+}
 
 function formatEvents(events: prismaEvent[]): Event[] {
   return events.map((event) => ({
