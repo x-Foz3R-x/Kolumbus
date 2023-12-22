@@ -130,15 +130,16 @@ function FormSection() {
   // OnAutofill validation.
   useEffect(() => {
     const handleAutofill = (e: AnimationEvent) => {
-      if (nameRef.current === e.target && nameRef.current) setNameValidation(ValidateName(nameRef.current.value));
-      if (emailRef.current === e.target && emailRef.current) setEmailValidation({ isEmail: IsEmail(emailRef.current.value) });
-      if (passwordRef.current === e.target && passwordRef.current) setPasswordValidation(ValidatePassword(passwordRef.current.value));
-      if (confirmPasswordRef.current === e.target && passwordRef.current && confirmPasswordRef.current)
-        setConfirmPasswordValidation(passwordRef.current.value === confirmPasswordRef.current.value);
+      if (e.animationName !== "autofillStart") return;
+
+      if (nameRef.current && e.target === nameRef.current) setNameValidation(ValidateName(nameRef.current.value));
+      if (emailRef.current && e.target === emailRef.current) setEmailValidation({ isEmail: IsEmail(emailRef.current.value) });
+      if (passwordRef.current && e.target === passwordRef.current) setPasswordValidation(ValidatePassword(passwordRef.current.value));
+      if (passwordRef.current && confirmPasswordRef.current && e.target === confirmPasswordRef.current)
+        setConfirmPasswordValidation(confirmPasswordRef.current.value === passwordRef.current.value);
     };
 
     document.addEventListener("animationstart", handleAutofill, true);
-
     return () => document.removeEventListener("animationstart", handleAutofill, true);
   }, []);
 

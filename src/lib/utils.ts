@@ -3,8 +3,7 @@ import { twMerge } from "tailwind-merge";
 import clsx, { ClassValue } from "clsx";
 import { z } from "zod";
 
-import type { Itinerary, Day, Event, EventDB, Trip } from "@/types";
-import type { ServerTrip } from "@/server/routers/trip";
+import type { Itinerary, Day, Event } from "@/types";
 
 /**
  * Calculate the number of days between two dates.
@@ -24,66 +23,42 @@ export function CalculateDays(firstDate: string | Date, secondDate: string | Dat
 }
 
 /**
- * Formats the day of the week to a different representation.
- * Sunday is formatted as 6, Monday as 0, Tuesday as 1, and so on.
- * @param dayOfWeek The day of the week represented as a number (0-6).
- * @returns The formatted representation of the day of the week.
+ * Formats a date into the "yyyy-mm-dd" format.
+ * @param date The date object to be formatted.
+ * @returns The formatted date string in "yyyy-mm-dd" format.
  */
-export function FormatDayOfWeek(dayOfWeek: number): number {
-  switch (dayOfWeek) {
-    case 0:
-      return 6;
-    case 1:
-      return 0;
-    case 2:
-      return 1;
-    case 3:
-      return 2;
-    case 4:
-      return 3;
-    case 5:
-      return 4;
-    case 6:
-      return 5;
-    default:
-      return 0;
-  }
+export function formatDate(date: Date): string {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear().toString();
+
+  return `${year}-${month}-${day}`;
 }
 
 /**
  * Generates an itinerary for a trip.
  *
  * @param tripId - The ID of the trip.
- * @param startDate - The start date of the trip. Can be a string or Date object.
- * @param days - The number of days in the trip.
+ * @param startDate - The start date of the trip.
+ * @param endDate - The end date of the trip.
  * @param events - An array of events for the trip. Defaults to an empty array.
  * @returns An array representing the itinerary for the trip.
  */
-export function GenerateItinerary(tripId: string, startDate: string | Date, endDate: string | Date, events: Event[] | EventDB[] = []) {
+export function GenerateItinerary(tripId: string, startDate: string, endDate: string, events: Event[] = []) {
+  const totalDays = CalculateDays(startDate, endDate);
+  const currentDate = new Date(startDate);
   const itinerary: Itinerary = [];
-  const iteratedDate = new Date(startDate);
 
-  // Convert date properties of events to ISO strings if they are Date objects.
-  events = events.map((event) => {
-    if (event.date instanceof Date) event.date = event.date.toISOString();
-    if (event.updatedAt instanceof Date) event.updatedAt = event.updatedAt.toISOString();
-    if (event.createdAt instanceof Date) event.createdAt = event.createdAt.toISOString();
-
-    return event as Event;
-  });
-
-  for (let i = 0; i < CalculateDays(startDate, endDate); i++) {
-    const currentDate = iteratedDate.toISOString();
-    const currentEvents = events.filter((event) => event.date === currentDate);
-
+  for (let i = 0; i < totalDays; i++) {
+    const date = formatDate(currentDate);
     const day: Day = {
       id: `D${i}_@${tripId}`,
-      date: currentDate,
-      events: currentEvents ?? [],
+      date,
+      events: events.filter((event) => event.date === date),
     };
 
     itinerary.push(day);
-    iteratedDate.setDate(iteratedDate.getDate() + 1);
+    currentDate.setDate(currentDate.getDate() + 1);
   }
 
   return itinerary;
@@ -137,20 +112,6 @@ export function generateErrorResponse(error: unknown) {
 //#endregion
 
 //#region misc
-/**
- * Converts the date properties of a Trip or ServerTrip object to ISO string format.
- * @param trip - The Trip or ServerTrip object to convert.
- * @returns The converted Trip object.
- */
-export function ConvertTripDatesToISOString(trip: Trip | ServerTrip): Trip {
-  if (trip.startDate instanceof Date) trip.startDate = trip.startDate.toISOString();
-  if (trip.endDate instanceof Date) trip.endDate = trip.endDate.toISOString();
-  if (trip.updatedAt instanceof Date) trip.updatedAt = trip.updatedAt.toISOString();
-  if (trip.createdAt instanceof Date) trip.createdAt = trip.createdAt.toISOString();
-
-  return trip as Trip;
-}
-
 /**
  * Calculate the size of a JavaScript object in kilobytes (KB).
  * @param object The object to calculate the size for.

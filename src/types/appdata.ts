@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Trip as PrismaTrip, Event as PrismaEvent, Currency } from "@prisma/client";
+import { Currency } from "@prisma/client";
 import { PlaceOpeningHours } from "./google";
 
 export type Event = z.infer<typeof eventSchema>;
@@ -8,7 +8,7 @@ export const eventSchema = z.object({
   tripId: z.string().cuid2("Invalid trip id"),
   placeId: z.string().nullable(),
 
-  name: z.string().nullable(),
+  name: z.string(),
   address: z.string().nullable(),
   phoneNumber: z.string().nullable(),
   cost: z.number().nullable(),
@@ -17,10 +17,10 @@ export const eventSchema = z.object({
   url: z.string().nullable(),
   note: z.string().nullable(),
   openingHours: PlaceOpeningHours,
-  photoAlbum: z.array(z.string()),
+  // photoAlbum: z.array(z.string()),
   photo: z.string().nullable(),
 
-  date: z.string().datetime(),
+  date: z.string(),
   position: z.number(),
   updatedAt: z.string().datetime(),
   createdAt: z.string().datetime(),
@@ -30,7 +30,7 @@ export const eventSchema = z.object({
 export type Day = z.infer<typeof daySchema>;
 export const daySchema = z.object({
   id: z.string(),
-  date: z.string().datetime(),
+  date: z.string(),
   events: z.array(eventSchema),
 });
 
@@ -42,33 +42,30 @@ export const tripSchema = z.object({
   id: z.string().cuid2("Invalid trip id"),
   userId: z.string(),
   name: z.string(),
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime(),
+  startDate: z.string(),
+  endDate: z.string(),
   position: z.number(),
   itinerary: itinerarySchema,
   updatedAt: z.string().datetime(),
   createdAt: z.string().datetime(),
 });
 
-export type TripDB = PrismaTrip;
-export type EventDB = PrismaEvent;
-
 /**
  * Enum representing the different types of updates that can be made to the appdata.
  */
 export enum UT {
   // TRIPS
-  REPLACE = "replace_trips_state",
+  REPLACE = "replace_trips",
 
   // TRIP
-  CREATE_TRIP = "create_trip_in_state",
-  UPDATE_TRIP = "update_trip_in_state",
-  DELETE_TRIP = "delete_trip_in_state",
+  CREATE_TRIP = "create_trip",
+  UPDATE_TRIP = "update_trip",
+  DELETE_TRIP = "delete_trip",
 
   // EVENT
-  CREATE_EVENT = "add_event_to_state",
-  UPDATE_EVENT = "update_event_in_state",
-  DELETE_EVENT = "delete_event_in_state",
+  CREATE_EVENT = "add_event",
+  UPDATE_EVENT = "update_event",
+  DELETE_EVENT = "delete_event",
 }
 
 /**

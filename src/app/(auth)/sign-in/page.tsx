@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useClerk } from "@clerk/clerk-react";
@@ -8,6 +8,7 @@ import { useSignIn } from "@clerk/nextjs";
 
 import { IsEmail } from "@/lib/validation";
 import { cn } from "@/lib/utils";
+import { KEY } from "@/types";
 
 import Icon from "@/components/icons";
 import AuthProviders from "@/components/auth-providers";
@@ -17,25 +18,45 @@ export default function SignIn() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const { signOut } = useClerk();
 
+  const [isEmailValid, setEmailValid] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isEmailValid, setEmailValid] = useState<boolean>();
+  const [error, setError] = useState("");
 
   const router = useRouter();
 
-  const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
+  const handleSignIn = async () => {
     if (!isLoaded) return;
-
     signOut();
 
-    const result = await signIn.create({ identifier: email, password });
+    try {
+      const result = await signIn.create({ identifier: email, password });
 
-    if (result.status === "complete") {
-      await setActive({ session: result.createdSessionId });
-      router.push("/library");
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        router.push("/library");
+      }
+    } catch (error) {
+      console.error(error);
+      type Error = { errors: { code: string; message: string }[] };
+
+      if ((error as Error).errors.length > 0) {
+        setError((error as Error).errors[0].message);
+      } else setError("An error occurred.");
     }
   };
+
+  // OnAutofill validation.
+  useEffect(() => {
+    const handleAutofill = (e: AnimationEvent) => {
+      if (e.animationName !== "autofillStart") return;
+
+      setEmailValid(IsEmail(email));
+    };
+
+    document.addEventListener("animationstart", handleAutofill, true);
+    return () => document.removeEventListener("animationstart", handleAutofill, true);
+  }, [email, password]);
 
   return (
     <main className="flex h-screen w-screen min-w-fit flex-col items-center justify-center overflow-hidden">
@@ -44,21 +65,22 @@ export default function SignIn() {
       </Link>
       <h1 className="my-4 pb-1 text-2xl font-medium text-gray-800">Sign in to Kolumbus</h1>
 
+      {error && <span className="mx-auto mb-4 rounded-md bg-red-100 px-2 py-0.5 text-red-500">{error}</span>}
+
       <form className="w-80 rounded-lg shadow-soft">
         <div className="relative focus-within:z-10">
           <Input
             id="email"
             name="email"
             type="email"
-            placeholder="E-mail"
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setEmailValid(IsEmail(e.target.value));
-            }}
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmailValid(IsEmail(e.target.value))}
+            onInput={(e) => setEmail(e.currentTarget.value)}
             autoComplete="email"
             autoCorrect="off"
             spellCheck="false"
-            className="mb-px rounded-lg rounded-b-none px-4 py-3 text-base"
+            className="detectAutofill mb-px rounded-lg rounded-b-none px-4 py-3 text-base"
           />
 
           <span className="absolute inset-y-0 right-4 z-30 flex items-center"></span>
@@ -70,7 +92,9 @@ export default function SignIn() {
             name="password"
             type="password"
             placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            onInput={(e) => setPassword(e.currentTarget.value)}
+            onKeyDown={(e) => e.key === KEY.Enter}
             autoComplete="current-password"
             autoCorrect="off"
             spellCheck="false"
@@ -79,7 +103,10 @@ export default function SignIn() {
 
           <span className="absolute inset-y-0 right-4 z-30 flex items-center">
             <Button
-              onClick={handleSignIn}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSignIn();
+              }}
               variant={isLoaded && isEmailValid && password.length >= 8 ? "unstyled" : "disabled"}
               size="unstyled"
               className={cn(

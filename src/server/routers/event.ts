@@ -9,7 +9,7 @@ const updateSchema = z.object({
   id: z.string().cuid2("Invalid event id").optional(),
   placeId: z.string().nullable().optional(),
 
-  name: z.string().nullable().optional(),
+  name: z.string().optional(),
   address: z.string().nullable().optional(),
   phoneNumber: z.string().nullable().optional(),
   cost: z.number().nullable().optional(),
@@ -18,10 +18,10 @@ const updateSchema = z.object({
   url: z.string().nullable().optional(),
   note: z.string().nullable().optional(),
   openingHours: PlaceOpeningHours.optional(),
-  photoAlbum: z.array(z.string()).optional(),
+  // photoAlbum: z.array(z.string()).optional(),
   photo: z.string().nullable().optional(),
 
-  date: z.string().datetime().optional(),
+  date: z.string().optional(),
   position: z.number().optional(),
 });
 

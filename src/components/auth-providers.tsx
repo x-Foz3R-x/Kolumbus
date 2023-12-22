@@ -1,8 +1,7 @@
-import { useSignIn, SignIn } from "@clerk/nextjs";
-
-import Icon from "./icons";
-import { Button } from "./ui/button";
+import { useSignIn } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
+import Icon from "./icons";
+import { Button } from "./ui";
 
 export default function AuthProviders() {
   const { signIn, isLoaded } = useSignIn();
@@ -24,7 +23,7 @@ export default function AuthProviders() {
         <Button
           onClick={signInWithGoogle}
           variant="button"
-          className="pointer-events-none flex w-80 items-center justify-center gap-2 border-gray-200 bg-gray-50 py-2 opacity-40"
+          className="pointer-events-none flex w-80 items-center justify-center gap-2 rounded-xl border-gray-200 bg-gray-50 py-2 opacity-40"
         >
           <Icon.user className="h-3 w-3" />
           Try kolumbus as a Guest
@@ -36,7 +35,7 @@ export default function AuthProviders() {
           onClick={signInWithGoogle}
           variant="button"
           className={cn(
-            "flex w-80 items-center justify-center gap-2 border-gray-200 bg-gray-50 py-2",
+            "flex w-80 items-center justify-center gap-2 rounded-xl border-gray-200 bg-gray-50 py-2",
             !isLoaded && "pointer-events-none opacity-40",
           )}
         >

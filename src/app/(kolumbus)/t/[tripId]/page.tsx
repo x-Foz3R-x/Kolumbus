@@ -25,7 +25,7 @@ export default function Itinerary({ params: { tripId } }: { params: { tripId: st
       <span />
 
       {!isLoading && userTrips[selectedTrip] ? <ActionBar activeTrip={userTrips[selectedTrip]} /> : <ActionBarSkeleton />}
-      {!isLoading && userTrips[selectedTrip] ? <DndItinerary userTrips={userTrips} /> : <ItinerarySkeleton />}
+      {!isLoading && userTrips[selectedTrip] ? <DndItinerary userTrips={userTrips} tripId={tripId} /> : <ItinerarySkeleton />}
 
       <Portal>
         <ModalOld showModal={isModalShown} modalChildren={modalChildren} />
