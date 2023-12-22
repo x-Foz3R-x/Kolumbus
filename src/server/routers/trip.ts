@@ -1,27 +1,19 @@
+import { Event as prismaEvent } from "@prisma/client";
 import { z } from "zod";
+
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { GenerateItinerary } from "@/lib/utils";
-import { itinerarySchema, tripSchema } from "@/types";
+import { tripSchema, Trip, Event } from "@/types";
 
-export type ServerTrip = z.infer<typeof serverTrip>;
-const serverTrip = z.object({
-  id: z.string().cuid2("Not a cuid2"),
-  userId: z.string(),
+type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
+type JsonObject = { [x: string]: JsonValue };
+type JsonArray = JsonValue[];
 
-  name: z.string(),
-  startDate: z.date(),
-  endDate: z.date(),
-  position: z.number(),
-  itinerary: itinerarySchema,
-
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
 const updateSchema = z.object({
   name: z.string().optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   position: z.number().optional(),
 });
 
@@ -39,10 +31,11 @@ const trip = router({
       orderBy: [{ position: "asc" }],
     });
 
-    (trip as ServerTrip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, events);
+    (trip as Trip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events));
 
-    return trip as ServerTrip;
+    return trip as Trip;
   }),
+
   //#region Read
   find: protectedProcedure.input(z.object({ tripId: z.string() })).query(async ({ ctx, input }) => {
     if (!ctx.user.id) return;
@@ -79,12 +72,13 @@ const trip = router({
         orderBy: [{ position: "asc" }],
       });
 
-      (trip as ServerTrip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, events);
+      (trip as Trip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events));
     }
 
-    return trips as ServerTrip[];
+    return trips as Trip[];
   }),
   //#endregion
+
   update: protectedProcedure
     .input(z.object({ tripId: z.string().cuid2("Invalid trip id"), data: updateSchema }))
     .mutation(async ({ ctx, input }) => {
@@ -95,6 +89,7 @@ const trip = router({
         data: input.data,
       });
     }),
+
   delete: protectedProcedure.input(z.object({ tripId: z.string().cuid2("Invalid trip id") })).mutation(async ({ ctx, input }) => {
     if (!ctx.user.id) return;
 
@@ -105,3 +100,12 @@ const trip = router({
 });
 
 export default trip;
+
+function formatEvents(events: prismaEvent[]): Event[] {
+  return events.map((event) => ({
+    ...event,
+    updatedAt: event.updatedAt instanceof Date ? event.updatedAt.toISOString() : event.updatedAt,
+    createdAt: event.createdAt instanceof Date ? event.createdAt.toISOString() : event.createdAt,
+    openingHours: typeof event.openingHours === "object" ? (event.openingHours as JsonObject) : {},
+  }));
+}
