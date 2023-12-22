@@ -9,10 +9,10 @@ export enum LANGUAGE {
 }
 
 export enum USER_ROLE {
-  ADMIN = "ADMIN",
-  TESTER = "TESTER",
-  PREMIUM = "PREMIUM",
-  USER = "USER",
+  Admin = "ADMIN",
+  Tester = "TESTER",
+  Premium = "PREMIUM",
+  User = "USER",
 }
 
 export enum KEY {

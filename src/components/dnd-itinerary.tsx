@@ -18,8 +18,9 @@ import { Calendar, CalendarEnd } from "./itinerary/calendar";
 import EventComposer from "./itinerary/event-composer";
 import EventPanel from "./itinerary/event-panel";
 import { Dropdown, DropdownLink, DropdownOption } from "./ui/dropdown";
-import { Divider } from "./ui";
+import { Button, Divider } from "./ui";
 import { EVENT_IMG_FALLBACK } from "@/lib/config";
+import { cn, formatDate } from "@/lib/utils";
 
 //#region Context
 const DndDataContext = createContext<{
@@ -48,11 +49,11 @@ export function useDndData() {
 //#endregion
 
 //#region Itinerary
-export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
+export default function DndItinerary({ userTrips, tripId }: { userTrips: Trip[]; tripId?: string }) {
   const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
   const updateEvent = api.event.update.useMutation();
 
-  const [activeTrip, setActiveTrip] = useState<Trip>(userTrips[selectedTrip]);
+  const [activeTrip, setActiveTrip] = useState<Trip>(userTrips.find((trip) => trip.id === tripId) ?? ({} as Trip));
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -65,8 +66,8 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
   //
 
   useEffect(() => {
-    setActiveTrip(userTrips[selectedTrip]);
-  }, [userTrips, selectedTrip]);
+    setActiveTrip(userTrips.find((trip) => trip.id === tripId) ?? ({} as Trip));
+  }, [userTrips, tripId]);
 
   const { itinerary, ...tripInfo } = activeTrip;
   const events = itinerary.flatMap((day) => day.events);
@@ -92,10 +93,10 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
 
     // todo: optimize not to update all events, only the changed ones
     // todo: sync with db, if update fails, revert to previous state
-    const iteratedDate = new Date(tripInfo.startDate);
+    const currentDate = new Date(tripInfo.startDate);
     itinerary.forEach((day, dayIndex) => {
       day.events.forEach((event, index) => {
-        event.date = iteratedDate.toISOString();
+        event.date = formatDate(currentDate);
         event.position = index;
 
         setSaving(true);
@@ -117,6 +118,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
               });
             },
             onError(error) {
+              console.log("first error");
               console.error(error);
               dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
             },
@@ -127,9 +129,8 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
         );
       });
 
-      iteratedDate.setDate(iteratedDate.getDate() + 1);
+      currentDate.setDate(currentDate.getDate() + 1);
     });
-    setApiUpdate(null);
   };
   const handleDragOver = ({ active, over }: DragOverEvent) => {
     if (over === null) return;
@@ -165,17 +166,16 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
 
     if (!newItinerary) return;
 
-    const iteratedDate = new Date(tripInfo.startDate);
+    const currentDate = new Date(tripInfo.startDate);
     newItinerary.forEach((day) => {
-      const currentDate = iteratedDate.toISOString();
+      day.date = formatDate(currentDate);
 
-      day.date = currentDate;
       day.events.forEach((event, index) => {
-        event.date = currentDate;
+        event.date = formatDate(currentDate);
         event.position = index;
       });
 
-      iteratedDate.setDate(iteratedDate.getDate() + 1);
+      currentDate.setDate(currentDate.getDate() + 1);
     });
 
     setActiveTrip({ itinerary: newItinerary, ...tripInfo });
@@ -201,7 +201,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
   };
 
   return (
-    <div className="relative flex flex-col gap-10 px-6">
+    <div className="relative px-6">
       <DndDataContext.Provider value={value}>
         <DndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
           <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
@@ -210,8 +210,8 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
 
             <ul className="flex w-full min-w-fit flex-col">
               {daysId?.map((dayId) => <DndDay key={dayId} day={GetDay(itinerary, dayId)} />)}
-              <CalendarEnd totalDays={daysId.length} />
             </ul>
+            <CalendarEnd />
           </SortableContext>
 
           {typeof activeId === "string" && daysId.includes(activeId) ? (
@@ -222,7 +222,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
-              <DayComponent day={GetDay(itinerary, activeId)} dragOverlay={true} />
+              <DayComponent day={GetDay(itinerary, activeId)} dragging />
             </DragOverlay>
           ) : null}
 
@@ -233,7 +233,7 @@ export default function DndItinerary({ userTrips }: { userTrips: Trip[] }) {
                 easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
               }}
             >
-              <EventComponent event={GetEvent(events, activeId)} dragOverlay={true} />
+              <EventComponent event={GetEvent(events, activeId)} dragging />
             </DragOverlay>
           ) : null}
         </DndContext>
@@ -280,10 +280,10 @@ const DndDay = memo(function Day({ day, ...props }: { day: Day }) {
 
 type DayComponentProps = {
   day: Day;
-  dragOverlay?: boolean;
+  dragging?: boolean;
 };
 const DayComponent = memo(
-  forwardRef(function DndDayContentComponent({ day, dragOverlay, ...props }: DayComponentProps, ref: ForwardedRef<HTMLDivElement>) {
+  forwardRef(function DndDayContentComponent({ day, dragging, ...props }: DayComponentProps, ref: ForwardedRef<HTMLDivElement>) {
     const { activeTrip, activeId, setEventComposerOpen: setEventComposerDisplay, setItineraryPosition } = useDndData();
     const { id, date, events } = day;
 
@@ -298,7 +298,7 @@ const DayComponent = memo(
     const eventWidthAndGap = 168;
     return (
       <div ref={ref} className="group/day flex w-full gap-5">
-        <Calendar index={dayIndex} dragOverlay={dragOverlay} handleAddEvent={handleAddEvent} {...props} />
+        <Calendar index={dayIndex} dragging={dragging} handleAddEvent={handleAddEvent} {...props} />
 
         <ul
           className={`flex h-32 origin-left list-none gap-2 pt-5 duration-300 ease-kolumb-flow ${
@@ -360,10 +360,10 @@ DndEvent.displayName = "DndEvent";
 
 type EventComponentProps = {
   event: Event;
-  dragOverlay?: boolean;
+  dragging?: boolean;
 };
 const EventComponent = memo(
-  forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragOverlay, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
+  forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragging, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
     const { dispatchUserTrips, selectedTrip } = useAppdata();
     const { activeTrip, setActiveEvent, isEventPanelOpen, setEventPanelOpen, setItineraryPosition } = useDndData();
     const deleteEvent = api.event.delete.useMutation();
@@ -415,10 +415,10 @@ const EventComponent = memo(
     return (
       <div
         className={`group relative flex h-28 flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-lg border-2 border-white/80 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-leave hover:shadow-borderSplashXl hover:ease-kolumb-flow ${
-          dragOverlay ? "shadow-borderSplashXl" : "shadow-borderXL"
+          dragging ? "shadow-borderSplashXl" : "shadow-borderXL"
         }`}
       >
-        {!dragOverlay && (
+        {!dragging && (
           <span
             className={`absolute right-1 top-1 z-20 grid h-6 w-14 grid-cols-2 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow ${
               isDropdownOpen ? "opacity-100" : "opacity-0"
@@ -473,7 +473,7 @@ const EventComponent = memo(
 
         <div ref={ref} onClick={() => setActiveEvent(event)} className="relative flex-1 cursor-pointer" {...props}>
           <Image
-            src={`${event?.photo ? `/api/get-google-image?photoRef=${event.photo}&width=156&height=80` : EVENT_IMG_FALLBACK}`}
+            src={`${event?.photo ? `/api/get-google-image?photoRef=${event.photo}&width=156&height=82` : EVENT_IMG_FALLBACK}`}
             alt="Event Image"
             className="h-20 object-cover object-center"
             sizes="156px"
@@ -482,15 +482,26 @@ const EventComponent = memo(
           />
         </div>
 
-        <input
-          type="text"
-          name="event-name"
-          placeholder="-"
-          value={event.name ?? ""}
-          onClick={() => event.name && navigator.clipboard.writeText(event.name)}
-          readOnly
-          className="mt-0.5 flex-shrink-0 cursor-pointer text-ellipsis bg-transparent px-1 py-[3px] text-sm text-gray-900 placeholder:text-center hover:bg-gray-400/25"
-        />
+        <p
+          className={cn(
+            "group/name relative mt-0.5 whitespace-nowrap bg-transparent px-1 py-0.5 text-sm text-gray-900",
+            !event.name && "text-center text-red-500",
+          )}
+        >
+          {event?.name ?? "error"}
+          {!dragging && (
+            <Button
+              onClick={() => navigator.clipboard.writeText(event.name)}
+              variant="unstyled"
+              size="unstyled"
+              className="absolute inset-y-0 right-0 z-10 bg-gradient-to-r from-transparent via-white to-white fill-gray-500 pl-8 pr-2 opacity-0 duration-300 ease-kolumb-leave hover:fill-gray-900 group-hover/name:opacity-100 group-hover/name:ease-kolumb-flow"
+            >
+              <Icon.copy className="m-auto h-3" />
+            </Button>
+          )}
+        </p>
+
+        <span className="absolute bottom-0 right-0 h-6 w-6 bg-gradient-to-r from-transparent to-white" />
       </div>
     );
   }),
