@@ -137,7 +137,7 @@ export function Popover({
   return (
     <AnimatePresence>
       {isOpen ? (
-        <Portal containerSelector={container.selector}>
+        <Portal selector={container.selector} skipSSRCheck>
           {backdropContent}
           <motion.div
             ref={popoverRef}
