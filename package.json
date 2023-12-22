@@ -1,6 +1,6 @@
 {
   "name": "kolumbus",
-  "version": "0.1.57",
+  "version": "0.1.58",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,7 +16,7 @@
     "@dnd-kit/utilities": "^3.2.1",
     "@easepick/bundle": "^1.2.1",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "^5.7.0",
+    "@prisma/client": "^5.7.1",
     "@tanstack/react-query": "^4.35.3",
     "@trpc/client": "^10.38.3",
     "@trpc/react-query": "^10.38.3",
@@ -25,7 +25,7 @@
     "@vercel/speed-insights": "^1.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "framer-motion": "^10.16.12",
+    "framer-motion": "^10.16.16",
     "next": "^14.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -43,7 +43,7 @@
     "postcss": "^8.4.32",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.6",
-    "prisma": "^5.7.0",
+    "prisma": "^5.7.1",
     "tailwindcss": "^3.3.6",
     "typescript": "^5.3.3"
   }
