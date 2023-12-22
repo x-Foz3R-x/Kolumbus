@@ -31,16 +31,7 @@ const trip = router({
       orderBy: [{ position: "asc" }],
     });
 
-    return {
-      ...trip,
-      updatedAt: trip.updatedAt.toISOString(),
-      createdAt: trip.createdAt.toISOString(),
-      itinerary: GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events)),
-    } as Trip;
-
-    // (trip as Trip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events));
-
-    // return trip as Trip;
+    return createTripObject(trip, events);
   }),
 
   //#region Read
@@ -71,22 +62,8 @@ const trip = router({
       orderBy: { position: "asc" },
     });
 
-    return (await getTripsWithItinerary(trips)) as Trip[];
-
-    // for (let i = 0; i < trips.length; i++) {
-    //   const trip = trips[i];
-
-    //   const events = await prisma.event.findMany({
-    //     where: { tripId: trip.id },
-    //     orderBy: [{ position: "asc" }],
-    //   });
-
-    //   (trip as Trip).itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events));
-    // }
-
-    // return trips as Trip[];
+    return await createTripsObject(trips);
   }),
-
   //#endregion
 
   update: protectedProcedure
@@ -111,7 +88,12 @@ const trip = router({
 
 export default trip;
 
-async function getTripsWithItinerary(trips: prismaTrip[]): Promise<Trip[]> {
+/**
+ * Creates an array of Trip objects based on the provided prismaTrip array.
+ * @param trips - The array of prismaTrip objects.
+ * @returns A Promise that resolves to an array of Trip objects.
+ */
+async function createTripsObject(trips: prismaTrip[]): Promise<Trip[]> {
   return Promise.all(
     trips.map(async (trip) => {
       const events = await prisma.event.findMany({
@@ -119,16 +101,31 @@ async function getTripsWithItinerary(trips: prismaTrip[]): Promise<Trip[]> {
         orderBy: [{ position: "asc" }],
       });
 
-      return {
-        ...trip,
-        updatedAt: trip.updatedAt.toISOString(),
-        createdAt: trip.createdAt.toISOString(),
-        itinerary: GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events)),
-      };
+      return createTripObject(trip, events);
     }),
   );
 }
 
+/**
+ * Creates a Trip object based on the provided trip and events data.
+ * @param trip - The trip data.
+ * @param events - The events data.
+ * @returns The created Trip object.
+ */
+function createTripObject(trip: prismaTrip, events: prismaEvent[]): Trip {
+  return {
+    ...trip,
+    updatedAt: trip.updatedAt.toISOString(),
+    createdAt: trip.createdAt.toISOString(),
+    itinerary: GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events)),
+  } as Trip;
+}
+
+/**
+ * Formats an array of events.
+ * @param events - The array of events to be formatted.
+ * @returns The formatted array of events.
+ */
 function formatEvents(events: prismaEvent[]): Event[] {
   return events.map((event) => ({
     ...event,
