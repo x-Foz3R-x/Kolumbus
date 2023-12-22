@@ -46,8 +46,8 @@ export const tripSchema = z.object({
   endDate: z.string(),
   position: z.number(),
   itinerary: itinerarySchema,
-  updatedAt: z.date(),
-  createdAt: z.date(),
+  updatedAt: z.string().datetime(),
+  createdAt: z.string().datetime(),
 });
 
 /**
