@@ -77,4 +77,5 @@ enum EventType {
   MARKER
   COUNTRY
   GROUP
+  NOTE
 }
