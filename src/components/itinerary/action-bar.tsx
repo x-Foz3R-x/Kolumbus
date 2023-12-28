@@ -80,8 +80,8 @@ export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
           </section>
 
           <section className="flex flex-shrink-0 items-center gap-2 pr-5">
-            {/* <p>cost: unavailable</p> */}
-            <DaysPicker maxTripsDays={90} />
+            <DaysPicker maxTripsDays={30} />
+
             <DatePicker />
             {isSaving && <p>saving...</p>}
           </section>

@@ -151,26 +151,26 @@ export default function DatePicker() {
   };
 
   return (
-    <div className="relative select-none">
-      <Icon.rangeCalendar className="absolute h-9 fill-kolumblue-500" />
+    <div className="relative h-10 select-none">
+      <Icon.rangeCalendar className="absolute h-full fill-kolumblue-500" />
 
-      <section className="absolute h-9 w-[5.0625rem] text-center text-[10px] font-medium text-white/75">
-        <div className="absolute left-[-0.125rem] top-1 w-10">
+      <div className="absolute inset-y-0 left-0 flex w-[37px] flex-col items-center justify-between pb-[3.5px] pt-[7px] leading-none">
+        <span className="text-[10px] font-semibold uppercase text-kolumblue-100">
           {new Date(activeTrip.startDate).toLocaleString("default", { month: "short" }).toUpperCase()}
-        </div>
-        <div className="absolute right-[-0.125rem] top-1 w-10">
-          {new Date(activeTrip.endDate).toLocaleString("default", { month: "short" }).toUpperCase()}
-        </div>
-      </section>
+        </span>
+        <span>{new Date(activeTrip.startDate).getDate()}</span>
+      </div>
 
-      <section className="absolute h-9 w-[5.0625rem] text-center text-sm font-medium">
-        <div className="absolute bottom-0 left-[-0.125rem] w-10">{new Date(activeTrip.startDate).getDate()}</div>
-        <div className="absolute bottom-0 right-[-0.125rem] w-10">{new Date(activeTrip.endDate).getDate()}</div>
-      </section>
+      <div className="absolute inset-y-0 right-0 flex w-[37px] flex-col items-center justify-between pb-[3.5px] pt-[7px] leading-none">
+        <span className="text-[10px] font-semibold uppercase text-kolumblue-100">
+          {new Date(activeTrip.endDate).toLocaleString("default", { month: "short" }).toUpperCase()}
+        </span>
+        <span>{new Date(activeTrip.endDate).getDate()}</span>
+      </div>
 
       <input
         id="datepicker"
-        className="relative z-10 h-9 w-[5.0625rem] cursor-pointer appearance-none border-none bg-transparent text-xs font-thin text-transparent outline-0"
+        className="relative z-10 h-full w-[85.8px] cursor-pointer appearance-none border-none bg-transparent text-xs font-thin text-transparent outline-0"
         onClick={handlePicker}
         ref={DatePickerRef}
         readOnly
