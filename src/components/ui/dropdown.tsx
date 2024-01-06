@@ -186,8 +186,8 @@ const OptionVariants = cva("fill-gray-400 text-left text-gray-700 dark:fill-gray
       unstyled: "",
     },
     size: {
-      sm: "gap-2 px-2 py-1 text-xs",
-      default: "gap-3 px-3 py-1.5 text-sm",
+      sm: "h-6 gap-2 px-2 text-xs",
+      default: "h-8 gap-3 px-3 text-sm",
       unstyled: "",
     },
   },
@@ -226,7 +226,7 @@ export function DropdownOption({ index, onClick, variant, size, className, wrapp
       exit="exit"
       className={cn(
         OptionWrapperVariants({ variant, size }),
-        skipIndexes?.includes(index) && "pointer-events-none opacity-40 dark:opacity-[0.35]",
+        skipIndexes?.includes(index) && "pointer-events-none opacity-50",
         wrapperClassName,
       )}
     >
@@ -280,7 +280,7 @@ export function DropdownLink({ index, href, target, variant, size, className, wr
       initial="initial"
       animate="animate"
       exit="exit"
-      className={cn(OptionWrapperVariants({ variant, size, className: wrapperClassName }), disabled && "pointer-events-none opacity-40")}
+      className={cn(OptionWrapperVariants({ variant, size, className: wrapperClassName }), disabled && "pointer-events-none opacity-50")}
     >
       <Link
         href={href ?? ""}
@@ -290,7 +290,7 @@ export function DropdownLink({ index, href, target, variant, size, className, wr
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         className={cn(
-          "flex w-full cursor-default items-center duration-300 ease-kolumb-overflow hover:translate-x-1.5",
+          "flex w-full cursor-default items-center duration-300 ease-kolumb-overflow hover:translate-x-1.5 hover:underline",
           OptionVariants({ variant, size, className }),
         )}
         tabIndex={activeIndex === index ? 0 : -1}

@@ -80,21 +80,21 @@ export default function ProfileButton({ dark = false }: { dark?: boolean }) {
         href={process.env.NODE_ENV === "production" ? "https://accounts.kolumbus.app/user" : "https://tender-gelding-62.accounts.dev/user"}
         className="gap-4"
       >
-        <Icon.userSettings className="ml-2 w-4" />
+        <Icon.userSettings className="ml-2 w-5" />
         My account
       </DropdownLink>
       <DropdownOption index={1} className="gap-4">
-        <Icon.userSwitch className="ml-2 w-4" />
+        <Icon.userSwitch className="ml-2 w-5" />
         Switch account
         <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
       </DropdownOption>
       <DropdownOption index={2} className="gap-4">
-        <Icon.appearance className="ml-2 w-4" />
+        <Icon.appearance className="ml-2 w-5" />
         Appearance
         <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
       </DropdownOption>
       <DropdownOption index={3} className="gap-4">
-        <Icon.globe className="ml-2 w-4" />
+        <Icon.globe className="ml-2 w-5" />
         English
         <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
       </DropdownOption>
@@ -102,7 +102,7 @@ export default function ProfileButton({ dark = false }: { dark?: boolean }) {
       <Divider className="my-2 border-x-2 border-white bg-gray-100 dark:border-gray-900 dark:bg-gray-800" />
 
       <DropdownOption index={4} onClick={handleSignOut} className="gap-4">
-        <Icon.signOut className="ml-2 w-4" />
+        <Icon.signOut className="ml-2 w-5" />
         Sign out
       </DropdownOption>
     </Dropdown>

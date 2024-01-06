@@ -444,27 +444,30 @@ const EventComponent = memo(
               }}
             >
               <DropdownOption index={0} onClick={openEventPanel}>
-                <Icon.eventPanel className="h-3.5 w-3.5" />
+                <Icon.eventPanel className="h-4 w-4" />
                 Event panel
               </DropdownOption>
               <DropdownOption index={1} onClick={() => event.address && navigator.clipboard.writeText(event.address)}>
-                <Icon.clipboardPin className="h-3.5 w-3.5" />
+                <Icon.clipboardPin className="h-4 w-4" />
                 Copy address
               </DropdownOption>
 
-              <DropdownLink index={2} href={event?.url ?? undefined} target="_blank" className="justify-center gap-1 text-xs">
-                Find in Google Maps
-                <Icon.arrowTopRight className="mb-1 h-1.5 fill-gray-900 dark:fill-gray-100" />
+              <DropdownLink index={2} href={event?.url ?? undefined} target="_blank">
+                <Icon.googleMapsIcon className="h-4 w-4" />
+                <span>
+                  <Icon.googleMapsText className="mr-1 inline-block h-3.5 fill-gray-600 dark:fill-gray-300" />
+                  <Icon.arrowTopRight className="mb-1.5 inline-block h-1.5 fill-gray-600 dark:fill-gray-300" />
+                </span>
               </DropdownLink>
 
               <Divider className="my-1.5 bg-gray-100" />
 
               <DropdownOption index={3}>
-                <Icon.duplicate className="h-3.5 w-3.5" />
+                <Icon.duplicate className="h-4 w-4" />
                 Duplicate
               </DropdownOption>
               <DropdownOption index={4} onClick={handleEventDelete} variant="danger">
-                <Icon.trash className="h-3.5 w-3.5" />
+                <Icon.trash className="h-4 w-4" />
                 Delete
               </DropdownOption>
             </Dropdown>
