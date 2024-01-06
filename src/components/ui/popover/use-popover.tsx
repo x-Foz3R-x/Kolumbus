@@ -235,6 +235,10 @@ function Flip(
   offset: number | { mainAxis?: number; crossAxis?: number },
   arrowSize: number,
 ) {
+  // Temporarily remove the transform to get the correct bounding rect
+  const originalTransform = popover.style.transform;
+  popover.style.transform = "none";
+
   const windowRect = getWindowRect(container);
   const triggerRect = getStrategisedElementRect(container, trigger, strategy);
   const popoverRect = getStrategisedElementRect(container, popover, strategy);
@@ -247,6 +251,9 @@ function Flip(
 
   const PLACEMENTS = getFallbackPlacements(initialPlacement);
   const OVERFLOW = DetectOverflow(boundary, popover.getBoundingClientRect());
+
+  // Restore the transform after getting the bounding rect
+  popover.style.transform = originalTransform;
 
   // Map each placement to its overflow data
   const overflowsData = PLACEMENTS.map((placement) => {

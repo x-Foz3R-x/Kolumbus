@@ -174,7 +174,7 @@ export default function PopoverTests() {
           className="rounded-md text-gray-100 shadow-borderXL duration-250 ease-kolumb-flow"
           zIndex={30}
         >
-          <div id="popover" className="flex items-center justify-center gap-3 rounded-md bg-gray-800 px-4 py-2">
+          <div id="popover" className="relative z-10 flex items-center justify-center gap-3 rounded-md bg-gray-800 p-4">
             {placement}
           </div>
         </Popover>
@@ -406,9 +406,10 @@ function PopoverWithinContainer() {
             container={{ selector: "main", padding }}
             extensions={[Offset(offset), Flip(), Arrow(arrowSize, arrowStyles), Prevent({ autofocus: inputType !== "keyboard" })]}
             className="rounded-md text-white shadow-borderXL"
-            zIndex={30}
+            zIndex={35}
           >
-            <div id="popover" className="flex items-center justify-center gap-3 rounded-md bg-gray-800 px-4 py-3 text-lg">
+            <div id="popover" className="relative z-10 flex items-center justify-center gap-3 rounded-md bg-gray-800 p-3">
+              <Icon.logo2 className="h-5 w-5" />
               <Button
                 onClick={handleClose}
                 variant="appear"
@@ -417,7 +418,7 @@ function PopoverWithinContainer() {
               >
                 <Icon.x className="h-2.5 w-2.5" />
               </Button>
-              Popover
+              <Icon.logo2 className="h-5 w-5" />
             </div>
           </Popover>
 

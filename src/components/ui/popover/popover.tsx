@@ -39,7 +39,10 @@ export function Popover({
   zIndex = 100,
   children,
 }: Props) {
-  const mountedExtensions: MountedExtensions = extensions.reduce((acc, extension) => ({ ...acc, [extension.name]: extension }), {});
+  const mountedExtensions: MountedExtensions = useMemo(
+    () => extensions.reduce((acc, extension) => ({ ...acc, [extension.name]: extension }), {}),
+    [extensions],
+  );
   const { placement, styles, isPositioned } = usePopover(
     triggerRef,
     popoverRef,
@@ -71,7 +74,7 @@ export function Popover({
           role="presentation"
           aria-hidden={true}
           style={styles.arrow}
-          className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className?.arrow, transition.current)}
+          className={cn("absolute rotate-45", mountedExtensions.arrow.className?.arrow, transition.current)}
         ></span>
         {mountedExtensions.arrow.className?.backdrop ? (
           <span
