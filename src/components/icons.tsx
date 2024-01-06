@@ -1,8 +1,3 @@
-// id\s*=\s*"[^"]*"
-// class\s*=\s*"[^"]*"
-// < g[^>]*>
-// < /g[^>]*>
-
 import { SvgProps } from "@/types";
 
 // name: ({ ...props }: SvgProps) => (),

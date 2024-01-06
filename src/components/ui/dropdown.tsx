@@ -187,7 +187,7 @@ const OptionVariants = cva("fill-gray-400 text-left text-gray-700 dark:fill-gray
     },
     size: {
       sm: "h-6 gap-2 px-2 text-xs",
-      default: "h-8 gap-3 px-3 text-sm",
+      default: "h-[34px] gap-4 px-3 text-sm",
       unstyled: "",
     },
   },
@@ -290,7 +290,7 @@ export function DropdownLink({ index, href, target, variant, size, className, wr
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         className={cn(
-          "flex w-full cursor-default items-center duration-300 ease-kolumb-overflow hover:translate-x-1.5 hover:underline",
+          "flex w-full cursor-default items-center duration-300 ease-kolumb-overflow hover:translate-x-1.5",
           OptionVariants({ variant, size, className }),
         )}
         tabIndex={activeIndex === index ? 0 : -1}

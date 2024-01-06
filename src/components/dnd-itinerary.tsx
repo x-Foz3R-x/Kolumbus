@@ -420,11 +420,11 @@ const EventComponent = memo(
       >
         {!dragging && (
           <span
-            className={`absolute right-1 top-1 z-20 grid h-6 w-14 grid-cols-2 overflow-hidden rounded border-gray-200 bg-white fill-gray-500 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow ${
+            className={`absolute right-1 top-1 z-20 grid h-6 w-14 grid-cols-2 overflow-hidden rounded bg-white fill-gray-500 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow ${
               isDropdownOpen ? "opacity-100" : "opacity-0"
             }`}
           >
-            <button onClick={openEventPanel} className="w-full border-r border-gray-200 duration-200 ease-kolumb-flow hover:bg-gray-100">
+            <button onClick={openEventPanel} className="w-full duration-200 ease-kolumb-flow hover:bg-gray-100 hover:fill-gray-700">
               <Icon.eventPanel className="m-auto h-3" />
             </button>
 
@@ -435,11 +435,12 @@ const EventComponent = memo(
               skipIndexes={[...(event?.url ? [] : [2]), 3]}
               container={{ selector: "main", padding: 12 }}
               offset={8}
-              className="w-44"
+              className="w-48"
               buttonProps={{
                 variant: "unstyled",
                 size: "unstyled",
-                className: "h-full w-full rounded-none duration-200 ease-kolumb-flow hover:bg-gray-100 focus-visible:bg-kolumblue-100",
+                className:
+                  "h-full w-full rounded-none duration-200 ease-kolumb-flow hover:bg-gray-100 hover:fill-gray-700 focus-visible:bg-kolumblue-100",
                 children: <Icon.horizontalDots className="m-auto w-4" />,
               }}
             >
@@ -487,7 +488,7 @@ const EventComponent = memo(
 
         <p
           className={cn(
-            "group/name relative mt-0.5 whitespace-nowrap bg-transparent px-1 py-0.5 text-sm text-gray-900",
+            "group/name relative mt-0.5 flex h-6 items-center whitespace-nowrap bg-transparent px-1 text-sm text-gray-900",
             !event.name && "text-center text-red-500",
           )}
         >
