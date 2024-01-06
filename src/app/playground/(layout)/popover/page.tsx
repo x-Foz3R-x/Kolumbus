@@ -21,10 +21,11 @@ export default function PopoverTests() {
 
   return (
     <>
-      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-center text-lg font-bold text-gray-800">
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-center text-lg font-medium">
         Popover
       </h1>
 
+      {/* popover demo */}
       <div className="relative flex h-[80vh] w-screen flex-col items-center justify-center">
         {/* Sliders */}
         <div className="flex gap-5 py-5 text-xs">
@@ -201,11 +202,11 @@ function PopoverWithinContainer() {
   }, [triggerRef, setOpen]);
 
   //#region centering logic
-  // window.addEventListener("load", () => {
-  //   const center = document.getElementById("center");
-  //   if (!center) return;
-  //   center.scrollTo({ top: center.scrollHeight / 2 - center.offsetHeight / 2, left: center.scrollWidth / 2 - center.offsetWidth / 2 });
-  // });
+  window.addEventListener("load", () => {
+    const center = document.getElementById("center");
+    if (!center) return;
+    center.scrollTo({ top: center.scrollHeight / 2 - center.offsetHeight / 2, left: center.scrollWidth / 2 - center.offsetWidth / 2 });
+  });
   const centerRef = useRef<HTMLDivElement | null>(null);
   useLayoutEffect(() => {
     if (!centerRef.current) return;
