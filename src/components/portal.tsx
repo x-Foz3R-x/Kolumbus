@@ -1,16 +1,20 @@
 import { createPortal } from "react-dom";
-import useIsSSR from "@/hooks/use-is-ssr";
+import { useEffect, useRef, useState } from "react";
 
-export default function Portal({ containerSelector, children }: { containerSelector?: string; children?: React.ReactNode }) {
-  const isSSR = useIsSSR();
+type Props = {
+  selector?: string;
+  skipSSRCheck?: boolean;
+  children?: React.ReactNode;
+};
+export default function Portal({ selector, skipSSRCheck, children }: Props) {
+  const ref = useRef<Element>();
+  const [mounted, setMounted] = useState(false);
 
-  const portalContainer = !isSSR
-    ? containerSelector
-      ? document.querySelector(containerSelector)
-        ? document.querySelector(containerSelector)
-        : document.body
-      : document.body
-    : null;
+  useEffect(() => {
+    ref.current = document.querySelector(selector || "body") || document.body;
+    setMounted(true);
+  }, [selector]);
 
-  return portalContainer ? createPortal(children, portalContainer) : null;
+  if (skipSSRCheck) return createPortal(children, document.querySelector(selector || "body") || document.body);
+  return mounted && ref.current ? createPortal(children, ref.current) : null;
 }

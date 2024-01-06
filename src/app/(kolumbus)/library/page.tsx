@@ -205,11 +205,10 @@ function TripCard({ trip, userTrips, dispatchUserTrips }: TripCardProps) {
         listLength={4}
         skipIndexes={[1, 2]}
         placement="bottom-start"
-        container={{ selector: "main" }}
         offset={0}
         className="w-44"
         buttonProps={{
-          variant: "disabled",
+          variant: "unstyled",
           size: "icon",
           className: "absolute bottom-3.5 right-1 z-50 rotate-90 rounded-full p-3 hover:bg-gray-50",
           children: <Icon.horizontalDots className="w-4" />,

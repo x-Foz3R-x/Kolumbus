@@ -5,26 +5,24 @@ import { useState } from "react";
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
 import { useActionBarContext } from "../itinerary/action-bar";
-import { CalculateDays, GenerateItinerary } from "@/lib/utils";
+import { CalculateDays, GenerateItinerary, cn } from "@/lib/utils";
 import { UT, Event } from "@/types";
 
 import Icon from "../icons";
+import { Button } from "./button";
+import { Dropdown, DropdownOption } from "./dropdown";
 import { EventsOnExcludedDaysModal } from "./modalOld";
-import { DropdownOld, DropdownButton } from "@/components/ui/dropdown-old";
 
-interface Props {
-  maxTripsDays: number;
-}
-
-export default function DaysPicker({ maxTripsDays }: Props) {
+export default function DaysPicker({ maxTripsDays }: { maxTripsDays: number }) {
   const { dispatchUserTrips, setSaving, setModalShown, setModalChildren } = useAppdata();
   const { activeTrip } = useActionBarContext();
+
   const updateTrip = api.trip.update.useMutation();
 
-  const [isDisplayed, setDisplay] = useState(false);
+  const [isOpen, setOpen] = useState(false);
 
   const handleDaySelect = (selectedDays: number) => {
-    setDisplay(false);
+    setOpen(false);
     const days = CalculateDays(activeTrip.startDate, activeTrip.endDate);
 
     if (selectedDays === days) return;
@@ -125,29 +123,56 @@ export default function DaysPicker({ maxTripsDays }: Props) {
   };
 
   return (
-    <div className="relative h-9 w-9 select-none">
-      <button onClick={() => setDisplay(true)} className="relative">
-        <Icon.calendar className="h-9 fill-kolumblue-500" />
+    <Dropdown
+      isOpen={isOpen}
+      setOpen={setOpen}
+      listLength={maxTripsDays}
+      placement="bottom-start"
+      container={{ selector: "main > section" }}
+      preventFlip
+      className="relative max-h-80 w-24 overflow-x-hidden overflow-y-scroll"
+      offset={{ mainAxis: 5, crossAxis: -10 }}
+      buttonProps={{
+        variant: "unstyled",
+        size: "unstyled",
+        className: "relative h-10",
+        children: (
+          <>
+            <Icon.calendar className="h-full fill-kolumblue-500" />
 
-        <div className="absolute top-1 w-9 text-[10px] font-medium uppercase text-white/75">days</div>
-        <div className="absolute bottom-0 m-auto w-9 text-sm font-medium">{CalculateDays(activeTrip.startDate, activeTrip.endDate)}</div>
-      </button>
+            <div className="absolute inset-0 flex flex-col items-center justify-between pb-[3.5px] pt-[7px] leading-none">
+              <span className="text-[10px] font-semibold uppercase text-kolumblue-100">days</span>
 
-      <DropdownOld isModalOpen={isDisplayed} setIsModalOpen={setDisplay} className="relative max-h-56 w-9 gap-1 rounded-sm">
-        <div className="flex snap-y snap-mandatory flex-col overflow-y-scroll rounded-sm bg-kolumblue-50">
-          {[...Array(maxTripsDays)].map((el, index) => (
-            <div key={`day-${index + 1}`}>
-              <DropdownButton
-                onClick={() => handleDaySelect(index + 1)}
-                className="h-6 w-full snap-start justify-center rounded-none text-xs hover:rounded-none"
-              >
-                {index + 1}
-              </DropdownButton>
-              <div className="border-b border-gray-200"></div>
+              <span>{CalculateDays(activeTrip.startDate, activeTrip.endDate)}</span>
             </div>
-          ))}
-        </div>
-      </DropdownOld>
-    </div>
+          </>
+        ),
+      }}
+    >
+      {[...Array(maxTripsDays)].map((_, index) => {
+        const currentDate = new Date(new Date(activeTrip.startDate).setDate(new Date(activeTrip.startDate).getDate() + index));
+        const isCurrentDate = index + 1 === CalculateDays(activeTrip.startDate, activeTrip.endDate);
+
+        return (
+          <DropdownOption
+            key={`day-${index + 1}`}
+            index={index}
+            onClick={() => handleDaySelect(index + 1)}
+            className="block gap-1 px-1.5"
+            wrapperClassName={cn("hover:z-20", isCurrentDate && "before:bg-kolumblue-100")}
+          >
+            <div className={isCurrentDate ? "rounded-full bg-kolumblue-100" : ""}>
+              <span className="mr-1 inline-block w-6 text-right text-base leading-tight">{index + 1}</span>
+
+              <span className={cn("w-full text-[10px]", isCurrentDate ? "text-gray-500" : "text-gray-400")}>
+                {`${currentDate.getDate()} ${currentDate.toLocaleString("default", { month: "short" }).toUpperCase()}`}
+              </span>
+            </div>
+          </DropdownOption>
+        );
+      })}
+
+      {/* <div className="pointer-events-none fixed inset-x-3.5 bottom-0 z-10 h-10 bg-gradient-to-t from-white" /> */}
+    </Dropdown>
   );
 }

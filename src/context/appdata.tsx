@@ -8,6 +8,7 @@ import { DispatchAction, Trip, UT } from "@/types";
 type AppdataContext = {
   userTrips: Trip[];
   dispatchUserTrips: React.Dispatch<DispatchAction>;
+
   selectedTrip: number;
   setSelectedTrip: React.Dispatch<React.SetStateAction<number>>;
   isLoading: boolean;
@@ -36,6 +37,7 @@ export default function useAppdata() {
  */
 export function AppdataProvider({ trips, children }: { trips: Trip[]; children?: React.ReactNode }) {
   const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, trips);
+
   const [selectedTrip, setSelectedTrip] = useState(-1);
   const [isLoading, setLoading] = useState(true);
   const [isSaving, setSaving] = useState(false);
@@ -52,6 +54,7 @@ export function AppdataProvider({ trips, children }: { trips: Trip[]; children?:
       value={{
         userTrips,
         dispatchUserTrips,
+
         selectedTrip,
         setSelectedTrip,
         isLoading,

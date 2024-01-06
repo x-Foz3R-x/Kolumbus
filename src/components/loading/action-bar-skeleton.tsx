@@ -1,4 +1,4 @@
-export default function ActionBarSkeleton() {
+export function ActionBarSkeleton() {
   return (
     <div className="z-30 flex w-full p-3">
       <div className="flex h-14 w-full items-center justify-between gap-5 rounded-lg border border-gray-100 bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">

@@ -1,19 +1,16 @@
 import { Variants } from "framer-motion";
 
 export type Side = "top" | "right" | "bottom" | "left";
-export type SideMap = { top: Side; right: Side; bottom: Side; left: Side };
 export type Alignment = "start" | "end";
 export type Placement = Side | `${Side}-${Alignment}`;
 export type Axis = "x" | "y";
 export type Length = "width" | "height";
 export type Coords = { x: number; y: number };
-export type DynamicCoords = { x: number | string; y: number | string };
 export type Rect = { x: number; y: number; width: number; height: number };
 export type Inset = { top: number; right: number; bottom: number; left: number };
-export type NumericVariant = number | [number, number, number, number];
 
 export type Strategy = "absolute" | "fixed";
-export type Container = { selector: string; margin?: NumericVariant; padding?: NumericVariant };
+export type Container = { selector: string; padding?: number | [number, number, number, number] };
 export type Extensions = (Flip | Offset | Arrow | Backdrop | Motion | Prevent)[] | (Position | Backdrop | Motion | Prevent)[];
 export type MountedExtensions = {
   position?: Position;
@@ -31,7 +28,7 @@ export type MountedExtensions = {
 export type Position = { name: "position"; x: string | number; y: string | number; transformOrigin: string };
 
 export type Flip = { name: "flip" };
-export type Offset = { name: "offset"; value: number };
+export type Offset = { name: "offset"; value: number | { mainAxis?: number; crossAxis?: number } };
 export type Arrow = { name: "arrow"; size: number; className?: { arrow?: string; backdrop?: string } };
 
 export type Backdrop = { name: "backdrop"; type: BackdropType; className?: string };

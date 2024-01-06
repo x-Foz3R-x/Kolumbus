@@ -156,7 +156,7 @@ export default function EventComposer() {
       triggerRef={useRef(null)}
       isOpen={isEventComposerOpen}
       setOpen={setEventComposerOpen}
-      container={{ selector: "main > div ", margin: [56, 0, 0, 224], padding: [56, 12, 0, 12] }}
+      container={{ selector: "main > div ", padding: [56, 12, 0, 12] }}
       extensions={[Position(172, itineraryPosition.y_day * 132 + 20, "left"), Motion(TRANSITION.fadeInScale)]}
       className={`z-20 flex w-60 flex-col rounded-lg bg-white shadow-borderXL duration-500 ease-kolumb-flow ${isOpen && "rounded-b-none"}`}
     >

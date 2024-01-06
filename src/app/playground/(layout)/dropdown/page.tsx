@@ -37,7 +37,7 @@ export default function DropdownTests() {
 
   return (
     <div className="h-screen w-screen bg-gray-50">
-      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-20 flex h-14 items-center justify-center text-lg font-bold text-gray-800">
+      <h1 className="pointer-events-none fixed left-0 right-0 top-0 z-50 flex h-14 items-center justify-center text-lg font-medium">
         Dropdown
       </h1>
 
@@ -170,7 +170,7 @@ export default function DropdownTests() {
             listLength={6}
             skipIndexes={[1]}
             placement={placement}
-            container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
+            container={{ selector: "body", padding }}
             offset={offset}
             strategy="fixed"
             preventScroll

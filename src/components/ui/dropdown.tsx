@@ -44,7 +44,7 @@ type Props = {
   placement?: Placement;
   strategy?: Strategy;
   container?: Container;
-  offset?: number;
+  offset?: number | { mainAxis?: number; crossAxis?: number };
   motion?: Variants | { top: Variants; right: Variants; bottom: Variants; left: Variants };
   preventFlip?: boolean;
   preventScroll?: boolean;

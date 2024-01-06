@@ -49,8 +49,8 @@ export function useDndData() {
 //#endregion
 
 //#region Itinerary
-export default function DndItinerary({ userTrips, tripId }: { userTrips: Trip[]; tripId?: string }) {
-  const { dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
+export default function DndItinerary({ tripId }: { tripId: string }) {
+  const { userTrips, dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
   const updateEvent = api.event.update.useMutation();
 
   const [activeTrip, setActiveTrip] = useState<Trip>(userTrips.find((trip) => trip.id === tripId) ?? ({} as Trip));
@@ -67,7 +67,7 @@ export default function DndItinerary({ userTrips, tripId }: { userTrips: Trip[];
 
   useEffect(() => {
     setActiveTrip(userTrips.find((trip) => trip.id === tripId) ?? ({} as Trip));
-  }, [userTrips, tripId]);
+  }, [userTrips, setActiveTrip, tripId]);
 
   const { itinerary, ...tripInfo } = activeTrip;
   const events = itinerary.flatMap((day) => day.events);
@@ -433,7 +433,7 @@ const EventComponent = memo(
               setOpen={setDropdownOpen}
               listLength={5}
               skipIndexes={[...(event?.url ? [] : [2]), 3]}
-              container={{ selector: "main", margin: [56, 0, 0, 224], padding: 12 }}
+              container={{ selector: "main", padding: 12 }}
               offset={8}
               className="w-44"
               buttonProps={{

@@ -33,7 +33,7 @@ export function Position(x: string | number, y: string | number, transformOrigin
 export function Flip(): Flip {
   return { name: "flip" };
 }
-export function Offset(value: number): Offset {
+export function Offset(value: number | { mainAxis?: number; crossAxis?: number }): Offset {
   return { name: "offset", value };
 }
 export function Arrow(size: number, className?: { arrow?: string; backdrop?: string }): Arrow {
