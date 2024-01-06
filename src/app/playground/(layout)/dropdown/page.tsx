@@ -170,7 +170,7 @@ export default function DropdownTests() {
             listLength={6}
             skipIndexes={[1]}
             placement={placement}
-            container={{ selector: "body", margin: [150, 200, 50, 200], padding }}
+            container={{ selector: "body", padding }}
             offset={offset}
             strategy="fixed"
             preventScroll

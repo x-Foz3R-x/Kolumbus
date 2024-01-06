@@ -23,6 +23,7 @@ type Props = {
   container?: Container;
   extensions?: Extensions;
   className?: string;
+  zIndex?: number;
   children?: React.ReactNode;
 };
 export function Popover({
@@ -32,24 +33,30 @@ export function Popover({
   setOpen,
   placement: initialPlacement = "bottom",
   strategy = "absolute",
-  container = { selector: "body", margin: 0, padding: 0 },
+  container = { selector: "body", padding: 0 },
   extensions = [],
   className,
+  zIndex = 100,
   children,
 }: Props) {
-  const mountedExtensions: MountedExtensions = extensions.reduce((acc, extension) => {
-    return { ...acc, [extension.name]: extension };
-  }, {});
+  const mountedExtensions: MountedExtensions = extensions.reduce((acc, extension) => ({ ...acc, [extension.name]: extension }), {});
+  const { placement, styles, isPositioned } = usePopover(
+    triggerRef,
+    popoverRef,
+    isOpen,
+    initialPlacement,
+    strategy,
+    container,
+    mountedExtensions,
+  );
+
+  const transition = useRef("");
   const handleClose = useCallback(() => {
     if (!isOpen) return;
 
     setOpen(false);
     triggerRef.current?.focus();
   }, [triggerRef, isOpen, setOpen]);
-
-  const { placement, props } = usePopover(triggerRef, popoverRef, isOpen, initialPlacement, container, mountedExtensions);
-
-  const transition = useRef("");
   const variants = useMemo(() => {
     if (!mountedExtensions.motion?.transition) return TRANSITION.fadeToPosition[parsePlacement(placement)[0]] as Variants;
     if (typeof mountedExtensions.motion.transition.top === "undefined") return mountedExtensions.motion.transition as Variants;
@@ -63,20 +70,20 @@ export function Popover({
         <span
           role="presentation"
           aria-hidden={true}
-          className={cn("absolute z-10 rotate-45", mountedExtensions.arrow.className?.arrow, transition.current)}
-          {...props.arrow}
+          style={styles.arrow}
+          className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className?.arrow, transition.current)}
         ></span>
         {mountedExtensions.arrow.className?.backdrop ? (
           <span
             role="presentation"
             aria-hidden={true}
+            style={styles.arrow}
             className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className.backdrop, transition.current)}
-            {...props.arrow}
           ></span>
         ) : null}
       </>
     );
-  }, [mountedExtensions.arrow, props.arrow]);
+  }, [mountedExtensions.arrow, styles.arrow]);
   const backdropContent = useMemo(() => {
     if (!mountedExtensions.backdrop) return null;
 
@@ -102,11 +109,11 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, mountedExtensions.prevent, handleClose]);
 
-  // Apply transition when popover is opened and position is calculated for the first time.
+  // Apply transition when popover is opened and positioned.
   useEffect(() => {
-    if (isOpen && props.popover.style.top !== 0 && props.popover.style.left !== 0) transition.current = "duration-[250ms] ease-kolumb-flow";
+    if (isOpen && isPositioned) transition.current = "duration-250 ease-kolumb-flow";
     else transition.current = "";
-  }, [isOpen, props.popover.style]);
+  }, [isOpen, isPositioned, styles.popover]);
 
   // Focus first focusable element when popover is opened.
   useEffect(() => {
@@ -145,22 +152,23 @@ export function Popover({
             animate="animate"
             exit="exit"
             variants={variants}
+            style={{ zIndex, ...styles.popover }}
             className={cn(
               strategy,
-              "left-0 top-0 z-[100] min-h-fit min-w-fit appearance-none bg-transparent",
+              "left-0 top-0 min-h-fit min-w-fit appearance-none bg-transparent",
               mountedExtensions.prevent?.pointer && "pointer-events-none",
               transition.current,
             )}
             data-placement={placement}
-            {...props.popover}
           >
             <RemoveScroll
               enabled={mountedExtensions.prevent?.scroll === true && isOpen}
               allowPinchZoom={mountedExtensions.prevent?.scroll === true && isOpen}
-              className={cn("relative font-inter", className)}
+              style={styles.content}
+              className={cn("relative font-inter", transition.current, className)}
             >
-              {arrowContent}
               {children}
+              {arrowContent}
             </RemoveScroll>
           </motion.div>
         </Portal>

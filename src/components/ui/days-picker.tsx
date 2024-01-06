@@ -130,7 +130,8 @@ export default function DaysPicker({ maxTripsDays }: { maxTripsDays: number }) {
       placement="bottom-start"
       container={{ selector: "main > section" }}
       preventFlip
-      className="relative max-h-80 w-24 -translate-x-2.5 overflow-x-hidden overflow-y-scroll"
+      className="relative max-h-80 w-24 overflow-x-hidden overflow-y-scroll"
+      offset={{ mainAxis: 5, crossAxis: -10 }}
       buttonProps={{
         variant: "unstyled",
         size: "unstyled",
