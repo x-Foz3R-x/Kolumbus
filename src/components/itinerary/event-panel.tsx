@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
-import { useDndData } from "@/components/dnd-itinerary";
+import { useDndData } from "@/components/dnd-itinerary/dnd-itinerary";
 
 import useCloseTriggers from "@/hooks/use-close-triggers";
 import type { UpdateEvent } from "@/server/routers/event";

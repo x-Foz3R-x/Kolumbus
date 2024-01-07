@@ -5,7 +5,7 @@ import cuid2 from "@paralleldrive/cuid2";
 
 import api from "@/app/_trpc/client";
 import { useUser } from "@clerk/nextjs";
-import { useDndData } from "../dnd-itinerary";
+import { useDndData } from "../dnd-itinerary/dnd-itinerary";
 
 import useAppdata from "@/context/appdata";
 import { TRANSITION } from "@/lib/framer-motion";

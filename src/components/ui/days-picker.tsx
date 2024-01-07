@@ -9,7 +9,6 @@ import { CalculateDays, GenerateItinerary, cn } from "@/lib/utils";
 import { UT, Event } from "@/types";
 
 import Icon from "../icons";
-import { Button } from "./button";
 import { Dropdown, DropdownOption } from "./dropdown";
 import { EventsOnExcludedDaysModal } from "./modalOld";
 
@@ -135,13 +134,13 @@ export default function DaysPicker({ maxTripsDays }: { maxTripsDays: number }) {
       buttonProps={{
         variant: "unstyled",
         size: "unstyled",
-        className: "relative h-10",
+        className: "relative h-[38px]",
         children: (
           <>
             <Icon.calendar className="h-full fill-kolumblue-500" />
 
-            <div className="absolute inset-0 flex flex-col items-center justify-between pb-[3.5px] pt-[7px] leading-none">
-              <span className="text-[10px] font-semibold uppercase text-kolumblue-100">days</span>
+            <div className="absolute inset-0 flex flex-col items-center justify-between pb-[3.5px] pt-[6px] leading-none">
+              <span className="mb-0.5 text-[10px] font-semibold uppercase tracking-tight text-kolumblue-100">days</span>
 
               <span>{CalculateDays(activeTrip.startDate, activeTrip.endDate)}</span>
             </div>

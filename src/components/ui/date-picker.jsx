@@ -151,18 +151,18 @@ export default function DatePicker() {
   };
 
   return (
-    <div className="relative h-10 select-none">
+    <div className="relative h-[38px] select-none">
       <Icon.rangeCalendar className="absolute h-full fill-kolumblue-500" />
 
-      <div className="absolute inset-y-0 left-0 flex w-[37px] flex-col items-center justify-between pb-[3.5px] pt-[7px] leading-none">
-        <span className="text-[10px] font-semibold uppercase text-kolumblue-100">
+      <div className="absolute inset-y-0 left-0 flex w-[35px] flex-col items-center justify-between pb-[3.5px] pt-[6px] leading-none">
+        <span className="mb-0.5 text-[10px] font-semibold uppercase tracking-tight text-kolumblue-100">
           {new Date(activeTrip.startDate).toLocaleString("default", { month: "short" }).toUpperCase()}
         </span>
         <span>{new Date(activeTrip.startDate).getDate()}</span>
       </div>
 
-      <div className="absolute inset-y-0 right-0 flex w-[37px] flex-col items-center justify-between pb-[3.5px] pt-[7px] leading-none">
-        <span className="text-[10px] font-semibold uppercase text-kolumblue-100">
+      <div className="absolute inset-y-0 right-0 flex w-[35px] flex-col items-center justify-between pb-[3.5px] pt-[6px] leading-none">
+        <span className="mb-0.5 text-[10px] font-semibold uppercase tracking-tight text-kolumblue-100">
           {new Date(activeTrip.endDate).toLocaleString("default", { month: "short" }).toUpperCase()}
         </span>
         <span>{new Date(activeTrip.endDate).getDate()}</span>
@@ -170,7 +170,7 @@ export default function DatePicker() {
 
       <input
         id="datepicker"
-        className="relative z-10 h-full w-[85.8px] cursor-pointer appearance-none border-none bg-transparent text-xs font-thin text-transparent outline-0"
+        className="relative z-10 h-full w-[81.5px] cursor-pointer appearance-none border-none bg-transparent text-xs font-thin text-transparent outline-0"
         onClick={handlePicker}
         ref={DatePickerRef}
         readOnly

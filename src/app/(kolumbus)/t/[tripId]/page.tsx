@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import useAppdata from "@/context/appdata";
 
 import Portal from "@/components/portal";
-import DndItinerary from "@/components/dnd-itinerary";
+import { DndItinerary } from "@/components/dnd-itinerary";
 import ActionBar from "@/components/itinerary/action-bar";
 import { ActionBarSkeleton, ItinerarySkeleton } from "@/components/loading";
 

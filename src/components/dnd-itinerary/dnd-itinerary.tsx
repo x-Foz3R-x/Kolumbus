@@ -13,12 +13,12 @@ import useAppdata from "@/context/appdata";
 import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayIndex } from "@/lib/dnd";
 import { Trip, Day, Event, UT } from "@/types";
 
-import Icon from "./icons";
-import { Calendar, CalendarEnd } from "./itinerary/calendar";
-import EventComposer from "./itinerary/event-composer";
-import EventPanel from "./itinerary/event-panel";
-import { Dropdown, DropdownLink, DropdownOption } from "./ui/dropdown";
-import { Button, Divider } from "./ui";
+import Icon from "../icons";
+import { Calendar, CalendarEnd } from "../itinerary/calendar";
+import EventComposer from "../itinerary/event-composer";
+import EventPanel from "../itinerary/event-panel";
+import { Dropdown, DropdownLink, DropdownOption } from "../ui/dropdown";
+import { Button, Divider } from "../ui";
 import { EVENT_IMG_FALLBACK } from "@/lib/config";
 import { cn, formatDate } from "@/lib/utils";
 
@@ -49,7 +49,7 @@ export function useDndData() {
 //#endregion
 
 //#region Itinerary
-export default function DndItinerary({ tripId }: { tripId: string }) {
+export function DndItinerary({ tripId }: { tripId: string }) {
   const { userTrips, dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
   const updateEvent = api.event.update.useMutation();
 
@@ -327,32 +327,71 @@ const DayComponent = memo(
 
 //#region Event
 const DndEvent = memo(({ event }: { event: Event }) => {
-  const { activeId, activeEvent, isEventPanelOpen } = useDndData();
-  const id = event.id;
-
+  const { dispatchUserTrips, selectedTrip } = useAppdata();
+  const { activeTrip, activeId, activeEvent, setActiveEvent, isEventPanelOpen, setEventPanelOpen, setItineraryPosition } = useDndData();
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id,
-    data: {
-      item: event,
-    },
-    transition: {
-      duration: 300,
-      easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
-    },
+    id: event.id,
+    data: { item: event },
+    transition: { duration: 300, easing: "cubic-bezier(0.175, 0.885, 0.32, 1)" },
   });
+
+  const deleteEvent = api.event.delete.useMutation();
+
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+
+  const openEventPanel = () => {
+    setActiveEvent(event);
+    setItineraryPosition({ y_day: dayIndex, x_event: event.position });
+
+    if (isEventPanelOpen) {
+      setEventPanelOpen(false);
+      setTimeout(() => setEventPanelOpen(true), 350);
+    } else setEventPanelOpen(true);
+  };
+  const handleEventDelete = () => {
+    if (!event) return;
+
+    const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+
+    const events = [...activeTrip.itinerary[dayIndex].events];
+    events.splice(event.position, 1);
+    events.map((_, index) => ({ position: index }));
+
+    setEventPanelOpen(false);
+    dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
+    deleteEvent.mutate(
+      { eventId: event.id, events },
+      {
+        onSuccess(updatedEvents) {
+          if (!updatedEvents) return;
+          updatedEvents.forEach((event) => {
+            dispatchUserTrips({
+              type: UT.UPDATE_EVENT,
+              payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
+            });
+          });
+        },
+        onError(error) {
+          console.error(error);
+          dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+        },
+      },
+    );
+  };
 
   return (
     <li
-      id={id}
+      id={event.id}
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={`h-28 rounded-lg duration-500 ease-kolumb-flow ${
-        id !== activeId ? "z-10" : "z-20 border-2 border-dashed border-gray-300 bg-gray-50"
+        event.id !== activeId ? "z-10" : "z-20 border-2 border-dashed border-gray-300 bg-gray-50"
       }
-      ${isEventPanelOpen && activeEvent?.id === id ? "w-80 opacity-0" : "w-40 opacity-100"}
+      ${isEventPanelOpen && activeEvent?.id === event.id ? "w-80 opacity-0" : "w-40 opacity-100"}
       `}
     >
-      {id !== activeId && <EventComponent event={event} {...listeners} {...attributes} />}
+      {event.id !== activeId && <EventComponent event={event} {...listeners} {...attributes} />}
     </li>
   );
 });

@@ -1,5 +1,5 @@
 import Icon from "@/components/icons";
-import { useDndData } from "@/components/dnd-itinerary";
+import { useDndData } from "@/components/dnd-itinerary/dnd-itinerary";
 import DayOfWeekIndicator from "./day-of-week-indicator";
 import { cn } from "@/lib/utils";
 
