@@ -456,7 +456,7 @@ const EventComponent = memo(
               <DropdownLink index={2} href={event?.url ?? undefined} target="_blank">
                 <Icon.googleMapsIcon className="h-4 w-4" />
                 <span>
-                  <Icon.googleMapsText className="mr-1 inline-block h-3.5 fill-gray-600 dark:fill-gray-300" />
+                  <Icon.googleMapsText className="mr-1 inline-block h-[14.5px] fill-gray-600 dark:fill-gray-300" />
                   <Icon.arrowTopRight className="mb-1.5 inline-block h-1.5 fill-gray-600 dark:fill-gray-300" />
                 </span>
               </DropdownLink>

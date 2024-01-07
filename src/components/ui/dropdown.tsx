@@ -177,7 +177,7 @@ const OptionWrapperVariants = cva(
     defaultVariants: { variant: "default", size: "default" },
   },
 );
-const OptionVariants = cva("fill-gray-400 text-left text-gray-700 dark:fill-gray-600 dark:text-gray-300", {
+const OptionVariants = cva("fill-gray-400 text-left font-medium tracking-tight text-gray-650 dark:fill-gray-600 dark:text-gray-300", {
   variants: {
     variant: {
       default: "focus:fill-gray-700 dark:focus:fill-gray-300",
