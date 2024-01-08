@@ -61,10 +61,21 @@ export function Popover({
     triggerRef.current?.focus();
   }, [triggerRef, isOpen, setOpen]);
   const variants = useMemo(() => {
-    if (!mountedExtensions.motion?.transition) return TRANSITION.fadeToPosition[parsePlacement(placement)[0]] as Variants;
-    if (typeof mountedExtensions.motion.transition.top === "undefined") return mountedExtensions.motion.transition as Variants;
-    return mountedExtensions.motion.transition[parsePlacement(placement)[0]] as Variants;
-  }, [placement, mountedExtensions.motion]);
+    const transition = mountedExtensions.motion?.transition;
+    const placementKey = parsePlacement(placement)[0];
+
+    let variant: Variants = TRANSITION.fadeToPosition[placementKey] as Variants;
+
+    if (transition) {
+      variant = typeof transition.top === "undefined" ? (transition as Variants) : (transition[placementKey] as Variants);
+    }
+
+    variant.initial = { ...variant.initial, zIndex: zIndex + 1 };
+    variant.animate = { ...variant.animate, zIndex: zIndex + 1 };
+    variant.exit = { ...variant.exit, zIndex: zIndex - 1 };
+
+    return variant;
+  }, [placement, zIndex, mountedExtensions.motion]);
   const arrowContent = useMemo(() => {
     if (!mountedExtensions.arrow) return null;
 

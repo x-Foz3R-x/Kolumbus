@@ -105,7 +105,6 @@ export function Dropdown({
         onFocus={() => setFocus("trigger")}
         aria-haspopup="menu"
         aria-controls={listId}
-        {...(isOpen && { "aria-expanded": true })}
         {...buttonProps}
       />
 

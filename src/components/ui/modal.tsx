@@ -56,7 +56,6 @@ export function Modal({ isOpen, setOpen, backdrop, size, className, removeButton
           setOpen={setOpen}
           aria-haspopup="dialog"
           aria-controls={contentId}
-          {...(isOpen && { "aria-expanded": true })}
           {...buttonProps}
         />
       )}
