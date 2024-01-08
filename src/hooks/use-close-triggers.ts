@@ -16,11 +16,11 @@ export default function useCloseTriggers(refs: React.RefObject<HTMLElement>[], c
       if (event.key === "Escape") callback();
     };
 
-    if (!block) document.addEventListener("mouseup", handleOutsideClick);
+    if (!block) document.addEventListener("mousedown", handleOutsideClick);
     if (!block) document.addEventListener("keydown", handleEscapeKey);
 
     return () => {
-      document.removeEventListener("mouseup", handleOutsideClick);
+      document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("keydown", handleEscapeKey);
     };
   }, [refs, callback, block]);
