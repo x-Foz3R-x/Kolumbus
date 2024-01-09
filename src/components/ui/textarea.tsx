@@ -65,15 +65,54 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
 
     if (typeof userRef === "function") userRef(node);
     else if (userRef) node = userRef.current;
+    else if (libRef) node = libRef.current;
 
-    if (!node) node = libRef.current;
     if (!node) return;
 
-    const nodeSizingData = getSizingData(node);
+    const styles = window.getComputedStyle(node);
+    const paddingBlock = parseFloat(styles.paddingBottom) + parseFloat(styles.paddingTop);
+    const borderBlock = parseFloat(styles.borderBottomWidth) + parseFloat(styles.borderTopWidth);
+    const rowHeight = parseFloat(styles.lineHeight);
 
-    if (!nodeSizingData) return;
+    // Clone styles from textarea to hidden textarea so we can measure the height
+    const hiddenTextarea = document.createElement("textarea");
+    hiddenTextarea.value = node.value || node.placeholder;
+    Object.assign(hiddenTextarea.style, {
+      top: "0",
+      left: "0",
+      width: styles.width,
+      height: "0",
+      minHeight: "0",
+      maxHeight: "none",
+      padding: styles.padding,
+      border: styles.border,
+      visibility: "hidden",
+      overflow: "hidden",
+      zIndex: "-1000",
 
-    const computedHeight = computeHeight(nodeSizingData, node.value || node.placeholder || "x", minRows, maxRows);
+      // Typography
+      font: styles.font,
+      fontStyle: styles.fontStyle,
+      fontWeight: styles.fontWeight,
+      letterSpacing: styles.letterSpacing,
+      tabSize: styles.tabSize,
+      textIndent: styles.textIndent,
+      textRendering: styles.textRendering,
+      textTransform: styles.textTransform,
+      wordBreak: styles.wordBreak,
+    });
+
+    document.body.appendChild(hiddenTextarea);
+
+    const fullHeight = hiddenTextarea.scrollHeight + borderBlock;
+
+    document.body.removeChild(hiddenTextarea);
+
+    const minHeight = rowHeight * minRows + paddingBlock + borderBlock;
+    const maxHeight = rowHeight * maxRows + paddingBlock + borderBlock;
+
+    const computedHeight = Math.min(Math.max(fullHeight, minHeight), maxHeight);
+
     if (computedHeight !== height) setHeight(computedHeight);
   };
 
@@ -86,9 +125,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
       value={value}
       defaultValue={defaultValue}
       autoComplete={autoComplete}
-      onChange={() => {
-        !value && resizeTextArea();
-      }}
+      onChange={() => !value && resizeTextArea()}
       onBlur={handleChange}
       style={{ ...style, height }}
       className={cn(TextAreaVariants({ variant, size, className }))}
@@ -97,89 +134,3 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
   );
 });
 TextArea.displayName = "TextArea";
-
-function computeHeight(
-  sizing: NonNullable<ReturnType<typeof getSizingData>>,
-  value: string,
-  minRows: number = 1,
-  maxRows: number = Infinity,
-) {
-  const { sizingStyles, paddingBlock, borderBlock } = sizing;
-
-  const hiddenTextarea = document.createElement("textarea");
-  Object.assign(hiddenTextarea.style, {
-    ...sizingStyles,
-    minHeight: "0",
-    maxHeight: "none",
-    height: "0",
-    visibility: "hidden",
-    overflow: "hidden",
-    zIndex: "-1000",
-    top: "0",
-    left: "0",
-  });
-
-  hiddenTextarea.setAttribute("tabindex", "-1");
-  hiddenTextarea.setAttribute("aria-hidden", "true");
-
-  document.body.appendChild(hiddenTextarea);
-
-  hiddenTextarea.value = "x";
-  const rowHeight = hiddenTextarea.scrollHeight - paddingBlock;
-
-  hiddenTextarea.value = value;
-  const height = hiddenTextarea.scrollHeight + borderBlock;
-
-  const minHeight = rowHeight * minRows + paddingBlock + borderBlock;
-  const maxHeight = rowHeight * maxRows + paddingBlock + borderBlock;
-
-  document.body.removeChild(hiddenTextarea);
-
-  return Math.min(Math.max(height, minHeight), maxHeight);
-}
-
-function getSizingData(node: HTMLTextAreaElement) {
-  const SIZING_STYLE = [
-    //Padding
-    "paddingBottom",
-    "paddingLeft",
-    "paddingRight",
-    "paddingTop",
-    // Border
-    "borderBottomWidth",
-    "borderLeftWidth",
-    "borderRightWidth",
-    "borderTopWidth",
-    // Typography
-    "fontFamily",
-    "fontSize",
-    "fontStyle",
-    "fontWeight",
-    "letterSpacing",
-    "lineHeight",
-    "tabSize",
-    "textIndent",
-    "textRendering",
-    "textTransform",
-    "wordBreak",
-
-    "width",
-  ] as const;
-
-  const computedStyles = window.getComputedStyle(node);
-
-  type SizingStyles = Record<(typeof SIZING_STYLE)[number], string>;
-  const sizingStyles: SizingStyles = SIZING_STYLE.reduce((styles, style) => {
-    styles[style] = computedStyles[style];
-    return styles;
-  }, {} as SizingStyles);
-
-  const paddingBlock = parseFloat(sizingStyles.paddingBottom) + parseFloat(sizingStyles.paddingTop);
-  const borderBlock = parseFloat(sizingStyles.borderBottomWidth) + parseFloat(sizingStyles.borderTopWidth);
-
-  return {
-    sizingStyles,
-    paddingBlock,
-    borderBlock,
-  };
-}
