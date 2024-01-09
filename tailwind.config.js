@@ -48,7 +48,7 @@ module.exports = {
       transitionTimingFunction: {
         "kolumb-overflow": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
         "kolumb-flow": "cubic-bezier(0.175, 0.885, 0.32, 1)",
-        "kolumb-leave": "cubic-bezier(0.885, 0.175, 0.5, 1)",
+        "kolumb-out": "cubic-bezier(0.885, 0.175, 0.5, 1)",
       },
       transitionDuration: {
         250: "250ms",

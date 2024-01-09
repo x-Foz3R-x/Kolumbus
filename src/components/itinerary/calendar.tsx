@@ -49,12 +49,12 @@ function CalendarHeader({ index, dragging, handleAddEvent, ...props }: CalendarH
   return (
     <div className="relative z-30 flex h-5 w-32 cursor-default items-center justify-center bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl group-first/calendar:rounded-t-xl">
       <button
-        className={`group/move absolute left-0 flex h-5 w-7 cursor-grab items-center opacity-0 duration-300 ease-kolumb-leave group-hover/calendar:opacity-100 group-hover/calendar:ease-kolumb-flow ${
+        className={`group/move ease-kolumb-out absolute left-0 flex h-5 w-7 cursor-grab items-center opacity-0 duration-300 group-hover/calendar:opacity-100 group-hover/calendar:ease-kolumb-flow ${
           dragging && "opacity-100 group-hover/calendar:opacity-100"
         }`}
         {...props}
       >
-        <Icon.gripLines className="absolute left-1 w-5 scale-x-100 fill-kolumblue-200 p-1 duration-500 ease-kolumb-leave" />
+        <Icon.gripLines className="ease-kolumb-out absolute left-1 w-5 scale-x-100 fill-kolumblue-200 p-1 duration-500" />
         <p
           className={`
             absolute left-0 top-[2px] h-4 w-20 origin-left scale-x-0 select-none capitalize opacity-0 duration-200 ease-kolumb-flow group-hover/move:left-6 group-hover/move:scale-x-100 ${
@@ -67,7 +67,7 @@ function CalendarHeader({ index, dragging, handleAddEvent, ...props }: CalendarH
 
       <button
         onClick={handleAddEvent}
-        className="group/add absolute right-0 flex h-5 w-6 items-center opacity-0 duration-300 ease-kolumb-leave group-hover/calendar:opacity-100 group-hover/calendar:ease-kolumb-flow"
+        className="group/add ease-kolumb-out absolute right-0 flex h-5 w-6 items-center opacity-0 duration-300 group-hover/calendar:opacity-100 group-hover/calendar:ease-kolumb-flow"
       >
         <Icon.plus className="absolute right-2 h-2.5 w-2.5 fill-kolumblue-200 duration-500 ease-kolumb-flow" />
         <p

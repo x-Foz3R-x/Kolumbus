@@ -255,7 +255,7 @@ export default function YourTrips() {
               </p>
             </Button>
 
-            <span className="absolute right-2 top-1 z-10 opacity-0 duration-300 ease-kolumb-leave group-hover/trip:opacity-100 group-hover/trip:ease-kolumb-flow">
+            <span className="ease-kolumb-out absolute right-2 top-1 z-10 opacity-0 duration-300 group-hover/trip:opacity-100 group-hover/trip:ease-kolumb-flow">
               <TripDropdown index={index} />
             </span>
           </li>

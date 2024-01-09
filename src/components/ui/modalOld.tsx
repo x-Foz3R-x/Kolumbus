@@ -40,7 +40,7 @@ export function ModalOld({ showModal, modalChildren }: ModalProps) {
       aria-modal="true"
       role="dialog"
       className={`fixed inset-0 z-50 flex h-screen w-screen min-w-fit items-center justify-center p-10 duration-300 
-        ${showModal ? "scale-100 ease-kolumb-overflow " : "scale-0 ease-kolumb-leave"}`}
+        ${showModal ? "scale-100 ease-kolumb-overflow " : "ease-kolumb-out scale-0"}`}
     >
       <div
         className={`

@@ -120,7 +120,7 @@ export const Dropdown2 = {
       className={`absolute left-1/2 mt-1 origin-top -translate-x-1/2 overflow-scroll rounded-lg bg-white p-1.5 shadow-border2XL ${
         showList
           ? "scale-y-100 opacity-100 duration-300 ease-kolumb-flow"
-          : "pointer-events-none scale-y-50 opacity-0 duration-200 ease-kolumb-leave"
+          : "ease-kolumb-out pointer-events-none scale-y-50 opacity-0 duration-200"
       }`}
     >
       {children}
