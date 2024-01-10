@@ -3,6 +3,7 @@
 import { forwardRef, useLayoutEffect, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { z } from "zod";
 
 const TextAreaVariants = cva(
   "w-full resize-none appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
@@ -50,17 +51,22 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
     ...props
   } = inputProps;
   const libRef = useRef<HTMLTextAreaElement | null>(null);
-  const previousValue = useRef(value || defaultValue);
+  const previousValue = useRef(String(value || defaultValue));
 
   const [height, setHeight] = useState(0);
 
   const handleChange = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    if (e.target.value === previousValue.current || (preventEmpty && e.target.value.length < 1)) return;
+    if (
+      !z.string().safeParse(e.target.value).success ||
+      e.target.value === previousValue.current ||
+      (preventEmpty && e.target.value.length < 1)
+    )
+      return;
     if (onChange) onChange(e);
     previousValue.current = e.target.value;
   };
 
-  const resizeTextArea = () => {
+  const resize = () => {
     let node: HTMLTextAreaElement | null = null;
 
     if (typeof userRef === "function") userRef(node);
@@ -116,7 +122,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
     if (computedHeight !== height) setHeight(computedHeight);
   };
 
-  useLayoutEffect(resizeTextArea, [userRef, libRef, value, minRows, maxRows]); // eslint-disable-line react-hooks/exhaustive-deps
+  useLayoutEffect(resize, [userRef, libRef, value, minRows, maxRows]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <textarea
@@ -125,7 +131,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
       value={value}
       defaultValue={defaultValue}
       autoComplete={autoComplete}
-      onChange={() => !value && resizeTextArea()}
+      onChange={() => !value && resize()}
       onBlur={handleChange}
       style={{ ...style, height }}
       className={cn(TextAreaVariants({ variant, size, className }))}

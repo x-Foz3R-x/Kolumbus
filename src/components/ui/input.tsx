@@ -2,6 +2,7 @@
 
 import { forwardRef, useEffect, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
+import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { KEY } from "@/types";
 
@@ -77,7 +78,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
   const previousValue = useRef(value || defaultValue);
 
   const handleChange = (e: React.FocusEvent<HTMLInputElement>) => {
-    if (e.target.value === previousValue.current || (preventEmpty && e.target.value.length < 1)) return;
+    if (
+      !z.string().safeParse(e.target.value).success ||
+      e.target.value === previousValue.current ||
+      (preventEmpty && e.target.value.length < 1)
+    )
+      return;
     if (onChange) onChange(e);
     previousValue.current = e.target.value;
   };
