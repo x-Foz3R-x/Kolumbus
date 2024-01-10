@@ -76,9 +76,9 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
     if (!node) return;
 
     const styles = window.getComputedStyle(node);
-    const paddingBlock = parseFloat(styles.paddingBottom) + parseFloat(styles.paddingTop);
-    const borderBlock = parseFloat(styles.borderBottomWidth) + parseFloat(styles.borderTopWidth);
-    const rowHeight = parseFloat(styles.lineHeight);
+    const paddingBlock = Number(styles.paddingBottom) + Number(styles.paddingTop);
+    const borderBlock = Number(styles.borderBottomWidth) + Number(styles.borderTopWidth);
+    const rowHeight = Number(styles.lineHeight);
 
     // Clone styles from textarea to hidden textarea so we can measure the height
     const hiddenTextarea = document.createElement("textarea");
