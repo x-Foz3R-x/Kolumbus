@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { z } from "zod";
 
 const TextAreaVariants = cva(
-  "w-full resize-none appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
+  "block w-full resize-none appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
   {
     variants: {
       variant: {
@@ -25,6 +25,7 @@ const TextAreaVariants = cva(
 
 type TextAreaProps = Omit<React.InputHTMLAttributes<HTMLTextAreaElement>, "size"> &
   VariantProps<typeof TextAreaVariants> & {
+    getHeight?: (height: number) => void;
     onChange?: (e: React.FocusEvent<HTMLInputElement>) => void;
     minRows?: number;
     maxRows?: number;
@@ -38,6 +39,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
     value,
     defaultValue,
     autoComplete,
+    getHeight,
     onChange,
     minRows = 2,
     maxRows = Infinity,
@@ -119,7 +121,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
 
     const computedHeight = Math.min(Math.max(fullHeight, minHeight), maxHeight);
 
-    if (computedHeight !== height) setHeight(computedHeight);
+    if (computedHeight !== height) {
+      setHeight(computedHeight);
+      getHeight?.(computedHeight);
+    }
   };
 
   useLayoutEffect(resize, [userRef, libRef, value, minRows, maxRows]); // eslint-disable-line react-hooks/exhaustive-deps

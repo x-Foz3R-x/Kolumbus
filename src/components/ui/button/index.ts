@@ -3,7 +3,7 @@ import { cva } from "class-variance-authority";
 export { Button } from "./button";
 export type { ButtonProps } from "./button";
 
-export const ButtonVariants = cva("group peer select-none text-gray-900 outline-0 dark:text-gray-100", {
+export const ButtonVariants = cva("group peer select-none text-gray-900 outline-0 dark:text-white", {
   variants: {
     variant: {
       default: "bg-gray-100 shadow-button focus-visible:shadow-focus",

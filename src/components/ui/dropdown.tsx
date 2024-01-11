@@ -36,6 +36,8 @@ function useDropdownContext() {
 }
 //#endregion
 
+// todo: add prevent animation
+
 type Props = {
   isOpen: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
@@ -131,7 +133,7 @@ export function Dropdown({
             aria-labelledby={buttonRef.current?.id}
             onFocus={() => setFocus("popover")}
             className={cn(
-              "flex flex-col rounded-xl bg-white p-1.5 shadow-border2XL dark:bg-gray-900 dark:text-gray-100 dark:shadow-border2XLDark",
+              "flex flex-col rounded-xl bg-white p-1.5 shadow-border2XL dark:bg-gray-900 dark:text-white dark:shadow-border2XLDark",
               className,
             )}
           >

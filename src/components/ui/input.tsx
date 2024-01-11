@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { KEY } from "@/types";
 
 const InputVariants = cva(
-  "peer w-full appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-gray-100 dark:placeholder:text-gray-600",
+  "peer w-full appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
   {
     variants: {
       variant: {
