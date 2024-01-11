@@ -267,9 +267,3 @@ export function StatelessInput({
     </div>
   );
 }
-
-type InputBasicProps = React.InputHTMLAttributes<HTMLInputElement> & VariantProps<typeof InputVariants> & { className?: string };
-export const BasicInput = forwardRef<HTMLInputElement, InputBasicProps>(({ variant, className, ...props }, ref) => (
-  <input ref={ref} className={cn(InputVariants({ variant, className }))} {...props} />
-));
-BasicInput.displayName = "Input Basic";

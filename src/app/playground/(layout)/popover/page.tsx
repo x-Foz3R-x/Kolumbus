@@ -1,14 +1,14 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { Popover, Offset, Flip, Arrow, usePopover, Prevent, PopoverTrigger } from "@/components/ui/popover";
-import { Placement } from "@/components/ui/popover/types";
-import Icon from "@/components/icons";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { Placement } from "@/components/ui/popover/types";
+
+import Icon from "@/components/icons";
+import { Popover, Offset, Flip, Arrow, usePopover, Prevent, PopoverTrigger } from "@/components/ui/popover";
+import { Input, Button } from "@/components/ui";
 
 export default function PopoverTests() {
   const [triggerRef, _, isOpen, setOpen] = usePopover();
@@ -25,7 +25,7 @@ export default function PopoverTests() {
         Popover
       </h1>
 
-      {/* popover demo */}
+      {/* Popover demo */}
       <div className="relative flex h-[80vh] w-screen flex-col items-center justify-center">
         {/* Sliders */}
         <div className="flex gap-5 py-5 text-xs">
@@ -181,12 +181,13 @@ export default function PopoverTests() {
         </Popover>
       </div>
 
-      <PopoverWithinContainer />
+      {/* Popover within container demo */}
+      <WithinContainer />
     </>
   );
 }
 
-function PopoverWithinContainer() {
+function WithinContainer() {
   const [triggerRef, _, isOpen, setOpen, inputType, setInputType] = usePopover();
 
   const [placement, setPlacement] = useState("top" as Placement);
@@ -196,10 +197,10 @@ function PopoverWithinContainer() {
 
   const arrowStyles = { arrow: "bg-gray-800 rounded-[3px]", backdrop: "shadow-borderXL rounded-[3px]" };
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setOpen(false);
     triggerRef.current?.focus({ preventScroll: true });
-  }, [triggerRef, setOpen]);
+  };
 
   //#region centering logic
   window.addEventListener("load", () => {
@@ -290,7 +291,7 @@ function PopoverWithinContainer() {
 
       {/* Placement */}
       <div>
-        <div style={{ top: 160 }} className="absolute inset-x-0 z-30 flex justify-center gap-5">
+        <div style={{ insetInline: 200, top: 160 }} className="absolute z-30 flex justify-center gap-5">
           <Button
             onClick={() => setPlacement("top-start")}
             variant="appear"
@@ -312,7 +313,7 @@ function PopoverWithinContainer() {
         </div>
 
         {/* left */}
-        <div style={{ left: 210 }} className="absolute inset-y-0 z-30 flex flex-col justify-center gap-5">
+        <div style={{ top: 150, bottom: 50, left: 210 }} className="absolute z-30 flex flex-col justify-center gap-5">
           <Button
             onClick={() => setPlacement("left-start")}
             variant="appear"
@@ -334,7 +335,7 @@ function PopoverWithinContainer() {
         </div>
 
         {/* right */}
-        <div style={{ right: 210 }} className="absolute inset-y-0 z-30 flex flex-col justify-center gap-5">
+        <div style={{ top: 150, bottom: 50, right: 210 }} className="absolute z-30 flex flex-col justify-center gap-5">
           <Button
             onClick={() => setPlacement("right-start")}
             variant="appear"
@@ -356,7 +357,7 @@ function PopoverWithinContainer() {
         </div>
 
         {/* bottom */}
-        <div style={{ bottom: 60 }} className="absolute inset-x-0 z-30 flex justify-center gap-5">
+        <div style={{ insetInline: 200, bottom: 60 }} className="absolute z-30 flex justify-center gap-5">
           <Button
             onClick={() => setPlacement("bottom-start")}
             variant="appear"
