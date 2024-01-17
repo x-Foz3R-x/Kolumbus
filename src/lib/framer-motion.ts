@@ -1,5 +1,11 @@
+import { backIn } from "framer-motion";
+
 export const EASING = {
-  anticipate: "anticipate",
+  linear: "linear",
+
+  easeIn: "easeIn",
+  easeInOut: "easeInOut",
+  easeOut: "easeOut",
 
   backIn: "backIn",
   backInOut: "backInOut",
@@ -9,13 +15,11 @@ export const EASING = {
   circInOut: "circInOut",
   circOut: "circOut",
 
-  easeIn: "easeIn",
-  easeInOut: "easeInOut",
-  easeOut: "easeOut",
-
   kolumbFlow: [0.175, 0.885, 0.32, 1],
   kolumbOverflow: [0.175, 0.885, 0.32, 1.275],
   kolumbOut: [0.885, 0.175, 0.5, 1],
+
+  anticipate: (p: number) => (p > 0.99 ? 1 : (p *= 2) < 1 ? 0.5 * backIn(p) : 0.5 * (2 - Math.pow(2, -10 * (p - 1)))),
 } as const;
 
 export const TRANSITION = {

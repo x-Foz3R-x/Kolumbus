@@ -12,10 +12,16 @@ module.exports = {
         inconsolata: "var(--font-inconsolata)",
       },
       animation: {
+        popUp: "popUp 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275)",
         appear: "appear 700ms cubic-bezier(0.175, 0.75, 0.32, 1)",
-        slideIn: "slideIn 400ms cubic-bezier(0.175, 0.5, 0.32, 1.275)",
+        slideIn: "slideIn 400ms cubic-bezier(0.175, 0.75, 0.32, 1)",
+        fadeIn: "fadeIn 400ms ease",
       },
       keyframes: {
+        popUp: {
+          "0%": { scale: 0, opacity: 0 },
+          "100%": { scale: 1, opacity: 1 },
+        },
         appear: {
           "0%": {
             opacity: "0",
@@ -33,16 +39,12 @@ module.exports = {
           },
         },
         slideIn: {
-          "0%": {
-            opacity: "0",
-            transformOrigin: "left",
-            transform: "translate(-1.5rem, -0.5rem) skew(3deg, 6deg) scale(0.75, 1)",
-          },
-          "100%": {
-            opacity: "1",
-            transformOrigin: "left",
-            transform: "translate(0, 0) skew(0deg, 0deg) scale(1, 1)",
-          },
+          "0%": { transform: "translateX(-100%)", opacity: 0 },
+          "100%": { transform: "translateX(0)", opacity: 1 },
+        },
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
         },
       },
       transitionTimingFunction: {

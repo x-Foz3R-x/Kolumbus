@@ -51,11 +51,7 @@ export function GenerateItinerary(tripId: string, startDate: string, endDate: st
 
   for (let i = 0; i < totalDays; i++) {
     const date = formatDate(currentDate);
-    const day: Day = {
-      id: `D${i}_@${tripId}`,
-      date,
-      events: events.filter((event) => event.date === date),
-    };
+    const day: Day = { id: `d${i}`, date, events: events.filter((event) => event.date === date) };
 
     itinerary.push(day);
     currentDate.setDate(currentDate.getDate() + 1);
