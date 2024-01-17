@@ -18,6 +18,7 @@ type Props = {
   triggerRef: React.RefObject<HTMLElement>;
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose?: () => void;
   placement?: Placement;
   strategy?: Strategy;
   container?: Container;
@@ -31,6 +32,7 @@ export function Popover({
   triggerRef,
   isOpen,
   setOpen,
+  onClose,
   placement: initialPlacement = "bottom",
   strategy = "absolute",
   container = { selector: "body", padding: 0 },
@@ -54,12 +56,20 @@ export function Popover({
   );
 
   const transition = useRef("");
+  const changeOpen = useCallback(
+    (state: boolean) => {
+      setOpen(state);
+      console.log("call on close");
+      onClose?.();
+    },
+    [setOpen, onClose],
+  );
   const handleClose = useCallback(() => {
     if (!isOpen) return;
 
-    setOpen(false);
+    changeOpen(false);
     triggerRef.current?.focus();
-  }, [triggerRef, isOpen, setOpen]);
+  }, [triggerRef, isOpen, changeOpen]);
   const variants = useMemo(() => {
     const transition = mountedExtensions.motion?.transition;
     const placementKey = parsePlacement(placement)[0];
@@ -144,14 +154,14 @@ export function Popover({
     if (!isOpen || mountedExtensions.prevent?.hide) return;
 
     const triggerElement = triggerRef.current;
-    const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && setOpen(false), { threshold: 0.1 });
+    const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && changeOpen(false), { threshold: 0.1 });
 
     if (triggerElement) observer.observe(triggerElement);
 
     return () => {
       triggerElement && observer.unobserve(triggerElement);
     };
-  }, [triggerRef, isOpen, setOpen, container.selector, mountedExtensions.prevent?.hide]);
+  }, [triggerRef, isOpen, changeOpen, container.selector, mountedExtensions.prevent?.hide]);
 
   useCloseTriggers([triggerRef, popoverRef], handleClose, !isOpen || mountedExtensions.prevent?.closeTriggers);
 

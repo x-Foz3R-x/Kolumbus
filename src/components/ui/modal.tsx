@@ -26,13 +26,14 @@ const ModalVariants = cva("mx-3 overflow-hidden rounded-xl bg-white shadow-borde
 type Props = VariantProps<typeof ModalVariants> & {
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose?: () => void;
+  removeButton?: boolean;
   backdrop?: { type: BackdropType; className?: string };
   className?: string;
-  removeButton?: boolean;
   buttonProps?: ButtonProps;
   children?: React.ReactNode;
 };
-export function Modal({ isOpen, setOpen, backdrop, size, className, removeButton, buttonProps, children }: Props) {
+export function Modal({ isOpen, setOpen, onClose: handleClose, removeButton, backdrop, size, className, buttonProps, children }: Props) {
   const ButtonRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +66,7 @@ export function Modal({ isOpen, setOpen, backdrop, size, className, removeButton
         triggerRef={ButtonRef}
         isOpen={isOpen}
         setOpen={setOpen}
+        onClose={handleClose}
         strategy="fixed"
         extensions={[
           Position("50%", "50%", "top left"),
