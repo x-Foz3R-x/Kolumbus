@@ -30,6 +30,7 @@ const BadgeVariants = cva("animate-popUp flex place-content-center items-center 
   defaultVariants: {
     variant: "default",
     placement: "topRight",
+    outline: false,
   },
 });
 const BadgeDependedVariants = cva("", {
