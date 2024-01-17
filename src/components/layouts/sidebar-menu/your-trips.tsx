@@ -15,8 +15,7 @@ import { Trip, UT } from "@/types";
 import Icon from "../../icons";
 import { Modal, ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle } from "../../ui/modal";
 import { Dropdown, DropdownOption } from "../../ui/dropdown";
-import { Button } from "../../ui/button";
-import { StatelessInput } from "../../ui/input";
+import { Button, Input } from "../../ui";
 
 export default function YourTrips() {
   const { user } = useUser();
@@ -29,7 +28,12 @@ export default function YourTrips() {
   const deleteTrip = api.trip.delete.useMutation();
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const newTripName = useRef("");
+  const [tripName, setTripName] = useState("");
+
+  const handleClose = () => {
+    setModalOpen(false);
+    setTripName("");
+  };
 
   const createNewTrip = () => {
     if (!user) return;
@@ -39,10 +43,8 @@ export default function YourTrips() {
       id: cuid2.init({ length: 14 })(),
       userId: user?.id,
       position: userTrips.length,
-      ...(newTripName.current.length > 0 && { name: newTripName.current }),
+      ...(tripName.length > 0 && { name: tripName }),
     };
-
-    setModalOpen(false);
 
     dispatchUserTrips({ type: UT.CREATE_TRIP, trip: newTrip });
     createTrip.mutate(newTrip, {
@@ -55,6 +57,8 @@ export default function YourTrips() {
         dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
       },
     });
+
+    handleClose();
   };
   const deleteSelectedTrip = (index: number) => {
     if (!user) return;
@@ -159,7 +163,7 @@ export default function YourTrips() {
           </DropdownOption>
         </Dropdown>
 
-        <Modal isOpen={isModalOpen} setOpen={setModalOpen} backdrop={{ type: "blur" }} removeButton>
+        <Modal isOpen={isModalOpen} setOpen={setModalOpen} onClose={() => setModalOpen(false)} backdrop={{ type: "blur" }} removeButton>
           <ModalBodyWithIcon variant="danger" icon={<Icon.triangleExclamation />}>
             <ModalTitle>Delete Trip</ModalTitle>
 
@@ -194,6 +198,7 @@ export default function YourTrips() {
         <Modal
           isOpen={isModalOpen}
           setOpen={setModalOpen}
+          onClose={() => setTripName("")}
           size="sm"
           className="shadow-border3XL"
           buttonProps={{
@@ -215,11 +220,11 @@ export default function YourTrips() {
 
             <ModalMessage>Enter the details below to create a new trip and start planning your itinerary.</ModalMessage>
 
-            <StatelessInput label="Trip name" onChange={(e) => (newTripName.current = e.target.value)} variant="insetLabel" />
+            <Input label="Trip name" value={tripName} onInput={(e) => setTripName(e.currentTarget.value)} variant="insetLabel" />
           </ModalBodyWithIcon>
 
           <ModalActionSection>
-            <Button onClick={() => setModalOpen(false)} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="px-5">
+            <Button onClick={handleClose} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="px-5">
               Cancel
             </Button>
             <Button
@@ -255,7 +260,7 @@ export default function YourTrips() {
               </p>
             </Button>
 
-            <span className="ease-kolumb-out absolute right-2 top-1 z-10 opacity-0 duration-300 group-hover/trip:opacity-100 group-hover/trip:ease-kolumb-flow">
+            <span className="absolute right-2 top-1 z-10 opacity-0 duration-300 ease-kolumb-out group-hover/trip:opacity-100 group-hover/trip:ease-kolumb-flow">
               <TripDropdown index={index} />
             </span>
           </li>
