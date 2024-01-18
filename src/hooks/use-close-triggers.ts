@@ -12,29 +12,29 @@ export default function useCloseTriggers(refs: React.RefObject<HTMLElement>[], c
   useEffect(() => {
     let insideOrigin = false;
 
-    const handleOriginClick = (event: MouseEvent) => {
-      if (refs.some((ref) => ref.current && ref.current.contains(event.target as Node))) insideOrigin = true;
+    const handleOriginClick = (e: MouseEvent) => {
+      if (refs.some((ref) => ref.current && ref.current.contains(e.target as Node))) insideOrigin = true;
     };
 
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (!insideOrigin && !refs.some((ref) => ref.current && ref.current.contains(event.target as Node))) callback();
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (!insideOrigin && !refs.some((ref) => ref.current && ref.current.contains(e.target as Node))) callback();
       insideOrigin = false;
     };
 
-    const handleEscapeKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "Escape") callback();
+    const handleEscapeKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape") callback();
     };
 
     if (!block) {
-      document.addEventListener("mousedown", handleOriginClick);
-      document.addEventListener("mouseup", handleOutsideClick);
-      document.addEventListener("keydown", handleEscapeKeyPress);
+      document.body.addEventListener("mousedown", handleOriginClick);
+      document.body.addEventListener("mouseup", handleOutsideClick);
+      document.body.addEventListener("keydown", handleEscapeKeyPress);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleOriginClick);
-      document.removeEventListener("mouseup", handleOutsideClick);
-      document.removeEventListener("keydown", handleEscapeKeyPress);
+      document.body.removeEventListener("mousedown", handleOriginClick);
+      document.body.removeEventListener("mouseup", handleOutsideClick);
+      document.body.removeEventListener("keydown", handleEscapeKeyPress);
     };
   }, [refs, callback, block]);
 }

@@ -59,7 +59,6 @@ export function Popover({
   const changeOpen = useCallback(
     (state: boolean) => {
       setOpen(state);
-      console.log("call on close");
       onClose?.();
     },
     [setOpen, onClose],
