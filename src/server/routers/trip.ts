@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "@/lib/prisma";
-import { GenerateItinerary } from "@/lib/utils";
+import { generateItinerary } from "@/lib/utils";
 import { tripSchema, Trip, Event } from "@/types";
 
 type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
@@ -31,7 +31,7 @@ const trip = router({
       orderBy: [{ position: "asc" }],
     });
 
-    return createTripObject(trip, events);
+    return createTrip(trip, events);
   }),
 
   //#region Read
@@ -62,7 +62,7 @@ const trip = router({
       orderBy: { position: "asc" },
     });
 
-    return await createTripsObject(trips);
+    return await createTrips(trips);
   }),
   //#endregion
 
@@ -93,7 +93,7 @@ export default trip;
  * @param trips - The array of prismaTrip objects.
  * @returns A Promise that resolves to an array of Trip objects.
  */
-async function createTripsObject(trips: prismaTrip[]): Promise<Trip[]> {
+async function createTrips(trips: prismaTrip[]): Promise<Trip[]> {
   return Promise.all(
     trips.map(async (trip) => {
       const events = await prisma.event.findMany({
@@ -101,7 +101,7 @@ async function createTripsObject(trips: prismaTrip[]): Promise<Trip[]> {
         orderBy: [{ position: "asc" }],
       });
 
-      return createTripObject(trip, events);
+      return createTrip(trip, events);
     }),
   );
 }
@@ -112,12 +112,12 @@ async function createTripsObject(trips: prismaTrip[]): Promise<Trip[]> {
  * @param events - The events data.
  * @returns The created Trip object.
  */
-function createTripObject(trip: prismaTrip, events: prismaEvent[]): Trip {
+function createTrip(trip: prismaTrip, events: prismaEvent[]): Trip {
   return {
     ...trip,
     updatedAt: trip.updatedAt.toISOString(),
     createdAt: trip.createdAt.toISOString(),
-    itinerary: GenerateItinerary(trip.id, trip.startDate, trip.endDate, formatEvents(events)),
+    itinerary: generateItinerary(trip.startDate, trip.endDate, formatEvents(events)),
   } as Trip;
 }
 

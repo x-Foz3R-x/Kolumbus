@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 
@@ -79,8 +79,8 @@ export function Popover({
       variant = typeof transition.top === "undefined" ? (transition as Variants) : (transition[placementKey] as Variants);
     }
 
-    variant.initial = { ...variant.initial, zIndex: zIndex + 1 };
-    variant.animate = { ...variant.animate, zIndex: zIndex + 1 };
+    variant.initial = { ...variant.initial, zIndex };
+    variant.animate = { ...variant.animate, zIndex };
     variant.exit = { ...variant.exit, zIndex: zIndex - 1 };
 
     return variant;
@@ -95,14 +95,14 @@ export function Popover({
           aria-hidden={true}
           style={styles.arrow}
           className={cn("absolute rotate-45", mountedExtensions.arrow.className?.arrow, transition.current)}
-        ></span>
+        />
         {mountedExtensions.arrow.className?.backdrop ? (
           <span
             role="presentation"
             aria-hidden={true}
             style={styles.arrow}
             className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className.backdrop, transition.current)}
-          ></span>
+          />
         ) : null}
       </>
     );
@@ -132,7 +132,7 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, mountedExtensions.prevent, handleClose]);
 
-  // Apply transition when popover is opened and positioned.
+  // Apply transition when popover is opened and positioned to animate flipping.
   useEffect(() => {
     if (isOpen && isPositioned) transition.current = "duration-250 ease-kolumb-flow";
     else transition.current = "";
@@ -180,7 +180,6 @@ export function Popover({
               strategy,
               "left-0 top-0 min-h-fit min-w-fit appearance-none bg-transparent",
               mountedExtensions.prevent?.pointer && "pointer-events-none",
-              transition.current,
             )}
             data-placement={placement}
           >

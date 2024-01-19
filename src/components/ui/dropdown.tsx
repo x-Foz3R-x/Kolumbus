@@ -52,6 +52,7 @@ type Props = {
   preventScroll?: boolean;
   dark?: boolean;
   className?: string;
+  zIndex?: number;
   buttonProps?: ButtonProps;
   children?: React.ReactNode;
 };
@@ -69,6 +70,7 @@ export function Dropdown({
   preventScroll = false,
   dark = false,
   className,
+  zIndex,
   buttonProps,
   children,
 }: Props) {
@@ -125,6 +127,7 @@ export function Dropdown({
           Prevent({ autofocus: inputType !== "keyboard", scroll: preventScroll }),
         ]}
         className={dark ? "dark" : ""}
+        zIndex={zIndex}
       >
         <DropdownContext.Provider value={{ skipIndexes, listItemsRef, activeIndex, setActiveIndex, handleClose }}>
           <ul

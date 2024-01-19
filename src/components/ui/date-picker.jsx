@@ -6,7 +6,7 @@ import { easepick, AmpPlugin, RangePlugin, LockPlugin } from "@easepick/bundle";
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
 import { useActionBarContext } from "../itinerary/action-bar";
-import { CalculateDays, GenerateItinerary } from "@/lib/utils";
+import { calculateDays, generateItinerary } from "@/lib/utils";
 import { UT } from "@/types";
 
 import Icon from "../icons";
@@ -54,7 +54,7 @@ export default function DatePicker() {
 
       trip.startDate = pickedStartDate.toISOString();
       trip.endDate = pickedEndDate.toISOString();
-      trip.itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, events);
+      trip.itinerary = generateItinerary(trip.startDate, trip.endDate, events);
 
       // Apply changes when there are no conflicting dates.
       if (startDate >= pickedStartDate && endDate <= pickedEndDate) {
@@ -80,8 +80,8 @@ export default function DatePicker() {
       }
 
       const eventsToDelete = [];
-      const daysToDeleteFromStart = startDate < pickedStartDate ? CalculateDays(startDate, pickedStartDate, false) : 0;
-      const daysToDeleteFromEnd = endDate > pickedEndDate ? CalculateDays(pickedEndDate, endDate, false) : 0;
+      const daysToDeleteFromStart = startDate < pickedStartDate ? calculateDays(startDate, pickedStartDate, false) : 0;
+      const daysToDeleteFromEnd = endDate > pickedEndDate ? calculateDays(pickedEndDate, endDate, false) : 0;
 
       // Collect events from both the start and end of the itinerary that are about to be deleted.
       for (let i = 0; i < daysToDeleteFromStart; i++) {

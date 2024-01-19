@@ -57,9 +57,9 @@ export const TRANSITION = {
     exit: { scaleY: 0, scaleX: 0.75, transition: { duration: 0.25, ease: EASING.kolumbOut } },
   },
   fadeInScale: {
-    initial: { scale: 0.5, opacity: 0 },
-    animate: { scale: 1, opacity: 1, transition: { duration: 0.2, ease: EASING.anticipate } },
-    exit: { scale: 0.5, opacity: 0, transition: { duration: 0.3, ease: EASING.anticipate } },
+    initial: { scale: 0, opacity: 0 },
+    animate: { scale: 1, opacity: 1, transition: { duration: 0.4, ease: EASING.anticipate } },
+    exit: { scale: 0, opacity: 0, transition: { duration: 0.4, ease: EASING.anticipate } },
   },
   fadeToPosition: {
     top: {

@@ -14,7 +14,7 @@ module.exports = {
       animation: {
         popUp: "popUp 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275)",
         appear: "appear 700ms cubic-bezier(0.175, 0.75, 0.32, 1)",
-        slideIn: "slideIn 400ms cubic-bezier(0.175, 0.75, 0.32, 1)",
+        slideIn: "slideIn 250ms ease",
         fadeIn: "fadeIn 400ms ease",
       },
       keyframes: {

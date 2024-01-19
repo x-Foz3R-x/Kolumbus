@@ -8,7 +8,7 @@ import cuid2 from "@paralleldrive/cuid2";
 
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
-import { CalculateDays } from "@/lib/utils";
+import { calculateDays } from "@/lib/utils";
 import { TRIP_IMG_FALLBACK } from "@/lib/config";
 import { tripTemplate } from "@/data/template-data";
 import { DispatchAction, Trip, UT } from "@/types";
@@ -129,7 +129,7 @@ function TripCard({ trip, userTrips, dispatchUserTrips }: TripCardProps) {
 
   const startDate = new Date(trip.startDate);
   const endDate = new Date(trip.endDate);
-  const tripDuration = CalculateDays(startDate, endDate);
+  const tripDuration = calculateDays(startDate, endDate);
 
   const deleteSelectedTrip = () => {
     // Delete the trip from the database

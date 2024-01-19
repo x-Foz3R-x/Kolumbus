@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useReducer } from "react";
-import { GenerateItinerary } from "@/lib/utils";
+import { generateItinerary } from "@/lib/utils";
 import { DispatchAction, Trip, UT } from "@/types";
 
 //#region Context
@@ -89,7 +89,7 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
         const newTrips = [...trips];
 
         const trip = action.trip;
-        trip.itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, []);
+        trip.itinerary = generateItinerary(trip.startDate, trip.endDate, []);
         newTrips.push(trip);
 
         return newTrips;

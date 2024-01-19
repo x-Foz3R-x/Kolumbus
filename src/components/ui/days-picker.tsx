@@ -5,7 +5,7 @@ import { useState } from "react";
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
 import { useActionBarContext } from "../itinerary/action-bar";
-import { CalculateDays, GenerateItinerary, cn } from "@/lib/utils";
+import { calculateDays, generateItinerary, cn } from "@/lib/utils";
 import { UT, Event } from "@/types";
 
 import Icon from "../icons";
@@ -22,7 +22,7 @@ export default function DaysPicker({ maxTripsDays }: { maxTripsDays: number }) {
 
   const handleDaySelect = (selectedDays: number) => {
     setOpen(false);
-    const days = CalculateDays(activeTrip.startDate, activeTrip.endDate);
+    const days = calculateDays(activeTrip.startDate, activeTrip.endDate);
 
     if (selectedDays === days) return;
 
@@ -35,7 +35,7 @@ export default function DaysPicker({ maxTripsDays }: { maxTripsDays: number }) {
     newEndDate.setDate(startDate.getDate() + selectedDays - 1);
 
     trip.endDate = newEndDate.toISOString();
-    trip.itinerary = GenerateItinerary(trip.id, trip.startDate, trip.endDate, events);
+    trip.itinerary = generateItinerary(trip.startDate, trip.endDate, events);
 
     // Apply changes when there are no conflicting dates.
     if (newEndDate > endDate) {
@@ -61,7 +61,7 @@ export default function DaysPicker({ maxTripsDays }: { maxTripsDays: number }) {
     }
 
     const eventsToDelete: Event[] = [];
-    const daysToDelete = CalculateDays(newEndDate, endDate) - 1;
+    const daysToDelete = calculateDays(newEndDate, endDate) - 1;
 
     // Collect events from end of the itinerary that are about to be deleted.
     for (let i = activeTrip.itinerary.length; i > activeTrip.itinerary.length - daysToDelete; i--) {
@@ -142,7 +142,7 @@ export default function DaysPicker({ maxTripsDays }: { maxTripsDays: number }) {
             <div className="absolute inset-0 flex flex-col items-center justify-between pb-[3.5px] pt-[6px] leading-none">
               <span className="mb-0.5 text-[10px] font-semibold uppercase tracking-tight text-kolumblue-100">days</span>
 
-              <span>{CalculateDays(activeTrip.startDate, activeTrip.endDate)}</span>
+              <span>{calculateDays(activeTrip.startDate, activeTrip.endDate)}</span>
             </div>
           </>
         ),
@@ -150,7 +150,7 @@ export default function DaysPicker({ maxTripsDays }: { maxTripsDays: number }) {
     >
       {[...Array(maxTripsDays)].map((_, index) => {
         const currentDate = new Date(new Date(activeTrip.startDate).setDate(new Date(activeTrip.startDate).getDate() + index));
-        const isCurrentDate = index + 1 === CalculateDays(activeTrip.startDate, activeTrip.endDate);
+        const isCurrentDate = index + 1 === calculateDays(activeTrip.startDate, activeTrip.endDate);
 
         return (
           <DropdownOption

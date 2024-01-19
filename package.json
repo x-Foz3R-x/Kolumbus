@@ -1,6 +1,6 @@
 {
   "name": "kolumbus",
-  "version": "0.1.96",
+  "version": "0.1.97",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -37,13 +37,13 @@
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "autoprefixer": "^10.4.16",
-    "eslint": "^8.55.0",
-    "eslint-config-next": "^14.0.4",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0",
     "postcss": "^8.4.32",
-    "prettier": "^3.1.1",
-    "prettier-plugin-tailwindcss": "^0.5.6",
+    "prettier": "^3.2.4",
+    "prettier-plugin-tailwindcss": "^0.5.11",
     "prisma": "^5.7.1",
-    "tailwindcss": "^3.3.6",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   }
 }

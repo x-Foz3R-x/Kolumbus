@@ -6,13 +6,23 @@ import { z } from "zod";
 import type { Itinerary, Day, Event } from "@/types";
 
 /**
+ * Compares two arrays for equality.
+ * @param a - The first array to compare.
+ * @param b - The second array to compare.
+ * @returns True if the arrays are equal, false otherwise.
+ */
+export function compareArrays<T>(a: T[], b: T[]) {
+  return a.length === b.length && a.every((element, index) => element === b[index]);
+}
+
+/**
  * Calculate the number of days between two dates.
  * @param firstDate - The first date
  * @param secondDate - The second date
- * @param inclusive - Whether to include the first date in the calculation (default is true).
+ * @param inclusive - Whether to include the first date in the calculation (defaults to true).
  * @returns The number of days between the two dates.
  */
-export function CalculateDays(firstDate: string | Date, secondDate: string | Date, inclusive = true): number {
+export function calculateDays(firstDate: Date | string, secondDate: Date | string, inclusive = true): number {
   // Calculate the time difference (in milliseconds)
   const timeDifference = Math.abs(new Date(firstDate).getTime() - new Date(secondDate).getTime());
 
@@ -23,14 +33,29 @@ export function CalculateDays(firstDate: string | Date, secondDate: string | Dat
 }
 
 /**
- * Formats a date into the "yyyy-mm-dd" format.
- * @param date The date object to be formatted.
- * @returns The formatted date string in "yyyy-mm-dd" format.
+ * Calculate the size of a JavaScript object in kilobytes (KB).
+ * @param object The object to calculate the size for.
+ * @returns The size in kilobytes (KB).
  */
-export function formatDate(date: Date): string {
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear().toString();
+export function calculateObjectSize<T extends object>(object: T): number {
+  // Serialize the object to JSON and calculate its length in bytes
+  const objectSizeInBytes = JSON.stringify(object).length;
+
+  // Convert the size from bytes to kilobytes (KB) and round it to 2 decimal places
+  return parseFloat((objectSizeInBytes / 1024).toFixed(2));
+}
+
+/**
+ * Formats a date into a string in the format "YYYY-MM-DD".
+ * @param date - The date to be formatted.
+ * @returns The formatted date string.
+ */
+export function formatDate(date: Date | string): string {
+  const d = new Date(date);
+
+  const day = d.getDate().toString().padStart(2, "0");
+  const month = (d.getMonth() + 1).toString().padStart(2, "0");
+  const year = d.getFullYear().toString();
 
   return `${year}-${month}-${day}`;
 }
@@ -44,8 +69,8 @@ export function formatDate(date: Date): string {
  * @param events - An array of events for the trip. Defaults to an empty array.
  * @returns An array representing the itinerary for the trip.
  */
-export function GenerateItinerary(tripId: string, startDate: string, endDate: string, events: Event[] = []) {
-  const totalDays = CalculateDays(startDate, endDate);
+export function generateItinerary(startDate: string, endDate: string, events: Event[] = []) {
+  const totalDays = calculateDays(startDate, endDate);
   const currentDate = new Date(startDate);
   const itinerary: Itinerary = [];
 
@@ -58,6 +83,10 @@ export function GenerateItinerary(tripId: string, startDate: string, endDate: st
   }
 
   return itinerary;
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
 //#region error handling
@@ -107,32 +136,12 @@ export function generateErrorResponse(error: unknown) {
 }
 //#endregion
 
-//#region misc
-/**
- * Calculate the size of a JavaScript object in kilobytes (KB).
- * @param object The object to calculate the size for.
- * @returns The size in kilobytes (KB).
- */
-export function CalculateObjectSizeInKB(object: {}): number {
-  // Serialize the object to JSON and calculate its length in bytes
-  const objectSizeInBytes = JSON.stringify(object).length;
-
-  // Convert the size from bytes to kilobytes (KB) and round it to 2 decimal places
-  const sizeInKB = Number((objectSizeInBytes / 1024).toFixed(2));
-
-  return sizeInKB;
-}
-
+// todo - to be removed
 /**
  * Compares the current URL pathname with the provided URL.
  * @param url - The URL to compare with the current URL pathname.
  * @returns True if the current URL pathname matches the provided URL, false otherwise.
  */
-export function CompareURLs(url: string): boolean {
-  return usePathname() === url ? true : false;
+export function compareURLs(url: string): boolean {
+  return usePathname() === url ? true : false; // eslint-disable-line react-hooks/rules-of-hooks
 }
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-//#endregion

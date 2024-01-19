@@ -50,7 +50,7 @@ export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
 
   return (
     <ActionBarContext.Provider value={{ activeTrip }}>
-      <section className="sticky left-0 right-0 top-14 z-[30] flex w-full min-w-min pb-3 pl-3 pr-6 font-inter">
+      <section className="sticky left-0 right-0 top-14 z-40 flex w-full min-w-min pb-3 pl-3 pr-6 font-inter">
         <div className="flex h-14 w-full items-center justify-between gap-5 rounded-lg border border-gray-100 bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter">
           <div className="flex h-full w-full items-center gap-1.5 overflow-x-auto pl-3">
             <Input
@@ -79,6 +79,8 @@ export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
           </div>
 
           <div className="flex flex-shrink-0 items-center gap-2 pr-5">
+            <div id="trash-container" />
+
             {isSaving && <p>saving...</p>}
 
             <DaysPicker maxTripsDays={30} />
