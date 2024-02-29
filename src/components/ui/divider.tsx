@@ -9,6 +9,7 @@ export function Divider({ orientation = "horizontal", gradient, className }: Div
   return (
     <div
       className={cn(
+        "pointer-events-none",
         orientation === "horizontal" ? "h-px w-full" : "h-full w-px",
         gradient
           ? orientation === "horizontal"

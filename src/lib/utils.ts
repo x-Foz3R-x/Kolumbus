@@ -85,8 +85,79 @@ export function generateItinerary(startDate: string, endDate: string, events: Ev
   return itinerary;
 }
 
+/**
+ * Transforms an itinerary into a cache object.
+ * @param itinerary The itinerary to transform.
+ * @returns The transformed cache object.
+ */
+export function transformItineraryToCache(itinerary: Itinerary): Record<string, Event[]> {
+  return itinerary.reduce((acc, day) => ({ ...acc, [day.id]: day.events }), {} as Record<string, Event[]>);
+}
+
+/**
+ * Restores the itinerary from the cache based on the provided parameters.
+ *
+ * @param itinerary - The original itinerary. An array of day objects, each containing an id and an array of events.
+ * @param cache - The cache containing events grouped by day id.
+ * @param daysToCheck - Optional. An array of day ids to check for events in the cache.
+ * If not provided, all days in the cache will be checked.
+ *
+ * @returns The restored itinerary. If `daysToCheck` is provided,
+ * only the days with ids in `daysToCheck` will be updated with events from the cache.
+ * If `daysToCheck` is not provided, all days in the itinerary will be updated with events from the cache.
+ * If a day's events in the itinerary match the corresponding day's events in the cache, the day will be returned as is.
+ */
+export function restoreItineraryFromCache(itinerary: Itinerary, cache: Record<string, Event[]>, daysToCheck?: string[]): Itinerary {
+  // If daysToCheck is provided, only include events from those days. Otherwise, include all events from the cache.
+  const eventsToRestore = daysToCheck ? daysToCheck.flatMap((dayId) => cache[dayId]) : Object.keys(cache).flatMap((dayId) => cache[dayId]);
+
+  const restoredItinerary = itinerary.map((day) => {
+    // If daysToCheck is provided and the current day's id is not in it, return the day as is.
+    if (daysToCheck && !daysToCheck.includes(day.id)) return day;
+
+    const cachedEventIds = cache[day.id].map((event) => event.id);
+    const dayEventIds = day.events.map((event) => event.id);
+
+    // Return the day as is, if the current day's events match the cached events,
+    if (compareArrays(cachedEventIds, dayEventIds)) return day;
+
+    // For each cached event ID, attempt to find the corresponding event in allEvents.
+    // If an event is not found for an ID, the .find returns undefined
+    // Then .filter(Boolean) removes these undefined values from the array.
+    const events = cachedEventIds.map((id) => eventsToRestore.find((event) => event.id === id)).filter(Boolean) as Event[];
+    return { ...day, events };
+  });
+
+  // Reorder the itinerary based on the order of day IDs in the cache and return it.
+  const cacheDayIds = Object.keys(cache);
+  return cacheDayIds.map((id) => restoredItinerary.find((day) => day.id === id)).filter(Boolean) as Itinerary;
+}
+
+/**
+ * Deep clones an itinerary object.
+ *
+ * @param itinerary - The itinerary to be cloned.
+ * @returns The cloned itinerary.
+ */
+export function deepCloneItinerary(itinerary: Itinerary): Itinerary {
+  return restoreItineraryFromCache(itinerary, transformItineraryToCache(itinerary));
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function getOS() {
+  if (typeof window === "undefined") return null;
+  const userAgent = window.navigator.userAgent.toLowerCase();
+
+  if (/(macintosh|macintel|macppc|mac68k|macos)/i.test(userAgent)) return "macos";
+  else if (/(iphone|ipad|ipod)/i.test(userAgent)) return "ios";
+  else if (/(win32|win64|windows|wince)/i.test(userAgent)) return "windows";
+  else if (/android/.test(userAgent)) return "android";
+  else if (/linux/.test(userAgent)) return "linux";
+
+  return null;
 }
 
 //#region error handling

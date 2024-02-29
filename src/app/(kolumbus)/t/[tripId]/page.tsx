@@ -1,42 +1,38 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useUser } from "@clerk/nextjs";
 
 import useAppdata from "@/context/appdata";
 
-import Portal from "@/components/portal";
-import { DndItinerary } from "@/components/dnd-itinerary";
 import ActionBar from "@/components/itinerary/action-bar";
-import { ActionBarSkeleton, ItinerarySkeleton } from "@/components/loading";
-
-import { ModalOld } from "@/components/ui/modalOld";
+import { DndItinerary } from "@/components/dnd-itinerary";
+import { ActionBarSkeleton, ItinerarySkeleton } from "@/components/skeletons";
 
 export default function Itinerary({ params: { tripId } }: { params: { tripId: string } }) {
-  const { userTrips, selectedTrip, setSelectedTrip, isLoading, isModalShown, modalChildren } = useAppdata();
+  const { user } = useUser();
+  const { userTrips, setSelectedTrip, isLoading } = useAppdata();
+
+  const activeTrip = useMemo(() => userTrips.find((trip) => trip.id === tripId), [userTrips, tripId]);
+  const selectedTripIndex = useMemo(() => userTrips.findIndex((trip) => trip.id === tripId), [userTrips, tripId]);
 
   useEffect(() => {
-    setSelectedTrip(userTrips.findIndex((trip) => trip.id === tripId));
-  }, [setSelectedTrip, userTrips, tripId]);
+    setSelectedTrip(selectedTripIndex);
+  }, [setSelectedTrip, selectedTripIndex]);
 
-  return (
+  return !isLoading && user && activeTrip ? (
     <>
-      {!isLoading ? (
-        <>
-          {/* This span ensures that action bar isn't first to focus and the warning about position sticky disappears */}
-          <span />
-          <ActionBar activeTrip={userTrips[selectedTrip]} />
-          <DndItinerary tripId={tripId} />
-        </>
-      ) : (
-        <>
-          <ActionBarSkeleton />
-          <ItinerarySkeleton />
-        </>
-      )}
-
-      <Portal>
-        <ModalOld showModal={isModalShown} modalChildren={modalChildren} />
-      </Portal>
+      {/* This span ensures that action bar isn't first to focus and the warning about position sticky disappears */}
+      <span />
+      <ActionBar activeTrip={activeTrip} />
+      <div className="relative mt-28 px-2 pt-3 font-inter">
+        <DndItinerary userId={user.id} tripId={tripId} itinerary={activeTrip.itinerary} />
+      </div>
+    </>
+  ) : (
+    <>
+      <ActionBarSkeleton />
+      <ItinerarySkeleton />
     </>
   );
 }

@@ -5,10 +5,10 @@ import { useEffect } from "react";
  *
  * @param refs - An array of React ref objects representing the elements that act as close triggers.
  * @param callback - The function to be called when a close trigger event occurs.
- * @param block - Optional boolean flag indicating whether the event listeners should be blocked.
+ * @param enable - Optional boolean flag indicating whether the event listeners should be blocked.
  * @returns A cleanup function to remove the event listeners.
  */
-export default function useCloseTriggers(refs: React.RefObject<HTMLElement>[], callback: Function, block: boolean = false) {
+export default function useCloseTriggers(refs: React.RefObject<HTMLElement>[], callback: Function, enable: boolean = false) {
   useEffect(() => {
     let insideOrigin = false;
 
@@ -25,7 +25,7 @@ export default function useCloseTriggers(refs: React.RefObject<HTMLElement>[], c
       if (e.key === "Escape") callback();
     };
 
-    if (!block) {
+    if (enable) {
       document.body.addEventListener("mousedown", handleOriginClick);
       document.body.addEventListener("mouseup", handleOutsideClick);
       document.body.addEventListener("keydown", handleEscapeKeyPress);
@@ -36,5 +36,5 @@ export default function useCloseTriggers(refs: React.RefObject<HTMLElement>[], c
       document.body.removeEventListener("mouseup", handleOutsideClick);
       document.body.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [refs, callback, block]);
+  }, [refs, callback, enable]);
 }

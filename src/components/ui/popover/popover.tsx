@@ -162,12 +162,12 @@ export function Popover({
     };
   }, [triggerRef, isOpen, changeOpen, container.selector, mountedExtensions.prevent?.hide]);
 
-  useCloseTriggers([triggerRef, popoverRef], handleClose, !isOpen || mountedExtensions.prevent?.closeTriggers);
+  useCloseTriggers([triggerRef, popoverRef], handleClose, isOpen && !mountedExtensions.prevent?.closeTriggers);
 
   return (
     <AnimatePresence>
       {isOpen ? (
-        <Portal selector={container.selector} skipSSRCheck>
+        <Portal root={container.selector} skipSSRCheck>
           {backdropContent}
           <motion.div
             ref={popoverRef}

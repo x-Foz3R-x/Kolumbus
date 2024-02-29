@@ -11,12 +11,12 @@ const TextAreaVariants = cva(
     variants: {
       variant: {
         default: "shadow-border focus:shadow-focus",
-        unstyled: "",
+        unset: null,
       },
       size: {
         default: "rounded-lg px-4 py-2 text-base",
         sm: "rounded-md px-3 py-1.5 text-sm",
-        unstyled: "",
+        unset: null,
       },
     },
     defaultVariants: { variant: "default", size: "default" },
@@ -32,7 +32,7 @@ type TextAreaProps = Omit<React.InputHTMLAttributes<HTMLTextAreaElement>, "size"
     fullHeight?: boolean;
     preventEmpty?: boolean;
   };
-export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputProps, userRef) => {
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputProps, ref) => {
   const {
     id,
     value,
@@ -50,7 +50,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
     className,
     ...props
   } = inputProps;
-  const libRef = useRef<HTMLTextAreaElement | null>(null);
+  const libRef = useRef<HTMLTextAreaElement>(null);
   const previousValue = useRef(String(value || defaultValue));
 
   const [height, setHeight] = useState(0);
@@ -69,8 +69,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
   const resize = () => {
     let node: HTMLTextAreaElement | null = null;
 
-    if (typeof userRef === "function") userRef(node);
-    else if (userRef) node = userRef.current;
+    if (typeof ref === "function") ref(node);
+    else if (ref) node = ref.current;
     else if (libRef) node = libRef.current;
 
     if (!node) return;
@@ -122,11 +122,11 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((inputPro
     if (computedHeight !== height) setHeight(computedHeight);
   };
 
-  useLayoutEffect(resize, [userRef, libRef, value, minRows, maxRows]); // eslint-disable-line react-hooks/exhaustive-deps
+  useLayoutEffect(resize, [ref, libRef, value, minRows, maxRows]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <textarea
-      ref={userRef ? userRef : libRef}
+      ref={ref ? ref : libRef}
       id={id}
       value={value}
       defaultValue={defaultValue}

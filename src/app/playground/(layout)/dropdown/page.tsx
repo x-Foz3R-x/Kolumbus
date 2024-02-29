@@ -6,7 +6,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Placement } from "@/components/ui/popover/types";
 
-import { Dropdown, DropdownGroupTitle, DropdownOption } from "@/components/ui/dropdown";
+import { Dropdown, DropdownGroupTitle, DropdownOption } from "@/components/ui/dropdown-deprecated";
 import { Button, Input } from "@/components/ui";
 import Checkbox from "@/components/ui/checkbox/checkbox";
 

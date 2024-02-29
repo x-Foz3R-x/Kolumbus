@@ -11,5 +11,6 @@
     "tailwindcss",
     "tanstack",
     "trpc"
-  ]
+  ],
+  "cSpell.words": ["Combobox", "kolumblue", "Kolumbus", "Typeahead"]
 }

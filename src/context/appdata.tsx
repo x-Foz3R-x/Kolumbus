@@ -4,7 +4,6 @@ import React, { createContext, useContext, useEffect, useState, useReducer } fro
 import { generateItinerary } from "@/lib/utils";
 import { DispatchAction, Trip, UT } from "@/types";
 
-//#region Context
 type AppdataContext = {
   userTrips: Trip[];
   dispatchUserTrips: React.Dispatch<DispatchAction>;
@@ -15,11 +14,6 @@ type AppdataContext = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isSaving: boolean;
   setSaving: React.Dispatch<React.SetStateAction<boolean>>;
-
-  isModalShown: boolean;
-  setModalShown: React.Dispatch<React.SetStateAction<boolean>>;
-  modalChildren: null;
-  setModalChildren: React.Dispatch<React.SetStateAction<null>>;
 };
 const appdataContext = createContext<AppdataContext | null>(null);
 export default function useAppdata() {
@@ -27,23 +21,13 @@ export default function useAppdata() {
   if (!context) throw new Error("useAppdata must be used within a AppDataProvider");
   return context;
 }
-//#endregion
 
-/**
- * Provider component for appdata context.
- * @param serverTrips - The user's trips from the server.
- * @param children - The children components to render.
- * @returns The provider component.
- */
 export function AppdataProvider({ trips, children }: { trips: Trip[]; children?: React.ReactNode }) {
   const [userTrips, dispatchUserTrips] = useReducer(TripsReducer, trips);
 
   const [selectedTrip, setSelectedTrip] = useState(-1);
   const [isLoading, setLoading] = useState(true);
   const [isSaving, setSaving] = useState(false);
-
-  const [isModalShown, setModalShown] = useState(false);
-  const [modalChildren, setModalChildren] = useState(null);
 
   useEffect(() => {
     if (userTrips?.length !== 0 && typeof userTrips[selectedTrip]?.itinerary !== "undefined") setLoading(false);
@@ -61,11 +45,6 @@ export function AppdataProvider({ trips, children }: { trips: Trip[]; children?:
         setLoading,
         isSaving,
         setSaving,
-
-        isModalShown,
-        setModalShown,
-        modalChildren,
-        setModalChildren,
       }}
     >
       {children}
@@ -73,12 +52,6 @@ export function AppdataProvider({ trips, children }: { trips: Trip[]; children?:
   );
 }
 
-/**
- * Reducer function for managing user trips state.
- * @param trips - The current state of trips.
- * @param action - DispatchAction object containing the action type and payload.
- * @returns The updated state of trips.
- */
 function TripsReducer(trips: Trip[], action: DispatchAction) {
   switch (action.type) {
     case UT.REPLACE:
@@ -121,27 +94,55 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
         return newTrips;
       }
       return trips;
+    case UT.REPLACE_ITINERARY:
+      if (action.payload) {
+        const newTrips = [...trips];
+        const { tripId, itinerary } = action.payload;
+
+        const tripIndex = newTrips.findIndex((trip) => trip.id === tripId);
+        if (tripIndex === -1) return trips;
+
+        newTrips[tripIndex].itinerary = itinerary;
+
+        return newTrips;
+      }
+      return trips;
     case UT.CREATE_EVENT:
       if (action.payload) {
         const newTrips = [...trips];
-        const { tripIndex, dayIndex, event, placeAt } = action.payload;
+        const { tripId, event, index } = action.payload;
 
-        const dayEvents = newTrips[tripIndex].itinerary[dayIndex].events;
+        const tripIndex = newTrips.findIndex((trip) => trip.id === tripId);
+        if (tripIndex === -1) return trips;
 
-        if (placeAt === "start") dayEvents.unshift(event);
-        else if (placeAt === "end") dayEvents.push(event);
+        const dayIndex = newTrips[tripIndex].itinerary.findIndex((day) => day.date === event.date);
+        if (dayIndex === -1) return trips;
 
-        dayEvents.forEach((event, index) => (event.position = index));
+        if (!index) newTrips[tripIndex].itinerary[dayIndex].events.push(event);
+        else {
+          newTrips[tripIndex].itinerary[dayIndex].events.splice(index, 0, event);
+          newTrips[tripIndex].itinerary[dayIndex].events.map((event, index) => (event.position = index));
+        }
+
         return newTrips;
       }
       return trips;
     case UT.UPDATE_EVENT:
       if (action.payload) {
         const newTrips = [...trips];
-        const { tripIndex, dayIndex, event } = action.payload;
+        const { tripId, event } = action.payload;
 
-        if (newTrips[tripIndex].itinerary[dayIndex].events[event.position].id !== event.id) return trips;
-        newTrips[tripIndex].itinerary[dayIndex].events[event.position] = event;
+        const tripIndex = newTrips.findIndex((trip) => trip.id === tripId);
+        if (tripIndex === -1) return trips;
+
+        const dayIndex = newTrips[tripIndex].itinerary.findIndex((day) => day.date === event.date);
+        if (dayIndex === -1) return trips;
+
+        const eventIndex = newTrips[tripIndex].itinerary[dayIndex].events.findIndex((e) => e.id === event.id);
+        if (eventIndex === -1) return trips;
+
+        if (!newTrips[tripIndex].itinerary[dayIndex].events[eventIndex]) return trips;
+        newTrips[tripIndex].itinerary[dayIndex].events[eventIndex] = event;
 
         return newTrips;
       }
@@ -149,12 +150,18 @@ function TripsReducer(trips: Trip[], action: DispatchAction) {
     case UT.DELETE_EVENT:
       if (action.payload) {
         const newTrips = [...trips];
-        const { tripIndex, dayIndex, event } = action.payload;
+        const { tripId, event } = action.payload;
 
-        if (newTrips[tripIndex].itinerary[dayIndex].events[event.position].id !== event.id) return trips;
+        const tripIndex = newTrips.findIndex((trip) => trip.id === tripId);
+        if (tripIndex === -1) return trips;
+
+        const dayIndex = newTrips[tripIndex].itinerary.findIndex((day) => day.date === event.date);
+        if (dayIndex === -1) return trips;
+
+        if (!newTrips[tripIndex].itinerary[dayIndex].events[event.position]) return trips;
 
         newTrips[tripIndex].itinerary[dayIndex].events.splice(event.position, 1);
-        newTrips[tripIndex].itinerary[dayIndex].events.forEach((event, index) => (event.position = index));
+        newTrips[tripIndex].itinerary[dayIndex].events.map((event, index) => (event.position = index));
 
         return newTrips;
       }

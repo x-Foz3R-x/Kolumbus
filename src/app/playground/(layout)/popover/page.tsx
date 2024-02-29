@@ -418,7 +418,7 @@ function WithinContainer() {
                 size="icon"
                 className="border border-gray-600 bg-gray-700 fill-white p-2 hover:bg-gray-600"
               >
-                <Icon.x className="h-2.5 w-2.5" />
+                <Icon.x_bold className="h-2.5 w-2.5" />
               </Button>
               <Icon.logo2 className="h-5 w-5" />
             </div>

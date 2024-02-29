@@ -53,8 +53,8 @@ export default function CodeVerification({ length, validChars = "0-9", onComplet
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck="false"
-        variant="unstyled"
-        size="unstyled"
+        variant="unset"
+        size="unset"
         className="absolute inset-0 -z-10 bg-transparent text-transparent caret-transparent autofill:appearance-none autofill:bg-transparent autofill:shadow-none autofill:focus:shadow-none"
       />
       <ul className="flex h-full w-full gap-2.5">
@@ -66,11 +66,11 @@ export default function CodeVerification({ length, validChars = "0-9", onComplet
               setFocused(true);
             }}
             className={cn(
-              "dark:bg-gray-1000 flex h-full w-10 cursor-text select-none items-center justify-center rounded-lg bg-white font-gordita text-xl font-medium",
+              "flex h-full w-10 cursor-text select-none items-center justify-center rounded-lg bg-white font-gordita text-xl font-medium dark:bg-gray-1000",
               isCharacterFilled(index)
                 ? "border-gray-100 bg-gray-100 text-gray-900 dark:border-gray-800 dark:bg-gray-800 dark:text-white"
                 : "text-gray-300 dark:border-gray-800 dark:text-gray-700",
-              isCharacterSelected(index) ? "dark:bg-gray-1000 bg-white shadow-focus" : "border shadow-softSm",
+              isCharacterSelected(index) ? "bg-white shadow-focus dark:bg-gray-1000" : "border shadow-softSm",
             )}
           >
             {isCharacterFilled(index) ? value[index] : isCharacterSelected(index) ? "_" : "•"}

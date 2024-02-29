@@ -1,552 +1,595 @@
 "use client";
 
-import { ForwardedRef, createContext, forwardRef, memo, useContext, useEffect, useState } from "react";
-import Image from "next/image";
-
-import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
-import { arrayMove, horizontalListSortingStrategy, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
-import { CSS } from "@dnd-kit/utilities";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Active,
+  CollisionDetection,
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragStartEvent,
+  KeyboardSensor,
+  MeasuringStrategy,
+  MouseSensor,
+  Over,
+  TouchSensor,
+  closestCenter,
+  pointerWithin,
+  rectIntersection,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
-import { GetItem, GetIndex, EventOverDay, EventOverEvent, GetDay, GetEvent, GetDragType, GetDayIndex } from "@/lib/dnd";
-import { Trip, Day, Event, UT } from "@/types";
+import { USER_ROLE } from "@/lib/config";
+import { compareArrays, deepCloneItinerary, transformItineraryToCache, restoreItineraryFromCache } from "@/lib/utils";
+import { Day, Event, Itinerary, KEY, UT } from "@/types";
 
-import Icon from "../icons";
-import { Calendar, CalendarEnd } from "../itinerary/calendar";
-import EventComposer from "../itinerary/event-composer";
-import EventPanel from "../itinerary/event-panel";
-import { Dropdown, DropdownLink, DropdownOption } from "../ui/dropdown";
-import { Button, Divider } from "../ui";
-import { EVENT_IMG_FALLBACK } from "@/lib/config";
-import { cn, formatDate } from "@/lib/utils";
+import DndDragOverlay from "./dnd-drag-overlay";
+import DndTrash from "./dnd-trash";
+import DndDay from "./dnd-day";
+import { Activity } from "./events";
+import { DndItineraryContext, DndItineraryContextProps } from "./dnd-context";
 
-//#region Context
-const DndDataContext = createContext<{
-  activeTrip: Trip;
-  activeEvent: Event | null;
-  setActiveEvent: React.Dispatch<React.SetStateAction<Event | null>>;
-  activeId: string | null;
+// PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity
 
-  daysId: string[];
-  eventsId: string[];
-  events: Event[];
+// todo - Multi select events from different days
+// todo - Selecting events with selection rectangle (like in any file manager)
+// todo - Properly done dnd keyboard support (filter tabbable elements, move events with keyboard, etc)
+// todo - fix overflowing issues with events (especially when expanded) that overflows other days calendars
+// todo: Shortcuts:
+// <kbd>Ctrl + Shift + Click</kbd> to select a range of events
+// <kbd>Ctrl + A</kbd> to select all events
+// <kbd>Ctrl + X</kbd> to cut selected events
+// <kbd>Ctrl + C</kbd> to copy selected events
+// <kbd>Ctrl + V</kbd> to paste events
+// <kbd>Ctrl + Z</kbd> to undo
+// <kbd>Ctrl + Shift + Z</kbd> to redo
 
-  isEventComposerOpen: boolean;
-  setEventComposerOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isEventPanelOpen: boolean;
-  setEventPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
-
-  itineraryPosition: { y_day: number; x_event: number };
-  setItineraryPosition: React.Dispatch<React.SetStateAction<{ y_day: number; x_event: number }>>;
-} | null>(null);
-export function useDndData() {
-  const context = useContext(DndDataContext);
-  if (!context) throw new Error("useDndData must be used within a DndDataContext.Provider");
-  return context;
-}
-//#endregion
-
-//#region Itinerary
-export function DndItinerary({ tripId }: { tripId: string }) {
-  const { userTrips, dispatchUserTrips, selectedTrip, setSaving } = useAppdata();
+export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { userId: string; tripId: string; itinerary: Itinerary }) {
+  const { dispatchUserTrips, setSaving } = useAppdata();
   const updateEvent = api.event.update.useMutation();
+  const deleteEvent = api.event.delete.useMutation();
 
-  const [activeTrip, setActiveTrip] = useState<Trip>(userTrips.find((trip) => trip.id === tripId) ?? ({} as Trip));
-  const [activeEvent, setActiveEvent] = useState<Event | null>(null);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [itinerary, setItinerary] = useState(tripItinerary);
+  const [activeItem, setActiveItem] = useState<Day | Event | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const [isEventComposerOpen, setEventComposerOpen] = useState(false);
-  const [isEventPanelOpen, setEventPanelOpen] = useState(false);
-  const [itineraryPosition, setItineraryPosition] = useState({ y_day: 0, x_event: 0 });
+  const itineraryCacheRef = useRef<Record<string, Event[]>>(transformItineraryToCache(itinerary));
+  const affectedDayIdsRef = useRef<string[]>([]);
 
-  // to delete/change
-  const [apiUpdate, setApiUpdate] = useState<{ type: "day^day" | "event^day" | "event^event" } | null>(null);
-  //
+  const eventCount = useMemo(() => itinerary.flatMap((day) => day.events).length, [itinerary]);
 
-  useEffect(() => {
-    setActiveTrip(userTrips.find((trip) => trip.id === tripId) ?? ({} as Trip));
-  }, [userTrips, setActiveTrip, tripId]);
+  const selectEvent = useCallback(
+    (id: string) => {
+      const areEventsOnSameDay = (id1: string, id2: string) => {
+        const events = itinerary.flatMap((day) => day.events);
+        return events.find((event) => event.id === id1)?.date === events.find((event) => event.id === id2)?.date;
+      };
 
-  const { itinerary, ...tripInfo } = activeTrip;
-  const events = itinerary.flatMap((day) => day.events);
+      const findEventIndex = (id: string) => {
+        // Find the day that contains the event with the given id and return the index of that event in the day
+        const day = itinerary.find((day) => day.events.find((event) => event.id === id));
+        return day?.events.findIndex((event) => event.id === id) ?? -1;
+      };
 
-  const daysId = itinerary.map((day) => day.id);
-  const eventsId = events.map((event) => event.id);
+      setSelectedIds((selectedIds) => {
+        // If the selected id is already in the array, remove it and return the updated array.
+        // The order of the remaining elements is preserved (no need to sort).
+        if (selectedIds.includes(id)) return selectedIds.filter((value) => value !== id);
 
-  const handleDragStart = ({ active }: DragStartEvent) => {
-    setActiveId(active?.id as string);
+        // To be removed when multi day event select is implemented (event from multiple days)
+        // If the array is empty or the selected id is from a different day than the rest, return id as a new array.
+        if (!selectedIds.length || !areEventsOnSameDay(id, selectedIds[0])) return [id];
 
-    if (GetDragType(active) === "day") {
-      const grabbing = document.createElement("div");
-      grabbing.id = "grabbing";
-      grabbing.setAttribute("style", "position: fixed; top: 0; left: 0; right: 0; bottom: 0; cursor: grabbing; z-index: 999;");
-      document.body.appendChild(grabbing);
-    }
-  };
-  const handleDragEnd = ({ collisions }: DragEndEvent) => {
-    setActiveId(null);
-    document.getElementById("grabbing")?.remove();
+        // If none of the above conditions are met, add the selected id to the array,
+        // sort the array by the index of the ids, and return the sorted array.
+        return [...selectedIds, id].sort((a, b) => findEventIndex(a) - findEventIndex(b));
+      });
+    },
+    [itinerary],
+  );
+  const deleteEvents = useCallback(
+    (eventIds: string[]) => {
+      // The originalDayIndex is used to find the original position of the event in the database.
+      // This is necessary because we need to know which events we need to update when we delete an event.
+      let originalDayIndex = Object.keys(itineraryCacheRef.current).findIndex((dayId) =>
+        itineraryCacheRef.current[dayId].find((event) => eventIds.includes(event.id)),
+      );
 
-    if (apiUpdate === null) return;
+      // The currentDayIndex is used to find the current position of the event in the local state.
+      // This is necessary because when an event is dragged to the trash icon, it most likely passes over a day,
+      // effectively changing its position. We need to find the last day that held the dragged event so we can remove it locally.
+      const currentDayIndex = itinerary.findIndex((day) => day.events.find((event) => eventIds.includes(event.id)));
 
-    // todo: optimize not to update all events, only the changed ones
-    // todo: sync with db, if update fails, revert to previous state
-    const currentDate = new Date(tripInfo.startDate);
-    itinerary.forEach((day, dayIndex) => {
-      day.events.forEach((event, index) => {
-        event.date = formatDate(currentDate);
-        event.position = index;
+      // If the originalDayIndex is still -1, set it to the currentDayIndex
+      // This can happen when after adding new event to the itinerary, itineraryCache.current is not updated
+      if (originalDayIndex === -1) originalDayIndex = currentDayIndex;
 
-        setSaving(true);
-        dispatchUserTrips({
-          type: UT.UPDATE_EVENT,
-          payload: { tripIndex: selectedTrip, dayIndex, event },
-        });
-        updateEvent.mutate(
+      // Remove the events from the itinerary
+      const newItinerary = deepCloneItinerary(itinerary);
+      newItinerary[currentDayIndex].events = updateEventData(filterEventsExcludingIds(newItinerary[currentDayIndex].events, eventIds));
+
+      setSaving(true);
+      dispatchUserTrips({ type: UT.REPLACE_ITINERARY, payload: { tripId, itinerary: newItinerary } });
+
+      eventIds.forEach((eventId) => {
+        deleteEvent.mutate(
+          { eventId },
           {
-            eventId: event.id,
-            data: { date: event.date, position: event.position },
-          },
-          {
-            onSuccess(updatedEvent) {
-              if (!updatedEvent) return;
-              dispatchUserTrips({
-                type: UT.UPDATE_EVENT,
-                payload: { tripIndex: selectedTrip, dayIndex, event: { ...event, ...(updatedEvent as Event | any) } },
-              });
-            },
             onError(error) {
-              console.log("first error");
               console.error(error);
-              dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-            },
-            onSettled() {
-              setSaving(false);
+              dispatchUserTrips({
+                type: UT.REPLACE_ITINERARY,
+                payload: { tripId, itinerary: restoreItineraryFromCache(itinerary, itineraryCacheRef.current, affectedDayIdsRef.current) },
+              });
             },
           },
         );
       });
 
-      currentDate.setDate(currentDate.getDate() + 1);
-    });
+      filterEventsExcludingIds(itinerary[originalDayIndex].events, eventIds).forEach((event) => {
+        updateEvent.mutate(
+          { eventId: event.id, data: { position: event.position } },
+          {
+            onError(error) {
+              console.error(error);
+              dispatchUserTrips({
+                type: UT.REPLACE_ITINERARY,
+                payload: { tripId, itinerary: restoreItineraryFromCache(itinerary, itineraryCacheRef.current, affectedDayIdsRef.current) },
+              });
+            },
+            onSettled: () => setSaving(false),
+          },
+        );
+      });
+    },
+    [itinerary, dispatchUserTrips, deleteEvent, updateEvent, setSaving, tripId, itineraryCacheRef, affectedDayIdsRef],
+  );
+
+  //#region Drag handlers
+  // handleDragStart - handles setting active id and item and cache itinerary
+  // handleDragOver - handles drag between days and drag of events between days
+  // handleDragEnd - handles drag to trash and drag of events in the same day
+  // handleDragCancel - handles resetting itinerary from cache
+
+  type DragData = { type: "event" | "day"; dayIndex: number } | undefined;
+
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    const activeItem =
+      active.data.current?.type === "day"
+        ? itinerary.find((day) => day.id === active.id)
+        : itinerary.flatMap((day) => day.events).find((event) => event.id === active.id);
+
+    setActiveItem(activeItem ?? null);
+    setSelectedIds((selected) => (selected.includes(active.id as string) ? selected : []));
+    itineraryCacheRef.current = transformItineraryToCache(itinerary);
   };
+
   const handleDragOver = ({ active, over }: DragOverEvent) => {
-    if (over === null) return;
+    // Skip if there's no drop target or if target is a trash can. Handled in `DragEnd`.
+    if (over === null || over.id === "trash") return;
 
-    const activeId = active?.id as string;
-    const overId = over?.id as string;
-    if (!activeId || !overId || activeId === overId) return;
+    const activeData = active.data.current as DragData;
+    const overData = over.data.current as DragData;
 
-    const activeType = GetDragType(active);
-    const overType = GetDragType(over);
-
-    const activeIndex = GetIndex(itinerary, events, activeType, activeId);
-    if (activeIndex < 0) return;
-    const activeDate = GetItem(itinerary, events, activeId)?.date;
-    if (typeof activeDate === "undefined") return;
-
-    const overIndex = GetIndex(itinerary, events, overType, overId);
-    if (overIndex < 0) return;
-    const overDate = GetItem(itinerary, events, overId)?.date;
-    if (typeof overDate === "undefined") return;
-
-    let newItinerary;
-    if (activeType === "day" && overType === "day") {
-      newItinerary = arrayMove(itinerary, activeIndex, overIndex);
-      setApiUpdate({ type: "day^day" });
-    } else if (activeType === "event" && overType === "day") {
-      newItinerary = EventOverDay(itinerary, events, activeId, activeIndex, activeDate, overIndex, overDate);
-      setApiUpdate({ type: "event^day" });
-    } else if (activeType === "event" && overType === "event") {
-      newItinerary = EventOverEvent(itinerary, events, activeId, activeIndex, activeDate, overId, overIndex, overDate);
-      setApiUpdate({ type: "event^event" });
+    if (!activeData || !overData || !activeData?.type || !overData?.type || !("dayIndex" in activeData) || !("dayIndex" in overData)) {
+      return;
     }
 
-    if (!newItinerary) return;
+    const { type: activeType, dayIndex: activeDayIndex } = activeData;
+    const { type: overType, dayIndex: overDayIndex } = overData;
 
-    const currentDate = new Date(tripInfo.startDate);
-    newItinerary.forEach((day) => {
-      day.date = formatDate(currentDate);
+    const activeDay = itinerary[activeDayIndex];
+    const overDay = itinerary[overDayIndex];
 
-      day.events.forEach((event, index) => {
-        event.date = formatDate(currentDate);
-        event.position = index;
-      });
+    // Add the activeDay and overDay IDs to the update list if they're not already included
+    if (!affectedDayIdsRef.current.includes(activeDay.id as string)) affectedDayIdsRef.current.push(activeDay.id as string);
+    if (!affectedDayIdsRef.current.includes(overDay.id as string)) affectedDayIdsRef.current.push(overDay.id as string);
 
-      currentDate.setDate(currentDate.getDate() + 1);
+    // Handle dragging of a day within the itinerary.
+    if (activeType === "day") {
+      const newItinerary = arrayMove(itinerary, activeDayIndex, overDayIndex);
+
+      // Swap the dates of the active and target days
+      [activeDay.date, overDay.date] = [overDay.date, activeDay.date];
+
+      // Update the dates of the events in the active and target days
+      activeDay.events = updateEventData(activeDay.events, activeDay.date);
+      overDay.events = updateEventData(overDay.events, overDay.date);
+
+      // Update the date of the active item
+      if (activeItem) setActiveItem({ ...activeItem, date: activeDay.date });
+
+      setItinerary(newItinerary);
+      setSelectedIds([]);
+      return;
+    }
+
+    // Handle dragging of single or multiple events between different days.
+    // Skip if dragging is within the same day. Handled in `DragEnd`.
+    if (activeDayIndex === overDayIndex) return;
+
+    const activeEvents = filterEvents(activeDay.events, true);
+    const draggedEvents = filterDraggedEvents(activeDay.events);
+
+    const targetIndex = findTargetIndex(active, over, overDay, overType);
+
+    setItinerary((itinerary) => {
+      const newItinerary = [...itinerary];
+      newItinerary[activeDayIndex].events = updateEventData(activeEvents);
+      newItinerary[overDayIndex].events = updateEventData(insertAt(overDay.events, draggedEvents, targetIndex), overDay.date);
+      return newItinerary;
     });
 
-    setActiveTrip({ itinerary: newItinerary, ...tripInfo });
+    recentlyMovedToNewDay.current = true;
   };
 
-  const value = {
-    activeTrip,
-    activeEvent,
-    setActiveEvent,
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    // Skip if there's no drop target.
+    if (over === null) {
+      setActiveItem(null);
+      return;
+    }
 
-    activeId,
-    daysId,
-    eventsId,
-    events,
+    const activeData = active.data.current as DragData;
+    const overData = over.data.current as DragData;
 
-    isEventComposerOpen,
-    setEventComposerOpen,
-    isEventPanelOpen,
-    setEventPanelOpen,
+    // Skip if there's no active or over data.
+    if (!activeData || !overData || !activeData?.type || !overData?.type || !("dayIndex" in activeData) || !("dayIndex" in overData)) {
+      setActiveItem(null);
+      setSelectedIds([]);
+      return;
+    }
 
-    itineraryPosition,
-    setItineraryPosition,
+    const { type: activeType, dayIndex: activeDayIndex } = activeData;
+    const { type: overType, dayIndex: overDayIndex } = overData;
+
+    const activeDay = itinerary[activeDayIndex];
+    const overDay = itinerary[overDayIndex];
+
+    // Handle dragging of single or multiple events to the trash.
+    if (over.id === "trash" && activeType === "event" && activeItem) {
+      deleteEvents(selectedIds.length ? selectedIds : [active.id as string]);
+      setActiveItem(null);
+      setSelectedIds([]);
+      return;
+    }
+
+    // Handle dragging of single or multiple events within day.
+    // Skip if dragging is not within the same day or if the drag type is a day. Both cases are handled in `DragOver`.
+    if (activeDayIndex !== overDayIndex || activeType === "day" || overType === "day") {
+      setActiveItem(null);
+      syncEvents(affectedDayIdsRef.current);
+      return;
+    }
+
+    const dayEvents = filterEvents(activeDay.events);
+    const draggedEvents = filterDraggedEvents(activeDay.events);
+
+    const initialIndex = dayEvents.findIndex((event) => event.id === active.id);
+    const targetIndex = findTargetIndex(active, over, overDay, overType);
+
+    // Use arrayMove to relocate the event from its original to the desired position.
+    // Then remove the relocated event at the target index to avoid duplication,
+    // since it's already included in the draggedEvents that we insert at that spot.
+    const rearrangedEvents = arrayMove(dayEvents, initialIndex, targetIndex).toSpliced(targetIndex, 1, ...draggedEvents);
+
+    setItinerary((itinerary) => {
+      const newItinerary = [...itinerary];
+      newItinerary[activeDayIndex].events = updateEventData(rearrangedEvents);
+      return newItinerary;
+    });
+    setActiveItem(null);
+    syncEvents([activeDay.id]);
   };
 
-  return (
-    <div className="relative px-6">
-      <DndDataContext.Provider value={value}>
-        <DndContext onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
-          <SortableContext items={daysId} strategy={verticalListSortingStrategy}>
-            <EventComposer />
-            <EventPanel />
-
-            <ul className="flex w-full min-w-fit flex-col">
-              {daysId?.map((dayId) => <DndDay key={dayId} day={GetDay(itinerary, dayId)} />)}
-            </ul>
-            <CalendarEnd />
-          </SortableContext>
-
-          {typeof activeId === "string" && daysId.includes(activeId) ? (
-            <DragOverlay
-              modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-              dropAnimation={{
-                duration: 300,
-                easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
-              }}
-            >
-              <DayComponent day={GetDay(itinerary, activeId)} dragging />
-            </DragOverlay>
-          ) : null}
-
-          {typeof activeId === "string" && eventsId?.includes(activeId) ? (
-            <DragOverlay
-              dropAnimation={{
-                duration: 300,
-                easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
-              }}
-            >
-              <EventComponent event={GetEvent(events, activeId)} dragging />
-            </DragOverlay>
-          ) : null}
-        </DndContext>
-      </DndDataContext.Provider>
-    </div>
-  );
-}
-//#endregion
-
-//#region Day
-const DndDay = memo(function Day({ day, ...props }: { day: Day }) {
-  const { activeId } = useDndData();
-  const id = day.id;
-
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({
-    id,
-    data: {
-      item: day,
-    },
-    transition: {
-      duration: 300,
-      easing: "cubic-bezier(0.175, 0.885, 0.32, 1)",
-    },
-  });
-
-  return (
-    <li
-      id={id}
-      ref={setNodeRef}
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition,
-      }}
-      className={`group/calendar ${
-        id !== activeId
-          ? "z-10"
-          : "h-[8.25rem] rounded-r-[0.625rem] border-2 border-dashed border-kolumblue-300 bg-kolumblue-100/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter first:rounded-tl-[0.625rem]"
-      }`}
-    >
-      {id !== activeId ? <DayComponent ref={setActivatorNodeRef} day={day} {...attributes} {...listeners} {...props} /> : null}
-    </li>
-  );
-});
-
-type DayComponentProps = {
-  day: Day;
-  dragging?: boolean;
-};
-const DayComponent = memo(
-  forwardRef(function DndDayContentComponent({ day, dragging, ...props }: DayComponentProps, ref: ForwardedRef<HTMLDivElement>) {
-    const { activeTrip, activeId, setEventComposerOpen: setEventComposerDisplay, setItineraryPosition } = useDndData();
-    const { id, date, events } = day;
-
-    const dayEventsId = events?.map((event) => event.id);
-    const dayIndex = GetDayIndex(activeTrip.itinerary, date);
-
-    const handleAddEvent = () => {
-      setEventComposerDisplay(true);
-      setItineraryPosition({ y_day: dayIndex, x_event: 0 });
-    };
-
-    const eventWidthAndGap = 168;
-    return (
-      <div ref={ref} className="group/day flex w-full gap-5">
-        <Calendar index={dayIndex} dragging={dragging} handleAddEvent={handleAddEvent} {...props} />
-
-        <ul
-          className={`flex h-32 origin-left list-none gap-2 pt-5 duration-300 ease-kolumb-flow ${
-            id === activeId ? "scale-95" : "scale-100"
-          }`}
-        >
-          <SortableContext items={dayEventsId} strategy={horizontalListSortingStrategy}>
-            {dayEventsId?.map((eventId) => <DndEvent key={eventId} event={events.find((event) => event.id === eventId)!} />)}
-          </SortableContext>
-
-          <button
-            onClick={handleAddEvent}
-            style={{
-              left: eventWidthAndGap * dayEventsId.length,
-            }}
-            className="group absolute z-30 flex h-28 w-8 flex-col items-center justify-center rounded-[0.625rem] bg-white/80 shadow-xl backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-flow hover:shadow-2xl"
-          >
-            <Icon.plus className="h-4 w-4 fill-gray-300 duration-150 ease-kolumb-flow group-hover:fill-gray-600" />
-          </button>
-        </ul>
-      </div>
-    );
-  }),
-);
-//#endregion
-
-//#region Event
-const DndEvent = memo(({ event }: { event: Event }) => {
-  const { dispatchUserTrips, selectedTrip } = useAppdata();
-  const { activeTrip, activeId, activeEvent, setActiveEvent, isEventPanelOpen, setEventPanelOpen, setItineraryPosition } = useDndData();
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: event.id,
-    data: { item: event },
-    transition: { duration: 300, easing: "cubic-bezier(0.175, 0.885, 0.32, 1)" },
-  });
-
-  const deleteEvent = api.event.delete.useMutation();
-
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
-
-  const openEventPanel = () => {
-    setActiveEvent(event);
-    setItineraryPosition({ y_day: dayIndex, x_event: event.position });
-
-    if (isEventPanelOpen) {
-      setEventPanelOpen(false);
-      setTimeout(() => setEventPanelOpen(true), 350);
-    } else setEventPanelOpen(true);
+  const handleDragCancel = () => {
+    setItinerary(restoreItineraryFromCache(itinerary, itineraryCacheRef.current, affectedDayIdsRef.current));
+    setActiveItem(null);
   };
-  const handleEventDelete = () => {
-    if (!event) return;
+  //#endregion
 
-    const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+  //#region Dnd-kit misc
+  const lastOverId = useRef<string | null>(null);
+  const recentlyMovedToNewDay = useRef(false);
 
-    const events = [...activeTrip.itinerary[dayIndex].events];
-    events.splice(event.position, 1);
-    events.map((_, index) => ({ position: index }));
-
-    setEventPanelOpen(false);
-    dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
-    deleteEvent.mutate(
-      { eventId: event.id, events },
-      {
-        onSuccess(updatedEvents) {
-          if (!updatedEvents) return;
-          updatedEvents.forEach((event) => {
-            dispatchUserTrips({
-              type: UT.UPDATE_EVENT,
-              payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
-            });
-          });
-        },
-        onError(error) {
-          console.error(error);
-          dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
-        },
-      },
-    );
-  };
-
-  return (
-    <li
-      id={event.id}
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`h-28 rounded-lg duration-500 ease-kolumb-flow ${
-        event.id !== activeId ? "z-10" : "z-20 border-2 border-dashed border-gray-300 bg-gray-50"
+  /**
+   * Custom collision detection strategy optimized for multiple containers
+   *
+   * - First, find any droppable containers intersecting with the pointer.
+   * - If there are none, find intersecting containers with the active draggable.
+   * - If there are no intersecting containers, return the last matched intersection
+   *
+   */
+  const collisionDetectionStrategy: CollisionDetection = useCallback(
+    (args) => {
+      if (activeItem && "events" in activeItem) {
+        // If the active item is an day, return the closestCenter detection strategy with droppable's of the type "day"
+        return closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter((droppable) => droppable.data.current?.type === "day"),
+        });
       }
-      ${isEventPanelOpen && activeEvent?.id === event.id ? "w-80 opacity-0" : "w-40 opacity-100"}
-      `}
-    >
-      {event.id !== activeId && <EventComponent event={event} {...listeners} {...attributes} />}
-    </li>
+
+      // Start by finding any intersecting droppable
+      const pointerIntersections = pointerWithin(args);
+      const intersections = pointerIntersections.length > 0 ? pointerIntersections : rectIntersection(args);
+      let overId = !intersections || intersections.length === 0 ? null : intersections[0].id;
+
+      if (overId === "trash") return pointerWithin(args);
+      if (overId !== null) {
+        const intersectingDayEventsIds = itinerary.find((day) => day.id === overId)?.events.map((event) => event.id);
+        const intersectingRect = args.droppableContainers.find((droppable) => droppable.id === overId)?.rect.current;
+        const pointerX = args.pointerCoordinates?.x;
+
+        if (intersectingDayEventsIds && intersectingRect && pointerX) {
+          const eventsWidthWithinContainer = intersectingRect.left + intersectingDayEventsIds.length * 160;
+          const isPointerWithinEvents = intersectingDayEventsIds.length > 0 && pointerX < eventsWidthWithinContainer;
+
+          if (isPointerWithinEvents) {
+            return closestCenter({
+              ...args,
+              droppableContainers: args.droppableContainers.filter(
+                (droppable) => droppable.id !== overId && intersectingDayEventsIds.includes(droppable.id as string),
+              ),
+            });
+          }
+        }
+
+        lastOverId.current = overId as string;
+        return [{ id: overId }];
+      }
+
+      // When a draggable item moves to a new container, the layout may shift
+      // and the `overId` may become `null`. We manually set the cached `lastOverId`
+      // to the id of the draggable item that was moved to the new container, otherwise
+      // the previous `overId` will be returned which can cause items to incorrectly shift positions
+      if (recentlyMovedToNewDay.current) lastOverId.current = activeItem?.id ?? null;
+
+      // If no droppable is matched, return the last match
+      return lastOverId.current ? [{ id: lastOverId.current }] : [];
+    },
+    [activeItem, itinerary],
   );
-});
-DndEvent.displayName = "DndEvent";
 
-type EventComponentProps = {
-  event: Event;
-  dragging?: boolean;
-};
-const EventComponent = memo(
-  forwardRef<HTMLDivElement, EventComponentProps>(({ event, dragging, ...props }, ref: ForwardedRef<HTMLDivElement>) => {
-    const { dispatchUserTrips, selectedTrip } = useAppdata();
-    const { activeTrip, setActiveEvent, isEventPanelOpen, setEventPanelOpen, setItineraryPosition } = useDndData();
-    const deleteEvent = api.event.delete.useMutation();
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+      keyboardCodes: { start: [KEY.Space], cancel: [KEY.Escape], end: [KEY.Space, KEY.Enter] },
+    }),
+  );
 
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
-    const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+  useEffect(() => {
+    requestAnimationFrame(() => (recentlyMovedToNewDay.current = false));
+  }, [itinerary]);
+  //#endregion
 
-    const openEventPanel = () => {
-      setActiveEvent(event);
-      setItineraryPosition({ y_day: dayIndex, x_event: event.position });
+  // Deselect ids when pressing the escape key or when clicking without ctrl key
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (selectedIds.length === 0) return;
 
-      if (isEventPanelOpen) {
-        setEventPanelOpen(false);
-        setTimeout(() => setEventPanelOpen(true), 350);
-      } else setEventPanelOpen(true);
+      const target = e.target as HTMLElement;
+      const containsIgnore = target.classList.contains(".ignore-deselect");
+      const childrenContainsIgnore = Array.from(target.children).some((child) => child.classList.contains("ignore-deselect"));
+
+      if (containsIgnore || childrenContainsIgnore) return;
+
+      if (!(e.ctrlKey || e.metaKey)) setSelectedIds([]);
+    };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === KEY.Escape && selectedIds.length !== 0) setSelectedIds([]);
     };
 
-    const handleEventDelete = () => {
-      if (!event) return;
+    document.addEventListener("click", handleClick);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("click", handleClick);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, [selectedIds]);
 
-      const dayIndex = GetDayIndex(activeTrip.itinerary, event.date);
+  // Update itinerary when tripItinerary changes
+  useEffect(() => {
+    if (!compareArrays(itinerary, tripItinerary)) setItinerary(tripItinerary);
+  }, [tripItinerary]); // eslint-disable-line react-hooks/exhaustive-deps
 
-      const events = [...activeTrip.itinerary[dayIndex].events];
-      events.splice(event.position, 1);
-      events.map((_, index) => ({ position: index }));
+  const dndItineraryContext: DndItineraryContextProps = useMemo(
+    () => ({
+      userId,
+      tripId,
+      eventsCount: itinerary.flatMap((day) => day.events).length,
+      getItineraryClone: () => deepCloneItinerary(itinerary),
+      selectEvent,
+      deleteEvents,
+    }),
+    [userId, tripId, itinerary, selectEvent, deleteEvents],
+  );
 
-      setEventPanelOpen(false);
-      dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { tripIndex: selectedTrip, dayIndex, event } });
-      deleteEvent.mutate(
-        { eventId: event.id, events },
+  return (
+    <DndItineraryContext.Provider value={dndItineraryContext}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={collisionDetectionStrategy}
+        measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+      >
+        <SortableContext items={itinerary.map((day) => day.id)} strategy={verticalListSortingStrategy}>
+          <ul className="flex w-full min-w-fit flex-col">
+            {itinerary.map((day, index) => (
+              <DndDay key={day.id} day={day} dayIndex={index} itinerary={itinerary}>
+                <SortableContext items={filterEvents(day.events).map((event) => event.id)} strategy={horizontalListSortingStrategy}>
+                  {filterEvents(day.events).map((event) => (
+                    <Activity key={event.id} event={event} day={day} dayIndex={index} isSelected={selectedIds.includes(event.id)} />
+                  ))}
+                </SortableContext>
+              </DndDay>
+            ))}
+          </ul>
+        </SortableContext>
+
+        {/* Calendar End */}
+        <div className="sticky left-56 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl">
+          End of Trip
+        </div>
+
+        <DndTrash />
+        <DndDragOverlay
+          activeItem={activeItem}
+          selectedIds={selectedIds}
+          enableEventComposer={eventCount < USER_ROLE.EVENTS_PER_TRIP_LIMIT}
+        />
+      </DndContext>
+    </DndItineraryContext.Provider>
+  );
+
+  /**
+   * Determines the target index for a active event in the list of events for a given day.
+   *
+   * The function first filters out selected events from the target day's events. If the overType is "day",
+   * it returns the total events count, effectively placing the dragged event at the end of the day.
+   *
+   * If the overType is "event", it checks whether the dragged event is past the last event of the day.
+   * If it is, it adjusts the position to append it at the end of the day. Otherwise, it finds the index
+   * of the event being dragged over and returns that index, or the total events count if the index is not valid.
+   *
+   * @param active - The active event being dragged.
+   * @param over - The event or day being dragged over.
+   * @param overDay - The day being dragged over.
+   * @param overType - The type of element being dragged over, either "day" or "event".
+   * @returns The target index for the dragged event in the list of events for the given day.
+   */
+  function findTargetIndex(active: Active, over: Over, overDay: Day, overType: "day" | "event") {
+    const filteredOverDayEvents = filterEvents(overDay.events);
+    const totalEvents = filteredOverDayEvents.length;
+
+    if (overType === "day") return totalEvents;
+
+    // This comment addresses a subtle behavior when dragging an event over a day that already contains events.
+    // It might seem like you're dragging over the day itself, but in reality, the event is dragged over the last event of the day.
+    // If the event is dragged past the last event, we adjust the position to append it at the day's end.
+    const isDraggedPastOverEvent =
+      over && active.rect.current.translated && active.rect.current.translated.left > over.rect.left + over.rect.width;
+    const positionAdjustment = isDraggedPastOverEvent ? 1 : 0;
+
+    const overEventIndex = filteredOverDayEvents.findIndex((event) => event.id === over.id);
+    const validIndex = overEventIndex >= 0 && overEventIndex + positionAdjustment <= totalEvents;
+
+    return validIndex ? overEventIndex + positionAdjustment : totalEvents;
+  }
+
+  // Filter functions
+  /**
+   * Filters out selected events from the provided array during a drag operation.
+   * An event is excluded if its id is included in the list of selected events ids
+   * or if `excludeActiveEvent` is true then also the active event.
+   *
+   * @param events - The array of events to filter.
+   * @param excludeActiveEvent - Optional. If true, the active event is excluded from the new array. Default is false.
+   * @returns  A new array of events excluding the selected ones and optionally the active event.
+   */
+  function filterEvents(events: Event[], excludeActiveEvent = false): Event[] {
+    if (!activeItem) return events;
+
+    if (excludeActiveEvent) return events.filter((event) => event.id !== activeItem.id && !selectedIds.includes(event.id));
+    return events.filter((event) => event.id === activeItem.id || !selectedIds.includes(event.id));
+  }
+  /**
+   * Filters the provided array of events to return only the events that are currently being dragged.
+   * An event is considered to be dragged if it's either the active event or its id is included in the list of selected events ids.
+   *
+   * @param events - The array of events to filter.
+   * @returns An array of events that are currently being dragged or the original array.
+   */
+  function filterDraggedEvents(events: Event[]): Event[] {
+    if (!activeItem) return events;
+    return events.filter((event) => event.id === activeItem.id || selectedIds.includes(event.id));
+  }
+  /**
+   * Filters the provided array of events to return only the events whose ids are not included in the provided ids array.
+   *
+   * @param events - The array of events to filter.
+   * @param ids - The array of ids to exclude.
+   * @returns An array of events whose ids are not included in the provided ids array.
+   */
+  function filterEventsExcludingIds(events: Event[], ids: string[]): Event[] {
+    return events.filter((event) => !ids.includes(event.id));
+  }
+
+  // Event Manipulation Functions
+  /**
+   * Updates the date and position properties of each event in the provided array.
+   *
+   * The date property is updated to the provided date, or if no date is provided, it remains the same.
+   * The position property is updated to the index of the event in the array.
+   *
+   * @param events - The array of events to update.
+   * @param date - Optional. The new date for the events. If not provided, the date of each event remains the same.
+   * @returns A new array of events with updated date and position properties.
+   */
+  function updateEventData(events: Event[], date?: string): Event[] {
+    return events.map((event, index) => ({ ...event, date: date || event.date, position: index }));
+  }
+  /**
+   * Inserts an array of events at a specific index in another array of events.
+   *
+   * The function creates a new array that includes all events from the original array,
+   * but with the events from the second array inserted at the specified index.
+   *
+   * @param array - The original array of events.
+   * @param events - The array of events to insert.
+   * @param index - The index at which to insert the events.
+   * @returns A new array with the events inserted at the specified index.
+   */
+  function insertAt(array: Event[], events: Event[], index: number): Event[] {
+    return [...array.slice(0, index), ...events, ...array.slice(index)];
+  }
+
+  // Database handling functions
+  function syncEvents(affectedDayIds: string[]) {
+    const currentEvents = affectedDayIds.flatMap((dayId) => itinerary.find((day) => day.id === dayId)?.events ?? []);
+    const previousEvents = affectedDayIds.flatMap((dayId) => itineraryCacheRef.current[dayId] ?? []);
+
+    const areEventsEqual = (event1: Event, event2: Event) => {
+      return event1.id === event2.id && event1.date === event2.date && event1.position === event2.position;
+    };
+
+    const updatedEvents = currentEvents.filter((event) => !previousEvents.some((previousEvent) => areEventsEqual(previousEvent, event)));
+
+    dispatchUserTrips({ type: UT.REPLACE_ITINERARY, payload: { tripId, itinerary } });
+    updatedEvents.forEach((event) => {
+      setSaving(true);
+      updateEvent.mutate(
+        { eventId: event.id, data: { date: event.date, position: event.position } },
         {
-          onSuccess(updatedEvents) {
-            if (!updatedEvents) return;
-            updatedEvents.forEach((event) => {
-              dispatchUserTrips({
-                type: UT.UPDATE_EVENT,
-                payload: { tripIndex: selectedTrip, dayIndex, event: { ...(event as Event | any) } },
-              });
-            });
+          onSuccess(updatedEvent) {
+            if (!updatedEvent) return;
+            dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { tripId, event: { ...event, updatedAt: updatedEvent.updatedAt } } });
           },
           onError(error) {
             console.error(error);
-            dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: activeTrip });
+            dispatchUserTrips({
+              type: UT.REPLACE_ITINERARY,
+              payload: { tripId, itinerary: restoreItineraryFromCache(itinerary, itineraryCacheRef.current, affectedDayIds) },
+            });
           },
+          onSettled: () => setSaving(false),
         },
       );
-    };
-
-    return (
-      <div
-        className={`group relative flex h-28 flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-lg border-2 border-white/80 bg-white/80 backdrop-blur-[20px] backdrop-saturate-[180%] backdrop-filter duration-300 ease-kolumb-leave hover:shadow-borderSplashXl hover:ease-kolumb-flow ${
-          dragging ? "shadow-borderSplashXl" : "shadow-borderXL"
-        }`}
-      >
-        {!dragging && (
-          <span
-            className={`absolute right-1 top-1 z-20 grid h-6 w-14 grid-cols-2 overflow-hidden rounded bg-white fill-gray-500 shadow-lg duration-300 ease-kolumb-leave group-hover:opacity-100 group-hover:ease-kolumb-flow ${
-              isDropdownOpen ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <button onClick={openEventPanel} className="w-full duration-200 ease-kolumb-flow hover:bg-gray-100 hover:fill-gray-700">
-              <Icon.eventPanel className="m-auto h-3" />
-            </button>
-
-            <Dropdown
-              isOpen={isDropdownOpen}
-              setOpen={setDropdownOpen}
-              listLength={5}
-              skipIndexes={[...(event?.url ? [] : [2]), 3]}
-              container={{ selector: "main", padding: 12 }}
-              offset={8}
-              className="w-48"
-              buttonProps={{
-                variant: "unstyled",
-                size: "unstyled",
-                className:
-                  "h-full w-full rounded-none duration-200 ease-kolumb-flow hover:bg-gray-100 hover:fill-gray-700 focus-visible:bg-kolumblue-100",
-                children: <Icon.horizontalDots className="m-auto w-4" />,
-              }}
-            >
-              <DropdownOption index={0} onClick={openEventPanel}>
-                <Icon.eventPanel className="h-4 w-4" />
-                Event panel
-              </DropdownOption>
-              <DropdownOption index={1} onClick={() => event.address && navigator.clipboard.writeText(event.address)}>
-                <Icon.clipboardPin className="h-4 w-4" />
-                Copy address
-              </DropdownOption>
-
-              <DropdownLink index={2} href={event?.url ?? undefined} target="_blank">
-                <Icon.googleMapsIcon className="h-4 w-4" />
-                <span>
-                  <Icon.googleMapsText className="mr-1 inline-block h-[14.5px] fill-gray-600 dark:fill-gray-300" />
-                  <Icon.arrowTopRight className="mb-1.5 inline-block h-1.5 fill-gray-600 dark:fill-gray-300" />
-                </span>
-              </DropdownLink>
-
-              <Divider className="my-1.5 bg-gray-100" />
-
-              <DropdownOption index={3}>
-                <Icon.duplicate className="h-4 w-4" />
-                Duplicate
-              </DropdownOption>
-              <DropdownOption index={4} onClick={handleEventDelete} variant="danger">
-                <Icon.trash className="h-4 w-4" />
-                Delete
-              </DropdownOption>
-            </Dropdown>
-          </span>
-        )}
-
-        <div ref={ref} onClick={() => setActiveEvent(event)} className="relative flex-1 cursor-pointer" {...props}>
-          <Image
-            src={`${event?.photo ? `/api/get-google-image?photoRef=${event.photo}&width=156&height=82` : EVENT_IMG_FALLBACK}`}
-            alt="Event Image"
-            className="h-20 object-cover object-center"
-            sizes="156px"
-            priority
-            fill
-          />
-        </div>
-
-        <p
-          className={cn(
-            "group/name relative mt-0.5 flex h-6 items-center whitespace-nowrap bg-transparent px-1 text-sm text-gray-900",
-            !event.name && "text-center text-red-500",
-          )}
-        >
-          {event?.name ?? "error"}
-          {!dragging && (
-            <Button
-              onClick={() => navigator.clipboard.writeText(event.name)}
-              variant="unstyled"
-              size="unstyled"
-              className="absolute inset-y-0 right-0 z-10 bg-gradient-to-r from-transparent via-white to-white fill-gray-500 pl-8 pr-2 opacity-0 duration-300 ease-kolumb-leave hover:fill-gray-900 group-hover/name:opacity-100 group-hover/name:ease-kolumb-flow"
-            >
-              <Icon.copy className="m-auto h-3" />
-            </Button>
-          )}
-        </p>
-
-        <span className="absolute bottom-0 right-0 h-6 w-6 bg-gradient-to-r from-transparent to-white" />
-      </div>
-    );
-  }),
-);
-//#endregion
+    });
+  }
+}

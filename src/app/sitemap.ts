@@ -84,7 +84,7 @@ export default async function sitemap() {
     {
       url: "https://www.kolumbus.app/t/guest",
       lastModified: "2023-12-05",
-      priority: 0.7,
+      priority: 0.3,
     },
   ];
 }

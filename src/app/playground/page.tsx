@@ -26,7 +26,7 @@ export default function page() {
             <Button
               whileHover={{ scale: 1.07 }}
               whileTap={{ scale: 0.97 }}
-              variant="unstyled"
+              variant="unset"
               size="lg"
               className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >
@@ -38,7 +38,7 @@ export default function page() {
             <Button
               whileHover={{ scale: 1.07 }}
               whileTap={{ scale: 0.97 }}
-              variant="unstyled"
+              variant="unset"
               size="lg"
               className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >
@@ -50,7 +50,7 @@ export default function page() {
             <Button
               whileHover={{ scale: 1.07 }}
               whileTap={{ scale: 0.97 }}
-              variant="unstyled"
+              variant="unset"
               size="lg"
               className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >
@@ -62,7 +62,7 @@ export default function page() {
             <Button
               whileHover={{ scale: 1.07 }}
               whileTap={{ scale: 0.97 }}
-              variant="unstyled"
+              variant="unset"
               size="lg"
               className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >

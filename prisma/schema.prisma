@@ -39,7 +39,6 @@ model Event {
   url          String?
   note         String?
   openingHours Json
-  // photoAlbum   Json
   photo        String?
 
   date      String
@@ -69,13 +68,23 @@ enum Currency {
 }
 
 enum EventType {
-  DEFAULT
-  FOOD
+  ACTIVITY
+  FOOD_AND_DRINKS
   ACCOMMODATION
-  TRANSPORT
+  TRANSPORTATION
+  FLIGHT
+  MISC
 
   MARKER
-  COUNTRY
   GROUP
   NOTE
+}
+
+enum ExpenseType {
+  ACTIVITY
+  FOOD_AND_DRINKS
+  ACCOMMODATION
+  TRANSPORTATION
+  AIRFARE
+  MISC
 }

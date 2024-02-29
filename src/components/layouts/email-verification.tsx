@@ -91,8 +91,8 @@ export default function EmailVerification({ reset }: { reset: () => void }) {
           Didn&apos;t receive code?&nbsp;
           <Button
             onClick={handleResend}
-            variant="unstyled"
-            size="unstyled"
+            variant="unset"
+            size="unset"
             className="text-kolumblue-600 decoration-kolumblue-500 hover:underline focus-visible:underline"
           >
             Resend

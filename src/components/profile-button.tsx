@@ -1,47 +1,40 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { useClerk, useUser } from "@clerk/nextjs";
 
-import { TRANSITION } from "@/lib/framer-motion";
-
 import Icon from "./icons";
-import { Dropdown, DropdownLink, DropdownOption } from "./ui/dropdown";
 import { Divider } from "./ui";
-import Link from "next/link";
+import { Menu, MenuLink, MenuOption } from "./ui/menu";
 
-export default function ProfileButton({ dark = false }: { dark?: boolean }) {
+// todo: hover effect on profile picture
+
+export default function ProfileButton({ dark }: { dark?: boolean }) {
   const { user } = useUser();
   const { signOut } = useClerk();
-
-  const [isOpen, setOpen] = useState(false);
   const router = useRouter();
+
+  const url = process.env.NODE_ENV === "production" ? "https://accounts.kolumbus.app/user" : "https://tender-gelding-62.accounts.dev/user";
 
   const handleSignOut = () => {
     signOut();
     router.push("/");
   };
 
-  // TODO: hover effect on profile picture
-
   return (
-    <Dropdown
-      isOpen={isOpen}
-      setOpen={setOpen}
-      listLength={5}
-      skipIndexes={[1, 2, 3]}
+    <Menu
       placement="bottom-end"
-      strategy="fixed"
       offset={4}
-      motion={TRANSITION.fadeToPosition}
-      preventFlip
-      dark={dark}
-      className="w-60 translate-x-2 rounded-xl p-2"
+      animation="fadeToPosition"
+      zIndex={50}
+      className="w-60 origin-top-right translate-x-2 rounded-xl p-2"
+      rootSelector="nav"
+      darkMode={dark}
       buttonProps={{
-        variant: "unstyled",
-        size: "unstyled",
+        variant: "unset",
+        size: "unset",
         className:
           "relative h-8 w-8 overflow-hidden rounded-full shadow-borderXS outline-none duration-500 ease-kolumb-flow hover:shadow-lg focus-visible:border-kolumblue-500",
         children: (
@@ -56,11 +49,7 @@ export default function ProfileButton({ dark = false }: { dark?: boolean }) {
     >
       <div className="flex w-full select-none flex-col items-center gap-1 p-2.5 pb-1">
         <Link
-          href={
-            process.env.NODE_ENV === "production"
-              ? "https://accounts.kolumbus.app/user/profile"
-              : "https://tender-gelding-62.accounts.dev/user/profile"
-          }
+          href={url}
           className="relative h-14 w-14 overflow-hidden rounded-full shadow-borderXS duration-500 ease-kolumb-flow hover:shadow-2xl"
         >
           {user && <Image src={user.imageUrl} alt="Profile picture" loading="lazy" sizes="56px" fill />}
@@ -73,37 +62,34 @@ export default function ProfileButton({ dark = false }: { dark?: boolean }) {
         </div>
       </div>
 
-      <Divider className="my-2 border-x-2 border-white bg-gray-100 dark:border-gray-900 dark:bg-gray-800" />
+      <Divider className="my-2 bg-gray-100 dark:bg-gray-800" />
 
-      <DropdownLink
-        index={0}
-        href={process.env.NODE_ENV === "production" ? "https://accounts.kolumbus.app/user" : "https://tender-gelding-62.accounts.dev/user"}
-      >
+      <MenuLink label="my account" href={url}>
         <Icon.userSettings className="ml-2 h-4 w-4" />
         My account
-      </DropdownLink>
-      <DropdownOption index={1}>
+      </MenuLink>
+      <MenuOption label="switch account" disabled>
         <Icon.userSwitch className="ml-2 h-4 w-4" />
         Switch account
         <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
-      </DropdownOption>
-      <DropdownOption index={2}>
+      </MenuOption>
+      <MenuOption label="appearance" disabled>
         <Icon.appearance className="ml-2 h-4 w-4" />
         Appearance
         <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
-      </DropdownOption>
-      <DropdownOption index={3}>
+      </MenuOption>
+      <MenuOption label="language" disabled>
         <Icon.globe className="ml-2 h-4 w-4" />
-        English
+        Language
         <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
-      </DropdownOption>
+      </MenuOption>
 
-      <Divider className="my-2 border-x-2 border-white bg-gray-100 dark:border-gray-900 dark:bg-gray-800" />
+      <Divider className="my-2 bg-gray-100 dark:bg-gray-800" />
 
-      <DropdownOption index={4} onClick={handleSignOut}>
+      <MenuOption label="sign out" onClick={handleSignOut}>
         <Icon.signOut className="ml-2 h-4 w-4" />
         Sign out
-      </DropdownOption>
-    </Dropdown>
+      </MenuOption>
+    </Menu>
   );
 }

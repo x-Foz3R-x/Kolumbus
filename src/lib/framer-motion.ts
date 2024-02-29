@@ -28,22 +28,17 @@ export const TRANSITION = {
     animate: { scale: 1, transition: { type: "spring", bounce: 0, duration: 0.3 } },
     exit: { scale: 0, transition: { type: "spring", bounce: 0, duration: 0.3 } },
   },
-  scaleIn: {
-    initial: { scale: 1.3, opacity: 0.7 },
-    animate: { scale: 1, opacity: 1, transition: { type: "spring", bounce: 0, duration: 0.3 } },
-    exit: { scale: 1.1, opacity: 0, transition: { duration: 0.3, ease: EASING.kolumbFlow } },
-  },
   scaleInOut: {
-    initial: { scale: 0.4, opacity: 0 },
+    initial: { scale: 1.075, opacity: 0 },
     animate: {
       scale: 1,
       opacity: 1,
-      transition: { opacity: { duration: 0.3, ease: EASING.kolumbFlow }, scale: { duration: 0.3, ease: EASING.circOut } },
+      transition: { duration: 0.3, ease: EASING.easeInOut, y: { type: "spring", bounce: 0, duration: 0.6 } },
     },
     exit: {
-      scale: 0,
+      scale: 1.075,
       opacity: 0,
-      transition: { opacity: { duration: 0.3, ease: EASING.kolumbFlow }, scale: { duration: 0.3, ease: EASING.circIn } },
+      transition: { duration: 0.3, ease: EASING.easeInOut },
     },
   },
   fade: {
@@ -87,26 +82,26 @@ export const TRANSITION = {
     initial: {
       opacity: 0,
       scale: 0,
-      filter: "blur(10px)",
+      filter: "blur(8px)",
     },
     animate: {
       opacity: 1,
       scale: 1,
       filter: "blur(0px)",
       transition: {
-        opacity: { type: "spring", duration: 0.25 },
-        scale: { type: "spring", duration: 0.25 },
+        duration: 0.25,
+        ease: EASING.kolumbFlow,
         filter: { duration: 0.1 },
       },
     },
     exit: {
       opacity: 0,
       scale: 0,
-      filter: "blur(10px)",
+      filter: "blur(8px)",
       transition: {
-        opacity: { type: "spring", duration: 0.25 },
-        scale: { type: "spring", duration: 0.25 },
-        filter: { duration: 0.15 },
+        duration: 0.25,
+        ease: EASING.kolumbFlow,
+        filter: { duration: 0.1 },
       },
     },
   },
@@ -114,27 +109,24 @@ export const TRANSITION = {
     initial: {
       opacity: 0,
       scale: 0,
-      filter: "blur(10px)",
+      filter: "blur(8px)",
     },
-    animate: ({ index, sequenceDelay = 0.06 }: { index: number; sequenceDelay?: number }) => ({
+    animate: ({ index, initialDelay = 0.1, sequenceDelay = 0.06 }: { index: number; initialDelay?: number; sequenceDelay?: number }) => ({
       opacity: 1,
       scale: 1,
       filter: "blur(0px)",
       transition: {
-        opacity: { type: "spring", duration: 0.25, delay: 0.1 + index * sequenceDelay },
-        scale: { type: "spring", duration: 0.25, delay: 0.1 + index * sequenceDelay },
-        filter: { duration: 0.1, delay: 0.1 + index * sequenceDelay },
+        duration: 0.25,
+        ease: EASING.kolumbFlow,
+        delay: initialDelay + index * sequenceDelay,
+        filter: { duration: 0.1 },
       },
     }),
     exit: {
       opacity: 0,
       scale: 0,
-      filter: "blur(10px)",
-      transition: {
-        opacity: { type: "spring", duration: 0.25 },
-        scale: { type: "spring", duration: 0.25 },
-        filter: { duration: 0.15 },
-      },
+      filter: "blur(8px)",
+      transition: { duration: 0.25, ease: EASING.kolumbFlow, filter: { duration: 0.1 } },
     },
   },
 };

@@ -15,6 +15,7 @@ const updateSchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   position: z.number().optional(),
+  updatedAt: z.date().optional(),
 });
 
 const trip = router({
@@ -22,16 +23,9 @@ const trip = router({
     if (!ctx.user.id) return;
 
     const { itinerary, updatedAt, createdAt, ...tripData } = input;
-    const trip = await prisma.trip.create({
-      data: tripData,
-    });
+    const trip = await prisma.trip.create({ data: tripData });
 
-    const events = await prisma.event.findMany({
-      where: { tripId: trip.id },
-      orderBy: [{ position: "asc" }],
-    });
-
-    return createTrip(trip, events);
+    return createTrip(trip, []);
   }),
 
   //#region Read

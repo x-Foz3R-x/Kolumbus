@@ -62,6 +62,8 @@ export enum UT {
   UPDATE_TRIP = "update_trip",
   DELETE_TRIP = "delete_trip",
 
+  REPLACE_ITINERARY = "replace_itinerary",
+
   // EVENT
   CREATE_EVENT = "add_event",
   UPDATE_EVENT = "update_event",
@@ -91,14 +93,18 @@ export type DispatchAction =
       trip: Trip;
     }
   | {
+      type: UT.REPLACE_ITINERARY;
+      payload: { tripId: string; itinerary: Itinerary };
+    }
+  | {
       type: UT.CREATE_EVENT;
-      payload: { tripIndex: number; dayIndex: number; event: Event; placeAt: "start" | "end" };
+      payload: { tripId: string; event: Event; index?: number };
     }
   | {
       type: UT.UPDATE_EVENT;
-      payload: { tripIndex: number; dayIndex: number; event: Event };
+      payload: { tripId: string; event: Event };
     }
   | {
       type: UT.DELETE_EVENT;
-      payload: { tripIndex: number; dayIndex: number; event: Event };
+      payload: { tripId: string; event: Event };
     };

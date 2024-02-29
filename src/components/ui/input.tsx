@@ -5,6 +5,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { KEY } from "@/types";
+import { HTMLMotionProps, motion } from "framer-motion";
 
 const InputVariants = cva(
   "peer w-full appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
@@ -14,19 +15,19 @@ const InputVariants = cva(
         default: "shadow-border focus:shadow-focus",
         insetLabelSm: "pb-1 pt-5 shadow-border focus:shadow-focus",
         insetLabel: "pb-1.5 pt-6 shadow-border focus:shadow-focus",
-        unstyled: "",
+        unset: null,
       },
       size: {
         default: "rounded-lg px-4 text-base",
         sm: "rounded-md px-3 text-sm",
-        unstyled: "",
+        unset: null,
       },
     },
     defaultVariants: { variant: "default", size: "default" },
   },
 );
 
-type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
+export type InputProps = Omit<HTMLMotionProps<"input">, "size"> &
   VariantProps<typeof InputVariants> & {
     label?: string;
     onChange?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -65,6 +66,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
     defaultValue,
     autoComplete,
     onChange,
+    onKeyDown,
     fullWidth = false,
     fullHeight = false,
     dynamicWidth = false,
@@ -87,6 +89,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
       return;
     if (onChange) onChange(e);
     previousValue.current = e.target.value;
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (onKeyDown) onKeyDown(e);
+    else if (e.key === KEY.Enter) e.currentTarget.blur();
   };
 
   const getLabelStyle = () => {
@@ -122,7 +129,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
         </label>
       )}
 
-      <input
+      <motion.input
         ref={ref}
         id={id}
         value={value}
@@ -130,7 +137,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
         autoComplete={autoComplete}
         onChange={() => {}}
         onBlur={handleChange}
-        onKeyDown={(e) => e.key === KEY.Enter && e.currentTarget.blur()}
+        onKeyDown={handleKeyDown}
         className={cn(InputVariants({ variant, size, className }), isDynamicWidth && "absolute inset-0 h-full text-center")}
         {...props}
       />

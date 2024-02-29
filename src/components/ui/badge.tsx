@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import { memo } from "react";
 
-const BadgeVariants = cva("animate-popUp flex place-content-center items-center font-inter", {
+const BadgeVariants = cva("flex animate-popUp place-content-center items-center font-inter", {
   variants: {
     variant: {
       default: "bg-red-500 fill-white text-white",
@@ -75,42 +75,39 @@ type BadgeProps = VariantProps<typeof BadgeVariants> & {
   wrapperClassName?: string;
   children?: React.ReactNode;
 };
-export const Badge = memo(
-  ({
-    content,
-    forceSquare,
-    variant,
-    size = "md",
-    shape = "pill",
-    placement,
-    outline,
-    className,
-    wrapperClassName,
-    children,
-  }: BadgeProps) => {
-    if (!content) return children || null;
-    const isOneChar = forceSquare || String(content).length === 1;
+export const Badge = memo(function Badge({
+  content,
+  forceSquare,
+  variant,
+  size = "md",
+  shape = "pill",
+  placement,
+  outline,
+  className,
+  wrapperClassName,
+  children,
+}: BadgeProps) {
+  if (!content) return children || null;
+  const isOneChar = forceSquare || String(content).length === 1;
 
-    const badge = (
-      <span
-        className={cn(
-          BadgeVariants({ variant, placement, outline }),
-          BadgeDependedVariants({ size: size === "unset" ? "unset" : isOneChar ? `${size}OneChar` : size, shape }),
-          className,
-        )}
-      >
-        {content}
-      </span>
-    );
+  const badge = (
+    <span
+      className={cn(
+        BadgeVariants({ variant, placement, outline }),
+        BadgeDependedVariants({ size: size === "unset" ? "unset" : isOneChar ? `${size}OneChar` : size, shape }),
+        className,
+      )}
+    >
+      {content}
+    </span>
+  );
 
-    return children ? (
-      <div className={cn("relative", wrapperClassName)}>
-        {children}
-        {badge}
-      </div>
-    ) : (
-      badge
-    );
-  },
-);
-Badge.displayName = "Badge";
+  return children ? (
+    <div className={cn("relative", wrapperClassName)}>
+      {children}
+      {badge}
+    </div>
+  ) : (
+    badge
+  );
+});

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { protectedProcedure, router } from "../trpc";
 import { eventSchema, PlaceOpeningHours } from "@/types";
 
-export type UpdateEvent = z.infer<typeof updateSchema>;
+export type UpdateEventData = z.infer<typeof updateSchema>;
 const updateSchema = z.object({
   id: z.string().cuid2("Invalid event id").optional(),
   placeId: z.string().nullable().optional(),
@@ -29,6 +29,8 @@ const event = router({
   create: protectedProcedure.input(eventSchema).mutation(async ({ ctx, input }) => {
     if (!ctx.user.id) return;
 
+    await prisma.trip.update({ where: { id: input.tripId }, data: { updatedAt: new Date() } });
+
     const { updatedAt, createdAt, ...eventData } = input;
     return await prisma.event.create({ data: { ...eventData } });
   }),
@@ -39,21 +41,11 @@ const event = router({
       const { id, ...data } = input.data;
       return await prisma.event.update({ where: { id: input.eventId }, data });
     }),
-  delete: protectedProcedure
-    .input(z.object({ eventId: z.string().cuid2("Invalid event id"), events: z.array(updateSchema) }))
-    .mutation(async ({ ctx, input }) => {
-      if (!ctx.user.id) return;
+  delete: protectedProcedure.input(z.object({ eventId: z.string().cuid2("Invalid event id") })).mutation(async ({ ctx, input }) => {
+    if (!ctx.user.id) return;
 
-      const updatedEvents = [];
-      for (let i = 0; i < input.events.length; i++) {
-        const { id, position } = input.events[i];
-        const event = await prisma.event.update({ where: { id }, data: { position } });
-        updatedEvents.push(event);
-      }
-
-      await prisma.event.delete({ where: { id: input.eventId } });
-      return updatedEvents;
-    }),
+    await prisma.event.delete({ where: { id: input.eventId } });
+  }),
 });
 
 export default event;

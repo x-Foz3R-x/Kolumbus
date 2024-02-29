@@ -227,9 +227,9 @@ export default function ColorPallette() {
 function Color({ value, className }: { value?: number; className?: string }) {
   return (
     <div className={cn("flex h-14 w-full items-center justify-center border-black", className)}>
-      <Icon.x className="h-8 fill-black" />
+      <Icon.x_bold className="h-8 fill-black" />
       <div className="mx-14 rounded-lg bg-black/30 p-1 text-white">PALLETTE {value}</div>
-      <Icon.x className="h-8 fill-white" />
+      <Icon.x_bold className="h-8 fill-white" />
     </div>
   );
 }
