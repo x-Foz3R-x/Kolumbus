@@ -1,27 +1,40 @@
 import { useEffect } from "react";
 
 /**
- * Attaches event listeners to detect clicks outside of given elements and pressing the escape key.
+ * Custom hook that attaches event listeners to close triggers and invokes a callback when necessary.
  *
- * @param refs - An array of React ref objects that point to the elements to detect clicks outside of.
- * @param callback - A function to be called when detected close interaction.
+ * @param refs - An array of React ref objects representing the elements that act as close triggers.
+ * @param callback - The function to be called when a close trigger event occurs.
+ * @param enable - Optional boolean flag indicating whether the event listeners should be blocked.
+ * @returns A cleanup function to remove the event listeners.
  */
-export default function useCloseTriggers(refs: React.RefObject<HTMLElement>[], callback: Function, block: boolean = false) {
+export default function useCloseTriggers(refs: React.RefObject<HTMLElement>[], callback: Function, enable: boolean = false) {
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (!refs.some((ref) => ref.current && ref.current.contains(event.target as Node))) callback();
+    let insideOrigin = false;
+
+    const handleOriginClick = (e: MouseEvent) => {
+      if (refs.some((ref) => ref.current && ref.current.contains(e.target as Node))) insideOrigin = true;
     };
 
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") callback();
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (!insideOrigin && !refs.some((ref) => ref.current && ref.current.contains(e.target as Node))) callback();
+      insideOrigin = false;
     };
 
-    if (!block) document.addEventListener("mouseup", handleOutsideClick);
-    if (!block) document.addEventListener("keydown", handleEscapeKey);
+    const handleEscapeKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape") callback();
+    };
+
+    if (enable) {
+      document.body.addEventListener("mousedown", handleOriginClick);
+      document.body.addEventListener("mouseup", handleOutsideClick);
+      document.body.addEventListener("keydown", handleEscapeKeyPress);
+    }
 
     return () => {
-      document.removeEventListener("mouseup", handleOutsideClick);
-      document.removeEventListener("keydown", handleEscapeKey);
+      document.body.removeEventListener("mousedown", handleOriginClick);
+      document.body.removeEventListener("mouseup", handleOutsideClick);
+      document.body.removeEventListener("keydown", handleEscapeKeyPress);
     };
-  }, [refs, callback, block]);
+  }, [refs, callback, enable]);
 }

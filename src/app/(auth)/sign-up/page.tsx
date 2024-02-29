@@ -10,9 +10,8 @@ import { IsEmail, ValidatePassword, ValidateName } from "@/lib/validation";
 import { cn } from "@/lib/utils";
 
 import Icon from "@/components/icons";
-import EmailVerification from "@/components/layouts/email-verification";
 import { Button, Divider, Input } from "@/components/ui";
-import { TooltipTrigger } from "@/components/ui/tooltip";
+import EmailVerification from "@/components/layouts/email-verification";
 
 //#region Context
 const SignUpContext = createContext<{
@@ -237,10 +236,6 @@ function FormSection() {
                   </ul>
                 </div>
               </div>
-
-              <Divider gradient className="my-1 via-gray-600" />
-
-              <p>Ride smoothly through the digital highways with an adventurous name!</p>
             </SignUpTooltipTrigger>
           </span>
         </div>
@@ -270,8 +265,6 @@ function FormSection() {
           <span className="absolute inset-y-0 right-4 z-30 flex w-7 items-center justify-center">
             <SignUpTooltipTrigger validation={emailValidation}>
               <SignUpTooltipCheck validation={emailValidation?.isEmail}>name@example.com</SignUpTooltipCheck>
-              <Divider gradient className="my-1 via-gray-600" />
-              <p>Sail smoothly into our inbox with joyous emails from new users!</p>
             </SignUpTooltipTrigger>
           </span>
         </div>
@@ -325,10 +318,6 @@ function FormSection() {
                   Numbers (0-9) or symbols
                 </SignUpTooltipCheck>
               </div>
-
-              <Divider gradient className="my-1 via-gray-600" />
-
-              <p>Fly smoothly through our security gates with a password that soars securely!</p>
             </SignUpTooltipTrigger>
           </span>
         </div>
@@ -358,8 +347,8 @@ function FormSection() {
           <span className="absolute inset-y-0 right-4 z-30 flex items-center">
             <Button
               onClick={handleContinue}
-              variant={isValid ? "unstyled" : "disabled"}
-              size="unstyled"
+              variant={isValid ? "unset" : "disabled"}
+              size="unset"
               className={cn(
                 "pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 shadow-soft duration-100 ease-in",
                 isValid ? "focus:shadow-focus" : "cursor-default focus:shadow-focusError",
@@ -506,18 +495,19 @@ function SignUpTooltipTrigger({ validation, children }: { validation: {} | undef
   };
 
   return (
-    <TooltipTrigger
-      placement="right"
-      arrow={{ size: 15 }}
-      className="flex w-60 flex-col gap-1.5 px-5 py-3 text-xs"
-      buttonProps={{
-        variant: "unstyled",
-        size: "unstyled",
-        children: getIcon(typeof validation === "undefined" ? undefined : Object.values(validation).every((value) => value)),
+    <Button
+      variant="unset"
+      size="unset"
+      tooltip={{
+        placement: "right",
+        animation: "fadeToPosition",
+        zIndex: 30,
+        className: "flex origin-left w-60 flex-col gap-1.5 px-5 py-3 text-xs font-inter",
+        children,
       }}
     >
-      {children}
-    </TooltipTrigger>
+      {getIcon(typeof validation === "undefined" ? undefined : Object.values(validation).every((value) => value))}
+    </Button>
   );
 }
 function SignUpTooltipCheck({ validation, children }: { validation: boolean | undefined; children?: React.ReactNode }) {

@@ -1,13 +1,12 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { Metadata } from "next";
 
+import { cn } from "@/lib/utils";
 import { inter, gordita, adso, inconsolata } from "./fonts";
 import TrpcProvider from "./_trpc/Provider";
-import { Metadata } from "next";
 import "./tailwind.css";
-
-import BetaWatermark from "@/components/beta-watermark";
 
 export const metadata: Metadata = {
   title: "Kolumbus",
@@ -23,13 +22,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en" style={{ fontSize: "16px" }}>
         <body
-          className={`scroll-smooth fill-gray-900 text-gray-900 antialiased ${gordita.className} ${gordita.variable} ${adso.variable} ${inter.variable} ${inconsolata.variable}
-          `}
+          className={cn(
+            "scroll-smooth fill-gray-900 text-gray-900 antialiased",
+            gordita.className,
+            gordita.variable,
+            adso.variable,
+            inter.variable,
+            inconsolata.variable,
+          )}
         >
-          <TrpcProvider>
-            {children}
-            <BetaWatermark />
-          </TrpcProvider>
+          <TrpcProvider>{children}</TrpcProvider>
 
           <SpeedInsights debug={false} />
           <Analytics debug={false} />

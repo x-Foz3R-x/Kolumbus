@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 
@@ -18,6 +18,7 @@ type Props = {
   triggerRef: React.RefObject<HTMLElement>;
   isOpen: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose?: () => void;
   placement?: Placement;
   strategy?: Strategy;
   container?: Container;
@@ -31,6 +32,7 @@ export function Popover({
   triggerRef,
   isOpen,
   setOpen,
+  onClose,
   placement: initialPlacement = "bottom",
   strategy = "absolute",
   container = { selector: "body", padding: 0 },
@@ -54,17 +56,35 @@ export function Popover({
   );
 
   const transition = useRef("");
+  const changeOpen = useCallback(
+    (state: boolean) => {
+      setOpen(state);
+      onClose?.();
+    },
+    [setOpen, onClose],
+  );
   const handleClose = useCallback(() => {
     if (!isOpen) return;
 
-    setOpen(false);
+    changeOpen(false);
     triggerRef.current?.focus();
-  }, [triggerRef, isOpen, setOpen]);
+  }, [triggerRef, isOpen, changeOpen]);
   const variants = useMemo(() => {
-    if (!mountedExtensions.motion?.transition) return TRANSITION.fadeToPosition[parsePlacement(placement)[0]] as Variants;
-    if (typeof mountedExtensions.motion.transition.top === "undefined") return mountedExtensions.motion.transition as Variants;
-    return mountedExtensions.motion.transition[parsePlacement(placement)[0]] as Variants;
-  }, [placement, mountedExtensions.motion]);
+    const transition = mountedExtensions.motion?.transition;
+    const placementKey = parsePlacement(placement)[0];
+
+    let variant: Variants = TRANSITION.fadeToPosition[placementKey] as Variants;
+
+    if (transition) {
+      variant = typeof transition.top === "undefined" ? (transition as Variants) : (transition[placementKey] as Variants);
+    }
+
+    variant.initial = { ...variant.initial, zIndex };
+    variant.animate = { ...variant.animate, zIndex };
+    variant.exit = { ...variant.exit, zIndex: zIndex - 1 };
+
+    return variant;
+  }, [placement, zIndex, mountedExtensions.motion]);
   const arrowContent = useMemo(() => {
     if (!mountedExtensions.arrow) return null;
 
@@ -75,14 +95,14 @@ export function Popover({
           aria-hidden={true}
           style={styles.arrow}
           className={cn("absolute rotate-45", mountedExtensions.arrow.className?.arrow, transition.current)}
-        ></span>
+        />
         {mountedExtensions.arrow.className?.backdrop ? (
           <span
             role="presentation"
             aria-hidden={true}
             style={styles.arrow}
             className={cn("absolute -z-10 rotate-45", mountedExtensions.arrow.className.backdrop, transition.current)}
-          ></span>
+          />
         ) : null}
       </>
     );
@@ -112,7 +132,7 @@ export function Popover({
     );
   }, [mountedExtensions.backdrop, mountedExtensions.prevent, handleClose]);
 
-  // Apply transition when popover is opened and positioned.
+  // Apply transition when popover is opened and positioned to animate flipping.
   useEffect(() => {
     if (isOpen && isPositioned) transition.current = "duration-250 ease-kolumb-flow";
     else transition.current = "";
@@ -133,21 +153,21 @@ export function Popover({
     if (!isOpen || mountedExtensions.prevent?.hide) return;
 
     const triggerElement = triggerRef.current;
-    const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && setOpen(false), { threshold: 0.1 });
+    const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && changeOpen(false), { threshold: 0.1 });
 
     if (triggerElement) observer.observe(triggerElement);
 
     return () => {
       triggerElement && observer.unobserve(triggerElement);
     };
-  }, [triggerRef, isOpen, setOpen, container.selector, mountedExtensions.prevent?.hide]);
+  }, [triggerRef, isOpen, changeOpen, container.selector, mountedExtensions.prevent?.hide]);
 
-  useCloseTriggers([triggerRef, popoverRef], handleClose, !isOpen || mountedExtensions.prevent?.closeTriggers);
+  useCloseTriggers([triggerRef, popoverRef], handleClose, isOpen && !mountedExtensions.prevent?.closeTriggers);
 
   return (
     <AnimatePresence>
       {isOpen ? (
-        <Portal selector={container.selector} skipSSRCheck>
+        <Portal root={container.selector} skipSSRCheck>
           {backdropContent}
           <motion.div
             ref={popoverRef}
@@ -160,7 +180,6 @@ export function Popover({
               strategy,
               "left-0 top-0 min-h-fit min-w-fit appearance-none bg-transparent",
               mountedExtensions.prevent?.pointer && "pointer-events-none",
-              transition.current,
             )}
             data-placement={placement}
           >

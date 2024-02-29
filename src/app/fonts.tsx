@@ -1,14 +1,9 @@
-import { Inter, Roboto_Mono, Inconsolata } from "next/font/google";
+import { Inter, Inconsolata } from "next/font/google";
 import localFont from "next/font/local";
 
 export const inter = Inter({
   subsets: ["latin", "greek", "cyrillic"],
   variable: "--font-inter",
-});
-
-export const roboto_mono = Roboto_Mono({
-  subsets: ["latin", "greek", "cyrillic"],
-  variable: "--font-roboto-mono",
 });
 
 export const inconsolata = Inconsolata({

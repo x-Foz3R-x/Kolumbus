@@ -1,35 +1,32 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import cuid2 from "@paralleldrive/cuid2";
+import { useUser } from "@clerk/nextjs";
 
 import api from "@/app/_trpc/client";
 import useAppdata from "@/context/appdata";
-import { useUser } from "@clerk/nextjs";
-
-import { cn } from "@/lib/utils";
 import { tripTemplate } from "@/data/template-data";
+import { USER_ROLE } from "@/lib/config";
+import { cn } from "@/lib/utils";
 import { Trip, UT } from "@/types";
 
 import Icon from "../../icons";
-import { Modal, ModalActionSection, ModalBodyWithIcon, ModalMessage, ModalTitle } from "../../ui/modal";
-import { Dropdown, DropdownOption } from "../../ui/dropdown";
-import { Button } from "../../ui/button";
-import { StatelessInput } from "../../ui/input";
+import { Button } from "../../ui";
+import { Menu, MenuOption } from "@/components/ui/menu";
+import { CreateTripModal } from "@/components/create-trip-modal";
+import { ConfirmTripDelete } from "@/components/confirm-trip-delete";
 
 export default function YourTrips() {
   const { user } = useUser();
   const { userTrips, dispatchUserTrips, selectedTrip } = useAppdata();
-
-  const router = useRouter();
-
   const createTrip = api.trip.create.useMutation();
   const updateTrip = api.trip.update.useMutation();
   const deleteTrip = api.trip.delete.useMutation();
+  const router = useRouter();
 
-  const [isModalOpen, setModalOpen] = useState(false);
-  const newTripName = useRef("");
+  const [tripName, setTripName] = useState("");
 
   const createNewTrip = () => {
     if (!user) return;
@@ -39,10 +36,8 @@ export default function YourTrips() {
       id: cuid2.init({ length: 14 })(),
       userId: user?.id,
       position: userTrips.length,
-      ...(newTripName.current.length > 0 && { name: newTripName.current }),
+      ...(tripName.length > 0 && { name: tripName }),
     };
-
-    setModalOpen(false);
 
     dispatchUserTrips({ type: UT.CREATE_TRIP, trip: newTrip });
     createTrip.mutate(newTrip, {
@@ -55,6 +50,8 @@ export default function YourTrips() {
         dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
       },
     });
+
+    setTripName("");
   };
   const deleteSelectedTrip = (index: number) => {
     if (!user) return;
@@ -80,26 +77,21 @@ export default function YourTrips() {
       );
     };
 
-    // Delete the trip from the database
-    const handleDeleteTrip = () => {
-      deleteTrip.mutate(
-        { tripId: tripToDelete.id },
-        {
-          onError(error) {
-            console.error(error);
-            dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
-            router.push(`/t/${tripToDelete.id}`);
-          },
-        },
-      );
-    };
-
     dispatchUserTrips({ type: UT.DELETE_TRIP, trip: tripToDelete });
 
     const tripsToUpdate = [...userTrips].slice(index + 1);
     tripsToUpdate.forEach((trip, i) => handleUpdateTrip(trip.id, i));
 
-    handleDeleteTrip();
+    deleteTrip.mutate(
+      { tripId: tripToDelete.id },
+      {
+        onError(error) {
+          console.error(error);
+          dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
+          router.push(`/t/${tripToDelete.id}`);
+        },
+      },
+    );
   };
   const swapTripsPosition = (firstIndex: number, secondIndex: number) => {
     if (!user) return;
@@ -128,17 +120,18 @@ export default function YourTrips() {
   };
 
   const TripDropdown = ({ index }: { index: number }) => {
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
+
+    const handleDelete = () => {
+      deleteSelectedTrip(index);
+    };
 
     return (
       <>
-        <Dropdown
-          isOpen={isDropdownOpen}
-          setOpen={setDropdownOpen}
-          listLength={5}
-          skipIndexes={[...(index === 0 ? [0] : []), ...(index === userTrips.length - 1 ? [1] : []), 2, 3]}
+        <Menu
+          offset={{ mainAxis: 12, crossAxis: -4 }}
           className="w-40"
+          rootSelector="#sidebar"
           buttonProps={{
             variant: "scale",
             size: "icon",
@@ -146,42 +139,18 @@ export default function YourTrips() {
             children: <Icon.horizontalDots className="w-3.5" />,
           }}
         >
-          <DropdownOption index={0} onClick={() => swapTripsPosition(index, index - 1)}>
+          <MenuOption label="move up" onClick={() => swapTripsPosition(index, index - 1)} disabled={index === 0}>
             Move up
-          </DropdownOption>
-          <DropdownOption index={1} onClick={() => swapTripsPosition(index, index + 1)}>
+          </MenuOption>
+          <MenuOption label="move down" onClick={() => swapTripsPosition(index, index + 1)} disabled={index === userTrips.length - 1}>
             Move down
-          </DropdownOption>
-          <DropdownOption index={3}>Share</DropdownOption>
-          <DropdownOption index={2}>Duplicate</DropdownOption>
-          <DropdownOption index={4} onClick={() => setModalOpen(true)}>
+          </MenuOption>
+          <MenuOption label="delete" onClick={() => setModalOpen(true)} variant="danger">
             Delete
-          </DropdownOption>
-        </Dropdown>
+          </MenuOption>
+        </Menu>
 
-        <Modal isOpen={isModalOpen} setOpen={setModalOpen} backdrop={{ type: "blur" }} removeButton>
-          <ModalBodyWithIcon variant="danger" icon={<Icon.triangleExclamation />}>
-            <ModalTitle>Delete Trip</ModalTitle>
-
-            <ModalMessage>Are you sure you want to delete this trip?</ModalMessage>
-          </ModalBodyWithIcon>
-          <ModalActionSection>
-            <Button onClick={() => setModalOpen(false)} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="px-5">
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                setModalOpen(false);
-                deleteSelectedTrip(index);
-              }}
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.98 }}
-              className="whitespace-nowrap bg-red-500 text-gray-100"
-            >
-              Delete trip
-            </Button>
-          </ModalActionSection>
-        </Modal>
+        <ConfirmTripDelete isOpen={isModalOpen} setOpen={setModalOpen} onDelete={handleDelete} />
       </>
     );
   };
@@ -191,47 +160,27 @@ export default function YourTrips() {
       <div className="flex items-center justify-between">
         <h2 className="cursor-default font-adso text-xl font-bold text-tintedGray-400">Your trips</h2>
 
-        <Modal
-          isOpen={isModalOpen}
-          setOpen={setModalOpen}
-          size="sm"
-          className="shadow-border3XL"
+        <CreateTripModal
+          onCreate={createNewTrip}
           buttonProps={{
-            variant: "unstyled",
-            size: "unstyled",
-            className: "relative h-6 w-6",
-            children: (
-              <>
-                <Icon.plus className="absolute right-0 top-0 h-6 w-6 fill-tintedGray-400 p-1.5 duration-200 ease-kolumb-flow group-hover:right-14" />
-                <span className="absolute right-0 top-0 h-6 origin-right scale-x-0 select-none whitespace-nowrap pt-0.5 text-sm font-medium text-tintedGray-400 opacity-0 duration-200 ease-kolumb-flow group-hover:scale-x-100 group-hover:opacity-100">
-                  New Trip
-                </span>
-              </>
-            ),
+            variant: "unset",
+            size: "unset",
+            className: "relative h-6",
+            children:
+              userTrips.length === USER_ROLE.TRIPS_LIMIT ? (
+                <div className="h-6 whitespace-nowrap pt-0.5 text-sm font-medium text-tintedGray-400">
+                  {`${userTrips.length}/${USER_ROLE.TRIPS_LIMIT}`}
+                </div>
+              ) : (
+                <>
+                  <Icon.plus className="absolute right-0 top-0 h-6 w-6 fill-tintedGray-400 p-1.5 duration-200 ease-kolumb-flow group-hover:right-14" />
+                  <span className="absolute right-0 top-0 h-6 origin-right scale-x-0 select-none whitespace-nowrap pt-0.5 text-sm font-medium text-tintedGray-400 opacity-0 duration-200 ease-kolumb-flow group-hover:scale-x-100 group-hover:opacity-100">
+                    New Trip
+                  </span>
+                </>
+              ),
           }}
-        >
-          <ModalBodyWithIcon variant="primary" icon={<Icon.defaultTrip />}>
-            <ModalTitle>Create Trip</ModalTitle>
-
-            <ModalMessage>Enter the details below to create a new trip and start planning your itinerary.</ModalMessage>
-
-            <StatelessInput label="Trip name" onChange={(e) => (newTripName.current = e.target.value)} variant="insetLabel" />
-          </ModalBodyWithIcon>
-
-          <ModalActionSection>
-            <Button onClick={() => setModalOpen(false)} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="px-5">
-              Cancel
-            </Button>
-            <Button
-              onClick={createNewTrip}
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.98 }}
-              className="whitespace-nowrap bg-kolumblue-500 text-gray-100"
-            >
-              Create trip
-            </Button>
-          </ModalActionSection>
-        </Modal>
+        />
       </div>
 
       <ul className="flex flex-col">
@@ -250,12 +199,13 @@ export default function YourTrips() {
               animatePress
             >
               <Icon.defaultTrip className="h-4 w-4 flex-shrink-0 duration-300 ease-kolumb-overflow group-hover/trip:translate-x-1.5" />
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap text-left duration-300 ease-kolumb-overflow group-hover/trip:w-[7.5rem] group-hover/trip:translate-x-1.5">
+
+              <div className="overflow-hidden text-ellipsis whitespace-nowrap text-left duration-300 ease-kolumb-overflow group-hover/trip:w-[7.5rem] group-hover/trip:translate-x-1.5">
                 {trip.name}
-              </p>
+              </div>
             </Button>
 
-            <span className="absolute right-2 top-1 z-10 opacity-0 duration-300 ease-kolumb-leave group-hover/trip:opacity-100 group-hover/trip:ease-kolumb-flow">
+            <span className="absolute right-2 top-1 z-10 opacity-0 duration-300 ease-kolumb-out group-hover/trip:opacity-100 group-hover/trip:ease-kolumb-flow">
               <TripDropdown index={index} />
             </span>
           </li>

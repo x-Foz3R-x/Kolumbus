@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Icon from "@/components/icons";
-import { CompareURLs, cn } from "@/lib/utils";
+import { compareURLs, cn } from "@/lib/utils";
 
 export default function Tools({ tripId }: { tripId: string }) {
   const Tile = forwardRef<HTMLAnchorElement, { href: string; className?: string; children?: React.ReactNode }>(
@@ -15,7 +15,7 @@ export default function Tools({ tripId }: { tripId: string }) {
           href={href}
           className={cn(
             "rounded-lg bg-gray-50 fill-tintedGray-400 text-gray-700 shadow-kolumblueInset hover:bg-gray-100 hover:shadow-kolumblueHover",
-            CompareURLs(href) && "bg-kolumblue-100 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected",
+            compareURLs(href) && "bg-kolumblue-100 fill-kolumblue-500 text-kolumblue-500 shadow-kolumblueSelected",
             className,
           )}
         >

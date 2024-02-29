@@ -26,12 +26,12 @@ export default function GlobalNav() {
 
         <div className="container relative z-50 flex w-full items-center px-8">
           <section style={{ width: "calc(50% - 48px)" }} className="z-50 flex">
-            <Link
+            {/* <Link
               href="/playground"
               className="relative flex items-center gap-1 rounded-lg bg-transparent fill-gray-100 px-3 py-1.5 text-sm before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:scale-50 before:rounded-lg before:bg-gray-100 before:opacity-0 before:shadow-button before:duration-300 before:ease-kolumb-flow hover:fill-gray-900 hover:text-gray-900 before:hover:scale-100 before:hover:opacity-100 focus-visible:fill-gray-900 focus-visible:text-gray-900 before:focus-visible:scale-100 before:focus-visible:opacity-100"
             >
               Playground
-            </Link>
+            </Link> */}
           </section>
 
           <ScrollAnimation propertyName="scale" className="origin-top">

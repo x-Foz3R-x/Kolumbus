@@ -107,8 +107,8 @@ export default function SignIn() {
                 e.preventDefault();
                 handleSignIn();
               }}
-              variant={isLoaded && isEmailValid && password.length >= 8 ? "unstyled" : "disabled"}
-              size="unstyled"
+              variant={isLoaded && isEmailValid && password.length >= 8 ? "unset" : "disabled"}
+              size="unset"
               className={cn(
                 "pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 shadow-soft duration-100 ease-in",
                 isLoaded && isEmailValid && password.length >= 8 ? "focus:shadow-focus" : "cursor-default focus:shadow-focusError",
