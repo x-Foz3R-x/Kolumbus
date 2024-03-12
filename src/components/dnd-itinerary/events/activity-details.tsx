@@ -153,7 +153,7 @@ export const ActivityDetails = memo(function ActivityDetails({
       customAnimation={animation}
       exitDuration={625}
       zIndex={30}
-      className="h-28 w-40 overflow-hidden rounded-lg border-2 border-white bg-white text-sm"
+      className="mb-5 mr-5 h-28 w-40 overflow-hidden rounded-lg border-2 border-white bg-white text-sm"
       triggerProps={{
         asChild: true,
         tabIndex: -1,

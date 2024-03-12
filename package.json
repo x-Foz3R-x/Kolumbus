@@ -1,6 +1,6 @@
 {
   "name": "kolumbus",
-  "version": "0.2.0",
+  "version": "0.2.01",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -27,6 +27,7 @@
     "clsx": "^2.0.0",
     "date-fns": "^3.3.1",
     "framer-motion": "^10.18.0",
+    "mini-svg-data-uri": "^1.4.4",
     "next": "^14.1.0",
     "react": "^18.2.0",
     "react-date-range": "^2.0.0-alpha.4",
