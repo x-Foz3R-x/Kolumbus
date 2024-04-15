@@ -44,13 +44,20 @@ export default function TopNav() {
 
         <div className="flex flex-1 items-center justify-end gap-4">
           <SignedIn>
-            <Link href="/dashboard" className="text-gray-900">
-              Dashboard
-            </Link>
+            {/* <Link href="/library" className={cn(ButtonVariants({ variant: "scale", size: "lg" }), "before:bg-gray-100")}>
+        Library
+      </Link> */}
+            {/* <ProfileButton /> */}
           </SignedIn>
           <SignedOut>
-            <Link href="/sign-in" className="text-gray-900">
-              Sign in
+            {/* <Link href="/sign-in" className={cn(ButtonVariants({ variant: "scale", size: "lg" }), "flex items-center gap-2 before:bg-gray-100")}>
+        Sign in
+      </Link> */}
+            <Link
+              href="/sign-up"
+              className="bg-kolumblue-500 px-4.5 font-belanosima block w-fit select-none text-nowrap rounded-xl py-2 font-semibold text-white shadow-lg"
+            >
+              Start Your Adventure
             </Link>
           </SignedOut>
         </div>
