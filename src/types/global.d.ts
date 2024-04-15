@@ -1,11 +1,11 @@
-import type { Roles } from "~/lib/clerk";
+import type { UserRoles } from "~/types";
 
 export {};
 
 declare global {
   interface CustomJwtSessionClaims {
     metadata: {
-      role?: Roles;
+      role?: UserRoles;
     };
   }
 }
