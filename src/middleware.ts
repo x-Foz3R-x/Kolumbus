@@ -13,10 +13,6 @@ export default clerkMiddleware((auth, req) => {
 
   // Restrict protected routes to signed in users
   if (isProtectedRoute(req)) auth().protect();
-
-  const { sessionClaims } = auth();
-
-  console.log(sessionClaims?.metadata.role);
 });
 
 export const config = {

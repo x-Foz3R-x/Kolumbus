@@ -7,32 +7,21 @@
     ["className:\\s*cn\\(([^)]*)\\)"],
     ["className:\\s*\\{([^}]*)\\}"]
   ],
-  "cSpell.ignoreWords": [
-    "Appdata",
-    "Combobox",
+  "cSpell.ignorePaths": [
+    "node_modules",
+    "package-lock.json",
+    "tailwind.config.ts"
+  ],
+  "cSpell.words": [
     "Kolumbus",
+    "Combobox",
     "Typeahead",
     "belanosima",
-    "datasources",
-    "datetime",
-    "extralight",
     "kolumblue",
     "macintel",
     "macppc",
-    "neondatabase",
-    "paralleldrive",
     "pkey",
     "tailwindcss",
-    "tanstack",
-    "trpc"
-  ],
-  "cSpell.ignorePaths": [
-    "package-lock.json",
-    "node_modules",
-    "vscode-extension",
-    ".git/objects",
-    ".vscode",
-    ".vscode-insiders",
-    "tailwind.config.ts"
+    "UPLOADTHING"
   ]
 }

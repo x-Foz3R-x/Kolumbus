@@ -6,8 +6,8 @@
 
 ## TODO
 
-- [ ] Update authentication (w/ clerk)
-- [ ] Add image upload (w/ uploadThing)
+- [x] Update authentication (w/ clerk)
+- [x] Add image upload (w/ uploadThing)
 - [ ] Error management (w/ Sentry)
 - [ ] Analytics (posthog)
 - [ ] Ratelimiting (upstash)

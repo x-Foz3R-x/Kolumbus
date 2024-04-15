@@ -20,6 +20,18 @@ export const env = createEnv({
         (str) => !str.includes("sk_test_YOUR_SECRET_KEY"),
         "You forgot to change the clerk default secret key",
       ),
+    UPLOADTHING_SECRET: z
+      .string()
+      .refine(
+        (str) => !str.includes("sk_live_YOUR_SECRET"),
+        "You forgot to change the upload thing default secret key",
+      ),
+    UPLOADTHING_APP_ID: z
+      .string()
+      .refine(
+        (str) => !str.includes("YOUR_APP_ID"),
+        "You forgot to change the upload thing default app id",
+      ),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -48,6 +60,8 @@ export const env = createEnv({
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
+    UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**

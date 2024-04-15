@@ -15,7 +15,7 @@ export const trips = pgTable(
     name: text("name").notNull(),
     startDate: text("start_date").notNull(),
     endDate: text("end_date").notNull(),
-    photo: text("photo"),
+    image: text("image"),
     inviteCode: text("invite_code").unique(),
     inviteCreatedAt: timestamp("invite_created_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
