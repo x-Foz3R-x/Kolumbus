@@ -1,8 +1,9 @@
+import { cn } from "@/lib/utils";
 import "./map.css";
 
-export function Map() {
+export function Map({ className }: { className?: string }) {
   return (
-    <div id="map" className="flex h-full w-full items-center justify-center overflow-hidden p-5">
+    <div id="map" className={cn("flex h-full w-full items-center justify-center overflow-hidden p-5", className)}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1009.0796 668.7117">
         <g id="SA">
           <path

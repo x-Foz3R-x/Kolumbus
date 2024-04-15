@@ -1,37 +1,49 @@
-import { Currency } from "@prisma/client";
-import { Event } from "@/types";
+import { Event, Membership, Trip } from "@/db/schema";
+import { formatDate } from "@/lib/utils";
 
-export const tripTemplate = {
-  name: "New trip",
-  startDate: new Date().toISOString(),
-  endDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4).toISOString(),
-
-  // For typescript purposes to be destructed before db insert
-  itinerary: [],
-  updatedAt: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
+type TripTemplate = {
+  id: string;
+  ownerId: string;
+  name?: string;
+  startDate?: string;
+  endDate?: string;
+  photo?: string;
+  inviteCode?: string;
+  inviteCreatedAt?: Date;
 };
+export function TRIP_TEMPLATE(data: TripTemplate): Trip {
+  return {
+    id: data.id,
+    ownerId: data.ownerId,
+    name: data.name ?? "New Trip",
+    startDate: data.startDate ?? formatDate(new Date()),
+    endDate: data.endDate ?? formatDate(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4)),
+    photo: data.photo ?? null,
+    inviteCode: data.inviteCode ?? null,
+    inviteCreatedAt: data.inviteCreatedAt ?? null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
 
-export const eventTemplate = {
-  placeId: null,
-
-  name: "-",
-  cost: null,
-  currency: Currency.USD,
-  note: null,
-  photo: null,
-  photoAlbum: [],
-
-  address: null,
-  phoneNumber: null,
-  url: null,
-  website: null,
-  openingHours: {},
-
-  // For typescript purposes to be destructed before db insert
-  updatedAt: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
+type MembershipTemplate = {
+  userId: string;
+  tripId: string;
+  tripPosition: number;
+  owner: boolean;
+  permissions?: number;
 };
+export function MEMBERSHIP_TEMPLATE(data: MembershipTemplate): Membership {
+  return {
+    userId: data.userId,
+    tripId: data.tripId,
+    tripPosition: data.tripPosition,
+    owner: data.owner,
+    permissions: data.permissions ?? 0,
+    updatedAt: new Date(),
+    createdAt: new Date(),
+  };
+}
 
 type EventData = {
   id: string;
@@ -44,24 +56,11 @@ export function EVENT_TEMPLATE(event: EventData): Event {
   return {
     id: event.id,
     tripId: event.tripId,
-    placeId: null,
-
-    name: "-",
-    address: null,
-    phoneNumber: null,
-    cost: null,
-    currency: Currency.USD,
-    website: null,
-    url: null,
-    note: null,
-    openingHours: {},
-    // photoAlbum: [],
-    photo: null,
-
     date: event.date,
     position: event.position,
-    updatedAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
+    type: "ACTIVITY",
     createdBy: event.createdBy,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 }

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { KEY } from "@/types";
+import { KEYS } from "@/types";
 import { Input } from "./ui";
 
 type CodeVerificationProps = {
@@ -29,7 +29,7 @@ export default function CodeVerification({ length, validChars = "0-9", onComplet
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if ([KEY.ArrowUp, KEY.ArrowDown, KEY.ArrowLeft, KEY.ArrowRight, KEY.Home, KEY.End].includes(e.key as KEY)) e.preventDefault();
+    if ([KEYS.ArrowUp, KEYS.ArrowDown, KEYS.ArrowLeft, KEYS.ArrowRight, KEYS.Home, KEYS.End].includes(e.key as KEYS)) e.preventDefault();
   };
 
   const isCharacterFilled = (index: number) => value.length > index;
@@ -66,7 +66,7 @@ export default function CodeVerification({ length, validChars = "0-9", onComplet
               setFocused(true);
             }}
             className={cn(
-              "flex h-full w-10 cursor-text select-none items-center justify-center rounded-lg bg-white font-gordita text-xl font-medium dark:bg-gray-1000",
+              "flex h-full w-10 cursor-text select-none items-center justify-center rounded-lg bg-white text-xl font-medium dark:bg-gray-1000",
               isCharacterFilled(index)
                 ? "border-gray-100 bg-gray-100 text-gray-900 dark:border-gray-800 dark:bg-gray-800 dark:text-white"
                 : "text-gray-300 dark:border-gray-800 dark:text-gray-700",

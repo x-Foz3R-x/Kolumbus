@@ -1,15 +1,15 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { USER_ROLE } from "@/lib/config";
+import { useDndItineraryContext } from "./dnd-context";
 import { Day, Itinerary } from "@/types";
 
 import { EventComposer } from "./event-composer";
-import { CalendarBody } from "./calendar-body";
-import { useDndItineraryContext } from "./dnd-context";
+import { Calendar } from "../calendar";
+import { cn } from "@/lib/utils";
 
 // todo - Weather API integration to calendar
 
@@ -17,19 +17,17 @@ type DndDayProps = {
   day: Day;
   dayIndex: number;
   itinerary: Itinerary;
+  calendar?: string;
   children?: React.ReactNode;
 };
-const DndDay = memo(({ day, dayIndex, itinerary, children }: DndDayProps) => {
-  const { eventsCount } = useDndItineraryContext();
+const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
+  const { eventCount, eventLimit } = useDndItineraryContext();
 
   const { setNodeRef, setActivatorNodeRef, active, isDragging, attributes, listeners, transition, transform } = useSortable({
     id: day.id,
     data: { type: "day", dayIndex },
     animateLayoutChanges: (args) => (args.isSorting || args.wasDragging ? defaultAnimateLayoutChanges(args) : true),
   });
-
-  const date = useMemo(() => new Date(day.date), [day.date]);
-  const isToday = useMemo(() => date.toDateString() === new Date().toDateString(), [date]);
 
   return (
     <li
@@ -39,28 +37,26 @@ const DndDay = memo(({ day, dayIndex, itinerary, children }: DndDayProps) => {
     >
       {!isDragging && (
         <>
-          {/* Calendar */}
-          <div className="sticky left-56 z-20">
-            {/* Calendar Header */}
-            <div
-              ref={setActivatorNodeRef}
-              className="relative z-30 flex h-5 w-32 cursor-grab items-center justify-center bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl duration-300 ease-kolumb-flow focus-visible:shadow-focus group-first/day:rounded-t-xl"
-              {...attributes}
-              {...listeners}
-            >
-              Day {dayIndex + 1}
-            </div>
-
-            <CalendarBody date={date} isToday={isToday} />
-          </div>
+          <Calendar
+            date={day.date}
+            className={cn("sticky left-56 z-40", calendar)}
+            header={
+              <div
+                ref={setActivatorNodeRef}
+                className="z-30 flex h-5 w-32 cursor-grab items-center justify-center bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl duration-300 ease-kolumb-flow focus-visible:shadow-focus group-first/day:rounded-t-xl"
+                {...attributes}
+                {...listeners}
+              >
+                Day {dayIndex + 1}
+              </div>
+            }
+          />
 
           {/* Events droppable */}
           <ul className="relative mr-4 mt-5 flex h-28 w-full min-w-40 list-none gap-2">
             {children}
 
-            {eventsCount < USER_ROLE.EVENTS_PER_TRIP_LIMIT && (
-              <EventComposer activeId={(active?.id as string) ?? null} itinerary={itinerary} day={day} />
-            )}
+            {eventCount < eventLimit && <EventComposer day={day} dayIndex={dayIndex} dragging={!!active?.id} />}
           </ul>
         </>
       )}

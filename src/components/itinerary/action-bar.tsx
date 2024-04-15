@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { FloatingDelayGroup } from "@floating-ui/react";
 
 import api from "@/app/_trpc/client";
-import useAppdata from "@/context/appdata";
+import useAppdata from "@/context/appdata-provider";
 import { calculateDays } from "@/lib/utils";
 import { Trip, UT } from "@/types";
 
@@ -14,10 +14,16 @@ import { Input, Spinner } from "../ui";
 import DaysPicker from "./days-picker";
 import DatePicker from "./date-picker";
 import { TripInfo } from "./trip-info";
+import { LANGUAGE } from "@/lib/config";
 
-export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
-  const { dispatchUserTrips, isSaving, setSaving } = useAppdata();
-  const updateTrip = api.trip.update.useMutation();
+type ActionBarProps = {
+  activeTrip: Trip;
+  isSaving: boolean;
+  setSaving: React.Dispatch<React.SetStateAction<boolean>>;
+};
+export default function ActionBar({ activeTrip, isSaving, setSaving }: ActionBarProps) {
+  const { dispatchUserTrips } = useAppdata();
+  const updateTrip = api.trips.update.useMutation();
 
   const [tripName, setTripName] = useState(activeTrip.name);
 
@@ -68,7 +74,12 @@ export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
           </div>
 
           <div className="flex flex-shrink-0 items-center gap-2">
-            {isSaving && <Spinner />}
+            {isSaving && (
+              <div className="flex h-full flex-col items-center justify-end text-sm leading-tight">
+                <Spinner size="sm" />
+                saving
+              </div>
+            )}
 
             <div id="trash-container" />
 
@@ -113,14 +124,14 @@ export default function ActionBar({ activeTrip }: { activeTrip: Trip }) {
                       <Icon.rangeCalendar className="h-full w-full fill-kolumblue-500" />
                       <div className="absolute inset-y-0 left-0 flex w-[35px] flex-col items-center justify-between pb-0.5 pt-[5px] leading-none">
                         <span className="text-[10px] font-medium uppercase leading-[13px] tracking-tight text-white">
-                          {new Date(activeTrip.startDate).toLocaleString("default", { month: "short" }).toUpperCase()}
+                          {new Date(activeTrip.startDate).toLocaleString(LANGUAGE, { month: "short" }).toUpperCase()}
                         </span>
                         <span className="text-sm leading-[18px]">{new Date(activeTrip.startDate).getDate()}</span>
                       </div>
 
                       <div className="absolute inset-y-0 right-0 flex w-[35px] flex-col items-center justify-between pb-0.5 pt-[5px] leading-none">
                         <span className="text-[10px] font-medium uppercase leading-[13px] tracking-tight text-white">
-                          {new Date(activeTrip.endDate).toLocaleString("default", { month: "short" }).toUpperCase()}
+                          {new Date(activeTrip.endDate).toLocaleString(LANGUAGE, { month: "short" }).toUpperCase()}
                         </span>
                         <span className="text-sm leading-[18px]">{new Date(activeTrip.endDate).getDate()}</span>
                       </div>

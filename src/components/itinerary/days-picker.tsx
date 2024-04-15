@@ -3,11 +3,11 @@
 import { memo, useEffect, useRef, useState } from "react";
 
 import api from "@/app/_trpc/client";
-import useAppdata from "@/context/appdata";
+import useAppdata from "@/context/appdata-provider";
 import { generateItinerary, cn, formatDate } from "@/lib/utils";
 import { UT, Trip, Day, Event } from "@/types";
 
-import { USER_ROLE } from "@/lib/config";
+import { LANGUAGE, ROLE_BASED_LIMITS } from "@/lib/config";
 import { deepCloneItinerary } from "@/lib/utils";
 
 import { ButtonProps } from "../ui";
@@ -18,7 +18,7 @@ import { ExcludedDaysModal } from "./excluded-days-modal";
 
 export default function DaysPicker({ activeTrip, days, buttonProps }: { activeTrip: Trip; days: number; buttonProps: ButtonProps }) {
   const { dispatchUserTrips, setSaving } = useAppdata();
-  const updateTrip = api.trip.update.useMutation();
+  const updateTrip = api.trips.update.useMutation();
   const deleteEvent = api.event.delete.useMutation();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -117,7 +117,7 @@ export default function DaysPicker({ activeTrip, days, buttonProps }: { activeTr
         rootSelector="#action-bar"
         buttonProps={buttonProps}
       >
-        {[...Array(USER_ROLE.DAYS_LIMIT)].map((_, index) => (
+        {[...Array(ROLE_BASED_LIMITS["explorer"].daysLimit)].map((_, index) => (
           <DayOption key={`day-${index}`} index={index} trip={activeTrip} onClick={() => handleSelect(index + 1)} />
         ))}
       </Select>
@@ -147,7 +147,7 @@ const DayOption = memo(function DayOption({ index, trip, onClick: handleClick }:
       </span>
 
       <span className={cn("w-full text-left text-[10px]", isSelected ? "font-medium text-kolumblue-400" : "text-gray-400")}>
-        {`${currentDate.getDate()} ${currentDate.toLocaleString("default", { month: "short" }).toUpperCase()}`}
+        {`${currentDate.getDate()} ${currentDate.toLocaleString(LANGUAGE, { month: "short" }).toUpperCase()}`}
       </span>
     </SelectOption>
   );

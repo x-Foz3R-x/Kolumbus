@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { format, formatDistanceToNow, isBefore, subMonths } from "date-fns";
 
-import { USER_ROLE } from "@/lib/config";
+import { ROLE_BASED_LIMITS } from "@/lib/config";
 import { Trip } from "@/types";
 
 import { Button, Progress } from "../ui";
@@ -33,7 +33,7 @@ export function TripInfo({ activeTrip }: { activeTrip: Trip }) {
             <Progress
               outsideLabel={{ left: "Events", right: { type: "value/max" } }}
               value={eventCount}
-              max={USER_ROLE.EVENTS_PER_TRIP_LIMIT}
+              max={ROLE_BASED_LIMITS["explorer"].eventsLimit}
               levels={[
                 { level: 80, is: ">=", className: { progressValue: "bg-orange-500" } },
                 { level: 100, is: "==", className: { progressValue: "bg-red-500" } },

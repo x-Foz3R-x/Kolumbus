@@ -8,7 +8,7 @@ import { useSignIn } from "@clerk/nextjs";
 
 import { IsEmail } from "@/lib/validation";
 import { cn } from "@/lib/utils";
-import { KEY } from "@/types";
+import { KEYS } from "@/types";
 
 import Icon from "@/components/icons";
 import AuthProviders from "@/components/auth-providers";
@@ -94,7 +94,7 @@ export default function SignIn() {
             placeholder="Password"
             value={password}
             onInput={(e) => setPassword(e.currentTarget.value)}
-            onKeyDown={(e) => e.key === KEY.Enter}
+            onKeyDown={(e) => e.key === KEYS.Enter}
             autoComplete="current-password"
             autoCorrect="off"
             spellCheck="false"
@@ -131,7 +131,7 @@ export default function SignIn() {
         </Link> */}
 
         <div>
-          <span>Don&apos;t have an account? </span>
+          <span>Don’t have an account? </span>
           <Link href="/sign-up" className="text-kolumblue-600 decoration-kolumblue-500 hover:underline focus-visible:underline">
             Create yours now
             <Icon.chevronLight className="mb-0.5 ml-0.5 inline h-1 -rotate-90 fill-kolumblue-600" />

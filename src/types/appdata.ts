@@ -11,7 +11,7 @@ export const eventSchema = z.object({
   name: z.string(),
   address: z.string().nullable(),
   phoneNumber: z.string().nullable(),
-  cost: z.number().nullable(),
+  cost: z.number(),
   currency: z.nativeEnum(Currency),
   website: z.string().nullable(),
   url: z.string().nullable(),

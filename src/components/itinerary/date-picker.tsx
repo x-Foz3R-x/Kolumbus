@@ -5,8 +5,8 @@ import { DateRange, RangeFocus, RangeKeyDict } from "react-date-range";
 import { addDays } from "date-fns";
 
 import api from "@/app/_trpc/client";
-import useAppdata from "@/context/appdata";
-import { USER_ROLE } from "@/lib/config";
+import useAppdata from "@/context/appdata-provider";
+import { ROLE_BASED_LIMITS } from "@/lib/config";
 import { calculateDays, formatDate, generateItinerary } from "@/lib/utils";
 import { deepCloneItinerary } from "@/lib/utils";
 import { Trip, Day, Event, UT } from "@/types";
@@ -24,7 +24,7 @@ import "@/lib/react-date-range/navigation.css";
 
 export default function DatePicker({ activeTrip, buttonProps }: { activeTrip: Trip; buttonProps: ButtonProps }) {
   const { dispatchUserTrips, setSaving } = useAppdata();
-  const updateTrip = api.trip.update.useMutation();
+  const updateTrip = api.trips.update.useMutation();
   const deleteEvent = api.event.delete.useMutation();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -42,8 +42,8 @@ export default function DatePicker({ activeTrip, buttonProps }: { activeTrip: Tr
   const eventsToDeleteRef = useRef<Event[]>([]);
   const newDatesRef = useRef({ startDate: new Date(activeTrip.startDate), endDate: new Date(activeTrip.endDate) });
 
-  const minDateLimit = useMemo(() => addDays(dateRange.startDate, -USER_ROLE.DAYS_LIMIT + 1), [dateRange.startDate]);
-  const maxDateLimit = useMemo(() => addDays(dateRange.startDate, USER_ROLE.DAYS_LIMIT - 1), [dateRange.startDate]);
+  const minDateLimit = useMemo(() => addDays(dateRange.startDate, -ROLE_BASED_LIMITS["explorer"].daysLimit + 1), [dateRange.startDate]);
+  const maxDateLimit = useMemo(() => addDays(dateRange.startDate, ROLE_BASED_LIMITS["explorer"].daysLimit - 1), [dateRange.startDate]);
   const minDate = useMemo(() => (selecting ? minDateLimit : new Date("2023-01-01")), [selecting, minDateLimit]);
   const maxDate = useMemo(() => (selecting ? maxDateLimit : addDays(new Date(), 1095)), [selecting, maxDateLimit]);
 
@@ -78,7 +78,7 @@ export default function DatePicker({ activeTrip, buttonProps }: { activeTrip: Tr
     const startDate = item.selection.startDate ?? dateRange.startDate;
     const endDate = item.selection.endDate ?? dateRange.endDate;
 
-    if (calculateDays(startDate, endDate) > USER_ROLE.DAYS_LIMIT) return;
+    if (calculateDays(startDate, endDate) > ROLE_BASED_LIMITS["explorer"].daysLimit) return;
 
     setDateRange({ ...dateRange, ...item.selection });
   };

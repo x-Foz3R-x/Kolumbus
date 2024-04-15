@@ -6,6 +6,7 @@ import Icon from "../icons";
 import { Button, ScrollIndicator } from "../ui";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "../ui/modal";
 import { ActivityOverlay } from "../dnd-itinerary/events";
+import { LANGUAGE } from "@/lib/config";
 
 // todo - limit the number of days and events in days to be displayed in the list (e.g. 5 days and 5 events) and add text like "and 3 more" to indicate that there are more days and events that have'nt been displayed in the list to avoid cluttering the UI
 // todo - show selected dates to help user understand what dates are being deleted
@@ -67,7 +68,7 @@ const DayToDelete = memo(function DaysToDelete({ day }: { day: Day }) {
   return (
     <li className="relative">
       <h3 className="mb-0.5 rounded-b rounded-t-lg border-b border-gray-200 bg-white py-1 text-center text-sm font-medium text-gray-600">
-        {`${date.getDate()} ${date.toLocaleString("default", { month: "long" })}`}
+        {`${date.getDate()} ${date.toLocaleString(LANGUAGE, { month: "long" })}`}
       </h3>
 
       <ul ref={scrollRef} className="max-h-28 overflow-y-auto rounded-b-lg rounded-t bg-white px-2 py-2">

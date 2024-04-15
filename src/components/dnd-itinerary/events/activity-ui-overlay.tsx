@@ -9,20 +9,20 @@ import { Button, Divider } from "@/components/ui";
 import { Menu, MenuLink, MenuOption } from "@/components/ui/menu";
 
 type ActivityOverlayProps = {
-  event: Event;
+  activity: Event;
+  disable: boolean;
   onOpen: () => void;
   onSelect: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
-  disable: boolean;
 };
 export const ActivityUIOverlay = memo(function ActivityOverlay({
-  event,
+  activity,
+  disable,
   onOpen: handleOpen,
   onSelect: handleSelect,
   onDuplicate: handleDuplicate,
   onDelete: handleDelete,
-  disable,
 }: ActivityOverlayProps) {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -44,7 +44,7 @@ export const ActivityUIOverlay = memo(function ActivityOverlay({
           className="ignore-deselect w-full fill-gray-500 duration-200 ease-kolumb-flow hover:bg-gray-100 hover:fill-gray-700 focus-visible:bg-kolumblue-100"
           tooltip={{ zIndex: 30, offset: 4, children: "Select" }}
         >
-          <Icon.select className="pointer-events-none m-auto h-3.5" />
+          <Icon.select className="pointer-events-none m-auto h-3.5 scale-100" />
         </Button>
 
         {/* Details */}
@@ -55,9 +55,10 @@ export const ActivityUIOverlay = memo(function ActivityOverlay({
           className="w-full fill-gray-500 duration-200 ease-kolumb-flow hover:bg-gray-100 hover:fill-gray-700 focus-visible:bg-kolumblue-100"
           tooltip={{ zIndex: 30, offset: 4, children: "Details" }}
         >
-          <Icon.details className="pointer-events-none m-auto h-3" />
+          <Icon.details className="pointer-events-none m-auto h-3 scale-100" />
         </Button>
 
+        {/* Options */}
         <Menu
           isOpen={isMenuOpen}
           setIsOpen={setMenuOpen}
@@ -70,7 +71,7 @@ export const ActivityUIOverlay = memo(function ActivityOverlay({
             className:
               "ignore-deselect h-full w-full rounded-none fill-gray-500 duration-200 ease-kolumb-flow hover:bg-gray-100 hover:fill-gray-700 focus-visible:bg-kolumblue-100",
             tooltip: { zIndex: 30, offset: 4, children: "Options" },
-            children: <Icon.horizontalDots className="pointer-events-none m-auto h-2 w-4" />,
+            children: <Icon.horizontalDots className="pointer-events-none m-auto h-2 w-4 scale-100" />,
           }}
         >
           <MenuOption label="Details" onClick={handleOpen}>
@@ -78,12 +79,12 @@ export const ActivityUIOverlay = memo(function ActivityOverlay({
             Details
             <span className="ml-auto text-xs text-gray-400">Click</span>
           </MenuOption>
-          <MenuOption label="Copy Address" onClick={() => event.address && navigator.clipboard.writeText(event.address)}>
+          <MenuOption label="Copy Address" onClick={() => activity.address && navigator.clipboard.writeText(activity.address)}>
             <Icon.clipboardPin className="h-4 w-4" />
             Copy Address
           </MenuOption>
 
-          <MenuLink label="Google Maps" href={event.url} target="_blank">
+          <MenuLink label="Google Maps" href={activity.url} target="_blank">
             <Icon.googleMapsIcon className="h-4 w-4" />
             <span>
               <Icon.googleMapsText className="mr-1 inline h-[14.5px] w-20 fill-gray-650" />

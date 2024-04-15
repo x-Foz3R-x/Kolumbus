@@ -88,7 +88,7 @@ export default function EmailVerification({ reset }: { reset: () => void }) {
         </span>
 
         <div className="text-center text-xs text-gray-500">
-          Didn&apos;t receive code?&nbsp;
+          Didn’t receive code?&nbsp;
           <Button
             onClick={handleResend}
             variant="unset"

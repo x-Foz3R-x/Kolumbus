@@ -1,12 +1,64 @@
+import { LANGUAGES as LANG } from "@/types";
+
 export const BASE_URL = process.env.NODE_ENV === "production" ? "https://www.kolumbus.app" : "http://localhost:3000";
-export const LANGUAGE = global.navigator?.language.split("-")[0] || "en";
+export const LANGUAGE = (global.navigator?.language.split("-")[0] as LANG) || LANG.English;
 
 export const AVATAR_FALLBACK = `/images/avatar-fallback.jpg`;
 export const TRIP_IMG_FALLBACK = `/images/trip-fallback.png`;
 export const EVENT_IMG_FALLBACK = `/images/event-fallback.png`;
 
-export const USER_ROLE = {
-  TRIPS_LIMIT: 5,
-  DAYS_LIMIT: 14,
-  EVENTS_PER_TRIP_LIMIT: 100,
+/**
+ * ROLE_BASED_LIMITS defines the limits and permissions for each user role.
+ *
+ * Each role is an object with the following properties:
+ * - membershipsLimit: The maximum number of trips a user can be involved in, whether they are created or joined.
+ * - daysLimit: The maximum number of days a trip can last.
+ * - eventsLimit: The maximum number of events a single trip can have.
+ * - fullAccess: Whether the user has full access to all features and data in the application (typically for admins).
+ *
+ * The roles are:
+ * - explorer: For regular users.
+ * - navigator: For users who pay for a premium subscription.
+ * - captain: For users who pay for a higher level of premium subscription.
+ * - fleetCommander: For travel agencies or other companies that need to manage many trips.
+ * - tester: For testing features and finding issues.
+ * - admin: For support, moderation, and bypassing all access limits.
+ */
+export const ROLE_BASED_LIMITS = {
+  /** "Standard" - For regular users. */
+  explorer: {
+    membershipsLimit: 20,
+    daysLimit: 14,
+    eventsLimit: 100,
+  },
+  /** "Premium" - For users who pay for a premium subscription. */
+  navigator: {
+    membershipsLimit: 16,
+    daysLimit: 30,
+    eventsLimit: 100,
+  },
+  /** "Premium Plus" - For users who pay for a higher level of premium subscription. */
+  captain: {
+    membershipsLimit: 25,
+    daysLimit: 60,
+    eventsLimit: 100,
+  },
+  /** "Company" - For travel agencies or other companies that need to manage many trips. */
+  fleetCommander: {
+    membershipsLimit: 200,
+    daysLimit: 90,
+    eventsLimit: 100,
+  },
+  /** For testing features and finding issues. */
+  tester: {
+    membershipsLimit: 25,
+    daysLimit: 90,
+    eventsLimit: 200,
+  },
+  /** For support, moderation, and bypassing all access limits. */
+  admin: {
+    membershipsLimit: 25,
+    daysLimit: 90,
+    eventsLimit: 200,
+  },
 };

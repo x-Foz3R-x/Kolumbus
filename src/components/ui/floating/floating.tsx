@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import {
   FlipOptions,
@@ -18,7 +18,6 @@ import {
   FloatingFocusManager,
   useMergeRefs,
   Side,
-  useTransitionStyles,
   UseClickProps,
   SizeOptions,
   size,
@@ -35,7 +34,6 @@ export type FloatingProps = {
   triggerRef?: React.RefObject<HTMLElement>;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  initialFocus?: number | React.MutableRefObject<HTMLElement | null>;
   placement?: Placement;
   offset?: OffsetOptions | false;
   shift?: ShiftOptions | false;
@@ -44,10 +42,13 @@ export type FloatingProps = {
   click?: UseClickProps;
   animation?: Exclude<keyof typeof TRANSITION, "fadeToPosition"> | null;
   customAnimation?: Variants;
-  exitDuration?: number;
+  trapFocus?: boolean;
+  scrollIntoView?: boolean;
   ariaLabelledby?: string;
   ariaDescribedby?: string;
+  initialFocus?: number | React.MutableRefObject<HTMLElement | null>;
   zIndex?: number;
+  style?: React.CSSProperties;
   className?: string;
   rootSelector?: string;
   triggerProps?: Omit<FloatingTriggerProps, "triggerRef">;
@@ -58,7 +59,6 @@ export function Floating({
   triggerRef,
   isOpen: controlledOpen,
   onOpenChange: setControlledOpen,
-  initialFocus,
   placement = "bottom",
   offset: offsetOptions = 6,
   shift: shiftOptions = { padding: 6 },
@@ -73,18 +73,22 @@ export function Floating({
     },
   },
   click: clickOptions,
-  ariaLabelledby,
-  ariaDescribedby,
   animation,
   customAnimation,
-  exitDuration,
+  trapFocus = false,
+  scrollIntoView = false,
+  ariaLabelledby,
+  ariaDescribedby,
+  initialFocus,
   zIndex,
+  style,
   className,
   rootSelector,
   triggerProps,
   children,
 }: FloatingProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
@@ -102,11 +106,6 @@ export function Floating({
       ...(sizeOptions ? [size(sizeOptions)] : []),
     ],
   });
-  const { isMounted, styles } = useTransitionStyles(data.context, {
-    duration: exitDuration,
-    close: { opacity: 1 },
-    initial: { opacity: 1 },
-  });
 
   const click = useClick(data.context, { enabled: controlledOpen == null, ...clickOptions });
   const role = useRole(data.context);
@@ -116,15 +115,34 @@ export function Floating({
   const interactions = useInteractions([click, role, dismiss]);
   //#endregion
 
-  const getVariants = () => {
+  const variants = useMemo(() => {
     if (customAnimation) return customAnimation;
     if (animation === null) return undefined;
     if (animation) return TRANSITION[animation];
 
     return TRANSITION.fadeToPosition[placement.split("-")[0] as Side];
-  };
+  }, [animation, customAnimation, placement]);
 
   const contextValue = useMemo(() => ({ open, setOpen, ...interactions, ...data }), [open, setOpen, interactions, data]);
+
+  // Scroll into view when open
+  useEffect(() => {
+    if (!scrollIntoView) return;
+
+    const scroll = () => {
+      const element = data.elements.floating;
+      if (element) element.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+
+    const timeoutId = setTimeout(scroll, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [data.elements.floating, scrollIntoView]);
+
+  // Set isMounted to true when open becomes true
+  useEffect(() => {
+    open && setIsMounted(true);
+  }, [open]);
 
   return (
     <FloatingContext.Provider value={contextValue}>
@@ -132,20 +150,20 @@ export function Floating({
 
       {isMounted && (
         <FloatingPortal root={rootSelector ? (document.querySelector(rootSelector) as HTMLElement | null) : undefined}>
-          <FloatingFocusManager initialFocus={initialFocus} context={data.context} modal={false}>
+          <FloatingFocusManager initialFocus={initialFocus} context={data.context} modal={trapFocus} visuallyHiddenDismiss={trapFocus}>
             <div
               ref={ref}
               aria-labelledby={ariaLabelledby}
               aria-describedby={ariaDescribedby}
-              {...interactions.getFloatingProps({ style: { ...data.floatingStyles, ...styles, zIndex } })}
+              {...interactions.getFloatingProps({ style: { ...data.floatingStyles, ...style, zIndex } })}
             >
-              <AnimatePresence>
+              <AnimatePresence onExitComplete={() => setIsMounted(false)}>
                 {open && (
                   <motion.div
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    variants={getVariants()}
+                    variants={variants}
                     className={cn("relative font-inter", className)}
                   >
                     {children}

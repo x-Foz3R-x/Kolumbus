@@ -1,0 +1,40 @@
+[
+  {
+    "id": "YJGg3KxTd0",
+    "ownerId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "name": "Dev Tests",
+    "startDate": "2024-10-30",
+    "endDate": "2024-11-05"
+  },
+  {
+    "id": "DNqOiPjFAZ",
+    "ownerId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "name": "Stress Test",
+    "startDate": "2025-02-15",
+    "endDate": "2025-02-28"
+  },
+  {
+    "id": "jBCJuVK7ki",
+    "ownerId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "name": "One Day Trip",
+    "startDate": "2024-10-05",
+    "endDate": "2024-10-05"
+  },
+
+  {
+    "id": "BCEwB8Yx14",
+    "ownerId": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB",
+    "name": "Sharing Awesome Trip",
+    "startDate": "2024-10-31",
+    "endDate": "2024-11-07",
+    "inviteCode": "7aGxGoZ5"
+  },
+  {
+    "id": "9ghxMu7fAQ",
+    "ownerId": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB",
+    "name": "test",
+    "startDate": "2024-09-21",
+    "endDate": "2024-09-27",
+    "inviteCode": "8xMAQLqo"
+  }
+]

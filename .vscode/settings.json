@@ -1,16 +1,38 @@
 {
-  "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)"], ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)"],
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["className:\\s*['\"]([^'\"]*)['\"]"],
+    ["className:\\s*[`]([^`]*)[`]"],
+    ["className:\\s*cn\\(([^)]*)\\)"],
+    ["className:\\s*\\{([^}]*)\\}"]
+  ],
   "cSpell.ignoreWords": [
     "Appdata",
-    "Didn",
+    "Combobox",
+    "Kolumbus",
+    "Typeahead",
+    "belanosima",
     "datasources",
     "datetime",
-    "easepick",
     "extralight",
+    "kolumblue",
+    "macintel",
+    "macppc",
+    "neondatabase",
     "paralleldrive",
+    "pkey",
     "tailwindcss",
     "tanstack",
     "trpc"
   ],
-  "cSpell.words": ["Combobox", "kolumblue", "Kolumbus", "Typeahead"]
+  "cSpell.ignorePaths": [
+    "package-lock.json",
+    "node_modules",
+    "vscode-extension",
+    ".git/objects",
+    ".vscode",
+    ".vscode-insiders",
+    "tailwind.config.ts"
+  ]
 }

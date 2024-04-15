@@ -11,7 +11,11 @@ import { Menu, MenuLink, MenuOption } from "./ui/menu";
 
 // todo: hover effect on profile picture
 
-export default function ProfileButton({ dark }: { dark?: boolean }) {
+type ProfileButtonProps = {
+  size?: number;
+  dark?: boolean;
+};
+export default function ProfileButton({ size = 32, dark }: ProfileButtonProps) {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
@@ -35,8 +39,9 @@ export default function ProfileButton({ dark }: { dark?: boolean }) {
       buttonProps={{
         variant: "unset",
         size: "unset",
+        style: { width: `${size}px`, height: `${size}px` },
         className:
-          "relative h-8 w-8 overflow-hidden rounded-full shadow-borderXS outline-none duration-500 ease-kolumb-flow hover:shadow-lg focus-visible:border-kolumblue-500",
+          "relative overflow-hidden rounded-full shadow-borderXS outline-none duration-500 ease-kolumb-flow hover:shadow-lg focus-visible:border-kolumblue-500",
         children: (
           <>
             <span className="pointer-events-none absolute h-10 w-1 -translate-x-4 -translate-y-4 rotate-45 rounded-full bg-white/30 duration-200 ease-in-out group-hover:translate-x-4 group-hover:translate-y-4" />
@@ -68,11 +73,11 @@ export default function ProfileButton({ dark }: { dark?: boolean }) {
         <Icon.userSettings className="ml-2 h-4 w-4" />
         My account
       </MenuLink>
-      <MenuOption label="switch account" disabled>
+      {/* <MenuOption label="switch account" disabled>
         <Icon.userSwitch className="ml-2 h-4 w-4" />
         Switch account
         <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
-      </MenuOption>
+      </MenuOption> */}
       <MenuOption label="appearance" disabled>
         <Icon.appearance className="ml-2 h-4 w-4" />
         Appearance

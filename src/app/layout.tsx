@@ -4,9 +4,9 @@ import { Analytics } from "@vercel/analytics/react";
 import { Metadata } from "next";
 
 import { cn } from "@/lib/utils";
-import { inter, gordita, adso, inconsolata } from "./fonts";
+import { inter, adso, inconsolata, belanosima } from "./fonts";
 import TrpcProvider from "./_trpc/Provider";
-import "./tailwind.css";
+import "@/css/tailwind.css";
 
 export const metadata: Metadata = {
   title: "Kolumbus",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   category: "Trip planner",
   creator: "Foz3R",
   description:
-    "Turn dreams into reality with Kolumbus! 🌟 From dream to itinerary, plan your trips effortlessly and savor the freedom to explore. Your journey, your way - Kolumbus, where adventure begins!",
+    "Kolumbus - Travel Planning Made Simple and Fun. Discover the power of Kolumbus and transform your travel planning process. Build your itinerary, navigate your journey with map, manage your travel expenses, and organize your packing list. Your next adventure is just a few clicks away. Start your adventure with Kolumbus today.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -23,11 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en" style={{ fontSize: "16px" }}>
         <body
           className={cn(
-            "scroll-smooth fill-gray-900 text-gray-900 antialiased",
-            gordita.className,
-            gordita.variable,
-            adso.variable,
+            "min-h-screen scroll-smooth fill-gray-900 font-inter text-gray-900 antialiased",
             inter.variable,
+            adso.variable,
+            belanosima.variable,
             inconsolata.variable,
           )}
         >

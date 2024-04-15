@@ -91,7 +91,7 @@ export default function Privacy() {
               <br />
               The website operator and personal data administrator is: <span>Paweł Knot</span>
               <br />
-              Operator&apos;s e-mail contact address: <span>55fozer55@gmail.com</span>
+              Operator’s e-mail contact address: <span>55fozer55@gmail.com</span>
               <br />
               The Operator is the Administrator of your personal data in relation to the data provided
               <span>voluntarily</span> on the Website.
@@ -111,7 +111,7 @@ export default function Privacy() {
             </ul>
             <p>The website performs the functions of obtaining information about users and their behavior in the following way:</p>
             <ul>
-              <li>Through data entered voluntarily in the forms, which are entered into the Operator&apos;s systems</li>
+              <li>Through data entered voluntarily in the forms, which are entered into the Operator’s systems</li>
               <li>By saving cookie files in end devices</li>
             </ul>
 
@@ -119,7 +119,7 @@ export default function Privacy() {
             <p>
               The places of logging in and entering personal data are protected in the transmission layer (<span>SSL certificate</span>).
               Thanks to this, personal data and login details entered on the website are
-              <span>encrypted on the user&apos;s computer and can only be read on the target server</span> .
+              <span>encrypted on the user’s computer and can only be read on the target server</span> .
             </p>
             <p>
               <span>User passwords are stored hashed</span>. The hash function works in one direction - it is not possible to reverse its
@@ -188,7 +188,7 @@ export default function Privacy() {
               </li>
               <li>
                 <span>When we use Google Maps Platform APIs.</span> We may share your information with certain Google Maps Platform APIs
-                (e.g., Google Maps API, Places API). To find out more about Google&apos;s Privacy Policy, please refer to this{" "}
+                (e.g., Google Maps API, Places API). To find out more about Google’s Privacy Policy, please refer to this{" "}
                 <Link href="https://policies.google.com/privacy" target="_blank">
                   link
                 </Link>
@@ -416,7 +416,7 @@ export default function Privacy() {
                 <td>K. Inferences drawn from other personal information</td>
                 <td>
                   Inferences drawn from any of the collected personal information listed above to create a profile or summary about, for
-                  example, an individual&apos;s preferences and characteristics
+                  example, an individual’s preferences and characteristics
                 </td>
                 <td>NO</td>
               </tr>
@@ -463,7 +463,7 @@ export default function Privacy() {
                 response to a consumer request or to re-identify individual data to verify a consumer request.
               </li>
             </ul>
-            <h5>Right to Non-Discrimination for the Exercise of a Consumer&apos;s Privacy Rights</h5>
+            <h5>Right to Non-Discrimination for the Exercise of a Consumer’s Privacy Rights</h5>
             <p>We will not discriminate against you if you exercise your privacy rights. </p>
             <h5>Verification process</h5>
             <p>
@@ -513,8 +513,8 @@ export default function Privacy() {
             <p>
               The operator uses statistical analysis of website traffic through Google Analytics (Google Inc. based in the USA). The
               operator does not provide the operator of this service with personal data, but only anonymized information. The service is
-              based on the use of cookies on the user&apos;s end device. In terms of information about user preferences collected by the
-              Google advertising network, the user can view and edit information resulting from cookies using the tool:
+              based on the use of cookies on the user’s end device. In terms of information about user preferences collected by the Google
+              advertising network, the user can view and edit information resulting from cookies using the tool:
               https://www.google.com/ads/preferences/
             </p>
             <p>
@@ -528,16 +528,16 @@ export default function Privacy() {
               The website uses <span>cookies</span>.
             </p>
             <p>
-              Cookie files are IT data, in particular text files, which are stored in the <span>User&apos;s end device</span>
+              Cookie files are IT data, in particular text files, which are stored in the <span>User’s end device</span>
               and are intended for using the <span>Kolumbus</span> websites. Cookies usually contain the name of the website they come from,
               their storage time on the end device and a unique number.
             </p>
-            <p>The entity placing cookies on the User&apos;s end device and accessing them is the Website operator.</p>
+            <p>The entity placing cookies on the User’s end device and accessing them is the Website operator.</p>
             <p>Cookies are used for the following purposes:</p>
             <ul>
               <li>
-                Maintaining the Website user&apos;s session (after logging in), thanks to which the user does not have to re-enter the login
-                and password on each subpage of the Website
+                Maintaining the Website user’s session (after logging in), thanks to which the user does not have to re-enter the login and
+                password on each subpage of the Website
               </li>
               <li>
                 to achieve the goals set out above in the
@@ -548,12 +548,12 @@ export default function Privacy() {
             </ul>
             <p>
               The Website uses two basic types of cookies: <span>session cookies</span> and
-              <span>persistent cookies</span>. Session cookies are <span>temporary files</span> that are stored on the User&apos;s end
-              device until logging out, leaving the website or turning off web browser. Persistent cookies are stored on the User&apos;s end
-              device for the time specified in the cookie file parameters or until they are deleted by the User.
+              <span>persistent cookies</span>. Session cookies are <span>temporary files</span> that are stored on the User’s end device
+              until logging out, leaving the website or turning off web browser. Persistent cookies are stored on the User’s end device for
+              the time specified in the cookie file parameters or until they are deleted by the User.
             </p>
             <p>
-              The web browser usually <span>allows cookies</span> to be stored on the User&apos;s end device by default. The web browser{" "}
+              The web browser usually <span>allows cookies</span> to be stored on the User’s end device by default. The web browser{" "}
               <span>allows you to delete cookies</span>. It is also possible to <span>automatically block cookies</span>, detailed
               information on this subject can be found in the help or documentation of the web browser.
             </p>
@@ -561,7 +561,7 @@ export default function Privacy() {
               Restrictions on the use of cookies <span>may affect some of the functionalities</span> available on the Website.
             </p>
             <p>
-              Cookie files placed on the User&apos;s end device may also be used by
+              Cookie files placed on the User’s end device may also be used by
               <span>entities cooperating with the Website operator</span>, in particular the following companies: Google (Google Inc. based
               in the USA), Twitter (Twitter Inc. based in the USA).
             </p>

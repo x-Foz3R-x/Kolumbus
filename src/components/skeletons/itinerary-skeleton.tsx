@@ -1,4 +1,4 @@
-import Skeleton from "../ui/skeleton";
+import { Skeleton } from "../ui";
 
 export function ItinerarySkeleton() {
   const days = [5, 5, 5, 5, 5];

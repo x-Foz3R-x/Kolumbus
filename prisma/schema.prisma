@@ -33,7 +33,7 @@ model Event {
   name         String
   address      String?
   phoneNumber  String?
-  cost         Float?
+  cost         Float    @default(0)
   currency     Currency @default(USD)
   website      String?
   url          String?

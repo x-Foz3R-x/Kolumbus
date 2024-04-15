@@ -1,0 +1,38 @@
+[
+  {
+    "userId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "tripId": "YJGg3KxTd0",
+    "owner": true,
+    "permissions": -1,
+    "tripPosition": 0
+  },
+  {
+    "userId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "tripId": "DNqOiPjFAZ",
+    "owner": true,
+    "permissions": -1,
+    "tripPosition": 1
+  },
+  {
+    "userId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "tripId": "jBCJuVK7ki",
+    "owner": true,
+    "permissions": -1,
+    "tripPosition": 2
+  },
+
+  {
+    "userId": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB",
+    "tripId": "BCEwB8Yx14",
+    "owner": true,
+    "permissions": -1,
+    "tripPosition": 0
+  },
+  {
+    "userId": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB",
+    "tripId": "9ghxMu7fAQ",
+    "owner": true,
+    "permissions": -1,
+    "tripPosition": 1
+  }
+]

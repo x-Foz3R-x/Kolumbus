@@ -1,34 +1,50 @@
 import Link from "next/link";
 
 import Icon from "@/components/icons";
-import GlobalNav from "@/components/layouts/global-nav";
+import { Button } from "@/components/ui";
+import HeroFeature from "@/components/hero-feature";
 import GlobalFooter from "@/components/layouts/global-footer";
-import BetaWatermark from "@/components/beta-watermark";
-import ContactWatermark from "@/components/contact-watermark";
 import { Map } from "@/components/map";
+import HomepageNav from "@/components/layouts/homepage-nav";
+import DotBackground from "@/components/dot-background";
+
+import "@/css/custom-cursor.css";
 
 export default function Index() {
   return (
-    <>
-      <GlobalNav />
+    <div className="font-belanosima">
+      <HomepageNav />
 
-      <main className="flex h-screen w-screen flex-col justify-center overflow-hidden bg-black text-gray-100">
-        <div className="h-28" />
-        <Map />
-      </main>
+      {/* Hero */}
+      <DotBackground className={{ background: "h-screen w-screen overflow-hidden bg-dot-gray-500/30", mask: "bg-white" }}>
+        <div className="container relative z-10 flex gap-10 px-8">
+          <div className="flex flex-col gap-10">
+            <h1 className="whitespace-nowrap text-center text-4xl font-semibold sm:text-5xl md:text-left lg:text-6xl">
+              Travel Planning <br /> Made <span className="text-green-500">Simple</span> and <span className="text-amber-500">Fun</span>
+            </h1>
 
-      {/* Watermark */}
-      <div className="fixed inset-x-0 flex justify-center">
-        <div className="container relative">
-          <ContactWatermark />
-          <BetaWatermark />
+            <div className="text-lg lg:text-xl">
+              <p>Plan, explore, and create unforgettable travel experiences.</p>
+              <p>Your next adventure is just a few clicks away.</p>
+            </div>
+
+            <Button className="block w-fit select-none text-nowrap rounded-2xl bg-kolumblue-500 px-9 py-4 font-belanosima text-4xl font-semibold text-white shadow-lg">
+              Start Your Adventure
+            </Button>
+          </div>
+
+          <div className="relative flex items-center justify-center">
+            <HeroFeature className="hidden md:block" />
+          </div>
         </div>
-      </div>
+
+        <Map className="pointer-events-none absolute top-16 -z-10 h-screen min-w-[70vw] translate-x-1/2 select-none opacity-30" />
+      </DotBackground>
 
       <section className="container mx-auto px-4 py-28">
         <div className="mb-8 text-center">
           <h2 className="mb-4 text-3xl font-bold">Plan Your Adventures with Ease</h2>
-          <p className="text-lg">Whether you&apos;re a seasoned traveler or a first-time explorer,</p>
+          <p className="text-lg">Whether you’re a seasoned traveler or a first-time explorer,</p>
           <p className="text-lg">Kolumbus makes itinerary creation a breeze.</p>
         </div>
 
@@ -147,6 +163,6 @@ export default function Index() {
       </section>
 
       <GlobalFooter />
-    </>
+    </div>
   );
 }

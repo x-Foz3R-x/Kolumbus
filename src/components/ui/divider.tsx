@@ -1,5 +1,9 @@
 import { cn } from "@/lib/utils";
 
+export const addDotAfter = (className?: string) => {
+  return cn("after:pointer-events-none after:inline after:select-none after:px-1.5 after:content-['·']", className);
+};
+
 type DividerProps = {
   orientation?: "horizontal" | "vertical";
   gradient?: boolean;
@@ -9,7 +13,7 @@ export function Divider({ orientation = "horizontal", gradient, className }: Div
   return (
     <div
       className={cn(
-        "pointer-events-none",
+        "pointer-events-none select-none",
         orientation === "horizontal" ? "h-px w-full" : "h-full w-px",
         gradient
           ? orientation === "horizontal"

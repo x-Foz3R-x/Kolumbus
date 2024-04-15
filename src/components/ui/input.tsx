@@ -4,7 +4,7 @@ import { forwardRef, useMemo, useRef } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
-import { KEY } from "@/types";
+import { KEYS } from "@/types";
 import { HTMLMotionProps, motion } from "framer-motion";
 
 const InputVariants = cva(
@@ -37,27 +37,6 @@ export type InputProps = Omit<HTMLMotionProps<"input">, "size"> &
     preventEmpty?: boolean;
     labelClassName?: string;
   };
-/**
- * A customizable input component.
- *
- * @example
- * ```tsx
- * <Input
- *   ref={ref}
- *   label=""
- *   value=""
- *   onChange={(e) => console.log(e.target.value)}
- *   variant="default"
- *   size="default"
- *   className=""
- *   stateful
- *   fullWidth
- *   fullHeight
- *   dynamicWidth
- *   preventEmpty
- * />
- * ```
- */
 export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) => {
   const {
     id,
@@ -93,7 +72,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (onKeyDown) onKeyDown(e);
-    else if (e.key === KEY.Enter) e.currentTarget.blur();
+    else if (e.key === KEYS.Enter) e.currentTarget.blur();
   };
 
   const getLabelStyle = () => {
@@ -102,10 +81,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
 
     const variantStyles: { [key: string]: string } = {
       insetLabel: `mx-4 peer-focus:-translate-y-2.5 peer-focus:scale-90 ${
-        value && value.toString().length > 0 && "-translate-y-2.5 scale-90"
+        value !== undefined && value.toString().length > 0 && "-translate-y-2.5 scale-90"
       }`,
       insetLabelSm: `mx-3 peer-focus:-translate-y-1.5 peer-focus:scale-[0.84] ${
-        value && value.toString().length > 0 && "-translate-y-1.5 scale-[0.84]"
+        value !== undefined && value.toString().length > 0 && "-translate-y-1.5 scale-[0.84]"
       }`,
     };
 
@@ -119,7 +98,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
     >
       {/* Dynamic width of input */}
       {isDynamicWidth && (
-        <div className={cn(InputVariants({ variant, size, className }), "invisible w-fit whitespace-pre border-r")}>{value}</div>
+        <div role="presentation" className={cn(InputVariants({ variant, size, className }), "invisible w-fit whitespace-pre border-r")}>
+          {value}
+        </div>
       )}
 
       {/* Label for autocomplete identification */}

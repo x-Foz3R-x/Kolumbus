@@ -25,7 +25,6 @@ import {
   useListNavigation,
   useMergeRefs,
   useRole,
-  useTransitionStyles,
   useTypeahead,
 } from "@floating-ui/react";
 
@@ -54,7 +53,6 @@ export function MenuComponent({
   },
   loop,
   animation,
-  exitDuration,
   zIndex,
   className,
   rootSelector,
@@ -63,6 +61,7 @@ export function MenuComponent({
   children,
 }: MenuProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const open = controlledOpen ?? uncontrolledOpen;
@@ -92,11 +91,6 @@ export function MenuComponent({
       ...(flipOptions ? [flip(flipOptions)] : []),
       ...(sizeOptions ? [size(sizeOptions)] : []),
     ],
-  });
-  const transition = useTransitionStyles(context, {
-    duration: exitDuration,
-    close: { opacity: 1 },
-    initial: { opacity: 1 },
   });
 
   const hover = useHover(context, {
@@ -205,21 +199,21 @@ export function MenuComponent({
     [open, activeIndex, setActiveIndex, getItemProps],
   );
 
+  // Set isMounted to true when open becomes true
+  useEffect(() => {
+    open && setIsMounted(true);
+  }, [open]);
+
   return (
     <FloatingNode id={nodeId}>
       {ButtonComponent}
 
       <MenuContext.Provider value={menuContext}>
-        {transition.isMounted && (
+        {isMounted && (
           <FloatingPortal root={rootSelector ? (document.querySelector(rootSelector) as HTMLElement | null) : undefined}>
             <FloatingFocusManager context={context} modal={false} initialFocus={isNested ? -1 : 0} returnFocus={!isNested}>
-              <div
-                ref={refs.setFloating}
-                style={{ ...floatingStyles, ...transition.styles, zIndex }}
-                className={cn(darkMode && "dark")}
-                {...getFloatingProps()}
-              >
-                <AnimatePresence>
+              <div ref={refs.setFloating} style={{ ...floatingStyles, zIndex }} className={cn(darkMode && "dark")} {...getFloatingProps()}>
+                <AnimatePresence onExitComplete={() => setIsMounted(false)}>
                   {open && (
                     <FloatingList elementsRef={elementsRef} labelsRef={labelsRef}>
                       <motion.ul

@@ -26,40 +26,60 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { isEqual, pickBy } from "lodash";
 
-import api from "@/app/_trpc/client";
-import useAppdata from "@/context/appdata";
-import { USER_ROLE } from "@/lib/config";
-import { compareArrays, deepCloneItinerary, transformItineraryToCache, restoreItineraryFromCache } from "@/lib/utils";
-import { Day, Event, Itinerary, KEY, UT } from "@/types";
+import { onEventCreated, onEventDeleted, onEventUpdated } from ".";
+import { DndItineraryContext, DndItineraryContextProps } from "./dnd-context";
+import useHistoryState from "@/hooks/use-history-state";
+import { ROLE_BASED_LIMITS } from "@/lib/config";
+import { cn, compareArrays, transformItineraryToCache } from "@/lib/utils";
+import { UpdateEventData } from "@/server/routers/event";
+import { Day, Event, Itinerary, KEYS } from "@/types";
 
 import DndDragOverlay from "./dnd-drag-overlay";
 import DndTrash from "./dnd-trash";
 import DndDay from "./dnd-day";
 import { Activity } from "./events";
-import { DndItineraryContext, DndItineraryContextProps } from "./dnd-context";
 
-// PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity
+// * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity
 
+// todo - optimize the performance when dragging events
 // todo - Multi select events from different days
 // todo - Selecting events with selection rectangle (like in any file manager)
 // todo - Properly done dnd keyboard support (filter tabbable elements, move events with keyboard, etc)
-// todo - fix overflowing issues with events (especially when expanded) that overflows other days calendars
 // todo: Shortcuts:
 // <kbd>Ctrl + Shift + Click</kbd> to select a range of events
 // <kbd>Ctrl + A</kbd> to select all events
 // <kbd>Ctrl + X</kbd> to cut selected events
 // <kbd>Ctrl + C</kbd> to copy selected events
 // <kbd>Ctrl + V</kbd> to paste events
-// <kbd>Ctrl + Z</kbd> to undo
-// <kbd>Ctrl + Shift + Z</kbd> to redo
 
-export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { userId: string; tripId: string; itinerary: Itinerary }) {
-  const { dispatchUserTrips, setSaving } = useAppdata();
-  const updateEvent = api.event.update.useMutation();
-  const deleteEvent = api.event.delete.useMutation();
-
-  const [itinerary, setItinerary] = useState(tripItinerary);
+type DndItineraryProps = {
+  userId: string;
+  tripId: string;
+  itinerary: Itinerary;
+  eventLimit?: number;
+  setSaving?: (saving: boolean) => void;
+  onEventCreated?: onEventCreated;
+  onEventUpdated?: onEventUpdated;
+  onEventDeleted?: onEventDeleted;
+  calendar?: string;
+};
+export function DndItinerary({
+  userId,
+  tripId,
+  itinerary: tripItinerary,
+  eventLimit = ROLE_BASED_LIMITS["explorer"].eventsLimit,
+  setSaving = () => {},
+  onEventCreated,
+  onEventUpdated,
+  onEventDeleted,
+  calendar,
+}: DndItineraryProps) {
+  const [itinerary, setItinerary, { changes, jumpTo, addEntry, getEntry, getHistory, replaceHistory }] = useHistoryState(tripItinerary, {
+    initialDesc: "Fetch",
+    limit: 10,
+  });
   const [activeItem, setActiveItem] = useState<Day | Event | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -97,69 +117,102 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
     },
     [itinerary],
   );
+  const updateEvent = useCallback(
+    (
+      event: Event,
+      cache: Event,
+      { dayIndex, entryDescription, preventEntry }: { dayIndex?: number; entryDescription?: string; preventEntry?: boolean } = {},
+    ) => {
+      const historyClone = getHistory();
+      const handleError = (error: unknown) => {
+        console.error(error);
+        setItinerary(getEntry(-1));
+        replaceHistory(historyClone);
+      };
+
+      const newItinerary = getEntry(-1);
+
+      const targetDayIndex = dayIndex ?? newItinerary.findIndex((day) => day.date === event.date);
+      if (targetDayIndex === -1) return;
+
+      const eventIndex = newItinerary[targetDayIndex].events.findIndex((e) => e.id === event.id);
+      if (eventIndex === -1 || !newItinerary[targetDayIndex].events[eventIndex]) return;
+
+      event.updatedAt = new Date().toISOString();
+      newItinerary[targetDayIndex].events[eventIndex] = event;
+      const updateData: UpdateEventData = pickBy(event, (value, key) => !isEqual(value, cache[key as keyof Event]));
+
+      setItinerary(newItinerary);
+      if (!preventEntry) addEntry(newItinerary, entryDescription ?? `Update event ${event.name}`);
+      onEventUpdated?.(event.id, tripId, updateData, handleError);
+    },
+    [tripId, setItinerary, addEntry, getEntry, getHistory, replaceHistory, onEventUpdated],
+  );
+  const createEvent = useCallback(
+    (event: Event, dayIndex?: number, index?: number) => {
+      const historyClone = getHistory();
+      const handleError = (error: unknown) => {
+        console.error(error);
+        setItinerary(getEntry(-1));
+        replaceHistory(historyClone);
+      };
+
+      const newItinerary = getEntry(-1);
+
+      // Find the index of the day that contains the event with the given date or use the provided day index
+      const targetDayIndex = dayIndex ?? newItinerary.findIndex((day) => day.date === event.date);
+      if (targetDayIndex === -1) return;
+
+      // If no index is provided, add the event to the end of the day's events array.
+      // Otherwise, insert the event at the specified index and update the position of the events in the day.
+      if (!index) newItinerary[targetDayIndex].events.push(event);
+      else {
+        newItinerary[targetDayIndex].events.splice(index, 0, event);
+        newItinerary[targetDayIndex].events.slice(index).map((event, i) => {
+          event.position = index + i;
+          if (onEventUpdated && i > 0) onEventUpdated(event.id, tripId, { position: index + i }, handleError);
+        });
+      }
+
+      setItinerary(newItinerary);
+      addEntry(newItinerary, `Add event ${event.name} to day ${targetDayIndex + 1}`);
+      onEventCreated?.(event, handleError);
+    },
+    [tripId, setItinerary, addEntry, getEntry, getHistory, replaceHistory, onEventCreated, onEventUpdated],
+  );
   const deleteEvents = useCallback(
     (eventIds: string[]) => {
-      // The originalDayIndex is used to find the original position of the event in the database.
-      // This is necessary because we need to know which events we need to update when we delete an event.
-      let originalDayIndex = Object.keys(itineraryCacheRef.current).findIndex((dayId) =>
-        itineraryCacheRef.current[dayId].find((event) => eventIds.includes(event.id)),
-      );
+      const historyClone = getHistory();
+      const handleError = (error: unknown) => {
+        console.error(error);
+        setItinerary(getEntry(-1));
+        replaceHistory(historyClone);
+      };
 
-      // The currentDayIndex is used to find the current position of the event in the local state.
-      // This is necessary because when an event is dragged to the trash icon, it most likely passes over a day,
-      // effectively changing its position. We need to find the last day that held the dragged event so we can remove it locally.
-      const currentDayIndex = itinerary.findIndex((day) => day.events.find((event) => eventIds.includes(event.id)));
+      const newItinerary = getEntry(-1);
 
-      // If the originalDayIndex is still -1, set it to the currentDayIndex
-      // This can happen when after adding new event to the itinerary, itineraryCache.current is not updated
-      if (originalDayIndex === -1) originalDayIndex = currentDayIndex;
+      newItinerary.forEach((day) => {
+        if (day.events.some((event) => eventIds.includes(event.id))) {
+          day.events = updateEventData(filterEventsExcludingIds(day.events, eventIds));
 
-      // Remove the events from the itinerary
-      const newItinerary = deepCloneItinerary(itinerary);
-      newItinerary[currentDayIndex].events = updateEventData(filterEventsExcludingIds(newItinerary[currentDayIndex].events, eventIds));
-
-      setSaving(true);
-      dispatchUserTrips({ type: UT.REPLACE_ITINERARY, payload: { tripId, itinerary: newItinerary } });
-
-      eventIds.forEach((eventId) => {
-        deleteEvent.mutate(
-          { eventId },
-          {
-            onError(error) {
-              console.error(error);
-              dispatchUserTrips({
-                type: UT.REPLACE_ITINERARY,
-                payload: { tripId, itinerary: restoreItineraryFromCache(itinerary, itineraryCacheRef.current, affectedDayIdsRef.current) },
-              });
-            },
-          },
-        );
+          if (onEventUpdated) {
+            day.events.forEach((event) => onEventUpdated(event.id, tripId, { position: event.position }, handleError));
+          }
+        }
       });
 
-      filterEventsExcludingIds(itinerary[originalDayIndex].events, eventIds).forEach((event) => {
-        updateEvent.mutate(
-          { eventId: event.id, data: { position: event.position } },
-          {
-            onError(error) {
-              console.error(error);
-              dispatchUserTrips({
-                type: UT.REPLACE_ITINERARY,
-                payload: { tripId, itinerary: restoreItineraryFromCache(itinerary, itineraryCacheRef.current, affectedDayIdsRef.current) },
-              });
-            },
-            onSettled: () => setSaving(false),
-          },
-        );
-      });
+      setItinerary(newItinerary);
+      addEntry(newItinerary, eventIds.length > 1 ? "Delete selected events" : "Delete event");
+      if (onEventDeleted) eventIds.forEach((eventId) => onEventDeleted(eventId, tripId, handleError));
     },
-    [itinerary, dispatchUserTrips, deleteEvent, updateEvent, setSaving, tripId, itineraryCacheRef, affectedDayIdsRef],
+    [tripId, setItinerary, addEntry, getEntry, getHistory, replaceHistory, onEventUpdated, onEventDeleted],
   );
 
   //#region Drag handlers
   // handleDragStart - handles setting active id and item and cache itinerary
   // handleDragOver - handles drag between days and drag of events between days
   // handleDragEnd - handles drag to trash and drag of events in the same day
-  // handleDragCancel - handles resetting itinerary from cache
+  // handleDragCancel - handles resetting itinerary to the last history entry
 
   type DragData = { type: "event" | "day"; dayIndex: number } | undefined;
 
@@ -264,9 +317,11 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
       return;
     }
 
-    // Handle dragging of single or multiple events within day.
     // Skip if dragging is not within the same day or if the drag type is a day. Both cases are handled in `DragOver`.
     if (activeDayIndex !== overDayIndex || activeType === "day" || overType === "day") {
+      if (activeType === "day") addEntry(itinerary, "Change day position");
+      else addEntry(itinerary, selectedIds.length ? "Change selected events position" : "Change event position");
+
       setActiveItem(null);
       syncEvents(affectedDayIdsRef.current);
       return;
@@ -288,12 +343,13 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
       newItinerary[activeDayIndex].events = updateEventData(rearrangedEvents);
       return newItinerary;
     });
+    addEntry(itinerary, "Change event position");
     setActiveItem(null);
     syncEvents([activeDay.id]);
   };
 
   const handleDragCancel = () => {
-    setItinerary(restoreItineraryFromCache(itinerary, itineraryCacheRef.current, affectedDayIdsRef.current));
+    setItinerary(getEntry(-1));
     setActiveItem(null);
   };
   //#endregion
@@ -366,7 +422,7 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
     useSensor(TouchSensor, { activationConstraint: { distance: 3 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-      keyboardCodes: { start: [KEY.Space], cancel: [KEY.Escape], end: [KEY.Space, KEY.Enter] },
+      keyboardCodes: { start: [KEYS.Space], cancel: [KEYS.Escape], end: [KEYS.Space, KEYS.Enter] },
     }),
   );
 
@@ -389,7 +445,7 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
       if (!(e.ctrlKey || e.metaKey)) setSelectedIds([]);
     };
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === KEY.Escape && selectedIds.length !== 0) setSelectedIds([]);
+      if (e.key === KEYS.Escape && selectedIds.length !== 0) setSelectedIds([]);
     };
 
     document.addEventListener("click", handleClick);
@@ -409,12 +465,16 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
     () => ({
       userId,
       tripId,
-      eventsCount: itinerary.flatMap((day) => day.events).length,
-      getItineraryClone: () => deepCloneItinerary(itinerary),
+      eventCount,
+      eventLimit,
+
+      setSaving,
       selectEvent,
+      createEvent,
+      updateEvent,
       deleteEvents,
     }),
-    [userId, tripId, itinerary, selectEvent, deleteEvents],
+    [userId, tripId, eventCount, eventLimit, selectEvent, createEvent, updateEvent, deleteEvents, setSaving],
   );
 
   return (
@@ -429,30 +489,31 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
         onDragCancel={handleDragCancel}
       >
         <SortableContext items={itinerary.map((day) => day.id)} strategy={verticalListSortingStrategy}>
-          <ul className="flex w-full min-w-fit flex-col">
+          <ul className="relative flex w-full min-w-fit flex-col font-inter">
             {itinerary.map((day, index) => (
-              <DndDay key={day.id} day={day} dayIndex={index} itinerary={itinerary}>
+              <DndDay key={day.id} day={day} dayIndex={index} itinerary={itinerary} calendar={calendar}>
                 <SortableContext items={filterEvents(day.events).map((event) => event.id)} strategy={horizontalListSortingStrategy}>
                   {filterEvents(day.events).map((event) => (
-                    <Activity key={event.id} event={event} day={day} dayIndex={index} isSelected={selectedIds.includes(event.id)} />
+                    <Activity key={event.id} event={event} dayIndex={index} isSelected={selectedIds.includes(event.id)} />
                   ))}
                 </SortableContext>
               </DndDay>
             ))}
+
+            {/* Calendar End */}
+            <div
+              className={cn(
+                "sticky left-56 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl",
+                calendar,
+              )}
+            >
+              End of Trip
+            </div>
           </ul>
         </SortableContext>
 
-        {/* Calendar End */}
-        <div className="sticky left-56 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl">
-          End of Trip
-        </div>
-
         <DndTrash />
-        <DndDragOverlay
-          activeItem={activeItem}
-          selectedIds={selectedIds}
-          enableEventComposer={eventCount < USER_ROLE.EVENTS_PER_TRIP_LIMIT}
-        />
+        <DndDragOverlay activeItem={activeItem} selectedIds={selectedIds} enableEventComposer={eventCount < eventLimit} />
       </DndContext>
     </DndItineraryContext.Provider>
   );
@@ -559,7 +620,11 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
     return [...array.slice(0, index), ...events, ...array.slice(index)];
   }
 
-  // Database handling functions
+  /**
+   * Synchronizes events with database based on affected day IDs.
+   *
+   * @param affectedDayIds - An array of affected day IDs.
+   */
   function syncEvents(affectedDayIds: string[]) {
     const currentEvents = affectedDayIds.flatMap((dayId) => itinerary.find((day) => day.id === dayId)?.events ?? []);
     const previousEvents = affectedDayIds.flatMap((dayId) => itineraryCacheRef.current[dayId] ?? []);
@@ -570,26 +635,12 @@ export function DndItinerary({ userId, tripId, itinerary: tripItinerary }: { use
 
     const updatedEvents = currentEvents.filter((event) => !previousEvents.some((previousEvent) => areEventsEqual(previousEvent, event)));
 
-    dispatchUserTrips({ type: UT.REPLACE_ITINERARY, payload: { tripId, itinerary } });
-    updatedEvents.forEach((event) => {
-      setSaving(true);
-      updateEvent.mutate(
-        { eventId: event.id, data: { date: event.date, position: event.position } },
-        {
-          onSuccess(updatedEvent) {
-            if (!updatedEvent) return;
-            dispatchUserTrips({ type: UT.UPDATE_EVENT, payload: { tripId, event: { ...event, updatedAt: updatedEvent.updatedAt } } });
-          },
-          onError(error) {
-            console.error(error);
-            dispatchUserTrips({
-              type: UT.REPLACE_ITINERARY,
-              payload: { tripId, itinerary: restoreItineraryFromCache(itinerary, itineraryCacheRef.current, affectedDayIds) },
-            });
-          },
-          onSettled: () => setSaving(false),
-        },
-      );
-    });
+    const historyClone = getHistory();
+    const handleError = (error: unknown) => {
+      console.error(error);
+      setItinerary(getEntry(-1));
+      replaceHistory(historyClone);
+    };
+    updatedEvents.forEach((event) => onEventUpdated?.(event.id, tripId, { date: event.date, position: event.position }, handleError));
   }
 }

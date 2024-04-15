@@ -12,7 +12,6 @@ export type MenuProps = {
   size?: SizeOptions | false;
   loop?: boolean;
   animation?: keyof typeof TRANSITION | null;
-  exitDuration?: number;
   zIndex?: number;
   className?: string;
   rootSelector?: string;

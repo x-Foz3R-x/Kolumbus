@@ -6,9 +6,13 @@ export type { InputProps } from "./input";
 
 export { TextArea } from "./textarea";
 
+export { Checkbox } from "./checkbox";
+
 export { Badge } from "./badge";
 
-export { Divider } from "./divider";
+export { Divider, addDotAfter } from "./divider";
+
+export { Skeleton } from "./skeleton";
 
 export { Progress } from "./progress";
 

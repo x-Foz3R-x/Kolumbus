@@ -25,13 +25,15 @@ export type ButtonProps = HTMLMotionProps<"button"> &
  * @property whileTap - On tap animation.
  * @property animatePress - Press animation flag.
  * @property className - Additional CSS classes.
+ * @property tooltip - Tooltip props.
  */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { tooltip, variant, size, whileTap, className, animatePress = false, disabled, ...props },
+  { variant, size, whileTap, className, animatePress = false, disabled, tooltip, ...props },
   ref,
 ) {
   const buttonProps = {
     className: cn(ButtonVariants({ variant: disabled ? "disabled" : variant, size, className })),
+    disabled,
     ...(!animatePress ? { whileTap } : { whileTap: { scale: 0.94 } }),
     ...props,
   };
@@ -77,7 +79,7 @@ const TooltipButton = forwardRef<HTMLButtonElement, TooltipButtonProps>(function
                 animate="animate"
                 exit="exit"
                 variants={variants}
-                className={cn("rounded-md bg-gray-800 px-2 py-0.5 text-sm tracking-tight text-white", tooltip.className)}
+                className={cn("rounded-md bg-gray-700 px-2 py-0.5 text-sm tracking-tight text-white", tooltip.className)}
               >
                 {tooltip.children}
 
@@ -88,7 +90,7 @@ const TooltipButton = forwardRef<HTMLButtonElement, TooltipButtonProps>(function
                     width={tooltip.arrow.width ?? 12}
                     height={tooltip.arrow.height ?? 6}
                     tipRadius={tooltip.arrow.tipRadius ?? 3}
-                    className={cn("fill-gray-800", tooltip.arrow.className)}
+                    className={cn("fill-gray-700", tooltip.arrow.className)}
                   />
                 )}
               </motion.div>

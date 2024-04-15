@@ -34,30 +34,6 @@ export default function page() {
             </Button>
           </Link>
 
-          <Link href="/playground/popover" title="Popover" aria-label="Popover">
-            <Button
-              whileHover={{ scale: 1.07 }}
-              whileTap={{ scale: 0.97 }}
-              variant="unset"
-              size="lg"
-              className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
-            >
-              Popover
-            </Button>
-          </Link>
-
-          <Link href="/playground/dropdown" title="Dropdown" aria-label="Dropdown">
-            <Button
-              whileHover={{ scale: 1.07 }}
-              whileTap={{ scale: 0.97 }}
-              variant="unset"
-              size="lg"
-              className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
-            >
-              Dropdown
-            </Button>
-          </Link>
-
           <Link href="/playground/button" title="Button" aria-label="Button">
             <Button
               whileHover={{ scale: 1.07 }}
@@ -67,6 +43,18 @@ export default function page() {
               className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
             >
               Button
+            </Button>
+          </Link>
+
+          <Link href="/playground/permission-calculator" title="Button" aria-label="Button">
+            <Button
+              whileHover={{ scale: 1.07 }}
+              whileTap={{ scale: 0.97 }}
+              variant="unset"
+              size="lg"
+              className="w-full rounded-xl bg-gray-50 p-10 shadow-borderXL hover:bg-gray-100"
+            >
+              Permission Calculator
             </Button>
           </Link>
         </div>

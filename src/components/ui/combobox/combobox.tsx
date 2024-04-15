@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import { EASING, TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
-import { KEY } from "@/types";
+import { KEYS } from "@/types";
 
 import { ButtonVariants, Input } from "..";
 import { ComboboxContext, useComboboxContext } from "./combobox-context";
@@ -106,7 +106,7 @@ export const Combobox = {
     };
 
     const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === KEY.Enter) {
+      if (e.key === KEYS.Enter) {
         if (combobox.activeIndex !== null && combobox.list[combobox.activeIndex]) {
           combobox.activeItemRef.current = combobox.list[combobox.activeIndex];
           combobox.setInputValue(combobox.list[combobox.activeIndex].value);
@@ -130,7 +130,10 @@ export const Combobox = {
       <motion.div
         ref={combobox.refs.setReference}
         style={containerProps?.style}
-        className={cn("relative z-10 flex h-full items-center bg-white fill-gray-400 text-sm", containerProps?.className)}
+        className={cn(
+          "relative z-10 flex h-full items-center bg-white fill-gray-400 text-sm dark:bg-gray-800 dark:fill-gray-600",
+          containerProps?.className,
+        )}
         initial={containerProps?.initial}
         animate={{
           transition: initialTransition
@@ -156,7 +159,6 @@ export const Combobox = {
             onKeyDown: handleEnterPress,
             autoComplete: "off",
             autoCorrect: "off",
-            autoFocus: true,
             className: cn("bg-transparent py-1", className),
           })}
         />

@@ -10,26 +10,27 @@ type Props = {
   onDelete: () => void;
 };
 export const ConfirmTripDelete = memo(function DeleteTripModal({ isOpen, setOpen, onDelete: handleDelete }: Props) {
-  const deleteTrip = () => {
-    handleDelete();
-    setOpen(false);
-  };
-
   return (
     <Modal open={isOpen} setOpen={setOpen}>
       <ModalBody.iconDesign variant="danger" icon={<Icon.triangleExclamation />}>
-        <ModalHeader>Delete Trip</ModalHeader>
-
-        <ModalText>Are you sure you want to delete this trip?</ModalText>
+        <ModalHeader>Trip Deletion</ModalHeader>
+        <ModalText>Are you sure you want to delete this trip? There’s no turning back.</ModalText>
       </ModalBody.iconDesign>
 
       <ModalControls>
         <Button onClick={() => setOpen(false)} whileHover={{ scale: 1.05 }} animatePress>
           Cancel
         </Button>
-
-        <Button onClick={deleteTrip} whileHover={{ scale: 1.05 }} animatePress className="whitespace-nowrap bg-red-500 text-white">
-          Delete trip
+        <Button
+          onClick={() => {
+            handleDelete();
+            setOpen(false);
+          }}
+          whileHover={{ scale: 1.05 }}
+          animatePress
+          className="whitespace-nowrap bg-red-500 text-white"
+        >
+          Delete Trip
         </Button>
       </ModalControls>
     </Modal>

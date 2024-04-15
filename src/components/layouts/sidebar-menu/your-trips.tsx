@@ -2,13 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import cuid2 from "@paralleldrive/cuid2";
 import { useUser } from "@clerk/nextjs";
 
 import api from "@/app/_trpc/client";
-import useAppdata from "@/context/appdata";
-import { tripTemplate } from "@/data/template-data";
-import { USER_ROLE } from "@/lib/config";
+import useAppdata from "@/context/appdata-provider";
 import { cn } from "@/lib/utils";
 import { Trip, UT } from "@/types";
 
@@ -21,109 +18,109 @@ import { ConfirmTripDelete } from "@/components/confirm-trip-delete";
 export default function YourTrips() {
   const { user } = useUser();
   const { userTrips, dispatchUserTrips, selectedTrip } = useAppdata();
-  const createTrip = api.trip.create.useMutation();
-  const updateTrip = api.trip.update.useMutation();
-  const deleteTrip = api.trip.delete.useMutation();
+  const createTrip = api.trips.create.useMutation();
+  // const updateTrip = api.trips.update.useMutation();
+  const deleteTrip = api.trips.delete.useMutation();
   const router = useRouter();
 
   const [tripName, setTripName] = useState("");
 
-  const createNewTrip = () => {
-    if (!user) return;
+  // const createNewTrip = () => {
+  //   if (!user) return;
 
-    const newTrip: Trip = {
-      ...tripTemplate,
-      id: cuid2.init({ length: 14 })(),
-      userId: user?.id,
-      position: userTrips.length,
-      ...(tripName.length > 0 && { name: tripName }),
-    };
+  //   const newTrip: Trip = {
+  //     ...tripTemplate,
+  //     id: cuid2.init({ length: 14 })(),
+  //     userId: user?.id,
+  //     position: userTrips.length,
+  //     ...(tripName.length > 0 && { name: tripName }),
+  //   };
 
-    dispatchUserTrips({ type: UT.CREATE_TRIP, trip: newTrip });
-    createTrip.mutate(newTrip, {
-      onSuccess(trip) {
-        if (!trip) return;
-        dispatchUserTrips({ type: UT.UPDATE_TRIP, trip });
-      },
-      onError(error) {
-        console.error(error);
-        dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
-      },
-    });
+  //   dispatchUserTrips({ type: UT.CREATE_TRIP, trip: newTrip });
+  //   createTrip.mutate(newTrip, {
+  //     onSuccess(trip) {
+  //       if (!trip) return;
+  //       dispatchUserTrips({ type: UT.UPDATE_TRIP, trip });
+  //     },
+  //     onError(error) {
+  //       console.error(error);
+  //       dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
+  //     },
+  //   });
 
-    setTripName("");
-  };
-  const deleteSelectedTrip = (index: number) => {
-    if (!user) return;
+  //   setTripName("");
+  // };
+  // const deleteSelectedTrip = (index: number) => {
+  //   if (!user) return;
 
-    const tripToDelete = userTrips[index];
+  //   const tripToDelete = userTrips[index];
 
-    // Redirect if the deleted trip is the selected one
-    if (index === selectedTrip) {
-      const redirectTripId = index === 0 ? userTrips[1].id : userTrips[index - 1].id;
-      router.push(`/t/${redirectTripId}`);
-    }
+  //   // Redirect if the deleted trip is the selected one
+  //   if (index === selectedTrip) {
+  //     const redirectTripId = index === 0 ? userTrips[1].id : userTrips[index - 1].id;
+  //     router.push(`/t/${redirectTripId}`);
+  //   }
 
-    // Update the position of the trips that are after the trip being deleted
-    const handleUpdateTrip = (tripId: string, i: number) => {
-      updateTrip.mutate(
-        { tripId, data: { position: index + i } },
-        {
-          onError(error) {
-            console.error(error);
-            dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
-          },
-        },
-      );
-    };
+  //   // Update the position of the trips that are after the trip being deleted
+  //   const handleUpdateTrip = (tripId: string, i: number) => {
+  //     updateTrip.mutate(
+  //       { tripId, data: { position: index + i } },
+  //       {
+  //         onError(error) {
+  //           console.error(error);
+  //           dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
+  //         },
+  //       },
+  //     );
+  //   };
 
-    dispatchUserTrips({ type: UT.DELETE_TRIP, trip: tripToDelete });
+  //   dispatchUserTrips({ type: UT.DELETE_TRIP, trip: tripToDelete });
 
-    const tripsToUpdate = [...userTrips].slice(index + 1);
-    tripsToUpdate.forEach((trip, i) => handleUpdateTrip(trip.id, i));
+  //   const tripsToUpdate = [...userTrips].slice(index + 1);
+  //   tripsToUpdate.forEach((trip, i) => handleUpdateTrip(trip.id, i));
 
-    deleteTrip.mutate(
-      { tripId: tripToDelete.id },
-      {
-        onError(error) {
-          console.error(error);
-          dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
-          router.push(`/t/${tripToDelete.id}`);
-        },
-      },
-    );
-  };
-  const swapTripsPosition = (firstIndex: number, secondIndex: number) => {
-    if (!user) return;
+  //   deleteTrip.mutate(
+  //     { tripId: tripToDelete.id },
+  //     {
+  //       onError(error) {
+  //         console.error(error);
+  //         dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
+  //         router.push(`/t/${tripToDelete.id}`);
+  //       },
+  //     },
+  //   );
+  // };
+  // const swapTripsPosition = (firstIndex: number, secondIndex: number) => {
+  //   if (!user) return;
 
-    const newTrips = [...userTrips];
+  //   const newTrips = [...userTrips];
 
-    // Swap elements using destructuring assignment
-    [newTrips[firstIndex], newTrips[secondIndex]] = [newTrips[secondIndex], newTrips[firstIndex]];
+  //   // Swap elements using destructuring assignment
+  //   [newTrips[firstIndex], newTrips[secondIndex]] = [newTrips[secondIndex], newTrips[firstIndex]];
 
-    dispatchUserTrips({ type: UT.REPLACE, trips: newTrips });
+  //   dispatchUserTrips({ type: UT.REPLACE, trips: newTrips });
 
-    const updatePosition = (tripId: string, position: number) => {
-      updateTrip.mutate(
-        { tripId, data: { position } },
-        {
-          onError(error) {
-            console.error(error);
-            dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
-          },
-        },
-      );
-    };
+  //   const updatePosition = (tripId: string, position: number) => {
+  //     updateTrip.mutate(
+  //       { tripId, data: { position } },
+  //       {
+  //         onError(error) {
+  //           console.error(error);
+  //           dispatchUserTrips({ type: UT.REPLACE, trips: userTrips });
+  //         },
+  //       },
+  //     );
+  //   };
 
-    updatePosition(userTrips[firstIndex].id, secondIndex);
-    updatePosition(userTrips[secondIndex].id, firstIndex);
-  };
+  //   updatePosition(userTrips[firstIndex].id, secondIndex);
+  //   updatePosition(userTrips[secondIndex].id, firstIndex);
+  // };
 
   const TripDropdown = ({ index }: { index: number }) => {
     const [isModalOpen, setModalOpen] = useState(false);
 
     const handleDelete = () => {
-      deleteSelectedTrip(index);
+      // deleteSelectedTrip(index);
     };
 
     return (
@@ -139,12 +136,12 @@ export default function YourTrips() {
             children: <Icon.horizontalDots className="w-3.5" />,
           }}
         >
-          <MenuOption label="move up" onClick={() => swapTripsPosition(index, index - 1)} disabled={index === 0}>
+          {/* <MenuOption label="move up" onClick={() => swapTripsPosition(index, index - 1)} disabled={index === 0}>
             Move up
           </MenuOption>
           <MenuOption label="move down" onClick={() => swapTripsPosition(index, index + 1)} disabled={index === userTrips.length - 1}>
             Move down
-          </MenuOption>
+          </MenuOption> */}
           <MenuOption label="delete" onClick={() => setModalOpen(true)} variant="danger">
             Delete
           </MenuOption>
@@ -160,16 +157,16 @@ export default function YourTrips() {
       <div className="flex items-center justify-between">
         <h2 className="cursor-default font-adso text-xl font-bold text-tintedGray-400">Your trips</h2>
 
-        <CreateTripModal
+        {/* <CreateTripModal
           onCreate={createNewTrip}
           buttonProps={{
             variant: "unset",
             size: "unset",
             className: "relative h-6",
             children:
-              userTrips.length === USER_ROLE.TRIPS_LIMIT ? (
+              userTrips.length === ROLE_BASED_LIMITS["explorer"].tripsLimit ? (
                 <div className="h-6 whitespace-nowrap pt-0.5 text-sm font-medium text-tintedGray-400">
-                  {`${userTrips.length}/${USER_ROLE.TRIPS_LIMIT}`}
+                  {`${userTrips.length}/${ROLE_BASED_LIMITS["explorer"].tripsLimit}`}
                 </div>
               ) : (
                 <>
@@ -180,7 +177,7 @@ export default function YourTrips() {
                 </>
               ),
           }}
-        />
+        /> */}
       </div>
 
       <ul className="flex flex-col">

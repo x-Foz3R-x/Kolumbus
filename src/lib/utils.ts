@@ -143,10 +143,10 @@ export function deepCloneItinerary(itinerary: Itinerary): Itinerary {
   return restoreItineraryFromCache(itinerary, transformItineraryToCache(itinerary));
 }
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
+/**
+ * Returns the operating system of the user.
+ * @returns The operating system of the user.
+ */
 export function getOS() {
   if (typeof window === "undefined") return null;
   const userAgent = window.navigator.userAgent.toLowerCase();
@@ -158,6 +158,44 @@ export function getOS() {
   else if (/linux/.test(userAgent)) return "linux";
 
   return null;
+}
+
+/**
+ * Measures the runtime of a given asynchronous function.
+ * @param fn - The function to measure the runtime of.
+ * @returns A promise that resolves to the result of the function.
+ */
+export async function measureRuntime<T>(fn: () => Promise<T>) {
+  console.log("⏳ Running...");
+
+  try {
+    const start = Date.now();
+
+    const result = await fn();
+
+    const end = Date.now();
+
+    const time = end - start;
+    const s = Math.floor(time / 1000);
+    const ms = time % 1000;
+
+    if (s > 0) console.log(`✅ Completed in ${s}s ${ms}ms`);
+    else console.log(`✅ Completed in ${ms}ms`);
+
+    return result;
+  } catch (error) {
+    console.error("❌ Failed");
+    console.error(error);
+  }
+}
+
+/**
+ * Merges multiple class names into a single class name string.
+ * @param inputs - The class names to merge.
+ * @returns The merged class name string
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
 
 //#region error handling

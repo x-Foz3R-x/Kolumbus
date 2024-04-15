@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import { LANGUAGE, PlacesAutocompleteResponse, PlacesDetailsResponse } from "@/types";
+import { LANGUAGES, PlacesAutocompleteResponse, PlacesDetailsResponse } from "@/types";
 
 const google = router({
   autocomplete: publicProcedure
     .input(
       z.object({
         searchValue: z.string().min(1, "Input value must be at least 1 character long."),
-        language: z.nativeEnum(LANGUAGE),
+        language: z.nativeEnum(LANGUAGES),
         sessionToken: z.string().cuid2("Invalid session token"),
       }),
     )
@@ -28,7 +28,7 @@ const google = router({
       z.object({
         place_id: z.string(),
         fields: z.string(),
-        language: z.nativeEnum(LANGUAGE),
+        language: z.nativeEnum(LANGUAGES),
         sessionToken: z.string().cuid2("Invalid session token"),
       }),
     )

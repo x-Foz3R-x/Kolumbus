@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   useFloating,
@@ -7,17 +7,16 @@ import {
   useDismiss,
   useRole,
   FloatingFocusManager,
-  useTransitionStyles,
   FloatingPortal,
   FloatingOverlay,
 } from "@floating-ui/react";
 import { VariantProps, cva } from "class-variance-authority";
 
+import { ModalContext } from "./modal-context";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
 import { Button, ButtonProps } from "../button";
-import { ModalContext } from "./modal-context";
 
 const ModalVariants = cva(
   "mx-3 overflow-hidden rounded-xl border bg-white font-inter shadow-floating dark:border-gray-700 dark:bg-gray-900 dark:text-white",
@@ -42,7 +41,6 @@ type ModalProps = VariantProps<typeof ModalVariants> & {
   open?: boolean;
   setOpen?: (open: boolean) => void;
   animation?: Exclude<keyof typeof TRANSITION, "fadeToPosition"> | null;
-  exitDuration?: number;
   className?: string;
   zIndex?: number;
   dismissible?: boolean;
@@ -55,7 +53,6 @@ export function Modal({
   open: controlledOpen,
   setOpen: setControlledOpen,
   animation,
-  exitDuration,
   size,
   className,
   zIndex = 999,
@@ -65,6 +62,7 @@ export function Modal({
   children,
 }: ModalProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(initialOpen);
+  const [isMounted, setIsMounted] = useState(false);
   const [labelId, setLabelId] = useState<string | undefined>();
 
   const open = controlledOpen ?? uncontrolledOpen;
@@ -72,12 +70,6 @@ export function Modal({
 
   //#region Floating UI
   const data = useFloating({ open: open, onOpenChange: setOpen });
-
-  const { isMounted, styles } = useTransitionStyles(data.context, {
-    duration: exitDuration,
-    close: { opacity: 1 },
-    initial: { opacity: 1 },
-  });
 
   const click = useClick(data.context, { enabled: controlledOpen == null });
   const dismiss = useDismiss(data.context, { enabled: dismissible, outsidePressEvent: "mousedown" });
@@ -113,15 +105,20 @@ export function Modal({
     [open, setOpen, getFloatingProps, getItemProps, getReferenceProps, data],
   );
 
+  // Set isMounted to true when open becomes true
+  useEffect(() => {
+    open && setIsMounted(true);
+  }, [open]);
+
   return (
     <ModalContext.Provider value={modalContext}>
       {controlledOpen == null && ButtonComponent}
 
       {isMounted && (
         <FloatingPortal root={rootSelector ? (document.querySelector(rootSelector) as HTMLElement | null) : undefined}>
-          <FloatingOverlay style={{ ...styles, zIndex }} className={cn("relative grid place-items-center")} lockScroll>
+          <FloatingOverlay style={{ zIndex }} className={cn("relative grid place-items-center")} lockScroll>
             <FloatingFocusManager context={data.context}>
-              <AnimatePresence>
+              <AnimatePresence onExitComplete={() => setIsMounted(false)}>
                 {open && (
                   <>
                     <motion.div

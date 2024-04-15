@@ -1,19 +1,19 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { FloatingPortal } from "@floating-ui/react";
 import { useDroppable } from "@dnd-kit/core";
 
 import { EASING } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
 import Icon from "../icons";
-import Portal from "../portal";
 
 export default function DndTrash() {
   const { active, isOver, setNodeRef } = useDroppable({ id: "trash", data: { type: "trash", dayIndex: -1 } });
 
   return (
-    <Portal root="#trash-container" skipSSRCheck>
-      <AnimatePresence>
-        {active?.data.current?.type === "event" && (
+    <AnimatePresence>
+      {active?.data.current?.type === "event" && (
+        <FloatingPortal id="trash-container">
           <div ref={setNodeRef}>
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
@@ -28,8 +28,8 @@ export default function DndTrash() {
               <Icon.trash className="h-3.5 flex-shrink-0" />
             </motion.div>
           </div>
-        )}
-      </AnimatePresence>
-    </Portal>
+        </FloatingPortal>
+      )}
+    </AnimatePresence>
   );
 }

@@ -19,7 +19,7 @@ export const ActivityOverlay = memo(function EventOverlay({ event, selectCount, 
     <Badge content={selectCount > 1 ? selectCount : null}>
       <div
         className={cn(
-          "flex h-28 w-40 cursor-grabbing flex-col overflow-hidden rounded-lg border-2 border-white bg-white shadow-borderXL",
+          "flex h-28 w-40 cursor-grabbing flex-col overflow-hidden rounded-lg border-2 border-white bg-white font-inter shadow-borderXL",
           selectCount > 0 && "border-kolumblue-200 bg-kolumblue-200",
           hoverShadow && "shadow-borderSplashXl",
         )}

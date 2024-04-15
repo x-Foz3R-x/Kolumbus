@@ -1,21 +1,25 @@
-export * from "./appdata";
+export * from "./db";
 export * from "./google";
+export * from "./library";
+export * from "./appdata";
 
 export type SvgProps = React.SVGAttributes<HTMLOrSVGElement>;
 
-export enum LANGUAGE {
+export enum LANGUAGES {
   English = "en",
   Polish = "pl",
 }
 
-export enum USER_ROLE {
+export enum USER_ROLES {
   Admin = "ADMIN",
   Tester = "TESTER",
-  Premium = "PREMIUM",
-  User = "USER",
+  FleetCommander = "FLEET_COMMANDER",
+  Captain = "CAPTAIN",
+  Navigator = "NAVIGATOR",
+  Explorer = "EXPLORER",
 }
 
-export enum KEY {
+export enum KEYS {
   Backspace = "Backspace",
   Tab = "Tab",
   Enter = "Enter",

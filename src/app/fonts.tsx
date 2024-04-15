@@ -1,36 +1,23 @@
-import { Inter, Inconsolata } from "next/font/google";
+import { Inter, Inconsolata, Belanosima } from "next/font/google";
 import localFont from "next/font/local";
 
 export const inter = Inter({
   subsets: ["latin", "greek", "cyrillic"],
   variable: "--font-inter",
+  display: "swap",
 });
 
 export const inconsolata = Inconsolata({
   subsets: ["latin"],
   variable: "--font-inconsolata",
+  display: "swap",
 });
 
-export const gordita = localFont({
-  src: [
-    {
-      path: "../assets/fonts/gordita/Gordita-Light.woff2",
-      weight: "300",
-    },
-    {
-      path: "../assets/fonts/gordita/Gordita-Regular.woff2",
-      weight: "400",
-    },
-    {
-      path: "../assets/fonts/gordita/Gordita-Medium.woff2",
-      weight: "500",
-    },
-    {
-      path: "../assets/fonts/gordita/Gordita-Bold.woff2",
-      weight: "700",
-    },
-  ],
-  variable: "--font-gordita",
+export const belanosima = Belanosima({
+  weight: ["400", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-belanosima",
+  display: "swap",
 });
 
 export const adso = localFont({

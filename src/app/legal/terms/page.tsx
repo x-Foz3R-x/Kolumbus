@@ -193,7 +193,7 @@ export default function Terms() {
                 extraction tools
               </li>
               <li>Delete the copyright or other proprietary rights notice from any Content</li>
-              <li>Copy or adapt the Site&apos;s software, including but not limited to HTML, CSS, JavaScript, or other code</li>
+              <li>Copy or adapt the Site’s software, including but not limited to HTML, CSS, JavaScript, or other code</li>
               <li>
                 Except as permitted by applicable law, decipher, decompile, disassemble, or reverse engineer any of the software comprising
                 or in any way making up a part of the Site.
@@ -479,7 +479,7 @@ export default function Terms() {
               THE SITE IS PROVIDED ON AN AS-IS AND AS-AVAILABLE BASIS. YOU AGREE THAT YOUR USE OF THE SITE AND OUR SERVICES WILL BE AT YOUR
               SOLE RISK. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, IN CONNECTION WITH THE SITE
               AND YOUR USE THEREOF, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-              PURPOSE, AND NON-INFRINGEMENT. WE MAKE NO WARRANTIES OR REPRESENTATIONS ABOUT THE ACCURACY OR COMPLETENESS OF THE SITE&apos;S
+              PURPOSE, AND NON-INFRINGEMENT. WE MAKE NO WARRANTIES OR REPRESENTATIONS ABOUT THE ACCURACY OR COMPLETENESS OF THE SITE’S
               CONTENT OR THE CONTENT OF ANY WEBSITES LINKED TO THE SITE AND WE WILL ASSUME NO LIABILITY OR RESPONSIBILITY FOR ANY:
             </p>
             <ul>

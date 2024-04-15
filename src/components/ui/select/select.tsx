@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   autoUpdate,
@@ -22,15 +22,14 @@ import {
   offset,
   shift,
   size,
-  useTransitionStyles,
   FloatingPortal,
   Side,
 } from "@floating-ui/react";
 
+import { SelectContext } from "./select-context";
 import { TRANSITION } from "@/lib/framer-motion";
 import { cn } from "@/lib/utils";
 
-import { SelectContext } from "./select-context";
 import { Button, ButtonProps } from "../button";
 import { ScrollIndicator } from "../scroll-indicator";
 
@@ -44,7 +43,6 @@ type SelectProps = {
   flip?: FlipOptions | false;
   size?: SizeOptions | false;
   animation?: Exclude<keyof typeof TRANSITION, "fadeToPosition"> | null;
-  exitDuration?: number;
   className?: string;
   zIndex?: number;
   rootSelector?: string;
@@ -69,7 +67,6 @@ export function Select({
     },
   },
   animation,
-  exitDuration,
   className,
   zIndex,
   rootSelector,
@@ -77,6 +74,7 @@ export function Select({
   children,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [uncontrolledSelectedIndex, uncontrolledSetSelectedIndex] = useState<number | null>(defaultSelectedIndex);
 
@@ -108,11 +106,6 @@ export function Select({
       ...(flipOptions ? [flip(flipOptions)] : []),
       ...(sizeOptions ? [size(sizeOptions)] : []),
     ],
-  });
-  const transition = useTransitionStyles(context, {
-    duration: exitDuration,
-    close: { opacity: 1 },
-    initial: { opacity: 1 },
   });
 
   const click = useClick(context);
@@ -159,15 +152,20 @@ export function Select({
     [activeIndex, selectedIndex, getItemProps, handleSelect],
   );
 
+  // Set isMounted to true when open becomes true
+  useEffect(() => {
+    open && setIsMounted(true);
+  }, [open]);
+
   return (
     <SelectContext.Provider value={selectContext}>
       {ButtonComponent}
 
-      {transition.isMounted && (
+      {isMounted && (
         <FloatingPortal root={rootSelector ? (document.querySelector(rootSelector) as HTMLElement | null) : undefined}>
           <FloatingFocusManager context={context} modal={false}>
-            <div ref={refs.setFloating} style={{ ...floatingStyles, ...transition.styles, zIndex }} {...getFloatingProps()}>
-              <AnimatePresence>
+            <div ref={refs.setFloating} style={{ ...floatingStyles, zIndex }} {...getFloatingProps()}>
+              <AnimatePresence onExitComplete={() => setIsMounted(false)}>
                 {open && (
                   <FloatingList elementsRef={elementsRef} labelsRef={labelsRef}>
                     <motion.ul
