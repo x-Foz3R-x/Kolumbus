@@ -1,4 +1,3 @@
-import Link from "next/link";
 import TopNav from "./_components/top-nav";
 
 export default function HomePage() {
@@ -6,7 +5,7 @@ export default function HomePage() {
     <>
       <TopNav />
 
-      <main className="font-belanosima flex min-h-screen flex-col items-center justify-center">
+      <main className="flex min-h-screen flex-col items-center justify-center font-belanosima">
         Kolumbus
       </main>
     </>
