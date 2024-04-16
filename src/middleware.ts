@@ -7,14 +7,12 @@ const isProtectedRoute = createRouteMatcher(["/t(.*)", "/library(.*)"]);
 
 export default clerkMiddleware((auth, req) => {
   // Restrict admin routes to admin users
-  if (isAdminRoute(req) && !checkRole("admin")) {
-    return auth().redirectToSignIn();
-  }
+  if (isAdminRoute(req) && !checkRole("admin")) return auth().redirectToSignIn();
 
   // Restrict protected routes to signed in users
   if (isProtectedRoute(req)) auth().protect();
 });
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api)(.*)"],
 };

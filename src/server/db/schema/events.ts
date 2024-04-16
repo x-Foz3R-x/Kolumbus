@@ -1,14 +1,7 @@
 import { relations } from "drizzle-orm";
-import {
-  index,
-  pgEnum,
-  pgTable,
-  smallint,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { index, pgEnum, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { createId } from "../utils";
+import { createId } from "~/utils";
 
 import { trips } from "./trips";
 import { activities } from "./activities";
@@ -41,9 +34,7 @@ export const events = pgTable(
     position: smallint("position").notNull(),
     type: EventType("type").notNull(),
     createdBy: text("created_by").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .$onUpdateFn(() => new Date())
       .defaultNow()

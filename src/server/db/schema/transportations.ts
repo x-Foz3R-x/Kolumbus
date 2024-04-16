@@ -1,13 +1,6 @@
-import {
-  decimal,
-  index,
-  jsonb,
-  pgEnum,
-  pgTable,
-  text,
-} from "drizzle-orm/pg-core";
+import { decimal, index, jsonb, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { createId } from "../utils";
+import { createId } from "~/utils";
 
 import { Currency } from "./enums";
 import { events } from "./events";
@@ -39,9 +32,7 @@ export const transportations = pgTable(
     eventId: text("event_id")
       .references(() => events.id, { onDelete: "cascade" })
       .notNull(),
-    transportationType: TransportationType("transportation_type")
-      .default("CAR")
-      .notNull(),
+    transportationType: TransportationType("transportation_type").default("CAR").notNull(),
     seat: text("seat"),
     departure: jsonb("departure").$type<Location>(),
     arrival: jsonb("arrival").$type<Location>(),
@@ -50,9 +41,7 @@ export const transportations = pgTable(
     note: text("note"),
   },
   (table) => ({
-    transportationsEventIdIdx: index("transportations_event_id_idx").on(
-      table.eventId,
-    ),
+    transportationsEventIdIdx: index("transportations_event_id_idx").on(table.eventId),
   }),
 );
 

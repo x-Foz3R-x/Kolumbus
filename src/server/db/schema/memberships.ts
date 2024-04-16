@@ -23,9 +23,7 @@ export const memberships = pgTable(
     owner: boolean("owner").notNull(),
     permissions: integer("permissions").notNull(),
     tripPosition: smallint("trip_position").notNull(),
-    createdAt: timestamp("joined_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp("joined_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .$onUpdateFn(() => new Date())
       .defaultNow()

@@ -5,9 +5,7 @@ export const userRoles = pgTable("user_roles", {
   membershipsLimit: smallint("memberships_limit").notNull(),
   daysLimit: smallint("days_limit").notNull(),
   eventsLimit: smallint("events_limit").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .$onUpdateFn(() => new Date())
     .defaultNow()

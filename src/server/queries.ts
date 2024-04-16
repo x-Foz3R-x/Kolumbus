@@ -1,12 +1,12 @@
 import "server-only";
+
 import { and, count, eq, gt, inArray, sql } from "drizzle-orm";
 import { events, memberships, userRoles, trips, insertTripSchema } from "./db/schema";
 import z from "zod";
 
 import db from "./db";
 import { auth } from "@clerk/nextjs/server";
-import { encodePermissions } from "./db/utils";
-import { MemberPermissionsTemplate } from "~/types";
+import { encodePermissions, MemberPermissionsTemplate } from "~/utils";
 
 import type { TablesRelationalConfig } from "drizzle-orm";
 import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";

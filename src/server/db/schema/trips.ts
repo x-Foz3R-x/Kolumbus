@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { createId } from "../utils";
+import { createId } from "~/utils";
 
 import { memberships } from "./memberships";
 import { events } from "./events";
@@ -19,9 +19,7 @@ export const trips = pgTable(
     image: text("image"),
     inviteCode: text("invite_code").unique(),
     inviteCreatedAt: timestamp("invite_created_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .$onUpdateFn(() => new Date())
       .defaultNow()

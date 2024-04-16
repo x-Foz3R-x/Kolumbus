@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function TopNav() {
   return (
-    <nav className="font-belanosima fixed inset-x-0 top-0 z-50 flex h-16 justify-center font-medium">
+    <nav className="fixed inset-x-0 top-0 z-50 flex h-16 justify-center font-belanosima font-medium">
       <div className="relative z-50 flex w-full max-w-screen-2xl items-center justify-between px-8">
         <div className="z-50 hidden flex-1 items-center sm:flex">
           {/* <Link href="/contact" className={cn(ButtonVariants({ variant: "scale", size: "lg" }), "before:bg-gray-100")}>
@@ -55,7 +55,7 @@ export default function TopNav() {
       </Link> */}
             <Link
               href="/sign-up"
-              className="bg-kolumblue-500 px-4.5 font-belanosima block w-fit select-none text-nowrap rounded-xl py-2 font-semibold text-white shadow-lg"
+              className="bg-kolumblue-500 px-4.5 block w-fit select-none text-nowrap rounded-xl py-2 font-belanosima font-semibold text-white shadow-lg"
             >
               Start Your Adventure
             </Link>
