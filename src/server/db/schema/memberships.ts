@@ -9,6 +9,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { trips } from "./trips";
 
@@ -46,3 +47,6 @@ export const membershipsRelations = relations(memberships, ({ one }) => ({
 
 export type Membership = typeof memberships.$inferSelect;
 export type NewMembership = typeof memberships.$inferInsert;
+
+export const selectMembershipSchema = createSelectSchema(memberships);
+export const insertMembershipSchema = createInsertSchema(memberships);

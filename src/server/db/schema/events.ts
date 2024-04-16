@@ -7,6 +7,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { createId } from "../utils";
 
 import { trips } from "./trips";
@@ -68,3 +69,6 @@ export const eventsRelations = relations(events, ({ one }) => ({
 
 export type Event = typeof events.$inferSelect;
 export type NewEvent = typeof events.$inferInsert;
+
+export const selectEventSchema = createSelectSchema(events);
+export const insertEventSchema = createInsertSchema(events);

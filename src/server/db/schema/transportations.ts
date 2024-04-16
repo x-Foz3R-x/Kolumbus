@@ -6,6 +6,7 @@ import {
   pgTable,
   text,
 } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { createId } from "../utils";
 
 import { Currency } from "./enums";
@@ -57,3 +58,6 @@ export const transportations = pgTable(
 
 export type Transportation = typeof transportations.$inferSelect;
 export type NewTransportation = typeof transportations.$inferInsert;
+
+export const selectTransportationSchema = createSelectSchema(transportations);
+export const insertTransportationSchema = createInsertSchema(transportations);

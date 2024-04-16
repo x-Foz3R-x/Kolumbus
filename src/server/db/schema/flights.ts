@@ -1,4 +1,5 @@
 import { decimal, index, jsonb, pgTable, text } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { createId } from "../utils";
 
 import { Currency } from "./enums";
@@ -40,3 +41,6 @@ export const flights = pgTable(
 
 export type Flight = typeof flights.$inferSelect;
 export type NewFlight = typeof flights.$inferInsert;
+
+export const selectFlightSchema = createSelectSchema(flights);
+export const insertFlightSchema = createInsertSchema(flights);

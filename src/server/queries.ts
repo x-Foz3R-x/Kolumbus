@@ -1,7 +1,13 @@
 import "server-only";
 import { count, eq, inArray, sql } from "drizzle-orm";
-import { events, memberships, userRoles, trips } from "./db/schema";
-// import z from "zod";
+import {
+  events,
+  memberships,
+  userRoles,
+  trips,
+  insertTripSchema,
+} from "./db/schema";
+import z from "zod";
 
 import db from "./db";
 import { auth } from "@clerk/nextjs/server";
@@ -101,31 +107,29 @@ export async function getMyMemberships() {
   return memberships;
 }
 
-// export async function createTrip(input: {
-//   tripId: string;
-//   name: string;
-//   startDate: string;
-//   endDate: string;
-//   image: string;
-//   position: number;
-// }) {
-//   const user = auth();
-//   if (!user.userId)
-//     throw new Error("UNAUTHORIZED, Please sign in to continue.");
+const createTripSchema = insertTripSchema.extend({
+  id: z.string(),
+  position: z.number(),
+});
+export async function createTrip(tripInput: z.infer<typeof createTripSchema>) {
+  const { position, ...trip } = createTripSchema.parse(tripInput);
 
-//   await db.transaction(async (tx) => {
-//     await checkMembershipLimit(tx, user.userId);
+  const { userId } = auth();
+  if (!userId) throw new Error("UNAUTHORIZED, Please sign in to continue.");
 
-//     await tx.insert(trips).values(input);
-//     await tx.insert(memberships).values({
-//       tripId: input.tripId,
-//       userId: user.userId,
-//       tripPosition: input.position,
-//       owner: true,
-//       permissions: encodePermissions(true, MemberPermissionsTemplate),
-//     });
-//   });
-// }
+  await db.transaction(async (tx) => {
+    await checkMembershipLimit(tx, userId);
+
+    await tx.insert(trips).values(trip);
+    await tx.insert(memberships).values({
+      tripId: trip.id,
+      userId,
+      tripPosition: position,
+      owner: true,
+      permissions: encodePermissions(true, MemberPermissionsTemplate),
+    });
+  });
+}
 
 async function checkMembershipLimit(
   tx: PgTransaction<
@@ -139,11 +143,12 @@ async function checkMembershipLimit(
     .select({ membershipsCount: count() })
     .from(memberships)
     .where(eq(memberships.userId, userId));
+  if (!membership) return;
 
   const [role] = await getMyRole(tx);
   if (!role) throw new Error("Role not found");
 
-  if (membership!.membershipsCount >= role.membershipsLimit) {
+  if (membership.membershipsCount >= role.membershipsLimit) {
     throw new Error(
       `You've reached your limit of ${role.membershipsLimit} memberships.`,
     );

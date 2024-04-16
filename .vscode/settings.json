@@ -2,10 +2,7 @@
   "tailwindCSS.experimental.classRegex": [
     ["clsx\\(([^)]*)\\)"],
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["className:\\s*['\"]([^'\"]*)['\"]"],
-    ["className:\\s*[`]([^`]*)[`]"],
-    ["className:\\s*cn\\(([^)]*)\\)"],
-    ["className:\\s*\\{([^}]*)\\}"]
+    ["className:\\s*['\"]([^'\"]*)['\"]"]
   ],
   "cSpell.ignorePaths": [
     "node_modules",
