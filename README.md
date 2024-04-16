@@ -8,7 +8,7 @@
 
 - [x] Update authentication (w/ clerk)
 - [x] Add image upload (w/ uploadThing)
-- [ ] Error management (w/ Sentry)
+- [x] Error management (w/ Sentry)
 - [ ] Analytics (posthog)
 - [ ] Ratelimiting (upstash)
 - [ ] Transfer kolumbus code
