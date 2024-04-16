@@ -10,5 +10,5 @@
 - [x] Add image upload (w/ UploadThing)
 - [x] Error management (w/ Sentry)
 - [x] Analytics (PostHog)
-- [ ] Ratelimiting (Upstash)
+- [ ] Rate limiting (Upstash)
 - [ ] Transfer kolumbus code

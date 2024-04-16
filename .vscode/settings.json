@@ -20,6 +20,8 @@
     "POSTHOG",
     "tailwindcss",
     "Typeahead",
-    "UPLOADTHING"
+    "UPLOADTHING",
+    "Upstash",
+    "utfs"
   ]
 }
