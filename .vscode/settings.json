@@ -10,15 +10,16 @@
     "tailwind.config.ts"
   ],
   "cSpell.words": [
-    "Kolumbus",
-    "Combobox",
-    "Typeahead",
     "belanosima",
+    "Combobox",
     "kolumblue",
+    "Kolumbus",
     "macintel",
     "macppc",
     "pkey",
+    "POSTHOG",
     "tailwindcss",
+    "Typeahead",
     "UPLOADTHING"
   ]
 }

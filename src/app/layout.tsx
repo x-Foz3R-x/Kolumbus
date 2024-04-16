@@ -2,7 +2,10 @@ import "~/styles/globals.css";
 
 import { Inter, Inconsolata, Belanosima } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import { ClerkProvider } from "@clerk/nextjs";
+import { CSPostHogProvider } from "./_analytics/provider";
+
 import { cn } from "~/lib/utils";
 
 export const inter = Inter({
@@ -32,21 +35,23 @@ export const metadata = {
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body
-          className={cn(
-            inter.variable,
-            belanosima.variable,
-            inconsolata.variable,
-          )}
-        >
-          <div className="font-inter min-h-screen scroll-smooth fill-gray-900 text-gray-900 antialiased">
-            {props.children}
-          </div>
+      <CSPostHogProvider>
+        <html lang="en">
+          <body
+            className={cn(
+              inter.variable,
+              belanosima.variable,
+              inconsolata.variable,
+            )}
+          >
+            <div className="min-h-screen scroll-smooth fill-gray-900 font-inter text-gray-900 antialiased">
+              {props.children}
+            </div>
 
-          <SpeedInsights debug={false} />
-        </body>
-      </html>
+            <SpeedInsights debug={false} />
+          </body>
+        </html>
+      </CSPostHogProvider>
     </ClerkProvider>
   );
 }

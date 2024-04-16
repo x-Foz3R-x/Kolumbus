@@ -6,9 +6,9 @@
 
 ## TODO
 
-- [x] Update authentication (w/ clerk)
-- [x] Add image upload (w/ uploadThing)
+- [x] Update authentication (w/ Clerk)
+- [x] Add image upload (w/ UploadThing)
 - [x] Error management (w/ Sentry)
-- [ ] Analytics (posthog)
-- [ ] Ratelimiting (upstash)
+- [x] Analytics (PostHog)
+- [ ] Ratelimiting (Upstash)
 - [ ] Transfer kolumbus code

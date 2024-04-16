@@ -1,6 +1,8 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+const msg = "You forgot to change environment variables";
+
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app
@@ -10,28 +12,16 @@ export const env = createEnv({
     DATABASE_URL: z
       .string()
       .url()
-      .refine(
-        (str) => !str.includes("YOUR_DATABASE_URL"),
-        "You forgot to change the database default URL",
-      ),
+      .refine((str) => !str.includes("YOUR_DATABASE_URL"), msg),
     CLERK_SECRET_KEY: z
       .string()
-      .refine(
-        (str) => !str.includes("sk_test_YOUR_SECRET_KEY"),
-        "You forgot to change the clerk default secret key",
-      ),
+      .refine((str) => !str.includes("sk_test_YOUR_SECRET_KEY"), msg),
     UPLOADTHING_SECRET: z
       .string()
-      .refine(
-        (str) => !str.includes("sk_live_YOUR_SECRET"),
-        "You forgot to change the upload thing default secret key",
-      ),
+      .refine((str) => !str.includes("sk_live_YOUR_SECRET"), msg),
     UPLOADTHING_APP_ID: z
       .string()
-      .refine(
-        (str) => !str.includes("YOUR_APP_ID"),
-        "You forgot to change the upload thing default app id",
-      ),
+      .refine((str) => !str.includes("YOUR_APP_ID"), msg),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -45,10 +35,13 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z
       .string()
-      .refine(
-        (str) => !str.includes("pk_test_YOUR_PUBLISHABLE_KEY"),
-        "You forgot to change the clerk default publishable key",
-      ),
+      .refine((str) => !str.includes("pk_test_YOUR_PUBLISHABLE_KEY"), msg),
+    NEXT_PUBLIC_POSTHOG_KEY: z
+      .string()
+      .refine((str) => !str.includes("YOUR_POSTHOG_KEY"), msg),
+    NEXT_PUBLIC_POSTHOG_HOST: z
+      .string()
+      .refine((str) => !str.includes("YOUR_POSTHOG_HOST"), msg),
   },
 
   /**
@@ -62,6 +55,8 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     NODE_ENV: process.env.NODE_ENV,
   },
 
