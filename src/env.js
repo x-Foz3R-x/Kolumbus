@@ -16,6 +16,8 @@ export const env = createEnv({
     CLERK_SECRET_KEY: z.string().refine((str) => !str.includes("sk_test_YOUR_SECRET_KEY"), msg),
     UPLOADTHING_SECRET: z.string().refine((str) => !str.includes("sk_live_YOUR_SECRET"), msg),
     UPLOADTHING_APP_ID: z.string().refine((str) => !str.includes("YOUR_APP_ID"), msg),
+    UPSTASH_REDIS_REST_URL: z.string().refine((str) => !str.includes("YOUR_REST_URL"), msg),
+    UPSTASH_REDIS_REST_TOKEN: z.string().refine((str) => !str.includes("YOUR_REST_TOKEN"), msg),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   },
 
@@ -44,6 +46,8 @@ export const env = createEnv({
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     NODE_ENV: process.env.NODE_ENV,
   },
 

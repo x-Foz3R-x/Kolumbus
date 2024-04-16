@@ -12,6 +12,7 @@ import type { TablesRelationalConfig } from "drizzle-orm";
 import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
 import { redirect } from "next/navigation";
 import analyticsServerClient from "./db/analytics";
+import { ratelimit } from "./ratelimit";
 
 /*--------------------------------------------------------------------------------------------------
  * Create
@@ -21,6 +22,7 @@ const createTripSchema = insertTripSchema.extend({ id: z.string(), position: z.n
 export async function createTrip(input: z.infer<typeof createTripSchema>) {
   const { position, ...trip } = createTripSchema.parse(input);
   const userId = await getUserId();
+  await enforceRateLimit(userId);
 
   await db.transaction(async (tx) => {
     await enforceMembershipLimit(tx, userId);
@@ -142,6 +144,7 @@ const deleteTripSchema = z.object({ tripId: z.string(), redirectPath: z.string()
 export async function deleteTrip(input: z.infer<typeof deleteTripSchema>) {
   const { tripId, redirectPath } = deleteTripSchema.parse(input);
   const userId = await getUserId();
+  await enforceRateLimit(userId);
 
   await db.transaction(async (tx) => {
     const membership = (await tx.query.memberships.findFirst({
@@ -179,8 +182,12 @@ export async function deleteTrip(input: z.infer<typeof deleteTripSchema>) {
 
 async function getUserId() {
   const { userId } = auth();
-  if (!userId) throw new Error("UNAUTHORIZED, Please sign in to continue.");
+  if (!userId) throw new Error("Unauthorized. Please sign in to continue.");
   return userId;
+}
+async function enforceRateLimit(userId: string) {
+  const { success } = await ratelimit.limit(userId);
+  if (!success) throw new Error("Rate-limited. Please try again later.");
 }
 async function enforceMembershipLimit(
   tx: PgTransaction<QueryResultHKT, Record<string, unknown>, TablesRelationalConfig>,
