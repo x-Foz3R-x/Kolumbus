@@ -13,11 +13,12 @@ export const env = createEnv({
       .string()
       .url()
       .refine((str) => !str.includes("YOUR_DATABASE_URL"), msg),
-    CLERK_SECRET_KEY: z.string().refine((str) => !str.includes("sk_test_YOUR_SECRET_KEY"), msg),
-    UPLOADTHING_SECRET: z.string().refine((str) => !str.includes("sk_live_YOUR_SECRET"), msg),
+    CLERK_SECRET_KEY: z.string().refine((str) => !str.includes("YOUR_SECRET_KEY"), msg),
+    UPLOADTHING_SECRET: z.string().refine((str) => !str.includes("YOUR_SECRET"), msg),
     UPLOADTHING_APP_ID: z.string().refine((str) => !str.includes("YOUR_APP_ID"), msg),
     UPSTASH_REDIS_REST_URL: z.string().refine((str) => !str.includes("YOUR_REST_URL"), msg),
     UPSTASH_REDIS_REST_TOKEN: z.string().refine((str) => !str.includes("YOUR_REST_TOKEN"), msg),
+    GOOGLE_KEY: z.string().refine((str) => !str.includes("YOUR_GOOGLE_KEY"), msg),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   },
 
@@ -29,7 +30,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z
       .string()
-      .refine((str) => !str.includes("pk_test_YOUR_PUBLISHABLE_KEY"), msg),
+      .refine((str) => !str.includes("YOUR_PUBLISHABLE_KEY"), msg),
     NEXT_PUBLIC_POSTHOG_KEY: z.string().refine((str) => !str.includes("YOUR_POSTHOG_KEY"), msg),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().refine((str) => !str.includes("YOUR_POSTHOG_HOST"), msg),
   },
@@ -48,6 +49,7 @@ export const env = createEnv({
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+    GOOGLE_KEY: process.env.GOOGLE_KEY,
     NODE_ENV: process.env.NODE_ENV,
   },
 
