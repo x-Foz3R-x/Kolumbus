@@ -1,18 +1,17 @@
 import "server-only";
 
-import { and, count, eq, gt, inArray, sql } from "drizzle-orm";
-import { events, memberships, userRoles, trips, insertTripSchema } from "./db/schema";
+import { redirect } from "next/navigation";
+import { and, count, eq, gt, inArray, sql, type TablesRelationalConfig } from "drizzle-orm";
+import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
+import { auth } from "@clerk/nextjs/server";
 import z from "zod";
 
 import db from "./db";
-import { auth } from "@clerk/nextjs/server";
-import { encodePermissions, MemberPermissionsTemplate } from "~/utils";
+import analyticsServerClient from "./analytics";
+import ratelimit from "./ratelimit";
 
-import type { TablesRelationalConfig } from "drizzle-orm";
-import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
-import { redirect } from "next/navigation";
-import analyticsServerClient from "./db/analytics";
-import { ratelimit } from "./ratelimit";
+import { events, memberships, userRoles, trips, insertTripSchema } from "./db/schema";
+import { encodePermissions, MemberPermissionsTemplate } from "~/utils";
 
 /*--------------------------------------------------------------------------------------------------
  * Create

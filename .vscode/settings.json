@@ -2,7 +2,7 @@
   "tailwindCSS.experimental.classRegex": [
     ["clsx\\(([^)]*)\\)"],
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["className:\\s*['\"]([^'\"]*)['\"]"]
+    [":\\s*?[\"'`]([^\"'`]*).*?,"]
   ],
   "cSpell.ignorePaths": [
     "node_modules",
@@ -20,6 +20,7 @@
     "pkey",
     "POSTHOG",
     "ratelimit",
+    "Sonner",
     "tailwindcss",
     "Typeahead",
     "UPLOADTHING",

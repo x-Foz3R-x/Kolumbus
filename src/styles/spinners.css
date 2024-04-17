@@ -1,0 +1,33 @@
+.spinner-animation {
+  transform-origin: center;
+  animation: spinner_rotate 0.75s infinite linear;
+}
+.spinner-resize-animation {
+  transform-origin: center;
+  animation: spinner_rotate 2s linear infinite;
+}
+.spinner-resize-animation circle {
+  stroke-linecap: round;
+  animation: spinner-resize-keyframes 1.5s ease-in-out infinite;
+}
+
+@keyframes spinner-resize-keyframes {
+  0% {
+    stroke-dasharray: 0 150;
+    stroke-dashoffset: 0;
+  }
+  47.5% {
+    stroke-dasharray: 42 150;
+    stroke-dashoffset: -16;
+  }
+  95%,
+  100% {
+    stroke-dasharray: 42 150;
+    stroke-dashoffset: -59;
+  }
+}
+@keyframes spinner_rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}

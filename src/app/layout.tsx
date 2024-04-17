@@ -7,6 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { CSPostHogProvider } from "./_analytics/provider";
 
 import { cn } from "~/lib/utils";
+import { Toaster } from "~/components/ui/toast";
 
 export const inter = Inter({
   subsets: ["latin", "greek", "cyrillic"],
@@ -38,10 +39,11 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       <CSPostHogProvider>
         <html lang="en">
           <body className={cn(inter.variable, belanosima.variable, inconsolata.variable)}>
-            <div className="min-h-screen scroll-smooth text-balance fill-gray-900 font-inter text-gray-900 antialiased bg-dot-kolumblue-500">
+            <div className="min-h-screen scroll-smooth text-balance fill-gray-900 font-inter text-gray-900 antialiased">
               {props.children}
             </div>
 
+            <Toaster />
             <SpeedInsights debug={false} />
           </body>
         </html>
