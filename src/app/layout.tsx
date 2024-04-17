@@ -38,7 +38,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       <CSPostHogProvider>
         <html lang="en">
           <body className={cn(inter.variable, belanosima.variable, inconsolata.variable)}>
-            <div className="min-h-screen scroll-smooth fill-gray-900 font-inter text-gray-900 antialiased">
+            <div className="min-h-screen scroll-smooth text-balance fill-gray-900 font-inter text-gray-900 antialiased bg-dot-kolumblue-500">
               {props.children}
             </div>
 
