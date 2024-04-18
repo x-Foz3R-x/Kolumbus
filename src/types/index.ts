@@ -1,7 +1,5 @@
 export * from "./db";
 
-export type SvgProps = React.SVGAttributes<HTMLOrSVGElement>;
-
 export type UserRoles =
   | "explorer"
   | "navigator"
