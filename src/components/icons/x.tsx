@@ -1,7 +1,43 @@
-export default function X(props: React.SVGAttributes<SVGElement>) {
+type Props = {
+  color?: string;
+  size?: number;
+  strokeWidth?: number;
+  absoluteStrokeWidth?: boolean;
+  className?: string;
+};
+
+const defaultAttributes: React.SVGAttributes<SVGElement> = {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  width: 24,
+  height: 24,
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+};
+
+export default function X({
+  color = "currentColor",
+  size = 24,
+  strokeWidth = 2,
+  absoluteStrokeWidth = true,
+  className,
+  ...rest
+}: Props) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" {...props}>
-      <path d="M19.19 16 31.56 3.63a1.5 1.5 0 0 0 0-2.13L30.5.44a1.5 1.5 0 0 0-2.13 0L16 12.81 3.63.44a1.5 1.5 0 0 0-2.13 0L.44 1.5a1.5 1.5 0 0 0 0 2.13L12.81 16 .44 28.37a1.5 1.5 0 0 0 0 2.13l1.06 1.06a1.5 1.5 0 0 0 2.13 0L16 19.2l12.37 12.37a1.5 1.5 0 0 0 2.13 0l1.06-1.06a1.5 1.5 0 0 0 0-2.13L19.19 16Z" />
+    <svg
+      {...defaultAttributes}
+      width={size}
+      height={size}
+      stroke={color}
+      strokeWidth={absoluteStrokeWidth ? (strokeWidth * 24) / Number(size) : strokeWidth}
+      className={className}
+      {...rest}
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
     </svg>
   );
 }
