@@ -2,6 +2,7 @@ import { pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
 
 export const userRoles = pgTable("user_roles", {
   role: text("role").primaryKey(),
+  desc: text("desc").notNull(),
   membershipsLimit: smallint("memberships_limit").notNull(),
   daysLimit: smallint("days_limit").notNull(),
   eventsLimit: smallint("events_limit").notNull(),

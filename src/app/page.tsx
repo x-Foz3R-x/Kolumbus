@@ -1,10 +1,9 @@
-"use client";
-
 import { Spinner } from "~/components/ui";
 import TopNav from "./_components/top-nav";
 import X from "~/components/icons/x";
+import HeroFeature from "./_components/hero-feature";
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <>
       <TopNav />
@@ -15,6 +14,7 @@ export default function HomePage() {
         <Spinner.background className="fill-slate-500" />
         <Spinner.default className="fill-slate-500" />
         <X size={48} strokeWidth={3} />
+        <HeroFeature />
       </main>
     </>
   );

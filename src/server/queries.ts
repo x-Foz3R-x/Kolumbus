@@ -11,7 +11,7 @@ import analyticsServerClient from "./analytics";
 import ratelimit from "./ratelimit";
 
 import { events, memberships, userRoles, trips, insertTripSchema } from "./db/schema";
-import { encodePermissions, MemberPermissionsTemplate } from "~/utils";
+import { encodePermissions, MemberPermissionsTemplate } from "~/lib/db";
 
 /*--------------------------------------------------------------------------------------------------
  * Create
