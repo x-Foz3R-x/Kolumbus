@@ -1,5 +1,4 @@
 type Props = {
-  color?: string;
   size?: number;
   strokeWidth?: number;
   absoluteStrokeWidth?: boolean;
@@ -19,22 +18,18 @@ const defaultAttributes: React.SVGAttributes<SVGElement> = {
 };
 
 export default function X({
-  color = "currentColor",
   size = 24,
   strokeWidth = 2,
   absoluteStrokeWidth = true,
   className,
-  ...rest
 }: Props) {
   return (
     <svg
       {...defaultAttributes}
       width={size}
       height={size}
-      stroke={color}
       strokeWidth={absoluteStrokeWidth ? (strokeWidth * 24) / Number(size) : strokeWidth}
       className={className}
-      {...rest}
     >
       <path d="M18 6 6 18" />
       <path d="m6 6 12 12" />
