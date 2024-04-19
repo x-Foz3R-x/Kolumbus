@@ -1,3 +1,4 @@
+import z from "zod";
 import { relations } from "drizzle-orm";
 import { index, pgEnum, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -8,7 +9,7 @@ import { activities } from "./activities";
 import { transportations } from "./transportations";
 import { flights } from "./flights";
 
-export const EventType = pgEnum("event_type", [
+export const EventTypes = pgEnum("event_type", [
   // Common types
   "ACTIVITY",
   "DINING",
@@ -32,7 +33,7 @@ export const events = pgTable(
       .notNull(),
     date: text("date").notNull(),
     position: smallint("position").notNull(),
-    type: EventType("type").notNull(),
+    type: EventTypes("type").notNull(),
     createdBy: text("created_by").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
@@ -60,6 +61,9 @@ export const eventsRelations = relations(events, ({ one }) => ({
 
 export type Event = typeof events.$inferSelect;
 export type NewEvent = typeof events.$inferInsert;
+
+const eventTypeSchema = z.enum(EventTypes.enumValues);
+export type EventTypes = z.infer<typeof eventTypeSchema>;
 
 export const selectEventSchema = createSelectSchema(events);
 export const insertEventSchema = createInsertSchema(events);

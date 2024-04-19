@@ -12,20 +12,23 @@ import ratelimit from "./ratelimit";
 
 import { events, memberships, userRoles, trips, insertTripSchema } from "./db/schema";
 import { encodePermissions, MemberPermissionsTemplate } from "~/lib/db";
+import { validRoles } from "~/lib/constants";
 
 /*--------------------------------------------------------------------------------------------------
  * Create
  *------------------------------------------------------------------------------------------------*/
 
-const createTripSchema = insertTripSchema.extend({ id: z.string(), position: z.number() });
-export async function createTrip(input: z.infer<typeof createTripSchema>) {
+const createTripSchema = insertTripSchema
+  .omit({ ownerId: true })
+  .extend({ id: z.string(), position: z.number() });
+export async function createTrip(input: z.output<typeof createTripSchema>) {
   const { position, ...trip } = createTripSchema.parse(input);
   const userId = await getUserId();
   await enforceRateLimit(userId);
 
   await db.transaction(async (tx) => {
     await enforceMembershipLimit(tx, userId);
-    await tx.insert(trips).values(trip);
+    await tx.insert(trips).values({ ...trip, ownerId: userId });
     await tx.insert(memberships).values({
       tripId: trip.id,
       userId,
@@ -52,10 +55,13 @@ export async function getMyRole(
   const { userId, sessionClaims } = auth();
   if (!userId) throw new Error("UNAUTHORIZED, Please sign in to continue.");
 
-  const role = sessionClaims?.metadata.role ?? "explorer";
+  const role =
+    sessionClaims?.metadata.role && validRoles.includes(sessionClaims.metadata.role)
+      ? sessionClaims.metadata.role
+      : "explorer";
 
   if (!tx) {
-    return await db
+    const [myRole] = await db
       .select({
         role: userRoles.role,
         membershipsLimit: userRoles.membershipsLimit,
@@ -65,9 +71,11 @@ export async function getMyRole(
       .from(userRoles)
       .where(eq(userRoles.role, role))
       .execute();
+
+    return myRole;
   }
 
-  return await tx
+  const [myRole] = await tx
     .select({
       role: userRoles.role,
       membershipsLimit: userRoles.membershipsLimit,
@@ -77,6 +85,7 @@ export async function getMyRole(
     .from(userRoles)
     .where(eq(userRoles.role, role))
     .execute();
+  return myRole;
 }
 
 export async function getMyMemberships() {
@@ -95,14 +104,14 @@ export async function getMyMemberships() {
               limit: 3,
               where: (events) => eq(events.type, "ACTIVITY"),
               extras: {
-                photos: sql<
+                images: sql<
                   string[] | null
-                >`(SELECT "activities"."photos" FROM "activities" WHERE "activities"."event_id" = ${events.id})`.as(
-                  "photos",
+                >`(SELECT "activities"."images" FROM "activities" WHERE "activities"."event_id" = ${events.id})`.as(
+                  "images",
                 ),
-                photoIndex:
-                  sql<number>`(SELECT "activities"."photo_index" FROM "activities" WHERE "activities"."event_id" = ${events.id})`.as(
-                    "photoIndex",
+                imageIndex:
+                  sql<number>`(SELECT "activities"."image_index" FROM "activities" WHERE "activities"."event_id" = ${events.id})`.as(
+                    "imageIndex",
                   ),
               },
             },
@@ -198,7 +207,7 @@ async function enforceMembershipLimit(
     .where(eq(memberships.userId, userId));
   if (!membership) throw new Error("Membership not found");
 
-  const [role] = await getMyRole(tx);
+  const role = await getMyRole(tx);
   if (!role) throw new Error("Role not found");
 
   if (membership.membershipsCount >= role.membershipsLimit) {
