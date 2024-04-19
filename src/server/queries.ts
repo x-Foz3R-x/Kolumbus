@@ -188,16 +188,16 @@ export async function deleteTrip(input: z.infer<typeof deleteTripSchema>) {
  * Helpers
  *------------------------------------------------------------------------------------------------*/
 
-async function getUserId() {
+export async function getUserId() {
   const { userId } = auth();
   if (!userId) throw new Error("Unauthorized. Please sign in to continue.");
   return userId;
 }
-async function enforceRateLimit(userId: string) {
+export async function enforceRateLimit(userId: string) {
   const { success } = await ratelimit.limit(userId);
   if (!success) throw new Error("Rate-limited. Please try again later.");
 }
-async function enforceMembershipLimit(
+export async function enforceMembershipLimit(
   tx: PgTransaction<QueryResultHKT, Record<string, unknown>, TablesRelationalConfig>,
   userId: string,
 ) {

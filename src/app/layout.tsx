@@ -2,12 +2,12 @@ import "~/styles/globals.css";
 
 import { Inter, Inconsolata, Belanosima } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { cn } from "~/lib/utils";
+import { Toaster } from "~/components/ui/toast";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { CSPostHogProvider } from "./_analytics/provider";
-
-import { cn } from "~/lib/utils";
-import { Toaster } from "~/components/ui/toast";
+import { TRPCReactProvider } from "~/trpc/react";
 
 export const inter = Inter({
   subsets: ["latin", "greek", "cyrillic"],
@@ -33,14 +33,14 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <CSPostHogProvider>
         <html lang="en">
           <body className={cn(inter.variable, belanosima.variable, inconsolata.variable)}>
             <div className="min-h-screen scroll-smooth text-balance fill-gray-900 font-inter text-gray-900 antialiased">
-              {props.children}
+              <TRPCReactProvider>{children}</TRPCReactProvider>
             </div>
 
             <Toaster />
