@@ -4,7 +4,6 @@ import { add } from "date-fns";
 
 type BuildTripProps = {
   id: string;
-  // ownerId: string;
   name?: string;
   startDate?: string;
   endDate?: string;
@@ -15,7 +14,6 @@ type BuildTripProps = {
 export function buildTrip(data: BuildTripProps): Omit<Trip, "ownerId"> {
   return {
     id: data.id,
-    // ownerId: data.ownerId,
     name: data.name ?? "New Trip",
     startDate: data.startDate ?? formatDate(new Date()),
     endDate: data.endDate ?? formatDate(add(new Date(), { days: 4 })),
