@@ -8,7 +8,5 @@ type MenuContext = {
 };
 export const MenuContext = createContext<MenuContext | null>(null);
 export function useMenuContext() {
-  const context = useContext(MenuContext);
-  if (!context) throw new Error("useMenuContext must be used within the <Menu />");
-  return context;
+  return useContext(MenuContext);
 }
