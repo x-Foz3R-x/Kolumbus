@@ -1,9 +1,8 @@
 import { memo } from "react";
 
-import { Day } from "~/types";
+import type { Day } from "~/types";
 
-import Icon from "../icons";
-import { Button } from "../ui";
+import { Button, Icon } from "../ui";
 import { ActivityOverlay } from "./events";
 import { Calendar } from "../calendar";
 

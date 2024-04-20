@@ -2,8 +2,7 @@
 
 import { memo } from "react";
 
-import Icon from "~/components/icons";
-import { Button } from "~/components/ui";
+import { Button, Icon } from "~/components/ui";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
 
 type Props = {

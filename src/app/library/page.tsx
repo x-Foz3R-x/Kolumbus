@@ -10,12 +10,10 @@ export default async function Library() {
   const sharedTripMemberships = memberships.filter((membership) => !membership.owner);
 
   return (
-    <main className="bg-gray-50 p-5 font-inter">
-      <LibraryComponent
-        tripMemberships={tripMemberships}
-        sharedTripMemberships={sharedTripMemberships}
-        role={role}
-      />
-    </main>
+    <LibraryComponent
+      tripMemberships={tripMemberships}
+      sharedTripMemberships={sharedTripMemberships}
+      role={role}
+    />
   );
 }

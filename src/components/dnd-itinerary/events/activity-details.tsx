@@ -6,11 +6,10 @@ import { motion } from "framer-motion";
 import useHistoryState from "~/hooks/use-history-state";
 import { EVENT_IMG_FALLBACK } from "~/lib/config";
 import { EASING } from "~/lib/framer-motion";
-import { cn, getOS } from "~/lib/utils";
+import { cn, os } from "~/lib/utils";
 import { Event } from "~/types";
 
-import Icon from "~/components/icons";
-import { Button, Input, ScrollIndicator, TextArea } from "~/components/ui";
+import { Button, Icon, Input, ScrollIndicator, TextArea } from "~/components/ui";
 import { Floating } from "~/components/ui/floating";
 
 // todo - Decouple logic from floating component so only when it is open state will be created
@@ -390,9 +389,7 @@ export const ActivityDetails = memo(function ActivityDetails({
               children: (
                 <>
                   Undo
-                  <span className="text-xs text-gray-500">
-                    {getOS() === "macos" ? "⌘" : "Ctrl"}+Z
-                  </span>
+                  <span className="text-xs text-gray-500">{os() === "macos" ? "⌘" : "Ctrl"}+Z</span>
                 </>
               ),
             }}
@@ -415,7 +412,7 @@ export const ActivityDetails = memo(function ActivityDetails({
                 <>
                   Redo
                   <span className="text-xs text-gray-500">
-                    {getOS() === "macos" ? "⌘" : "Ctrl"}+Shift+Z
+                    {os() === "macos" ? "⌘" : "Ctrl"}+Shift+Z
                   </span>
                 </>
               ),

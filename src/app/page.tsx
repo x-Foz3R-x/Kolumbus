@@ -1,6 +1,6 @@
 import { Spinner } from "~/components/ui";
 import TopNav from "./_components/top-nav";
-import X from "~/components/icons/x";
+import X from "~/components/ui/icons/x";
 import HeroFeature from "./_components/hero-feature";
 
 export default async function HomePage() {

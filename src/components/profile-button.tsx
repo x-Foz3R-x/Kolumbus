@@ -5,8 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SignedIn, useClerk, useUser } from "@clerk/nextjs";
 
-import Icon from "./icons";
-import { Divider } from "./ui";
+import { Divider, Icon } from "./ui";
 import { Menu, MenuLink, MenuOption } from "./ui/menu";
 
 const url =

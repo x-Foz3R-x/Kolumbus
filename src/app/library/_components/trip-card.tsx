@@ -8,8 +8,7 @@ import { format } from "date-fns";
 import { tripFallbackUrl } from "~/lib/constants";
 import { differenceInDays, cn } from "~/lib/utils";
 
-import Icon from "~/components/icons";
-import { ScrollIndicator } from "~/components/ui";
+import { Icon, ScrollIndicator } from "~/components/ui";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
 import { ConfirmTripDelete } from "./confirm-trip-delete";
 import { ConfirmTripLeave } from "./confirm-trip-leave";
@@ -28,13 +27,15 @@ type TripCardProps = {
   onDelete?: () => void;
   onLeave?: () => void;
   shared?: boolean;
+  loading?: boolean;
 };
 const TripCard = memo(function TripCard({
   trip,
   onDuplicate: handleDuplicate,
   onLeave: handleLeave,
   onDelete: handleDelete,
-  shared = false,
+  shared,
+  loading,
 }: TripCardProps) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isLeaveModalOpen, setLeaveModalOpen] = useState(false);
@@ -51,6 +52,7 @@ const TripCard = memo(function TripCard({
       className={cn(
         "relative origin-bottom overflow-hidden rounded-xl border-2 border-white bg-white shadow-borderXL duration-400 ease-kolumb-flow hover:scale-[1.03] hover:shadow-borderSplashXl",
         isMenuOpen && "scale-[1.03]",
+        loading && "pointer-events-none animate-pulse",
       )}
     >
       <Link href={`/t/${trip.id}`}>
@@ -70,13 +72,13 @@ const TripCard = memo(function TripCard({
           />
         </div>
 
-        <h2
+        <div
           ref={scrollRef}
           className="relative w-full overflow-hidden whitespace-nowrap px-2.5 py-2 text-center"
         >
           {trip.name}
           <ScrollIndicator scrollRef={scrollRef} />
-        </h2>
+        </div>
 
         <div className="flex w-full flex-col gap-0.5 px-2.5 pb-2 text-xs text-gray-500">
           <div>
@@ -97,7 +99,7 @@ const TripCard = memo(function TripCard({
         buttonProps={{
           variant: "unset",
           size: "icon",
-          className: "absolute bottom-3.5 right-1 z-50 rotate-90 rounded-full p-3 hover:bg-gray-50",
+          className: "absolute bottom-3.5 right-1 z-40 rotate-90 rounded-full p-3 hover:bg-gray-50",
           children: <Icon.horizontalDots className="w-4 overflow-visible" />,
         }}
       >

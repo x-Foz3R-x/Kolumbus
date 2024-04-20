@@ -2,8 +2,7 @@
 
 import { memo, useRef, useState } from "react";
 
-import Icon from "~/components/icons";
-import { Button, type ButtonProps, Input } from "~/components/ui";
+import { Button, type ButtonProps, Icon, Input } from "~/components/ui";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
 
 // todo: add date/days picker

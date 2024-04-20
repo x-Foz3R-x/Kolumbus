@@ -14,8 +14,7 @@ import { EASING } from "~/lib/framer-motion";
 import { cn } from "~/lib/utils";
 import { Event } from "~/types";
 
-import Icon from "../../icons";
-import { Button, ScrollIndicator } from "../../ui";
+import { Button, Icon, ScrollIndicator } from "../../ui";
 import { ActivityUIOverlay } from "./activity-ui-overlay";
 import { ActivityDetails } from "./activity-details";
 

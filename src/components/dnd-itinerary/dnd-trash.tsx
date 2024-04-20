@@ -5,7 +5,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { EASING } from "~/lib/framer-motion";
 import { cn } from "~/lib/utils";
 
-import Icon from "../icons";
+import { Icon } from "../ui";
 
 export default function DndTrash() {
   const { active, isOver, setNodeRef } = useDroppable({

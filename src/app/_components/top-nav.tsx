@@ -2,8 +2,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
 
-import Icon from "~/components/icons";
-import { ButtonVariants } from "~/components/ui";
+import { ButtonVariants, Icon } from "~/components/ui";
 import ScrollAnimation from "~/components/scroll-animation";
 import ProfileButton from "~/components/profile-button";
 

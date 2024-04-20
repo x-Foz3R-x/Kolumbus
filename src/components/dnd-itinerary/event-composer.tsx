@@ -7,8 +7,7 @@ import { EASING } from "~/lib/framer-motion";
 import { cn } from "~/lib/utils";
 import { LANGUAGES } from "~/types";
 
-import Icon from "../icons";
-import { Button, Spinner } from "../ui";
+import { Button, Icon, Spinner } from "../ui";
 import { Floating } from "../ui/floating/floating";
 import { Combobox } from "../ui/combobox";
 

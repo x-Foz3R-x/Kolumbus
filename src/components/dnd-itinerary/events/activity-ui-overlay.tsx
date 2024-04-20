@@ -1,11 +1,10 @@
 import { memo, useState } from "react";
 import { FloatingDelayGroup } from "@floating-ui/react";
 
-import { cn, getOS } from "~/lib/utils";
+import { cn, os } from "~/lib/utils";
 import { Event } from "~/types";
 
-import Icon from "~/components/icons";
-import { Button, Divider } from "~/components/ui";
+import { Button, Divider, Icon } from "~/components/ui";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
 
 type ActivityOverlayProps = {
@@ -103,7 +102,7 @@ export const ActivityUIOverlay = memo(function ActivityOverlay({
             <Icon.select className="h-4 w-4" />
             Select
             <span className="ml-auto text-xs text-gray-400">
-              {getOS() === "macos" ? "⌘" : "Ctrl"}+Click
+              {os() === "macos" ? "⌘" : "Ctrl"}+Click
             </span>
           </MenuOption>
           <MenuOption label="Duplicate" onClick={handleDuplicate}>

@@ -17,7 +17,8 @@ import { EASING, TRANSITION } from "~/lib/framer-motion";
 import { cn } from "~/lib/utils";
 import { KEYS } from "~/types";
 
-import { ButtonVariants, Input } from "..";
+import { Input } from "../";
+import { ButtonVariants } from "../";
 import { ComboboxContext, useComboboxContext } from "./combobox-context";
 
 type ComboboxProps = {
