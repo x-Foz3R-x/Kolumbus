@@ -2,27 +2,14 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
+import * as schema from "./schema";
 
-import { env } from "~/env";
-import * as schema from "../schema";
+import trips from "./seed-data/trips.json";
+import memberships from "./seed-data/memberships.json";
+import events from "./seed-data/events.json";
+import activities from "./seed-data/activities.json";
 
-import trips from "./trips.json";
-import memberships from "./memberships.json";
-import events from "./events.json";
-import activities from "./activities.json";
-
-/**
- * Cache the database connection in development. This avoids creating a new connection on every HMR
- * update.
- */
-const globalForDb = globalThis as unknown as {
-  connection: postgres.Sql | undefined;
-};
-
-const connection =
-  globalForDb.connection ?? postgres(env.DATABASE_URL, { prepare: false });
-if (env.NODE_ENV !== "production") globalForDb.connection = connection;
-
+const connection = postgres("URL", { prepare: false });
 const db = drizzle(connection, { schema });
 
 const main = async () => {

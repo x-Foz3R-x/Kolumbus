@@ -9,7 +9,6 @@ import * as schema from "./schema";
  * update.
  */
 const globalForDb = globalThis as unknown as { connection: postgres.Sql | undefined };
-
 const connection = globalForDb.connection ?? postgres(env.DATABASE_URL, { prepare: false });
 if (env.NODE_ENV !== "production") globalForDb.connection = connection;
 
