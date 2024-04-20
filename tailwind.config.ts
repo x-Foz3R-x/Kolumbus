@@ -35,6 +35,7 @@ export default {
         popUp: "popUp 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275)",
         slideIn: "slideIn 250ms ease",
         levitate: "levitate 10s infinite",
+        pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       keyframes: {
         popUp: {
@@ -51,6 +52,11 @@ export default {
           "50%": { translate: "0 0.5rem" },
           "70%": { translate: "0 -0.75rem" },
           "100%": { translate: "0" },
+        },
+        pulse: {
+          "0%": { opacity: "1" },
+          "50%": { opacity: ".75" },
+          "100%": { opacity: "1" },
         },
       },
       transitionDuration: { 250: "250ms", 400: "400ms" },
