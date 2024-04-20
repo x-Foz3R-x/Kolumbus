@@ -3,20 +3,16 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 import { unknownError } from "./constants";
+import { TRPCClientError } from "@trpc/client";
 
 export function getErrorMessage(error: unknown) {
-  if (error instanceof z.ZodError) {
-    const errors = error.issues.map((issue) => {
-      return issue.message;
-    });
-    return errors.join("\n");
-  } else if (error instanceof Error) {
+  if (error instanceof TRPCClientError || error instanceof z.ZodError || error instanceof Error) {
     return error.message;
-  } else if (isClerkAPIResponseError(error)) {
-    return error.errors[0]?.longMessage ?? unknownError;
-  } else {
-    return unknownError;
   }
+  if (isClerkAPIResponseError(error)) return error.errors[0]?.longMessage ?? unknownError;
+  if (error instanceof Array && error.length > 0) return error.join(", ");
+  if (typeof error === "string") error;
+  return unknownError;
 }
 
 export function showErrorToast(error: unknown) {
