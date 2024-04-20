@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { createId } from "~/lib/db";
+import { createId } from "~/lib/utils";
 
 import { memberships } from "./memberships";
 import { events } from "./events";

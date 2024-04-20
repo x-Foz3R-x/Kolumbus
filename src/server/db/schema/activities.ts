@@ -1,6 +1,6 @@
 import { decimal, index, jsonb, pgTable, smallint, text } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { createId } from "~/lib/db";
+import { createId } from "~/lib/utils";
 
 import { Currency } from "./enums";
 import { events } from "./events";

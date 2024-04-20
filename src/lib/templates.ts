@@ -2,8 +2,25 @@ import type { Event, EventTypes, Membership, Trip } from "~/server/db/schema";
 import { formatDate } from "~/lib/utils";
 import { add } from "date-fns";
 
+export enum MemberPermissionsTemplate {
+  // General permissions
+  shareInvite = 1 << 0,
+  createInvite = 1 << 1,
+  kickMembers = 1 << 2,
+  managePermissions = 1 << 3,
+
+  // Trip permissions
+  editTrip = 1 << 4,
+  addEvents = 1 << 5,
+  editEvents = 1 << 6,
+  deleteEvents = 1 << 7,
+  editOwnEvents = 1 << 8,
+  deleteOwnEvents = 1 << 9,
+}
+
 type BuildTripProps = {
   id: string;
+  ownerId: string;
   name?: string;
   startDate?: string;
   endDate?: string;
@@ -11,9 +28,10 @@ type BuildTripProps = {
   inviteCode?: string;
   inviteCreatedAt?: Date;
 };
-export function buildTrip(data: BuildTripProps): Omit<Trip, "ownerId"> {
+export function buildTrip(data: BuildTripProps): Trip {
   return {
     id: data.id,
+    ownerId: data.ownerId,
     name: data.name ?? "New Trip",
     startDate: data.startDate ?? formatDate(new Date()),
     endDate: data.endDate ?? formatDate(add(new Date(), { days: 4 })),

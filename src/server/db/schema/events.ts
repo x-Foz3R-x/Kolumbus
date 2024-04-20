@@ -2,7 +2,7 @@ import z from "zod";
 import { relations } from "drizzle-orm";
 import { index, pgEnum, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { createId } from "~/lib/db";
+import { createId } from "~/lib/utils";
 
 import { trips } from "./trips";
 import { activities } from "./activities";
