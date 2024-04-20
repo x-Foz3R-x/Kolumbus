@@ -1,19 +1,27 @@
-import { getMyMemberships, getMyRole } from "~/server/queries";
-import LibraryComponent from "./_components/library";
+import { getMyMemberships, getMyUserRoleDetails } from "~/server/queries";
+
+import { LibraryProvider } from "./_components/provider";
+import MyTrips from "./_components/my-trips";
+import SharedTrips from "./_components/shared-trips";
 
 export default async function Library() {
   const memberships = await getMyMemberships();
-  const role = await getMyRole();
-  if (!role) return null;
+  const userRole = await getMyUserRoleDetails();
+  if (!userRole) return null;
 
-  const tripMemberships = memberships.filter((membership) => membership.owner);
-  const sharedTripMemberships = memberships.filter((membership) => !membership.owner);
+  const myMemberships = memberships.filter((membership) => membership.owner);
+  const sharedMemberships = memberships.filter((membership) => !membership.owner);
 
   return (
-    <LibraryComponent
-      tripMemberships={tripMemberships}
-      sharedTripMemberships={sharedTripMemberships}
-      role={role}
-    />
+    <LibraryProvider
+      userRole={userRole}
+      memberships={myMemberships}
+      sharedMemberships={sharedMemberships}
+    >
+      <main className="bg-gray-50 px-5 font-inter">
+        <MyTrips />
+        <SharedTrips />
+      </main>
+    </LibraryProvider>
   );
 }

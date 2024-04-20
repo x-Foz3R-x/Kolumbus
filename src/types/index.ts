@@ -1,12 +1,6 @@
 export * from "./db";
 
-export type UserRoles =
-  | "explorer"
-  | "navigator"
-  | "captain"
-  | "fleetCommander"
-  | "tester"
-  | "admin";
+export type UserRole = "explorer" | "navigator" | "captain" | "fleetCommander" | "tester" | "admin";
 
 export enum LANGUAGES {
   English = "en",

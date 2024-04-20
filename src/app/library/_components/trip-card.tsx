@@ -48,7 +48,7 @@ const TripCard = memo(function TripCard({
   const tripDuration = useMemo(() => differenceInDays(startDate, endDate), [startDate, endDate]);
 
   return (
-    <div
+    <li
       className={cn(
         "relative origin-bottom overflow-hidden rounded-xl border-2 border-white bg-white shadow-borderXL duration-400 ease-kolumb-flow hover:scale-[1.03] hover:shadow-borderSplashXl",
         isMenuOpen && "scale-[1.03]",
@@ -135,7 +135,7 @@ const TripCard = memo(function TripCard({
         setOpen={setDeleteModalOpen}
         onDelete={handleDelete!}
       />
-    </div>
+    </li>
   );
 });
 
