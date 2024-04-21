@@ -3,7 +3,7 @@ import type { MyMembership } from "~/types";
 
 import TripCard from "./trip-card";
 
-export default function TripCards(props: { memberships: MyMembership[] }) {
+export default function TripCards(props: { memberships: MyMembership[]; shared?: boolean }) {
   const { loadingTripId, duplicateTrip, deleteTrip } = useLibraryContext();
 
   return props.memberships.map((membership) => {
@@ -20,6 +20,7 @@ export default function TripCards(props: { memberships: MyMembership[] }) {
         trip={trip}
         onDuplicate={() => duplicateTrip(trip.id)}
         onDelete={() => deleteTrip(trip.id)}
+        shared={props.shared}
         loading={loadingTripId === trip.id}
       />
     );

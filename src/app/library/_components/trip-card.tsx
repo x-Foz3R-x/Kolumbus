@@ -83,7 +83,7 @@ const TripCard = memo(function TripCard({
         <div className="flex w-full flex-col gap-0.5 px-2.5 pb-2 text-xs text-gray-500">
           <div>
             {format(startDate, "d MMM")}
-            {" ➞ "}
+            {" - "}
             {format(endDate, "d MMM")}
           </div>
           <div>{`${tripDuration} ${tripDuration !== 1 ? "days" : "day"}`}</div>

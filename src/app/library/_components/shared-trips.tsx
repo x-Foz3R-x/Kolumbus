@@ -13,7 +13,7 @@ export default function SharedTrips() {
       <h2 className="text-xl font-semibold text-gray-400">Shared with You</h2>
 
       <ul className="grid w-full grid-cols-[repeat(auto-fill,minmax(14.25rem,_14.25rem))] justify-center gap-x-4 gap-y-8 px-2">
-        <TripCards memberships={sharedMemberships} />
+        <TripCards memberships={sharedMemberships} shared />
       </ul>
     </section>
   );

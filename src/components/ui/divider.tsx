@@ -2,7 +2,7 @@ import { cn } from "~/lib/utils";
 
 export const addDotAfter = (className?: string) => {
   return cn(
-    "after:pointer-events-none after:inline after:select-none after:px-1.5 after:content-['·']",
+    "after:pointer-events-none after:inline after:select-none after:px-2 after:content-['·']",
     className,
   );
 };
