@@ -4,15 +4,14 @@ import { TRPCError } from "@trpc/server";
 import { and, count, eq, inArray, sql, type TablesRelationalConfig } from "drizzle-orm";
 import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
 import { auth } from "@clerk/nextjs/server";
-
+import ratelimit from "./ratelimit";
+import { error } from "~/lib/trpc";
 import db from "./db";
 
 import { events, memberships, userRoles } from "./db/schema";
-import { validRoles } from "~/lib/constants";
-import { error } from "~/lib/trpc";
-import ratelimit from "./ratelimit";
 
 type Transaction = PgTransaction<QueryResultHKT, Record<string, unknown>, TablesRelationalConfig>;
+const validRoles = ["explorer", "navigator", "captain", "fleetCommander", "tester", "admin"];
 
 /*--------------------------------------------------------------------------------------------------
  * Read
