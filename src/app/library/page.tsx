@@ -1,20 +1,20 @@
-import { getMyMemberships, getMyUserRoleDetails } from "~/server/queries";
+import { getMyMemberships, getMyUserRoleLimits } from "~/server/queries";
 
 import { LibraryProvider } from "./_components/provider";
 import MyTrips from "./_components/my-trips";
 import SharedTrips from "./_components/shared-trips";
 
 export default async function Library() {
+  const userRoleLimits = await getMyUserRoleLimits();
   const memberships = await getMyMemberships();
-  const userRole = await getMyUserRoleDetails();
-  if (!userRole) return null;
+  if (!userRoleLimits || !memberships) return null;
 
   const myMemberships = memberships.filter((membership) => membership.owner);
   const sharedMemberships = memberships.filter((membership) => !membership.owner);
 
   return (
     <LibraryProvider
-      userRole={userRole}
+      userRoleLimits={userRoleLimits}
       memberships={myMemberships}
       sharedMemberships={sharedMemberships}
     >

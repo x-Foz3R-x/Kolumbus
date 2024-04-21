@@ -1,20 +1,25 @@
 import "server-only";
 
 import { TRPCError } from "@trpc/server";
-import { count, eq, inArray, sql } from "drizzle-orm";
+import { and, count, eq, inArray, sql, type TablesRelationalConfig } from "drizzle-orm";
+import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
 import { auth } from "@clerk/nextjs/server";
 
 import db from "./db";
 
-import { events, userRoles } from "./db/schema";
+import { events, memberships, userRoles } from "./db/schema";
 import { validRoles } from "~/lib/constants";
+import { error } from "~/lib/trpc";
+import ratelimit from "./ratelimit";
+
+type Transaction = PgTransaction<QueryResultHKT, Record<string, unknown>, TablesRelationalConfig>;
 
 /*--------------------------------------------------------------------------------------------------
  * Read
  *------------------------------------------------------------------------------------------------*/
 
 export async function getMyMemberships() {
-  const userId = await getUserId();
+  const userId = getUserId();
 
   const memberships = await db.transaction(async (tx) => {
     const memberships = await tx.query.memberships.findMany({
@@ -65,30 +70,121 @@ export async function getMyMemberships() {
   return memberships;
 }
 
-export async function getMyUserRoleDetails() {
+export async function getMyUserRoleLimits(tx?: Transaction) {
   const userRole = getUserRole();
 
-  const [myRole] = await db
-    .select({
-      role: userRoles.role,
-      membershipsLimit: userRoles.membershipsLimit,
-      daysLimit: userRoles.daysLimit,
-      eventsLimit: userRoles.eventsLimit,
-    })
-    .from(userRoles)
-    .where(eq(userRoles.role, userRole))
-    .execute();
+  const [userRoleLimits] = tx
+    ? await tx
+        .select({
+          membershipsLimit: userRoles.membershipsLimit,
+          daysLimit: userRoles.daysLimit,
+          eventsLimit: userRoles.eventsLimit,
+        })
+        .from(userRoles)
+        .where(eq(userRoles.role, userRole))
+    : await db
+        .select({
+          membershipsLimit: userRoles.membershipsLimit,
+          daysLimit: userRoles.daysLimit,
+          eventsLimit: userRoles.eventsLimit,
+        })
+        .from(userRoles)
+        .where(eq(userRoles.role, userRole));
 
-  return myRole;
+  if (!userRoleLimits) {
+    throw error.internalServerError("Failed to fetch your user role. Please try again later.");
+  }
+
+  return userRoleLimits;
+}
+
+export async function getMyMembershipsCount(tx: Transaction, userId: string, owner?: boolean) {
+  const [result] = owner
+    ? await tx
+        .select({ membershipsCount: count() })
+        .from(memberships)
+        .where(and(eq(memberships.userId, userId), eq(memberships.owner, owner)))
+    : await tx
+        .select({ membershipsCount: count() })
+        .from(memberships)
+        .where(eq(memberships.userId, userId));
+
+  if (!result) {
+    throw error.internalServerError(
+      "Failed to fetch your memberships count. Please try again later.",
+    );
+  }
+
+  return result.membershipsCount;
+}
+
+export async function getTripMemberCount(tx: Transaction, tripId: string) {
+  const [result] = await tx
+    .select({ memberCount: count() })
+    .from(memberships)
+    .where(eq(memberships.tripId, tripId));
+
+  if (!result) {
+    throw error.internalServerError(
+      "Failed to fetch the trip member count. Please try again later.",
+    );
+  }
+
+  return result.memberCount;
+}
+
+export async function isUserMemberOfTrip(tx: Transaction, userId: string, tripId: string) {
+  const [result] = await tx
+    .select({ tripMembershipCount: count() })
+    .from(memberships)
+    .where(and(eq(memberships.userId, userId), eq(memberships.tripId, tripId)));
+
+  if (!result) {
+    throw error.internalServerError(
+      "Failed to check if you're a member of the trip. Please try again later.",
+    );
+  }
+
+  return result.tripMembershipCount > 0;
+}
+
+/*--------------------------------------------------------------------------------------------------
+ * Enforcers
+ *------------------------------------------------------------------------------------------------*/
+
+export async function enforceRateLimit(userId: string) {
+  const { success } = await ratelimit.limit(userId);
+  if (!success)
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "Rate-limited. Please try again later.",
+    });
+}
+
+export async function enforceMembershipLimit<T>(
+  tx: Transaction,
+  userId: string,
+  returnValueOnEnforce?: T,
+) {
+  const userRole = await getMyUserRoleLimits(tx);
+  const membershipsCount = await getMyMembershipsCount(tx, userId);
+
+  if (membershipsCount >= userRole.membershipsLimit) {
+    if (returnValueOnEnforce) return returnValueOnEnforce;
+
+    throw error.badRequest(
+      `You've reached your limit of ${userRole.membershipsLimit} memberships.`,
+    );
+  }
 }
 
 /*--------------------------------------------------------------------------------------------------
  * Helpers
  *------------------------------------------------------------------------------------------------*/
 
-export async function getUserId() {
+export function getUserId() {
   const { userId } = auth();
-  if (!userId) throw new Error("Unauthorized. Please sign in to continue.");
+  if (!userId) throw error.unauthorized("Unauthorized. Please sign in to continue.");
   return userId;
 }
 

@@ -14,19 +14,18 @@ import { useUser } from "@clerk/nextjs";
 
 import { api } from "~/trpc/react";
 import { createId } from "~/lib/utils";
-import { mutationOpts } from "~/lib/trpc";
+import { toastHandler } from "~/lib/trpc";
 import { buildMembership, buildTrip } from "~/lib/templates";
-import type { MyMembership, MyUserRole } from "~/types";
+import type { MyMembership, UserRoleLimits } from "~/types";
 
 type LibraryContext = {
-  userRole: MyUserRole;
+  userRoleLimits: UserRoleLimits;
   memberships: MyMembership[];
   sharedMemberships: MyMembership[];
   loadingTripId: string | null;
-  isSaving: boolean;
   createTrip: (name: string) => void;
   duplicateTrip: (id: string) => void;
-  // leaveTrip: (id: string) => void;
+  leaveTrip: (id: string) => void;
   deleteTrip: (id: string) => void;
 };
 const LibraryContext = createContext<LibraryContext | null>(null);
@@ -37,7 +36,7 @@ export default function useLibraryContext() {
 }
 
 export function LibraryProvider(props: {
-  userRole: MyUserRole;
+  userRoleLimits: UserRoleLimits;
   memberships: MyMembership[];
   sharedMemberships: MyMembership[];
   children: React.ReactNode;
@@ -47,14 +46,13 @@ export function LibraryProvider(props: {
 
   const [memberships, setMemberships] = useState(props.memberships);
   const [sharedMemberships, setSharedMemberships] = useState(props.sharedMemberships);
-  const [isSaving, setSaving] = useState(false);
 
   const loadingTripIdRef = useRef<string | null>(null);
 
-  const createTrip = api.trip.create.useMutation(mutationOpts("Trip created"));
-  const duplicateTrip = api.trip.duplicate.useMutation(mutationOpts("Trip duplicated"));
-  // const leaveTripApi = api.trip.leave.useMutation(mutationOpts());
-  const deleteTrip = api.trip.delete.useMutation(mutationOpts());
+  const createTrip = api.trip.create.useMutation(toastHandler("Trip created"));
+  const duplicateTrip = api.trip.duplicate.useMutation(toastHandler("Trip duplicated"));
+  const leaveTrip = api.trip.leave.useMutation(toastHandler());
+  const deleteTrip = api.trip.delete.useMutation(toastHandler());
 
   const handleCreate = useCallback(
     (name: string) => {
@@ -130,35 +128,26 @@ export function LibraryProvider(props: {
     },
     [user, duplicateTrip, memberships],
   );
-  // const handleLeave = useCallback(
-  //   (id: string) => {
-  //     if (!user) return;
+  const handleLeave = useCallback(
+    (id: string) => {
+      const position = sharedMemberships.find(
+        (membership) => membership.tripId === id,
+      )?.tripPosition;
+      if (position === undefined) return;
 
-  //     const membershipClone = structuredClone(sharedMemberships);
-  //     const tripPosition = sharedMemberships.find((membership) => membership.tripId === id)?.tripPosition;
+      const filteredMemberships = sharedMemberships
+        .filter((membership) => membership.tripId !== id)
+        .map((membership) =>
+          membership.tripPosition > position
+            ? { ...membership, tripPosition: membership.tripPosition - 1 }
+            : membership,
+        );
 
-  //     if (tripPosition === undefined) return;
-
-  //     const updatedMemberships = sharedMemberships
-  //       .filter((membership) => membership.tripId !== id)
-  //       .map((membership) =>
-  //         membership.tripPosition > tripPosition ? { ...membership, tripPosition: membership.tripPosition - 1 } : membership,
-  //       );
-
-  //     setSharedMemberships(updatedMemberships);
-
-  //     leaveTripApi.mutate(
-  //       { tripId: id },
-  //       {
-  //         onError(error) {
-  //           console.error(error.message);
-  //           setSharedMemberships(membershipClone);
-  //         },
-  //       },
-  //     );
-  //   },
-  //   [user, leaveTripApi, sharedMemberships],
-  // );
+      setSharedMemberships(filteredMemberships);
+      leaveTrip.mutate({ tripId: id }, { onError: () => router.refresh() });
+    },
+    [leaveTrip, sharedMemberships, router],
+  );
   const handleDelete = useCallback(
     (id: string) => {
       const position = memberships.find((membership) => membership.tripId === id)?.tripPosition;
@@ -184,31 +173,24 @@ export function LibraryProvider(props: {
     setSharedMemberships(props.sharedMemberships);
   }, [props]);
 
-  // Handle saving state
-  useEffect(() => {
-    const isPending = createTrip.isPending || duplicateTrip.isPending || deleteTrip.isPending;
-    setSaving(isPending);
-  }, [createTrip.isPending, duplicateTrip.isPending, deleteTrip.isPending]);
-
   const value = useMemo(
     () => ({
-      userRole: props.userRole,
+      userRoleLimits: props.userRoleLimits,
       memberships,
       sharedMemberships,
       loadingTripId: loadingTripIdRef.current,
-      isSaving,
       createTrip: handleCreate,
       duplicateTrip: handleDuplicate,
-      // leaveTrip: handleLeave,
+      leaveTrip: handleLeave,
       deleteTrip: handleDelete,
     }),
     [
       memberships,
       sharedMemberships,
-      props.userRole,
-      isSaving,
+      props.userRoleLimits,
       handleCreate,
       handleDuplicate,
+      handleLeave,
       handleDelete,
     ],
   );

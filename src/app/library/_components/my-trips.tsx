@@ -6,7 +6,7 @@ import useLibraryContext from "./provider";
 import TripCards from "./trip-cards";
 
 export default function MyTrips() {
-  const { memberships, userRole, createTrip } = useLibraryContext();
+  const { memberships, userRoleLimits, createTrip } = useLibraryContext();
 
   return (
     <section className="mx-auto max-w-screen-lg space-y-5 py-5">
@@ -16,7 +16,7 @@ export default function MyTrips() {
         <TripCards memberships={memberships} />
 
         {/* Create Trip Modal */}
-        {memberships.length > userRole.membershipsLimit ? null : (
+        {memberships.length > userRoleLimits.membershipsLimit ? null : (
           <CreateTripModal
             onCreate={createTrip}
             buttonProps={{

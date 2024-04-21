@@ -1,12 +1,18 @@
-import { TRPCError } from "@trpc/server";
 import { and, eq, gt, sql } from "drizzle-orm";
 import { z } from "zod";
 
+import { error } from "~/lib/trpc";
 import { createId, encodePermissions } from "~/lib/utils";
 import { MemberPermissionsTemplate } from "~/lib/templates";
-import analyticsServerClient from "~/server/analytics";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { enforceMembershipLimit, enforceRateLimit } from "~/server/api/helpers";
+import analyticsServerClient from "~/server/analytics";
+import {
+  enforceMembershipLimit,
+  enforceRateLimit,
+  getMyMembershipsCount,
+  getTripMemberCount,
+  isUserMemberOfTrip,
+} from "~/server/queries";
 import {
   activities,
   events,
@@ -45,7 +51,6 @@ export const tripRouter = createTRPCRouter({
         properties: { tripId: trip.id },
       });
     }),
-
   duplicate: protectedProcedure
     .input(z.object({ id: z.string(), duplicateId: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -74,11 +79,9 @@ export const tripRouter = createTRPCRouter({
           },
         });
         if (!originalTrip) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message:
-              "We're sorry, but the trip you're trying to duplicate couldn't be found. Please try again later.",
-          });
+          throw error.internalServerError(
+            "Failed to fetch the trip you're trying to duplicate. Please try again later.",
+          );
         }
 
         // Insert the new trip
@@ -157,26 +160,26 @@ export const tripRouter = createTRPCRouter({
         }
       });
     }),
-
   delete: protectedProcedure
     .input(z.object({ tripId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { tripId } = input;
 
       await ctx.db.transaction(async (tx) => {
-        const membership = (await tx.query.memberships.findFirst({
+        const membership = await tx.query.memberships.findFirst({
           columns: { owner: true, tripPosition: true },
           where: and(eq(memberships.userId, ctx.user.id), eq(memberships.tripId, tripId)),
-        })) ?? { owner: false };
+        });
 
         if (!membership) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "Membership not found" });
+          throw error.internalServerError(
+            "Failed to fetch your membership of the trip you're trying to delete. Please try again later.",
+          );
         }
         if (!membership.owner) {
-          throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: "You need to be the owner of the trip to delete it",
-          });
+          throw error.unauthorized(
+            "You cannot delete a trip that you do NOT own. Please obtain ownership of the trip before attempting to delete it again.",
+          );
         }
 
         await tx
@@ -191,12 +194,142 @@ export const tripRouter = createTRPCRouter({
           );
         await tx
           .delete(trips)
-          .where(and(eq(trips.ownerId, ctx.user.id), eq(trips.id, input.tripId)));
+          .where(
+            and(
+              eq(trips.ownerId, ctx.user.id),
+              eq(trips.id, input.tripId),
+              eq(memberships.owner, true),
+            ),
+          );
       });
 
       analyticsServerClient.capture({
         distinctId: ctx.user.id,
         event: "delete trip",
+        properties: { tripId },
+      });
+    }),
+
+  findInvite: protectedProcedure
+    .input(z.object({ inviteCode: z.string() }))
+    .query(async ({ ctx, input }) => {
+      // Failed find return codes:
+      // Code 0 - Invalid Invite
+      // Code 1 - Unknown Invite
+      // Code 2 - Membership Limit
+
+      const { inviteCode } = input;
+
+      // Check if the invite code is invalid
+      if (inviteCode.length !== 8 || !/^[0-9A-Za-z]+$/.test(inviteCode)) return 0;
+
+      return ctx.db.transaction(async (tx) => {
+        const trip = await tx.query.trips.findFirst({
+          columns: {
+            id: true,
+            name: true,
+            startDate: true,
+            endDate: true,
+            image: true,
+            inviteCode: true,
+          },
+          where: eq(trips.inviteCode, inviteCode),
+        });
+
+        // Check if the invite code is unknown
+        if (!trip) return 1;
+
+        // Check if the user reached the membership limit
+        if (await enforceMembershipLimit(tx, ctx.user.id, true)) return 2;
+
+        const memberCount = await getTripMemberCount(tx, trip.id);
+        const isMember = await isUserMemberOfTrip(tx, ctx.user.id, trip.id);
+
+        return {
+          id: trip.id,
+          name: trip.name,
+          startDate: trip.startDate,
+          endDate: trip.endDate,
+          image: trip.image,
+          memberCount,
+          isMember,
+        };
+      });
+    }),
+  join: protectedProcedure
+    .input(z.object({ tripId: z.string(), permissions: z.number().optional() }))
+    .mutation(async ({ ctx, input }) => {
+      const { tripId, permissions } = input;
+
+      await ctx.db.transaction(async (tx) => {
+        await enforceMembershipLimit(tx, ctx.user.id);
+
+        const isMember = await isUserMemberOfTrip(tx, ctx.user.id, tripId);
+        if (isMember) throw error.badRequest("You're already a member of this trip");
+
+        // Get the number of shared memberships the user has to determine the trip position
+        const sharedMembershipsCount = await getMyMembershipsCount(tx, ctx.user.id, false);
+
+        await tx.insert(memberships).values({
+          tripId: tripId,
+          userId: ctx.user.id,
+          tripPosition: sharedMembershipsCount,
+          owner: false,
+          permissions: permissions ?? 0,
+        });
+      });
+
+      analyticsServerClient.capture({
+        distinctId: ctx.user.id,
+        event: "join trip",
+        properties: { tripId },
+      });
+    }),
+  leave: protectedProcedure
+    .input(z.object({ tripId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { tripId } = input;
+
+      await ctx.db.transaction(async (tx) => {
+        const membership = await tx.query.memberships.findFirst({
+          columns: { owner: true, tripPosition: true },
+          where: and(eq(memberships.userId, ctx.user.id), eq(memberships.tripId, tripId)),
+        });
+        if (!membership) {
+          throw error.internalServerError(
+            "Failed to fetch your membership of the trip you're trying to leave. Please try again later.",
+          );
+        }
+        if (membership.owner) {
+          throw error.unauthorized(
+            "You cannot leave a trip that you own. Please transfer ownership before trying again.",
+          );
+        }
+
+        await tx
+          .update(memberships)
+          .set({ tripPosition: sql`"trip_position" - 1` })
+          .where(
+            and(
+              eq(memberships.userId, ctx.user.id),
+              eq(memberships.owner, false),
+              gt(memberships.tripPosition, membership.tripPosition),
+            ),
+          );
+        await tx
+          .delete(memberships)
+          .where(
+            and(
+              eq(memberships.userId, ctx.user.id),
+              eq(memberships.tripId, tripId),
+              eq(memberships.owner, false),
+            ),
+          );
+      });
+
+      analyticsServerClient.capture({
+        distinctId: ctx.user.id,
+        event: "leave trip",
         properties: { tripId },
       });
     }),

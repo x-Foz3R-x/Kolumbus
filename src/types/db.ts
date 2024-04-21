@@ -27,8 +27,7 @@ export type MyMembership = Membership & {
   };
 };
 
-export type MyUserRole = {
-  role: string;
+export type UserRoleLimits = {
   membershipsLimit: number;
   daysLimit: number;
   eventsLimit: number;
