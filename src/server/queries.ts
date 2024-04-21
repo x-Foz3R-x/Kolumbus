@@ -98,15 +98,16 @@ export async function getMyUserRoleLimits(tx?: Transaction) {
 }
 
 export async function getMyMembershipsCount(tx: Transaction, userId: string, owner?: boolean) {
-  const [result] = owner
-    ? await tx
-        .select({ membershipsCount: count() })
-        .from(memberships)
-        .where(and(eq(memberships.userId, userId), eq(memberships.owner, owner)))
-    : await tx
-        .select({ membershipsCount: count() })
-        .from(memberships)
-        .where(eq(memberships.userId, userId));
+  const [result] =
+    owner !== undefined
+      ? await tx
+          .select({ membershipsCount: count() })
+          .from(memberships)
+          .where(and(eq(memberships.userId, userId), eq(memberships.owner, owner)))
+      : await tx
+          .select({ membershipsCount: count() })
+          .from(memberships)
+          .where(eq(memberships.userId, userId));
 
   if (!result) {
     throw error.internalServerError(
