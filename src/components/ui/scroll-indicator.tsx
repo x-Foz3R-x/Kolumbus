@@ -4,7 +4,7 @@ import { memo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { useOverflowObserver } from "~/hooks/use-overflow-observer";
-import { TRANSITION } from "~/lib/framer-motion";
+import { TRANSITION } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 
 type ScrollIndicatorProps = {

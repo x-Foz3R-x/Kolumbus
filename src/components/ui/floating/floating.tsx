@@ -22,7 +22,7 @@ import {
   type SizeOptions,
   size,
 } from "@floating-ui/react";
-import { TRANSITION } from "~/lib/framer-motion";
+import { TRANSITION } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 
 import { FloatingContext } from "./floating-context";

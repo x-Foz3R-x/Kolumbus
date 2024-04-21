@@ -5,7 +5,7 @@ import type {
   ShiftOptions,
   SizeOptions,
 } from "@floating-ui/react";
-import type { TRANSITION } from "~/lib/framer-motion";
+import type { TRANSITION } from "~/lib/motion";
 import type { ButtonProps } from "../button";
 
 export type MenuProps = {

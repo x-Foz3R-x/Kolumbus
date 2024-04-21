@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FloatingPortal } from "@floating-ui/react";
 import { useDroppable } from "@dnd-kit/core";
 
-import { EASING } from "~/lib/framer-motion";
+import { EASING } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 
 import { Icon } from "../ui";

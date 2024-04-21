@@ -26,7 +26,7 @@ import {
   type Side,
 } from "@floating-ui/react";
 import { SelectContext } from "./select-context";
-import { TRANSITION } from "~/lib/framer-motion";
+import { TRANSITION } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 
 import { Button, type ButtonProps } from "../button";

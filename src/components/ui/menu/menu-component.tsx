@@ -28,7 +28,7 @@ import {
   useTypeahead,
 } from "@floating-ui/react";
 import { cn } from "~/lib/utils";
-import { TRANSITION } from "~/lib/framer-motion";
+import { TRANSITION } from "~/lib/motion";
 import { MenuContext, useMenuContext } from "./menu-context";
 import type { MenuProps } from "./types";
 

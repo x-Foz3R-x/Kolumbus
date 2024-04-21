@@ -10,7 +10,7 @@ import isEqual from "lodash/isEqual";
 
 import { useDndItineraryContext } from "../dnd-context";
 import { EVENT_IMG_FALLBACK } from "~/lib/config";
-import { EASING } from "~/lib/framer-motion";
+import { EASING } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 import { Event } from "~/types";
 

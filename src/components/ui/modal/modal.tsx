@@ -12,7 +12,7 @@ import {
 } from "@floating-ui/react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ModalContext } from "./modal-context";
-import { TRANSITION } from "~/lib/framer-motion";
+import { TRANSITION } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 
 import { Button, type ButtonProps } from "../button";

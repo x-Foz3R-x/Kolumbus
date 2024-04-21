@@ -10,7 +10,7 @@ import {
 } from "framer-motion";
 import { FloatingArrow, FloatingPortal, type Side, useMergeRefs } from "@floating-ui/react";
 import type { VariantProps } from "class-variance-authority";
-import { TRANSITION } from "~/lib/framer-motion";
+import { TRANSITION } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 
 import { ButtonVariants } from ".";

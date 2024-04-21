@@ -3,7 +3,7 @@ import { memo, useRef, useState } from "react";
 import api from "~/app/_trpc/client";
 import { useDndItineraryContext } from "./dnd-context";
 import { EVENT_TEMPLATE } from "~/data/template-data";
-import { EASING } from "~/lib/framer-motion";
+import { EASING } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 import { LANGUAGES } from "~/types";
 

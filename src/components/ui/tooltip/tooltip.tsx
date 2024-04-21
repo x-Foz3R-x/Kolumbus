@@ -23,7 +23,7 @@ import type {
   UseFocusProps,
 } from "@floating-ui/react";
 import { TooltipContext } from "./tooltip-context";
-import type { TRANSITION } from "~/lib/framer-motion";
+import type { TRANSITION } from "~/lib/motion";
 
 export type TooltipProps = {
   open?: boolean;

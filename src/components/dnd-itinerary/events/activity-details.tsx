@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 import useHistoryState from "~/hooks/use-history-state";
 import { EVENT_IMG_FALLBACK } from "~/lib/config";
-import { EASING } from "~/lib/framer-motion";
+import { EASING } from "~/lib/motion";
 import { cn, os } from "~/lib/utils";
 import { Event } from "~/types";
 

@@ -13,7 +13,7 @@ import {
 } from "@floating-ui/react";
 import { z } from "zod";
 
-import { EASING, TRANSITION } from "~/lib/framer-motion";
+import { EASING, TRANSITION } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 import { KEYS } from "~/types";
 
