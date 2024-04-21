@@ -1,8 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
@@ -15,9 +13,6 @@ export async function GET(request: Request) {
 
   const getSrc = () => {
     if (maxWidth) {
-      console.log(
-        `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${imageRef}&maxwidth=${maxWidth}&key=${process.env.GOOGLE_KEY}`,
-      );
       return `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${imageRef}&maxwidth=${maxWidth}&key=${process.env.GOOGLE_KEY}`;
     } else if (maxHeight) {
       return `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${imageRef}&maxheight=${maxHeight}&key=${process.env.GOOGLE_KEY}`;
