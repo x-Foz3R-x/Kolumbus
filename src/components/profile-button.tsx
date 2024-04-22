@@ -7,11 +7,7 @@ import { SignedIn, useClerk, useUser } from "@clerk/nextjs";
 
 import { Divider, Icon } from "./ui";
 import { Menu, MenuLink, MenuOption } from "./ui/menu";
-
-const url =
-  process.env.NODE_ENV === "production"
-    ? "https://accounts.kolumbus.app/user"
-    : "https://tender-gelding-62.accounts.dev/user";
+import { accountUrl } from "~/lib/constants";
 
 type ProfileButtonProps = {
   size?: number;
@@ -63,7 +59,7 @@ export default function ProfileButton({ size = 32, dark }: ProfileButtonProps) {
       >
         <div className="flex w-full select-none flex-col items-center gap-1 p-2.5 pb-1">
           <Link
-            href={url}
+            href={accountUrl}
             className="relative h-14 w-14 overflow-hidden rounded-full shadow-borderXS duration-500 ease-kolumb-flow hover:shadow-2xl"
           >
             {user && (
@@ -82,7 +78,7 @@ export default function ProfileButton({ size = 32, dark }: ProfileButtonProps) {
 
         <Divider className="my-2 bg-gray-100 dark:bg-gray-800" />
 
-        <MenuLink label="my account" href={url}>
+        <MenuLink label="my account" href={accountUrl}>
           <Icon.userSettings className="ml-2 h-4 w-4" />
           My account
         </MenuLink>
