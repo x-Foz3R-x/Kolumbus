@@ -1,6 +1,8 @@
+import "~/styles/custom-cursor.css";
+
 import { Spinner } from "~/components/ui";
-import TopNav from "./_components/top-nav";
 import X from "~/components/ui/icons/x";
+import TopNav from "./_components/top-nav";
 import HeroFeature from "./_components/hero-feature";
 
 export default async function HomePage() {
