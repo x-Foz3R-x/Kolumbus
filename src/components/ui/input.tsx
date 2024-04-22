@@ -8,7 +8,7 @@ import { KEYS } from "~/types";
 import { type HTMLMotionProps, motion } from "framer-motion";
 
 const InputVariants = cva(
-  "peer w-full appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
+  "peer w-full appearance-none text-gray-800 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
   {
     variants: {
       variant: {

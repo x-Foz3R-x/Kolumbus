@@ -210,7 +210,7 @@ export function Select({
                       exit="exit"
                       variants={variants}
                       className={cn(
-                        "flex flex-col overflow-y-auto overflow-x-hidden rounded-xl border bg-white p-1.5 font-inter shadow-floating dark:border-gray-700 dark:bg-gray-900 dark:text-white",
+                        "flex flex-col overflow-y-auto overflow-x-hidden rounded-xl border bg-white p-1.5 font-inter shadow-floating dark:border-gray-700 dark:bg-gray-800 dark:text-white",
                         className,
                       )}
                     >

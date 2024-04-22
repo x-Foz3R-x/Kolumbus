@@ -7,7 +7,7 @@ import { z } from "zod";
 import { cn } from "~/lib/utils";
 
 const TextAreaVariants = cva(
-  "block w-full resize-none appearance-none text-gray-900 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
+  "block w-full resize-none appearance-none text-gray-800 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
   {
     variants: {
       variant: {

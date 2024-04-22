@@ -155,7 +155,7 @@ export const Activity = memo(function Activity({
           </div>
 
           {/* Name */}
-          <div className="group relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-900">
+          <div className="group relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
             <div ref={nameScrollRef} className="w-full select-none">
               {activity.name}
               <ScrollIndicator
@@ -169,7 +169,7 @@ export const Activity = memo(function Activity({
                 onClick={() => navigator.clipboard.writeText(activity.name)}
                 variant="unset"
                 size="unset"
-                className="absolute inset-y-0 right-0 z-10 fill-gray-500 px-2 opacity-0 duration-300 ease-kolumb-out hover:fill-gray-900 group-hover:opacity-100 group-hover:ease-kolumb-flow"
+                className="absolute inset-y-0 right-0 z-10 fill-gray-500 px-2 opacity-0 duration-300 ease-kolumb-out hover:fill-gray-800 group-hover:opacity-100 group-hover:ease-kolumb-flow"
               >
                 <Icon.copy className="pointer-events-none relative z-10 m-auto h-3" />
 

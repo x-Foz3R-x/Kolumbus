@@ -55,7 +55,7 @@ export const ScrollIndicator = memo(function ScrollIndicator({
         aria-hidden
         style={style}
         className={cn(
-          "pointer-events-none absolute select-none from-white to-transparent dark:from-gray-900",
+          "pointer-events-none absolute select-none from-white to-transparent dark:from-gray-800",
           vertical ? "bg-gradient-to-b" : "bg-gradient-to-r",
           customStyles,
         )}
@@ -79,7 +79,7 @@ export const ScrollIndicator = memo(function ScrollIndicator({
         aria-hidden
         style={style}
         className={cn(
-          "pointer-events-none absolute select-none from-white to-transparent dark:from-gray-900",
+          "pointer-events-none absolute select-none from-white to-transparent dark:from-gray-800",
           vertical ? "bg-gradient-to-t" : "bg-gradient-to-l",
           customStyles,
         )}

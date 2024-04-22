@@ -1,6 +1,4 @@
-type SvgProps = React.SVGAttributes<SVGElement>;
-
-// name: ({ ...props }: SvgProps) => (),
+import type { SvgProps } from "~/types";
 
 export const Icon = {
   appearance: ({ ...props }: SvgProps) => (

@@ -3,7 +3,7 @@ import "~/styles/spinners.css";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/lib/utils";
 
-const SpinnerVariants = cva("fill-gray-900 pointer-events-none select-none", {
+const SpinnerVariants = cva("fill-gray-800 pointer-events-none select-none", {
   variants: {
     size: {
       xs: "h-4 w-4",

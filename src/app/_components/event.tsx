@@ -29,7 +29,7 @@ export default function Event({ event, className }: { event: Event; className?: 
       </div>
 
       {/* Name */}
-      <div className="relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-900">
+      <div className="relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
         <div ref={scrollRef} className="w-full select-none">
           {event.name}
           <ScrollIndicator scrollRef={scrollRef} />

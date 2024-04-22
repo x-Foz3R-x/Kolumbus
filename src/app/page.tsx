@@ -17,6 +17,8 @@ export default async function HomePage() {
         <Spinner.default className="fill-slate-500" />
         <X size={48} strokeWidth={3} />
         <HeroFeature />
+        <div className="h-screen">test</div>
+        <div className="h-screen">test</div>
       </main>
     </>
   );

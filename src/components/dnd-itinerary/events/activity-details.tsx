@@ -194,7 +194,7 @@ export const ActivityDetails = memo(function ActivityDetails({
 
         {/* Name */}
         <motion.div
-          className="group relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-900"
+          className="group relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800"
           initial={{ height: "24px", marginTop: "2px", fontSize: "14px" }}
           animate={{ height: "44px", marginTop: "0px", fontSize: "16px" }}
           exit={{ height: "24px", marginTop: "2px", fontSize: "14px" }}

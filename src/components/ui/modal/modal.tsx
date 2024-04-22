@@ -18,7 +18,7 @@ import { cn } from "~/lib/utils";
 import { Button, type ButtonProps } from "../button";
 
 const ModalVariants = cva(
-  "mx-3 overflow-hidden rounded-xl border bg-white font-inter shadow-floating dark:border-gray-700 dark:bg-gray-900 dark:text-white",
+  "mx-3 overflow-hidden rounded-xl border bg-white font-inter shadow-floating dark:border-gray-700 dark:bg-gray-800 dark:text-white",
   {
     variants: {
       size: {

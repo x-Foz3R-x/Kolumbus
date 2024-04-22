@@ -4,7 +4,7 @@ export { Button } from "./button";
 export type { ButtonProps } from "./button";
 
 export const ButtonVariants = cva(
-  "group peer select-none text-gray-900 outline-0 dark:text-white",
+  "group peer select-none text-gray-800 outline-0 dark:text-white",
   {
     variants: {
       variant: {
@@ -22,7 +22,7 @@ export const ButtonVariants = cva(
       size: {
         default: "rounded-lg px-3 py-1.5 text-sm before:rounded-lg",
         sm: "rounded-md px-2.5 py-1 text-xs before:rounded-md",
-        lg: "rounded-xl px-4 py-2 text-base before:rounded-xl",
+        lg: "rounded-xl px-4 py-1.5 text-base before:rounded-xl",
         icon: "aspect-square rounded-lg p-1.5 text-base before:rounded-lg",
         unset: null,
       },

@@ -5,15 +5,13 @@ import ProfileButton from "~/components/profile-button";
 
 export default function TopNav() {
   return (
-    <nav className="sticky inset-x-0 top-0 z-50 h-14 bg-white bg-white/80 backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
+    <nav className="sticky inset-x-0 top-0 z-50 h-14 bg-white bg-white/80 font-belanosima backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
       <div className="mx-auto flex h-full w-full max-w-screen-2xl items-center justify-between overflow-hidden px-8">
-        <div className="h-16 flex-shrink-0 px-2 py-5">
-          <Link href="/" title="Homepage" aria-label="Homepage">
-            <Icon.logo className="m-auto h-6 fill-gray-900" />
-          </Link>
-        </div>
+        <Link href="/" title="Homepage" aria-label="Homepage">
+          <Icon.logo className="m-auto h-6 fill-gray-800" />
+        </Link>
 
-        <section className="flex h-14 flex-shrink-0 items-center justify-end gap-4 font-belanosima">
+        <section className="flex h-14 flex-shrink-0 items-center justify-end gap-4">
           <div className="flex">
             <Link
               href="/library"

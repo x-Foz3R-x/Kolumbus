@@ -8,7 +8,7 @@ import ProfileButton from "~/components/profile-button";
 
 export default function TopNav() {
   return (
-    <nav className="apply-custom-cursor fixed inset-x-0 top-0 z-50 flex h-16 justify-center font-belanosima font-medium">
+    <nav className="apply-custom-cursor fixed inset-x-0 top-0 z-50 flex h-16 justify-center font-belanosima">
       <div className="relative z-50 flex w-full max-w-screen-2xl items-center justify-between px-8">
         <div className="z-50 hidden flex-1 items-center sm:flex">
           <Link
@@ -31,15 +31,14 @@ export default function TopNav() {
           className="hidden h-16 flex-shrink-0 origin-top px-2 py-1 sm:block"
         >
           <Link href="/" title="Homepage" aria-label="Homepage">
-            <Icon.logoVertical className="m-auto h-20 fill-gray-900" />
+            <Icon.logoVertical className="m-auto h-20 fill-gray-800" />
           </Link>
         </ScrollAnimation>
 
         {/* logo when sm */}
         <div className="h-16 flex-shrink-0 px-2 py-5 sm:hidden">
           <Link href="/" title="Homepage" aria-label="Homepage">
-            <Icon.logo className="m-auto h-6 fill-gray-900" />
-            Logo
+            <Icon.logo className="m-auto h-6 fill-gray-800" />
           </Link>
         </div>
 
