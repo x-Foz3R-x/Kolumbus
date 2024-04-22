@@ -12,16 +12,17 @@ export default function Contact() {
   const copyEmailToClipboard = () => navigator.clipboard.writeText(email);
 
   return (
-    <div className="mx-auto flex max-w-screen-2xl flex-col items-center gap-2 space-y-4 p-8">
-      <div className="mx-auto flex max-w-screen-2xl flex-col items-center gap-2">
+    <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-center gap-10 p-10">
+      <div className="space-y-2">
         <h1 className="text-lg font-bold">Get in Touch</h1>
-        <p className="text-center">
-          Have a question, suggestion, or found a bug? Maybe you just want to say hi? <br />
+        <p>
+          Have a question, suggestion, or found a bug? <br />
+          Maybe you just want to say hi? <br />
           Don’t hesitate to reach out!
         </p>
       </div>
 
-      <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-center gap-4">
+      <div className="space-y-4">
         <DiscordWidget data={discordServer} />
 
         <div className="flex w-80 flex-col items-center justify-center rounded-lg bg-gray-700 p-6 shadow-2xl">
