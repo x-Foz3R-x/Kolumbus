@@ -1,13 +1,13 @@
-import { getMyMemberships, getMyUserRoleLimits } from "~/server/queries";
+import { getMyUserRoleLimits } from "~/server/queries";
 
 import { LibraryProvider } from "./_components/provider";
 import MyTrips from "./_components/my-trips";
 import SharedTrips from "./_components/shared-trips";
+import { api } from "~/trpc/server";
 
 export default async function Library() {
   const userRoleLimits = await getMyUserRoleLimits();
-  const memberships = await getMyMemberships();
-  if (!userRoleLimits || !memberships) return null;
+  const memberships = await api.membership.getMy();
 
   const myMemberships = memberships.filter((membership) => membership.owner);
   const sharedMemberships = memberships.filter((membership) => !membership.owner);

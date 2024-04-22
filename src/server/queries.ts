@@ -1,7 +1,7 @@
 import "server-only";
 
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, inArray, sql, type TablesRelationalConfig } from "drizzle-orm";
+import { and, count, eq, inArray, type TablesRelationalConfig } from "drizzle-orm";
 import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
 import { auth } from "@clerk/nextjs/server";
 import ratelimit from "./ratelimit";
@@ -16,58 +16,6 @@ const validRoles = ["explorer", "navigator", "captain", "fleetCommander", "teste
 /*--------------------------------------------------------------------------------------------------
  * Read
  *------------------------------------------------------------------------------------------------*/
-
-export async function getMyMemberships() {
-  const userId = getUserId();
-
-  const memberships = await db.transaction(async (tx) => {
-    const memberships = await tx.query.memberships.findMany({
-      where: (memberships) => eq(memberships.userId, userId),
-      orderBy: (memberships, { asc }) => asc(memberships.tripPosition),
-      with: {
-        trip: {
-          columns: { name: true, startDate: true, endDate: true, image: true },
-          with: {
-            events: {
-              columns: {},
-              limit: 3,
-              where: (events) => eq(events.type, "ACTIVITY"),
-              extras: {
-                images: sql<
-                  string[] | null
-                >`(SELECT "activities"."images" FROM "activities" WHERE "activities"."event_id" = ${events.id})`.as(
-                  "images",
-                ),
-                imageIndex:
-                  sql<number>`(SELECT "activities"."image_index" FROM "activities" WHERE "activities"."event_id" = ${events.id})`.as(
-                    "imageIndex",
-                  ),
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (memberships.length === 0) return [];
-
-    const tripIds = memberships.map((membership) => membership.tripId);
-    const eventCountByTripId = await tx
-      .select({ tripId: events.tripId, eventCount: count() })
-      .from(events)
-      .where(inArray(events.tripId, tripIds))
-      .groupBy(events.tripId);
-
-    return memberships.map((membership) => {
-      const eventCount =
-        eventCountByTripId.find((eventCount) => eventCount.tripId === membership.tripId)
-          ?.eventCount ?? 0;
-      return { ...membership, trip: { ...membership.trip, eventCount } };
-    });
-  });
-
-  return memberships;
-}
 
 export async function getMyUserRoleLimits(tx?: Transaction) {
   const userRole = getUserRole();
@@ -131,6 +79,22 @@ export async function getTripMemberCount(tx: Transaction, tripId: string) {
   }
 
   return result.memberCount;
+}
+
+export async function getTripsEventCount(tx: Transaction, tripIds: string[]) {
+  const result = await tx
+    .select({ tripId: events.tripId, eventCount: count() })
+    .from(events)
+    .where(inArray(events.tripId, tripIds))
+    .groupBy(events.tripId);
+
+  return result.reduce(
+    (acc, item) => {
+      acc[item.tripId] = item.eventCount;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 }
 
 export async function isUserMemberOfTrip(tx: Transaction, userId: string, tripId: string) {
