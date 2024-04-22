@@ -63,9 +63,7 @@ export default {
         "kolumb-out": "cubic-bezier(0.885, 0.175, 0.5, 1)",
       },
       boxShadow: {
-        none: "0 0 #000000",
         border: "0 0 0 1px hsl(232, 9%, 90%)",
-        borderDark: "0 0 0 1px hsl(232, 9%, 34%)",
         borderError: "0 0 0 1px hsla(354, 90%, 60%)",
         focus: "0 0 0 1px hsla(210, 78%, 60%), 0 0 0 3px hsla(210, 78%, 60%, 0.3)",
         focusError: "0 0 0 1px hsla(354, 90%, 60%), 0 0 0 3px hsla(354, 90%, 60%, 0.3)",
@@ -79,7 +77,7 @@ export default {
           "0 2px 4px rgba(0,0,0,0.05), 0 2px 10px rgba(0,0,0,0.15), 0 -1px 0 rgba(0,0,0,0.02)",
 
         button:
-          "0px 0px 0px 1px rgba(0,0,0,0.05), 0px 2px 4px rgba(0,0,0,0.1), 0px 5px 10px rgba(0,0,0,0.05)",
+          "0 0px 0px 1px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05)",
         select:
           "0 0px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.01), 0 5px 6px rgba(0,0,0,0.01), 0 6px 8px rgba(0,0,0,0.01)",
 
