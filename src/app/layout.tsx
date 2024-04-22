@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <CSPostHogProvider>
         <html lang="en">
           <body className={cn(inter.variable, belanosima.variable, inconsolata.variable)}>
-            <div className="min-h-screen scroll-smooth text-pretty fill-gray-900 font-inter text-gray-900 antialiased">
+            <div className="min-h-screen scroll-smooth text-pretty fill-gray-800 font-inter text-gray-800 antialiased">
               <TRPCReactProvider>{children}</TRPCReactProvider>
             </div>
 
