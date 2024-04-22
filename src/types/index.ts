@@ -1,4 +1,7 @@
 export * from "./db";
+export * from "./discord";
+
+export type SvgProps = React.SVGAttributes<SVGElement>;
 
 export type UserRole = "explorer" | "navigator" | "captain" | "fleetCommander" | "tester" | "admin";
 
