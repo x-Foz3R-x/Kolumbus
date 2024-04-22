@@ -8,7 +8,7 @@ export default async function HomePage() {
     <>
       <TopNav />
 
-      <main className="flex min-h-screen flex-col items-center justify-center font-belanosima">
+      <main className="apply-custom-cursor flex min-h-screen flex-col items-center justify-center font-belanosima">
         Kolumbus
         <Spinner.resize className="stroke-kolumblue-500" />
         <Spinner.background className="fill-slate-500" />

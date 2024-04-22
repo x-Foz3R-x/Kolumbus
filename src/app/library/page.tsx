@@ -5,6 +5,8 @@ import MyTrips from "./_components/my-trips";
 import SharedTrips from "./_components/shared-trips";
 import { api } from "~/trpc/server";
 
+import "~/styles/custom-cursor.css";
+
 export default async function Library() {
   const userRoleLimits = await getMyUserRoleLimits();
   const memberships = await api.membership.getMy();
