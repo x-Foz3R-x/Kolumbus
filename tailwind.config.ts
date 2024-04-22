@@ -13,9 +13,6 @@ export default {
         inconsolata: "var(--font-inconsolata)",
         belanosima: "var(--font-belanosima)",
       },
-      width: { 4.5: "1.125rem" },
-      height: { 4.5: "1.125rem" },
-      padding: { 4.5: "1.125rem" },
       colors: {
         kolumblue: {
           50: "hsl(210, 78%, 98%)",
@@ -87,44 +84,20 @@ export default {
           "0 0px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.01), 0 5px 6px rgba(0,0,0,0.01), 0 6px 8px rgba(0,0,0,0.01)",
 
         xs: "0 1px 2px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.01), 0 2px 3px rgba(0,0,0,0.01)",
-        sm: "0 2px 2px rgba(0,0,0,0.02), 0 3px 3px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02)",
-        smI: "0 -2px 2px rgba(0,0,0,0.01), 0 -3px 3px rgba(0,0,0,0.02), 0 -4px 4px rgba(0,0,0,0.01)",
         md: "0 0 5px rgba(0,0,0,0.05), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02), 0 8px 8px rgba(0,0,0,0.02), 0 12px 12px rgba(0,0,0,0.01)",
         lg: "0 0 5px rgba(0,0,0,0.05), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02), 0 8px 8px rgba(0,0,0,0.02), 0 12px 12px rgba(0,0,0,0.01)",
         xl: "0 0 5px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02), 0 8px 8px rgba(0,0,0,0.02), 0 16px 16px rgba(0,0,0,0.02)",
         "2xl":
           "0 0 5px rgba(0,0,0,0.05), 0 2px 2px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 8px 8px rgba(0,0,0,0.03), 0 12px 12px rgba(0,0,0,0.03), 0 16px 16px rgba(0,0,0,0.03)",
-        "3xl":
-          "0 0 5px rgba(0,0,0,0.1), 0 2px 2px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 8px 8px rgba(0,0,0,0.03), 0 12px 12px rgba(0,0,0,0.03), 0 16px 16px rgba(0,0,0,0.05), 0 20px 20px rgba(0,0,0,0.03), 0 24px 24px rgba(0,0,0,0.02)",
-
-        splashXL:
-          "0 0 5px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 8px 8px rgba(0,0,0,0.03), 0 16px 16px rgba(0,0,0,0.03), 0 24px 24px rgba(0,0,0,0.02), 4px 0 4px rgba(0,0,0,0.02), 8px 0 8px rgba(0,0,0,0.02), -4px 0 4px rgba(0,0,0,0.02), -8px 0 8px rgba(0,0,0,0.02)",
 
         borderXS:
           "0 0 0 1px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.01), 0 2px 3px rgba(0,0,0,0.01)",
         borderXL:
           "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02), 0 8px 8px rgba(0,0,0,0.02), 0 16px 16px rgba(0,0,0,0.02)",
-        border2XL:
-          "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(0,0,0,0.03), 0 2px 2px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 8px 8px rgba(0,0,0,0.03), 0 12px 12px rgba(0,0,0,0.03), 0 16px 16px rgba(0,0,0,0.03)",
-        border3XL:
-          "0 0 0 1px hsl(232, 9%, 90%), 0 0 5px rgba(0,0,0,0.1), 0 2px 2px rgba(0,0,0,0.05), 0 4px 4px rgba(0,0,0,0.05), 0 8px 8px rgba(0,0,0,0.05), 0 12px 12px rgba(0,0,0,0.05), 0 16px 16px rgba(0,0,0,0.05), 0 20px 20px rgba(0,0,0,0.05), 0 24px 24px rgba(0,0,0,0.05)",
-
-        borderXLDark:
-          "0 0 0 1px hsl(232, 9%, 34%), 0 0 5px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02), 0 8px 8px rgba(0,0,0,0.02), 0 16px 16px rgba(0,0,0,0.02)",
-        border2XLDark:
-          "0 0 0 1px hsl(232, 9%, 34%), 0 0 5px rgba(0,0,0,0.03), 0 2px 2px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 8px 8px rgba(0,0,0,0.03), 0 12px 12px rgba(0,0,0,0.03), 0 16px 16px rgba(0,0,0,0.03)",
-        border3XLDark:
-          "0 0 0 1px hsl(232, 9%, 34%), 0 0 5px rgba(0,0,0,0.1), 0 2px 2px rgba(0,0,0,0.05), 0 4px 4px rgba(0,0,0,0.05), 0 8px 8px rgba(0,0,0,0.05), 0 12px 12px rgba(0,0,0,0.05), 0 16px 16px rgba(0,0,0,0.05), 0 20px 20px rgba(0,0,0,0.05), 0 24px 24px rgba(0,0,0,0.05)",
 
         borderSplashXl:
           "0 0 0 1px hsla(232, 9%, 90%, 0.4), 0 0 5px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 8px 8px rgba(0,0,0,0.03), 0 16px 16px rgba(0,0,0,0.03), 0 24px 24px rgba(0,0,0,0.02), 4px 0 4px rgba(0,0,0,0.02), 8px 0 8px rgba(0,0,0,0.02), -4px 0 4px rgba(0,0,0,0.02), -8px 0 8px rgba(0,0,0,0.02)",
 
-        insetSm:
-          "inset 0 0px 5px rgba(0,0,0,.02), inset 0 1px 1px rgba(0,0,0,.02), inset 0 1px 2px rgba(0,0,0,.02), inset 0 2px 4px rgba(0,0,0,.02)",
-        inset:
-          "inset 0 0px 5px rgba(0,0,0,.02), inset 0 1px 1px rgba(0,0,0,.02), inset 0 1px 2px rgba(0,0,0,.02), inset 0 2px 4px rgba(0,0,0,.02), inset 0 3px 6px rgba(0,0,0,.02), inset 0 4px 8px rgba(0,0,0,.02)",
-
-        kolumblue: "0 1px 2px 1px hsla(210, 78%, 90%, 0.1), 0 2px 4px rgba(0,0,0,.06)",
         kolumblueInset:
           "inset 0 0px 5px rgba(0,0,0,.02), inset 0 1px 1px hsla(210, 78%, 75%, 0.1), inset 0 1px 2px rgba(0,0,0,.02), inset 0 2px 4px rgba(0,0,0,.02), inset 0 3px 6px rgba(0,0,0,.02), inset 0 4px 8px hsla(210, 78%, 90%, 0.1)",
         kolumblueSelected:

@@ -65,7 +65,7 @@ export default function TopNav() {
             </Link>
             <Link
               href="/sign-up"
-              className="block w-fit select-none text-nowrap rounded-xl bg-kolumblue-500 px-4.5 py-2 font-belanosima font-semibold text-white shadow-lg"
+              className="block w-fit select-none text-nowrap rounded-xl bg-kolumblue-500 px-4 py-2 font-belanosima font-semibold text-white shadow-lg"
             >
               Start Your Adventure
             </Link>
