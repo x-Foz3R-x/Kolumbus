@@ -14,7 +14,6 @@ export default function TopNav() {
         </div>
 
         <section className="flex h-14 flex-shrink-0 items-center justify-end gap-4 font-belanosima">
-          {/* Link Group */}
           <div className="flex">
             <Link
               href="/library"

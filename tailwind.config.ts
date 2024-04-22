@@ -4,7 +4,7 @@ import plugin from "tailwindcss/plugin";
 import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 
 export default {
-  content: ["./src/**/*.tsx"],
+  content: ["./src/**/*.{js,ts,tsx}"],
   darkMode: "selector",
   theme: {
     extend: {
