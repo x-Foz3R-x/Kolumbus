@@ -37,10 +37,8 @@ export const externalRouter = createTRPCRouter({
       return response;
     }),
   discordServer: publicProcedure.output(DiscordServerResponseSchema).query(async () => {
-    const response = (await (
-      await fetch("https://discord.com/api/guilds/1231931806396448859/widget.json")
+    return (await (
+      await fetch("https://discord.com/api/v9/invites/UH5BP8Hy8z?with_counts=true")
     ).json()) as DiscordServerResponse;
-
-    return response;
   }),
 });

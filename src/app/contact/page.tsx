@@ -24,8 +24,6 @@ export default function Contact() {
       <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-center gap-4">
         <DiscordWidget data={discordServer} />
 
-        {/* <span>or</span> */}
-
         <div className="flex w-80 flex-col items-center justify-center rounded-lg bg-gray-700 p-6 shadow-2xl">
           <div>
             <h2 className="w-full font-bold text-gray-100">Drop me an Email</h2>
