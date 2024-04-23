@@ -2,7 +2,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
 
-import { ButtonVariants, Icon } from "~/components/ui";
+import { ButtonVariants, Icons } from "~/components/ui";
 import ProfileButton from "~/components/profile-button";
 
 export default function GlobalTopNav() {
@@ -22,12 +22,12 @@ export default function GlobalTopNav() {
         </section>
 
         <Link href="/" title="Homepage" aria-label="Homepage" className="hidden sm:block">
-          <Icon.logoVertical className="m-auto h-12 fill-gray-800" />
+          <Icons.logoVertical className="m-auto h-12 fill-gray-800" />
         </Link>
 
         {/* logo when sm */}
         <Link href="/" title="Homepage" aria-label="Homepage" className="sm:hidden">
-          <Icon.logo className="m-auto h-6 fill-gray-800" />
+          <Icons.logo className="m-auto h-6 fill-gray-800" />
         </Link>
 
         <section className="flex flex-1 items-center justify-end gap-4">
@@ -42,7 +42,7 @@ export default function GlobalTopNav() {
           </SignedIn>
           <SignedOut>
             <Link
-              href="/sign-in"
+              href="/signin"
               className={cn(
                 ButtonVariants({ variant: "scale", size: "lg" }),
                 "flex items-center gap-2 before:bg-gray-100",
@@ -51,7 +51,7 @@ export default function GlobalTopNav() {
               Sign in
             </Link>
             <Link
-              href="/sign-up"
+              href="/signup"
               className="block w-fit select-none text-nowrap rounded-xl bg-kolumblue-500 px-4 py-2 font-belanosima font-semibold text-white shadow-lg"
             >
               Start Your Adventure

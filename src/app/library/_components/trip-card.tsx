@@ -8,7 +8,7 @@ import { format } from "date-fns";
 import { tripFallbackUrl } from "~/lib/constants";
 import { differenceInDays, cn } from "~/lib/utils";
 
-import { Icon, ScrollIndicator } from "~/components/ui";
+import { Icons, ScrollIndicator } from "~/components/ui";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
 import { ConfirmTripDelete } from "./confirm-trip-delete";
 import { ConfirmTripLeave } from "./confirm-trip-leave";
@@ -100,7 +100,7 @@ const TripCard = memo(function TripCard({
           variant: "unset",
           size: "icon",
           className: "absolute bottom-3.5 right-1 z-40 rotate-90 rounded-full p-3 hover:bg-gray-50",
-          children: <Icon.horizontalDots className="w-4 overflow-visible" />,
+          children: <Icons.horizontalDots className="w-4 overflow-visible" />,
         }}
       >
         <MenuLink label="open" href={`/t/${trip.id}`}>

@@ -1,18 +1,17 @@
 import Link from "next/link";
 import { cn } from "~/lib/utils";
-import { ButtonVariants, Icon } from "~/components/ui";
+import { ButtonVariants, Icons } from "~/components/ui";
+import HomepageLink from "~/components/homepage-link";
 
 export default function page() {
   return (
     <>
       <nav className="fixed left-0 right-0 top-0 z-10 flex h-14 items-center justify-center bg-white shadow-xs">
-        <Link href="/" title="Homepage" aria-label="Homepage">
-          <Icon.logo className="h-6" />
-        </Link>
+        <HomepageLink />
       </nav>
       <main className="mt-14 flex flex-col items-center gap-6 p-8">
         <Link href="/playground" title="Playground" aria-label="Playground">
-          <Icon.playground className="h-12" />
+          <Icons.playground className="h-12" />
         </Link>
 
         <div className="space-y-2 text-center font-belanosima">

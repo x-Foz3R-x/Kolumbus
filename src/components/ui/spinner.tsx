@@ -25,6 +25,7 @@ export const Spinner = {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
+        aria-hidden="true"
         className={cn(SpinnerVariants({ size, className }))}
       >
         <path
@@ -40,6 +41,7 @@ export const Spinner = {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
+        aria-hidden="true"
         className={cn(SpinnerVariants({ size, className }))}
       >
         <path
@@ -60,6 +62,7 @@ export const Spinner = {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         stroke="#000"
+        aria-hidden="true"
         className={cn(SpinnerVariants({ size, className }), "spinner-resize-animation")}
       >
         <circle cx="12" cy="12" r="9.5" fill="none" strokeWidth="3" />

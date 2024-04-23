@@ -14,7 +14,7 @@ import { EASING } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 import { Event } from "~/types";
 
-import { Button, Icon, ScrollIndicator } from "../../ui";
+import { Button, Icons, ScrollIndicator } from "../../ui";
 import { ActivityUIOverlay } from "./activity-ui-overlay";
 import { ActivityDetails } from "./activity-details";
 
@@ -171,7 +171,7 @@ export const Activity = memo(function Activity({
                 size="unset"
                 className="absolute inset-y-0 right-0 z-10 fill-gray-500 px-2 opacity-0 duration-300 ease-kolumb-out hover:fill-gray-800 group-hover:opacity-100 group-hover:ease-kolumb-flow"
               >
-                <Icon.copy className="pointer-events-none relative z-10 m-auto h-3" />
+                <Icons.copy className="pointer-events-none relative z-10 m-auto h-3" />
 
                 <span
                   aria-hidden

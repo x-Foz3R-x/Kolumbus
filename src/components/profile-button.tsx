@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SignedIn, useClerk, useUser } from "@clerk/nextjs";
 
-import { Divider, Icon } from "./ui";
+import { Divider, Icons } from "./ui";
 import { Menu, MenuLink, MenuOption } from "./ui/menu";
 import { accountUrl } from "~/lib/constants";
 
@@ -79,29 +79,24 @@ export default function ProfileButton({ size = 32, dark }: ProfileButtonProps) {
         <Divider className="my-2 bg-gray-100 dark:bg-gray-800" />
 
         <MenuLink label="my account" href={accountUrl}>
-          <Icon.userSettings className="ml-2 h-4 w-4" />
+          <Icons.userSettings className="ml-2 h-4 w-4" />
           My account
         </MenuLink>
-        {/* <MenuOption label="switch account" disabled>
-        <Icon.userSwitch className="ml-2 h-4 w-4" />
-        Switch account
-        <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
-      </MenuOption> */}
         <MenuOption label="appearance" disabled>
-          <Icon.appearance className="ml-2 h-4 w-4" />
+          <Icons.appearance className="ml-2 h-4 w-4" />
           Appearance
-          <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
+          <Icons.chevron className="ml-auto mr-1 w-3 -rotate-90" />
         </MenuOption>
         <MenuOption label="language" disabled>
-          <Icon.globe className="ml-2 h-4 w-4" />
+          <Icons.globe className="ml-2 h-4 w-4" />
           Language
-          <Icon.chevron className="ml-auto mr-1 w-3 -rotate-90" />
+          <Icons.chevron className="ml-auto mr-1 w-3 -rotate-90" />
         </MenuOption>
 
         <Divider className="my-2 bg-gray-100 dark:bg-gray-800" />
 
         <MenuOption label="sign out" onClick={handleSignOut}>
-          <Icon.signOut className="ml-2 h-4 w-4" />
+          <Icons.signOut className="ml-2 h-4 w-4" />
           Sign out
         </MenuOption>
       </Menu>

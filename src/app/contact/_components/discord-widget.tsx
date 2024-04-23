@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cn } from "~/lib/utils";
 import type { DiscordServerResponse } from "~/types";
 
-import { addDotAfter, Skeleton } from "~/components/ui";
+import { dotDivider, Skeleton } from "~/components/ui";
 import Discord from "~/components/ui/icons/discord";
 
 export default function DiscordWidget(props: { data?: DiscordServerResponse }) {
@@ -20,7 +20,7 @@ export default function DiscordWidget(props: { data?: DiscordServerResponse }) {
 
         {props.data ? (
           <div className="flex w-full justify-center text-xs font-medium text-gray-300">
-            <span className={addDotAfter()}>
+            <span className={dotDivider()}>
               {memberCount} Total {memberCount === 1 ? "Member" : "Members"}
             </span>
             <span>

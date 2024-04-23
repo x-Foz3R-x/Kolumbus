@@ -1,13 +1,15 @@
 import "~/styles/globals.css";
 
-import { Inter, Inconsolata, Belanosima } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { cn } from "~/lib/utils";
-import { Toaster } from "~/components/ui/toast";
+import { Inter, Inconsolata, Belanosima } from "next/font/google";
+import type { Metadata } from "next/types";
 
+import { absoluteUrl, cn } from "~/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CSPostHogProvider } from "./_analytics/provider";
 import { TRPCReactProvider } from "~/trpc/react";
+import { Toaster } from "~/components/ui/toast";
+import { siteConfig } from "~/config/site";
 
 export const inter = Inter({
   subsets: ["latin", "greek", "cyrillic"],
@@ -26,11 +28,32 @@ export const belanosima = Belanosima({
   display: "swap",
 });
 
-export const metadata = {
-  title: "Kolumbus",
-  description:
-    "Travel Planning Made Simple and Fun! Discover the power of Kolumbus and transform your travel planning process. Build your itinerary, navigate your journey with map, manage your travel expenses, and organize your packing list. Your next adventure is just a few clicks away. Start your adventure with Kolumbus today.",
+export const metadata: Metadata = {
+  metadataBase: new URL(absoluteUrl("/")),
+  title: {
+    default: siteConfig.name,
+    template: `%s - ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: [
+    "nextjs",
+    "react",
+    "react server components",
+    "skateshop",
+    "skateboarding",
+    "kickflip",
+  ],
+  creator: "Foz3R",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+  },
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  manifest: absoluteUrl("/site.webmanifest"),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

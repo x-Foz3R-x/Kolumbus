@@ -1,6 +1,15 @@
 export * from "./db";
 export * from "./discord";
 
+export type FooterItem = {
+  title: string;
+  items: {
+    title: string;
+    href: string;
+    external?: boolean;
+  }[];
+};
+
 export type SvgProps = React.SVGAttributes<SVGElement>;
 
 export type UserRole = "explorer" | "navigator" | "captain" | "fleetCommander" | "tester" | "admin";

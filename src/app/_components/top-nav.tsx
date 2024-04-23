@@ -2,7 +2,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
 
-import { ButtonVariants, Icon } from "~/components/ui";
+import { ButtonVariants, Icons } from "~/components/ui";
 import ScrollAnimation from "~/components/scroll-animation";
 import ProfileButton from "~/components/profile-button";
 
@@ -31,14 +31,14 @@ export default function TopNav() {
           className="hidden h-16 flex-shrink-0 origin-top px-2 py-1 sm:block"
         >
           <Link href="/" title="Homepage" aria-label="Homepage">
-            <Icon.logoVertical className="m-auto h-20 fill-gray-800" />
+            <Icons.logoVertical className="m-auto h-20 fill-gray-800" />
           </Link>
         </ScrollAnimation>
 
         {/* logo when sm */}
         <div className="h-16 flex-shrink-0 px-2 py-5 sm:hidden">
           <Link href="/" title="Homepage" aria-label="Homepage">
-            <Icon.logo className="m-auto h-6 fill-gray-800" />
+            <Icons.logo className="m-auto h-6 fill-gray-800" />
           </Link>
         </div>
 
@@ -54,7 +54,7 @@ export default function TopNav() {
           </SignedIn>
           <SignedOut>
             <Link
-              href="/sign-in"
+              href="/signin"
               className={cn(
                 ButtonVariants({ variant: "scale", size: "lg" }),
                 "flex items-center gap-2 before:bg-gray-100",
@@ -63,7 +63,7 @@ export default function TopNav() {
               Sign in
             </Link>
             <Link
-              href="/sign-up"
+              href="/signup"
               className="block w-fit select-none text-nowrap rounded-xl bg-kolumblue-500 px-4 py-2 font-belanosima font-semibold text-white shadow-lg"
             >
               Start Your Adventure

@@ -1,4 +1,4 @@
-export { Icon } from "./icons";
+export { Icons } from "./icons";
 
 export { Button, ButtonVariants } from "./button";
 export type { ButtonProps } from "./button";
@@ -12,7 +12,7 @@ export { Checkbox } from "./checkbox";
 
 export { Badge } from "./badge";
 
-export { Divider, addDotAfter } from "./divider";
+export { Divider, dotDivider } from "./divider";
 
 export { Skeleton } from "./skeleton";
 

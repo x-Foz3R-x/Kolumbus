@@ -13,8 +13,7 @@ const InputVariants = cva(
     variants: {
       variant: {
         default: "shadow-border focus:shadow-focus",
-        insetLabelSm: "pb-1 pt-5 shadow-border focus:shadow-focus",
-        insetLabel: "pb-1.5 pt-6 shadow-border focus:shadow-focus",
+        insetLabel: "pb-1 pt-5 shadow-border focus:shadow-focus",
         unset: null,
       },
       size: {
@@ -75,22 +74,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
     else if (e.key === (KEYS.Enter as string)) e.currentTarget.blur();
   };
 
-  const getLabelStyle = () => {
-    const baseStyle =
-      "pointer-events-none select-none absolute inset-0 flex origin-top-left items-center overflow-hidden text-sm text-gray-600 duration-100 ease-in";
-
-    const variantStyles: Record<string, string> = {
-      insetLabel: `mx-4 peer-focus:-translate-y-2.5 peer-focus:scale-90 ${
-        value !== undefined && value.toString().length > 0 && "-translate-y-2.5 scale-90"
-      }`,
-      insetLabelSm: `mx-3 peer-focus:-translate-y-1.5 peer-focus:scale-[0.84] ${
-        value !== undefined && value.toString().length > 0 && "-translate-y-1.5 scale-[0.84]"
-      }`,
-    };
-
-    return cn(baseStyle, variant && variantStyles[variant]);
-  };
-
   return (
     <div
       style={{ ...(fullWidth && { width: "100%" }), ...(fullHeight && { height: "100%" }) }}
@@ -139,7 +122,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
 
       {/* Inset label */}
       {label && (
-        <label htmlFor={id} className={cn(getLabelStyle(), labelClassName)}>
+        <label
+          htmlFor={id}
+          className={cn(
+            "pointer-events-none absolute inset-0 flex origin-top-left select-none items-center overflow-hidden px-4 text-base text-gray-500 duration-100 ease-in peer-focus:-translate-y-1.5 peer-focus:translate-x-[3px] peer-focus:scale-[.8]",
+            value !== undefined &&
+              value.toString().length > 0 &&
+              "-translate-y-1.5 translate-x-[3px] scale-[.8]",
+            labelClassName,
+          )}
+        >
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">{label}</span>
         </label>
       )}

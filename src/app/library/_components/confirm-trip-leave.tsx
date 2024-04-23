@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 
-import { Button, Icon } from "~/components/ui";
+import { Button, Icons } from "~/components/ui";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
 
 type Props = {
@@ -17,7 +17,7 @@ export const ConfirmTripLeave = memo(function DeleteTripModal({
 }: Props) {
   return (
     <Modal open={isOpen} setOpen={setOpen}>
-      <ModalBody.iconDesign variant="danger" icon={<Icon.triangleExclamation />}>
+      <ModalBody.iconDesign variant="danger" icon={<Icons.triangleExclamation />}>
         <ModalHeader>Planning to Leave this Trip?</ModalHeader>
         <ModalText>Are you sure you want to leave this trip? There’s no turning back.</ModalText>
       </ModalBody.iconDesign>

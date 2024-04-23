@@ -5,7 +5,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { EASING } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 
-import { Icon } from "../ui";
+import { Icons } from "../ui";
 
 export default function DndTrash() {
   const { active, isOver, setNodeRef } = useDroppable({
@@ -28,7 +28,7 @@ export default function DndTrash() {
                 isOver && "border-red-500 bg-red-500 fill-white shadow-md",
               )}
             >
-              <Icon.trash className="h-3.5 flex-shrink-0" />
+              <Icons.trash className="h-3.5 flex-shrink-0" />
             </motion.div>
           </div>
         </FloatingPortal>

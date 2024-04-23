@@ -2,7 +2,7 @@
 
 import { memo, useRef, useState } from "react";
 
-import { Button, type ButtonProps, Icon, Input } from "~/components/ui";
+import { Button, type ButtonProps, Icons, Input } from "~/components/ui";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
 
 // todo: add date/days picker
@@ -28,7 +28,7 @@ export const CreateTripModal = memo(function CreateTripModal({
       <Button onClick={() => setOpen(true)} {...buttonProps} />
 
       <Modal open={isOpen} setOpen={setOpen} dismissible>
-        <ModalBody.iconDesign icon={<Icon.defaultTrip />}>
+        <ModalBody.iconDesign icon={<Icons.defaultTrip />}>
           <ModalHeader>Create Trip</ModalHeader>
 
           <ModalText>

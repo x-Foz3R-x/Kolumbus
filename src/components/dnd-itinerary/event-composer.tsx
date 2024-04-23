@@ -7,7 +7,7 @@ import { EASING } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 import { LANGUAGES } from "~/types";
 
-import { Button, Icon, Spinner } from "../ui";
+import { Button, Icons, Spinner } from "../ui";
 import { Floating } from "../ui/floating/floating";
 import { Combobox } from "../ui/combobox";
 
@@ -202,7 +202,7 @@ export const EventComposer = memo(function EventComposer({
           delay: isOpen ? 0 : 0.6,
           left: { ease: EASING.easeOut, duration: 0.25 },
         },
-        children: <Icon.plus className="h-4 w-4" />,
+        children: <Icons.plus className="h-4 w-4" />,
       }}
     >
       <Combobox.Root
@@ -265,7 +265,7 @@ export const EventComposer = memo(function EventComposer({
             }}
             tooltip={{ placement: "bottom", offset: 0, arrow: true, zIndex: 30, children: "Add" }}
           >
-            <Icon.plus className="h-4 w-4" />
+            <Icons.plus className="h-4 w-4" />
           </Button>
 
           <Button
@@ -293,7 +293,7 @@ export const EventComposer = memo(function EventComposer({
             }}
             tooltip={{ placement: "bottom", offset: 0, arrow: true, zIndex: 30, children: "Clear" }}
           >
-            <Icon.x className="h-3.5 w-3.5" />
+            <Icons.x className="h-3.5 w-3.5" />
           </Button>
         </Combobox.Input>
 
@@ -309,7 +309,7 @@ export const EventComposer = memo(function EventComposer({
               className="before:last:rounded-b-xl"
             >
               <div className="w-10 flex-shrink-0">
-                <Icon.pin className="mx-auto w-2.5 fill-gray-400" />
+                <Icons.pin className="mx-auto w-2.5 fill-gray-400" />
               </div>
 
               <div className="flex h-9 w-[252px] flex-col justify-center pr-4">

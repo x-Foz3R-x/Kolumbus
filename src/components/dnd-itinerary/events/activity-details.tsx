@@ -9,7 +9,7 @@ import { EASING } from "~/lib/motion";
 import { cn, os } from "~/lib/utils";
 import { Event } from "~/types";
 
-import { Button, Icon, Input, ScrollIndicator, TextArea } from "~/components/ui";
+import { Button, Icons, Input, ScrollIndicator, TextArea } from "~/components/ui";
 import { Floating } from "~/components/ui/floating";
 
 // todo - Decouple logic from floating component so only when it is open state will be created
@@ -372,7 +372,7 @@ export const ActivityDetails = memo(function ActivityDetails({
               children: "Cancel",
             }}
           >
-            <Icon.cancel className="h-4 w-4 scale-100" />
+            <Icons.cancel className="h-4 w-4 scale-100" />
           </Button>
 
           {/* Undo */}
@@ -394,7 +394,7 @@ export const ActivityDetails = memo(function ActivityDetails({
               ),
             }}
           >
-            <Icon.undo className="h-full w-3.5 scale-100 overflow-visible" />
+            <Icons.undo className="h-full w-3.5 scale-100 overflow-visible" />
           </Button>
 
           {/* Redo */}
@@ -418,7 +418,7 @@ export const ActivityDetails = memo(function ActivityDetails({
               ),
             }}
           >
-            <Icon.redo className="h-full w-3.5 scale-100 overflow-visible" />
+            <Icons.redo className="h-full w-3.5 scale-100 overflow-visible" />
           </Button>
 
           {/* Google Maps */}
@@ -436,7 +436,7 @@ export const ActivityDetails = memo(function ActivityDetails({
                 target="_blank"
                 className="flex h-full w-full items-center justify-center"
               >
-                <Icon.googleMapsIcon className="h-4 w-full scale-100" />
+                <Icons.googleMapsIcon className="h-4 w-full scale-100" />
               </Link>
             </Button>
           )}
@@ -448,7 +448,7 @@ export const ActivityDetails = memo(function ActivityDetails({
             size="unset"
             className="ml-auto flex h-9 items-center justify-center gap-1.5 fill-red-500 px-2.5 text-red-500 before:rounded-lg before:bg-red-500 before:shadow-none hover:fill-white hover:text-white focus:fill-white focus:text-white"
           >
-            <Icon.trash className="h-full w-3 scale-100" />
+            <Icons.trash className="h-full w-3 scale-100" />
             Delete
           </Button>
         </motion.div>

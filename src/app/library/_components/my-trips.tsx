@@ -1,6 +1,6 @@
 "use client";
 
-import { Icon } from "~/components/ui";
+import { Icons } from "~/components/ui";
 import { CreateTripModal } from "./create-trip-modal";
 import useLibraryContext from "./provider";
 import TripCards from "./trip-cards";
@@ -41,7 +41,7 @@ export default function MyTrips() {
                       rx="12"
                     />
                   </svg>
-                  <Icon.plus className="w-2.5" />
+                  <Icons.plus className="w-2.5" />
                   New trip
                 </>
               ),

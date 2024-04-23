@@ -2,7 +2,7 @@ import { memo } from "react";
 
 import type { Day } from "~/types";
 
-import { Button, Icon } from "../ui";
+import { Button, Icons } from "../ui";
 import { ActivityOverlay } from "./events";
 import { Calendar } from "../calendar";
 
@@ -32,7 +32,7 @@ const DayOverlay = memo(function DayOverlay({
             size="unset"
             className="ml-2 flex h-28 w-8 items-center rounded-lg bg-white fill-gray-400 px-2 shadow-floating first:ml-0"
           >
-            <Icon.plus className="h-4 w-4" />
+            <Icons.plus className="h-4 w-4" />
           </Button>
         )}
       </ul>

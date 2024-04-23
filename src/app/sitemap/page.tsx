@@ -22,8 +22,8 @@ export default function Sitemap() {
         <div className="space-y-2">
           <h2 className="text-sm font-bold text-gray-400">Account</h2>
           <ProtectedLink href={accountUrl}>My Account</ProtectedLink>
-          <RouteLink href="/sign-in">Sign In</RouteLink>
-          <RouteLink href="/sign-up">Sign Up</RouteLink>
+          <RouteLink href="/signin">Sign In</RouteLink>
+          <RouteLink href="/signup">Sign Up</RouteLink>
         </div>
 
         <div className="space-y-2">

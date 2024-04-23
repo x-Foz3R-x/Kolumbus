@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import { differenceInDays } from "~/lib/utils";
 
-import { addDotAfter, Button } from "~/components/ui";
+import { dotDivider, Button } from "~/components/ui";
 import { tripFallbackUrl } from "~/lib/constants";
 import { format } from "date-fns";
 
@@ -51,14 +51,14 @@ export default function InviteTrip({ invite }: InviteProps) {
         <h1 className="text-2xl font-semibold text-white">{invite?.name}</h1>
 
         <div className="flex whitespace-nowrap">
-          <div className={addDotAfter()}>
+          <div className={dotDivider()}>
             {format(startDate, "d MMM")}
             {" - "}
             {format(endDate, "d MMM")}
           </div>
 
           <div
-            className={addDotAfter()}
+            className={dotDivider()}
           >{`${tripDuration} ${tripDuration !== 1 ? "days" : "day"}`}</div>
 
           <div>{`${invite?.memberCount} ${invite?.memberCount !== 1 ? "members" : "member"}`}</div>
