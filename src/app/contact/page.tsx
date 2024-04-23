@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button, Icon } from "~/components/ui";
+import { Button, Icons } from "~/components/ui";
 import { api } from "~/trpc/react";
 import DiscordWidget from "./_components/discord-widget";
 
@@ -40,7 +40,7 @@ export default function Contact() {
                 size="icon"
                 className="p-2.5 before:bg-gray-600 active:scale-95"
               >
-                <Icon.copy className="h-4 w-4 scale-100 fill-white" />
+                <Icons.copy className="h-4 w-4 scale-100 fill-white" />
               </Button>
             </div>
           </div>
