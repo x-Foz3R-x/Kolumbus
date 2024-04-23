@@ -5,7 +5,7 @@
  * Priority grade system:
  * - 1.0: Critical - Reserved for home page or critical landing pages.
  * - 0.9: Very High - Assigned to pages of very high importance, such as key conversion funnels or crucial user interaction points.
- * - 0.8: High - Given to important and frequently accessed pages, like sign-in, sign-up, or major sections of your website.
+ * - 0.8: High - Given to important and frequently accessed pages, like signin, signup, or major sections of your website.
  * - 0.7: Significant - Used for pages that are significant but slightly less critical in importance.
  * - 0.6: Above Average - Assigned to above-average important pages.
  * - 0.5: Moderate - Applied to moderately important pages, like legal pages or privacy policies.
@@ -23,12 +23,12 @@ export default function sitemap() {
       priority: 1.0,
     },
     {
-      url: "https://www.kolumbus.app/sign-in",
+      url: "https://www.kolumbus.app/signin",
       lastModified: "2023-12-05",
       priority: 0.8,
     },
     {
-      url: "https://www.kolumbus.app/sign-up",
+      url: "https://www.kolumbus.app/signup",
       lastModified: "2023-12-05",
       priority: 0.8,
     },
