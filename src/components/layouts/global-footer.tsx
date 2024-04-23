@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Divider } from "./ui";
+import { Divider } from "../ui";
 
 export default function GlobalFooter() {
   return (

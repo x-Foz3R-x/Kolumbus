@@ -7,7 +7,7 @@ export default function Invalid() {
       <TravelersBackground />
 
       <div className="absolute inset-0 flex size-full min-h-fit items-center justify-center sm:p-4">
-        <div className="flex max-w-4xl flex-col gap-6 bg-white p-8 shadow-2xl sm:rounded-xl">
+        <main className="flex max-w-4xl flex-col gap-6 bg-white p-8 shadow-2xl sm:rounded-xl">
           <div className="space-y-2">
             <h1 className="text-4xl font-semibold">Invalid Invite Links</h1>
             <p>
@@ -53,7 +53,7 @@ export default function Invalid() {
               <InvalidError code={2} />
             </div>
           </div>
-        </div>
+        </main>
       </div>
     </>
   );

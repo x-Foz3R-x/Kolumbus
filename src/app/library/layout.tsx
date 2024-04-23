@@ -1,5 +1,5 @@
 import TopNav from "./_components/top-nav";
-import GlobalFooter from "~/components/global-footer";
+import GlobalFooter from "~/components/layouts/global-footer";
 
 export const metadata = {
   title: "Library - Kolumbus",

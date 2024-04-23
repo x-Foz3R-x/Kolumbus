@@ -1,4 +1,4 @@
-import GlobalFooter from "~/components/global-footer";
+import GlobalFooter from "~/components/layouts/global-footer";
 
 export default function PlaygroundLayout({ children }: { children: React.ReactNode }) {
   return (

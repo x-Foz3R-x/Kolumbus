@@ -7,7 +7,7 @@ import ProfileButton from "~/components/profile-button";
 
 export default function GlobalTopNav() {
   return (
-    <nav className="sticky inset-x-0 top-0 z-50 h-14 bg-white bg-white/80 font-belanosima backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
+    <nav className="sticky inset-x-0 top-0 z-50 h-14 bg-white/80 font-belanosima backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
       <div className="relative z-50 mx-auto flex h-full w-full max-w-screen-2xl items-center justify-between px-8">
         <section className="z-50 hidden flex-1 items-center sm:flex">
           <Link
