@@ -20,6 +20,8 @@
     "pkey",
     "POSTHOG",
     "ratelimit",
+    "signin",
+    "signup",
     "Sonner",
     "superjson",
     "tailwindcss",
