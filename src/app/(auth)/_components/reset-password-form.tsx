@@ -46,23 +46,29 @@ export default function ResetPasswordForm(props: { setStage: (stage: number) => 
   }
 
   return (
-    <form className="w-full space-y-4">
-      <Input
-        id="email"
-        name="email"
-        type="email"
-        insetLabel="Email"
-        value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-        autoComplete="email"
-        autoCorrect="off"
-        spellCheck="false"
-        className={{ container: "rounded-lg shadow-sm", input: "detectAutofill" }}
-      />
+    <>
+      <p className="w-full pb-2 text-center">
+        Enter your email address to receive a verification code
+      </p>
 
-      <SubmitButton onSubmit={onSubmit} loading={loading}>
-        Continue
-      </SubmitButton>
-    </form>
+      <form className="w-full space-y-4">
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          insetLabel="Email"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          autoComplete="email"
+          autoCorrect="off"
+          spellCheck="false"
+          className={{ container: "rounded-lg shadow-sm", input: "detectAutofill" }}
+        />
+
+        <SubmitButton onSubmit={onSubmit} loading={loading}>
+          Continue
+        </SubmitButton>
+      </form>
+    </>
   );
 }
