@@ -26,7 +26,6 @@ export default function ResetPasswordForm(props: { setStage: (stage: number) => 
     setLoading(true);
 
     try {
-      console.log(form.email);
       const firstFactor = await signIn.create({
         strategy: "reset_password_email_code",
         identifier: form.email,
@@ -39,8 +38,8 @@ export default function ResetPasswordForm(props: { setStage: (stage: number) => 
         });
       }
     } catch (error) {
-      console.log(error);
       showErrorToast(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
