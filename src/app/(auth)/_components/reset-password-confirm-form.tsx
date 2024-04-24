@@ -56,7 +56,13 @@ export default function ResetPasswordConfirmForm(props: { setStage: (stage: numb
       {/* OTP */}
       <label htmlFor="one-time-code" className="block text-center text-sm text-gray-500">
         <span className="block pb-1.5">Enter the 6-digit code sent to your email</span>
-        <Input type="one-time-code" length={6} className={{ container: "mx-auto w-fit" }} />
+        <Input
+          type="one-time-code"
+          length={6}
+          value={form.code}
+          onChange={(code) => setForm({ ...form, code })}
+          className={{ container: "mx-auto w-fit" }}
+        />
       </label>
 
       <div className="rounded-lg shadow-sm">
