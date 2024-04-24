@@ -8,7 +8,8 @@ import type { z } from "zod";
 
 import type { authSchema } from "~/lib/validation/auth";
 import { showErrorToast } from "~/lib/handle-error";
-import { Button, Input, Spinner } from "~/components/ui";
+import { Input } from "~/components/ui";
+import SubmitButton from "./submit-button";
 
 type Inputs = z.infer<typeof authSchema>;
 
@@ -52,40 +53,32 @@ export default function SignInForm() {
           id="email"
           name="email"
           type="email"
-          label="Email"
+          insetLabel="Email"
           value={form.email}
-          onInput={(e) => setForm({ ...form, email: e.currentTarget.value })}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
           autoComplete="email"
           autoCorrect="off"
           spellCheck="false"
-          variant="insetLabel"
-          className="detectAutofill mb-px rounded-b-none"
+          className={{ input: "detectAutofill mb-px rounded-b-none" }}
         />
 
         <Input
           id="password"
           name="password"
           type="password"
-          label="Password"
+          insetLabel="Password"
           value={form.password}
-          onInput={(e) => setForm({ ...form, password: e.currentTarget.value })}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
           autoComplete="current-password"
           autoCorrect="off"
           spellCheck="false"
-          variant="insetLabel"
-          className="detectAutofill rounded-t-none"
+          className={{ input: "detectAutofill rounded-t-none" }}
         />
       </div>
 
-      <Button
-        type="submit"
-        onClick={onSubmit}
-        variant={isLoaded ? "appear" : "disabled"}
-        size="lg"
-        className="flex h-10 w-full items-center justify-center rounded-lg bg-gray-800 font-medium text-white shadow-sm hover:bg-gray-700"
-      >
-        {loading ? <Spinner.default className="fill-white" /> : "Sign in"}
-      </Button>
+      <SubmitButton onSubmit={onSubmit} loading={loading}>
+        Sign in
+      </SubmitButton>
     </form>
   );
 }

@@ -35,11 +35,7 @@ export const CreateTripModal = memo(function CreateTripModal({
             Enter details below to create a new trip and start planning your itinerary.
           </ModalText>
 
-          <Input
-            label="Trip name"
-            onChange={(e) => (nameRef.current = e.target.value)}
-            variant="insetLabel"
-          />
+          <Input insetLabel="Trip Name" onUpdate={(e) => (nameRef.current = e.target.value)} />
         </ModalBody.iconDesign>
 
         <ModalControls>

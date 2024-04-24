@@ -205,7 +205,7 @@ export const ActivityDetails = memo(function ActivityDetails({
             name="activity name"
             placeholder="name"
             value={details.name}
-            onChange={(e) => handleChange({ name: e.target.value })}
+            onUpdate={(e) => handleChange({ name: e.target.value })}
             onInput={(e) => handleInput({ name: e.currentTarget.value })}
             variant="unset"
             size="unset"
@@ -264,7 +264,7 @@ export const ActivityDetails = memo(function ActivityDetails({
                   id="phone"
                   placeholder="xxx xxx xxxx"
                   value={details.phoneNumber ?? ""}
-                  onChange={(e) => handleChange({ phoneNumber: e.target.value })}
+                  onUpdate={(e) => handleChange({ phoneNumber: e.target.value })}
                   onInput={(e) => handleInput({ phoneNumber: e.currentTarget.value })}
                   variant="unset"
                   size="unset"
@@ -285,7 +285,7 @@ export const ActivityDetails = memo(function ActivityDetails({
                   type="number"
                   placeholder="0.00"
                   value={details.cost || ""}
-                  onChange={(e) =>
+                  onUpdate={(e) =>
                     handleChange({
                       cost: parseFloat(e.target.value) >= 0 ? parseFloat(e.target.value) : 0,
                     })
@@ -318,7 +318,7 @@ export const ActivityDetails = memo(function ActivityDetails({
                 id="website"
                 placeholder="www.example.com"
                 value={details.website ?? ""}
-                onChange={(e) => handleChange({ website: e.target.value })}
+                onUpdate={(e) => handleChange({ website: e.target.value })}
                 onInput={(e) => handleInput({ website: e.currentTarget.value })}
                 variant="unset"
                 size="unset"

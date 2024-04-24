@@ -46,6 +46,7 @@ export default {
         slideIn: "slideIn 250ms ease",
         levitate: "levitate 10s infinite",
         pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "caret-blink": "caretBlink 1.2s ease-in-out infinite",
       },
       keyframes: {
         popUp: {
@@ -67,6 +68,10 @@ export default {
           "0%": { opacity: "1" },
           "50%": { opacity: ".75" },
           "100%": { opacity: "1" },
+        },
+        caretBlink: {
+          "0%,60%,100%": { opacity: "1" },
+          "20%,40%": { opacity: "0" },
         },
       },
       transitionDuration: { 250: "250ms", 400: "400ms" },
