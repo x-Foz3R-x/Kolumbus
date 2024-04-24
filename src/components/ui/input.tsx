@@ -58,8 +58,7 @@ type InputDefaultProps = HTMLInputProps &
     inputRef?: React.ForwardedRef<HTMLInputElement>;
   };
 type InputOTPProps = {
-  id?: string;
-  type: "otp";
+  type: "one-time-code";
   length: number;
   value?: string;
   defaultValue?: string;
@@ -73,12 +72,11 @@ type InputOTPProps = {
 export type InputProps = InputDefaultProps | InputOTPProps;
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inputProps, ref) {
   const uniqueId = useId();
-  const inputId = inputProps.id ?? uniqueId;
-  // Changes when value is updated in handleUpdate
   const previousValue = useRef(inputProps.value ?? inputProps?.defaultValue);
 
-  if (inputProps.type === "otp") return <InputOTP {...inputProps} id={inputId} inputRef={ref} />;
+  if (inputProps.type === "one-time-code") return <InputOTP {...inputProps} inputRef={ref} />;
 
+  const inputId = inputProps?.id ?? uniqueId;
   const {
     insetLabel,
     value,
@@ -181,7 +179,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
 });
 
 const InputOTP = memo(function InputOTP({
-  id,
   value,
   length,
   onChange,
@@ -202,13 +199,15 @@ const InputOTP = memo(function InputOTP({
 
   return (
     <OTPInput
-      id={id}
+      id="one-time-code"
+      name="one-time-code"
       ref={inputRef}
       maxLength={length}
       value={value}
       onChange={onChange}
-      pattern={pattern && patterns[pattern]}
       onComplete={onComplete}
+      autoComplete="one-time-code"
+      pattern={pattern && patterns[pattern]}
       inputMode={pattern === "DigitsOnly" ? "numeric" : "text"}
       noScriptCSSFallback={null}
       containerClassName={cn(

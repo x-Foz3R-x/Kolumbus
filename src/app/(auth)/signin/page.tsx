@@ -17,7 +17,7 @@ export default function SignIn() {
 
       <div className="flex flex-col items-center justify-center text-[13px]">
         <Link
-          href="/"
+          href="/signin/reset-password"
           className="text-kolumblue-600 decoration-kolumblue-500 hover:underline focus-visible:underline"
         >
           Forgot password?
