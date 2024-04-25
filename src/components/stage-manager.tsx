@@ -25,10 +25,6 @@ export default function StageManager(props: {
             : "prevStageHeight" in stage && stage.prevStageHeight
               ? `${stage.prevStageHeight + (props?.gap ?? 16)}px`
               : "0px";
-        const classNames = cn(
-          movementDirection === "up" ? "origin-bottom" : "origin-top",
-          stage.className,
-        );
 
         return (
           <motion.div
@@ -52,7 +48,10 @@ export default function StageManager(props: {
               duration: 0.7,
               opacity: { ease: EASING.easeInOut, duration: 0.4, delay: isActive ? 0 : 0.3 },
             }}
-            className={classNames}
+            className={cn(
+              movementDirection === "up" ? "origin-bottom" : "origin-top",
+              stage.className,
+            )}
           >
             {stage.children}
           </motion.div>

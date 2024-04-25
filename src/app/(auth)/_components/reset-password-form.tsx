@@ -5,7 +5,7 @@ import { useSignIn } from "@clerk/nextjs";
 import { toast } from "sonner";
 import type { z } from "zod";
 
-import type { checkEmailSchema } from "~/lib/validation/auth";
+import type { checkEmailSchema } from "~/lib/validations/auth";
 import { showErrorToast } from "~/lib/handle-error";
 import { Input } from "~/components/ui";
 import SubmitButton from "./submit-button";

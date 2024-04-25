@@ -6,7 +6,7 @@ import { useSignIn } from "@clerk/nextjs";
 import { toast } from "sonner";
 import type { z } from "zod";
 
-import type { resetPasswordSchema } from "~/lib/validation/auth";
+import type { resetPasswordSchema } from "~/lib/validations/auth";
 import { showErrorToast } from "~/lib/handle-error";
 import { Button, Input } from "~/components/ui";
 import SubmitButton from "./submit-button";
@@ -96,7 +96,7 @@ export default function ResetPasswordConfirmForm(props: { setStage: (stage: numb
         <Button
           onClick={() => props.setStage(0)}
           variant="appear"
-          className="flex h-10 w-full items-center justify-center border bg-white font-medium shadow-sm hover:bg-gray-100"
+          className="flex h-10 w-full items-center justify-center border bg-white/50 font-medium shadow-sm hover:bg-gray-100"
         >
           Go back
         </Button>
