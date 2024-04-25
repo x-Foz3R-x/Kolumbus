@@ -24,7 +24,7 @@ export default function SignIn() {
             ),
           },
         ]}
-        style={{ marginTop: "6px" }}
+        style={{ marginTop: "4px" }}
       />
     </>
   );

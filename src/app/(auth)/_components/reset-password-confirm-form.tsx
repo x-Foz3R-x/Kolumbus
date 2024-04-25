@@ -10,6 +10,7 @@ import type { resetPasswordSchema } from "~/lib/validations/auth";
 import { showErrorToast } from "~/lib/handle-error";
 import { Button, Input } from "~/components/ui";
 import SubmitButton from "./submit-button";
+import PasswordInput from "./password-input";
 
 type Inputs = z.infer<typeof resetPasswordSchema>;
 
@@ -56,7 +57,7 @@ export default function ResetPasswordConfirmForm(props: {
 
   return (
     <form className="w-full space-y-4">
-      <div className="text-center text-sm text-gray-500">
+      <div className="pb-4 pt-3 text-center text-sm text-gray-500">
         <span className="block pb-1.5">Enter the 6-digit code sent to your email</span>
         <Input
           type="one-time-code"
@@ -68,7 +69,7 @@ export default function ResetPasswordConfirmForm(props: {
       </div>
 
       <div className="rounded-lg shadow-sm">
-        <Input
+        <PasswordInput
           id="password"
           name="password"
           type="password"
@@ -80,7 +81,7 @@ export default function ResetPasswordConfirmForm(props: {
           spellCheck="false"
           className={{ input: "mb-px rounded-b-none" }}
         />
-        <Input
+        <PasswordInput
           id="confirm-password"
           name="confirm-password"
           type="password"

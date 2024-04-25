@@ -10,6 +10,7 @@ import type { authSchema } from "~/lib/validations/auth";
 import { showErrorToast } from "~/lib/handle-error";
 import { Input } from "~/components/ui";
 import SubmitButton from "./submit-button";
+import PasswordInput from "./password-input";
 
 type Inputs = z.infer<typeof authSchema>;
 
@@ -62,7 +63,7 @@ export default function SignInForm() {
           className={{ input: "mb-px rounded-b-none" }}
         />
 
-        <Input
+        <PasswordInput
           id="password"
           name="password"
           type="password"

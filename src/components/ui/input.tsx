@@ -56,6 +56,7 @@ type InputDefaultProps = HTMLInputProps &
     fullWidth?: boolean;
     fullHeight?: boolean;
     className?: { container?: string; input?: string; label?: string };
+    children?: React.ReactNode;
   };
 type InputOTPProps = {
   inputRef?: React.ForwardedRef<HTMLInputElement>;
@@ -79,6 +80,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
 
   const inputId = inputProps?.id ?? uniqueId;
   const {
+    inputRef,
     insetLabel,
     value,
     defaultValue,
@@ -92,7 +94,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
     variant = !!inputProps.insetLabel ? "insetLabel" : inputProps.variant,
     size,
     className,
-    inputRef,
+    children,
     ...props
   } = inputProps;
 
@@ -175,6 +177,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">{insetLabel}</span>
         </label>
       )}
+
+      {children}
     </div>
   );
 });
