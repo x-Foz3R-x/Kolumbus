@@ -8,6 +8,10 @@ export const authSchema = z.object({
     .max(100, { message: "Password must be at most 100 characters long" }),
 });
 
+export const signUpSchema = authSchema.extend({
+  name: z.string().min(2, { message: "Name must be at least 2 characters long" }),
+});
+
 export const verifyEmailSchema = z.object({
   code: z.string().min(6, { message: "Verification code must be 6 characters long" }).max(6),
 });
