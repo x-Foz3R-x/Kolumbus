@@ -139,7 +139,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
       {!!autoComplete && (
         <label
           htmlFor={inputId}
-          className="pointer-events-none absolute -z-50 select-none opacity-0"
+          className="pointer-events-none absolute -z-50 select-none border-transparent bg-transparent text-transparent"
         >
           {autoComplete}
         </label>
@@ -198,44 +198,55 @@ const InputOTP = memo(function InputOTP({
   };
 
   return (
-    <OTPInput
-      id="one-time-code"
-      name="one-time-code"
-      ref={inputRef}
-      maxLength={length}
-      value={value}
-      onChange={onChange}
-      onComplete={onComplete}
-      autoComplete="one-time-code"
-      pattern={pattern && patterns[pattern]}
-      inputMode={pattern === "DigitsOnly" ? "numeric" : "text"}
-      noScriptCSSFallback={null}
-      containerClassName={cn(
-        "flex items-center gap-2.5 has-[:disabled]:opacity-50 h-fit w-fit select-none",
-        className?.container,
-      )}
-      className={cn("disabled:cursor-not-allowed", className?.input)}
-      render={(inputProps) =>
-        inputProps.slots.map((slot, index) => (
-          <div
-            key={index}
-            className={cn(
-              "relative flex h-11 w-10 items-center justify-center rounded-lg bg-white text-lg font-medium",
-              slot.char ? "bg-gray-100" : "text-gray-300",
-              slot.isActive ? "bg-white shadow-focus" : "border shadow-softSm",
-            )}
-          >
-            {slot.char}
-            {slot.hasFakeCaret ? (
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="h-[18px] w-[1.5px] animate-caret-blink bg-gray-800" />
+    <>
+      <OTPInput
+        id="one-time-code"
+        name="one-time-code"
+        ref={inputRef}
+        maxLength={length}
+        value={value}
+        onChange={onChange}
+        onComplete={onComplete}
+        autoComplete="one-time-code"
+        pattern={pattern && patterns[pattern]}
+        inputMode={pattern === "DigitsOnly" ? "numeric" : "text"}
+        noScriptCSSFallback={null}
+        containerClassName={cn(
+          "flex items-center gap-2.5 has-[:disabled]:opacity-50 h-fit w-fit select-none",
+          className?.container,
+        )}
+        className={cn("disabled:cursor-not-allowed", className?.input)}
+        render={(inputProps) => (
+          <>
+            {/* Label for correct autocomplete */}
+            <label
+              htmlFor="one-time-code"
+              className="pointer-events-none absolute -z-50 select-none border-transparent bg-transparent text-transparent"
+            >
+              one-time-code OTP
+            </label>
+            {inputProps.slots.map((slot, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "relative flex h-11 w-10 items-center justify-center rounded-lg bg-white text-lg font-medium",
+                  slot.char ? "bg-gray-100" : "text-gray-300",
+                  slot.isActive ? "bg-white shadow-focus" : "border shadow-softSm",
+                )}
+              >
+                {slot.char}
+                {slot.hasFakeCaret ? (
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <div className="h-[18px] w-[1.5px] animate-caret-blink bg-gray-800" />
+                  </div>
+                ) : (
+                  !slot.char && "•"
+                )}
               </div>
-            ) : (
-              !slot.char && "•"
-            )}
-          </div>
-        ))
-      }
-    />
+            ))}
+          </>
+        )}
+      />
+    </>
   );
 });
