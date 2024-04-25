@@ -9,7 +9,7 @@ import { cn } from "~/lib/utils";
 import { KEYS } from "~/types";
 
 const InputVariants = cva(
-  "peer w-full appearance-none text-gray-800 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
+  "peer w-full appearance-none disabled:bg-gray-100 text-gray-800 outline-none outline-0 placeholder:text-gray-400 focus:outline-none disabled:pointer-events-none dark:text-white dark:placeholder:text-gray-600",
   {
     variants: {
       variant: {
@@ -47,6 +47,7 @@ type HTMLInputProps = Omit<HTMLMotionProps<"input">, "size" | "className" | "onU
 
 type InputDefaultProps = HTMLInputProps &
   VariantProps<typeof InputVariants> & {
+    inputRef?: React.ForwardedRef<HTMLInputElement>;
     type?: TypeAttribute;
     insetLabel?: string;
     onUpdate?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -55,9 +56,9 @@ type InputDefaultProps = HTMLInputProps &
     fullWidth?: boolean;
     fullHeight?: boolean;
     className?: { container?: string; input?: string; label?: string };
-    inputRef?: React.ForwardedRef<HTMLInputElement>;
   };
 type InputOTPProps = {
+  inputRef?: React.ForwardedRef<HTMLInputElement>;
   type: "one-time-code";
   length: number;
   value?: string;
@@ -66,7 +67,7 @@ type InputOTPProps = {
   onComplete?: (value: string) => void;
   pattern?: "DigitsOnly" | "CharsOnly" | "DigitsAndChars";
   className?: { container?: string; input?: string };
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
+  disabled?: boolean;
 };
 
 export type InputProps = InputDefaultProps | InputOTPProps;
@@ -164,7 +165,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
         <label
           htmlFor={inputId}
           className={cn(
-            "pointer-events-none absolute inset-0 flex origin-top-left select-none items-center overflow-hidden px-4 text-base text-gray-500 duration-100 ease-in peer-focus:-translate-y-1.5 peer-focus:translate-x-[3px] peer-focus:scale-[.8]",
+            "pointer-events-none absolute inset-0 flex origin-top-left select-none items-center overflow-hidden px-4 text-base text-gray-500 duration-100 ease-in peer-focus:-translate-y-1.5 peer-focus:translate-x-[3px] peer-focus:scale-[.8] peer-disabled:text-gray-400",
             value !== undefined &&
               value.toString().length > 0 &&
               "-translate-y-1.5 translate-x-[3px] scale-[.8]",
@@ -179,13 +180,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
 });
 
 const InputOTP = memo(function InputOTP({
+  inputRef,
   value,
   length,
   onChange,
   onComplete,
   pattern = "DigitsOnly",
   className,
-  inputRef,
+  disabled,
 }: InputOTPProps) {
   const REGEXP_ONLY_DIGITS = "^\\d+$";
   const REGEXP_ONLY_CHARS = "^[a-zA-Z]+$";
@@ -232,6 +234,7 @@ const InputOTP = memo(function InputOTP({
                   "relative flex h-11 w-10 items-center justify-center rounded-lg bg-white text-lg font-medium",
                   slot.char ? "bg-gray-100" : "text-gray-300",
                   slot.isActive ? "bg-white shadow-focus" : "border shadow-softSm",
+                  disabled && "bg-gray-100",
                 )}
               >
                 {slot.char}
@@ -246,6 +249,7 @@ const InputOTP = memo(function InputOTP({
             ))}
           </>
         )}
+        disabled={disabled}
       />
     </>
   );

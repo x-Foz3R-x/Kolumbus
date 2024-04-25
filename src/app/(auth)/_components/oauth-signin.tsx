@@ -40,7 +40,7 @@ export default function OAuthSignIn() {
   }
 
   return (
-    <div className="flex w-full items-center gap-4">
+    <div className="flex w-full items-center gap-2">
       {oauthProviders.map((provider) => {
         const Icon = Icons[provider.icon];
 

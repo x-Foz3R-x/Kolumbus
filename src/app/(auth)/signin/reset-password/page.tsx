@@ -13,22 +13,18 @@ export default function SignIn() {
         stages={[
           {
             className: "space-y-4",
-            children: ({ nextStage }) => <ResetPasswordForm nextStage={nextStage} />,
+            children: ({ nextStage, disabled }) => (
+              <ResetPasswordForm nextStage={nextStage} disabled={disabled} />
+            ),
           },
           {
             prevStageHeight: 176,
-            className: "space-y-4",
-            children: ({ prevStage }) => <ResetPasswordConfirmForm prevStage={prevStage} />,
-          },
-          {
-            prevStageHeight: 247,
-            className: "space-y-4",
-            children: ({ nextStage }) => <ResetPasswordForm nextStage={nextStage} />,
+            children: ({ prevStage, disabled }) => (
+              <ResetPasswordConfirmForm prevStage={prevStage} disabled={disabled} />
+            ),
           },
         ]}
-        debug
-        style={{ marginTop: "0" }}
-        className="pb-4"
+        style={{ marginTop: "6px" }}
       />
     </>
   );

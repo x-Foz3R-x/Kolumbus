@@ -12,7 +12,7 @@ import SubmitButton from "./submit-button";
 
 type Inputs = z.infer<typeof checkEmailSchema>;
 
-export default function ResetPasswordForm(props: { nextStage: () => void }) {
+export default function ResetPasswordForm(props: { nextStage: () => void; disabled: boolean }) {
   const { isLoaded, signIn } = useSignIn();
 
   const [form, setForm] = useState<Inputs>({ email: "" });
@@ -47,8 +47,8 @@ export default function ResetPasswordForm(props: { nextStage: () => void }) {
 
   return (
     <>
-      <p className="w-full pb-2 text-center">
-        Enter your email address to receive a verification code
+      <p className="w-full pb-2 text-center text-gray-600">
+        Enter your email address to receive a <br /> verification code
       </p>
 
       <form className="w-full space-y-4">
@@ -62,10 +62,10 @@ export default function ResetPasswordForm(props: { nextStage: () => void }) {
           autoComplete="email"
           autoCorrect="off"
           spellCheck="false"
-          className={{ container: "rounded-lg shadow-sm", input: "detectAutofill" }}
+          className={{ container: "rounded-lg shadow-sm" }}
         />
 
-        <SubmitButton onSubmit={onSubmit} loading={loading}>
+        <SubmitButton onSubmit={onSubmit} loading={loading} disabled={props.disabled}>
           Continue
         </SubmitButton>
       </form>

@@ -13,7 +13,10 @@ import SubmitButton from "./submit-button";
 
 type Inputs = z.infer<typeof resetPasswordSchema>;
 
-export default function ResetPasswordConfirmForm(props: { prevStage: () => void }) {
+export default function ResetPasswordConfirmForm(props: {
+  prevStage: () => void;
+  disabled: boolean;
+}) {
   const router = useRouter();
   const { isLoaded, signIn, setActive } = useSignIn();
 
@@ -52,9 +55,8 @@ export default function ResetPasswordConfirmForm(props: { prevStage: () => void 
   }
 
   return (
-    <form className="w-full space-y-4 pt-2">
-      {/* OTP */}
-      <label htmlFor="one-time-code" className="block text-center text-sm text-gray-500">
+    <form className="w-full space-y-4">
+      <div className="text-center text-sm text-gray-500">
         <span className="block pb-1.5">Enter the 6-digit code sent to your email</span>
         <Input
           type="one-time-code"
@@ -63,7 +65,7 @@ export default function ResetPasswordConfirmForm(props: { prevStage: () => void 
           onChange={(code) => setForm({ ...form, code })}
           className={{ container: "mx-auto w-fit" }}
         />
-      </label>
+      </div>
 
       <div className="rounded-lg shadow-sm">
         <Input
@@ -76,7 +78,7 @@ export default function ResetPasswordConfirmForm(props: { prevStage: () => void 
           autoComplete="new-password"
           autoCorrect="off"
           spellCheck="false"
-          className={{ input: "detectAutofill mb-px rounded-b-none" }}
+          className={{ input: "mb-px rounded-b-none" }}
         />
         <Input
           id="confirm-password"
@@ -88,19 +90,20 @@ export default function ResetPasswordConfirmForm(props: { prevStage: () => void 
           autoComplete="new-password"
           autoCorrect="off"
           spellCheck="false"
-          className={{ input: "detectAutofill rounded-t-none" }}
+          className={{ input: "rounded-t-none" }}
         />
       </div>
 
-      <div className="flex gap-2.5">
+      <div className="flex gap-2">
         <Button
           onClick={() => props.prevStage()}
           variant="appear"
           className="flex h-10 w-full items-center justify-center border bg-white/50 font-medium shadow-sm hover:bg-gray-100"
+          disabled={props.disabled}
         >
           Go back
         </Button>
-        <SubmitButton onSubmit={onSubmit} loading={loading}>
+        <SubmitButton onSubmit={onSubmit} loading={loading} disabled={props.disabled}>
           Reset Password
         </SubmitButton>
       </div>

@@ -59,7 +59,7 @@ export default function SignInForm() {
           autoComplete="email"
           autoCorrect="off"
           spellCheck="false"
-          className={{ input: "detectAutofill mb-px rounded-b-none" }}
+          className={{ input: "mb-px rounded-b-none" }}
         />
 
         <Input
@@ -72,7 +72,7 @@ export default function SignInForm() {
           autoComplete="current-password"
           autoCorrect="off"
           spellCheck="false"
-          className={{ input: "detectAutofill rounded-t-none" }}
+          className={{ input: "rounded-t-none" }}
         />
       </div>
 
