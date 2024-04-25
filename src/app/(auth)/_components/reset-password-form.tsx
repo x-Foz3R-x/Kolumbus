@@ -12,7 +12,7 @@ import SubmitButton from "./submit-button";
 
 type Inputs = z.infer<typeof checkEmailSchema>;
 
-export default function ResetPasswordForm(props: { setStage: (stage: number) => void }) {
+export default function ResetPasswordForm(props: { nextStage: () => void }) {
   const { isLoaded, signIn } = useSignIn();
 
   const [form, setForm] = useState<Inputs>({ email: "" });
@@ -32,7 +32,7 @@ export default function ResetPasswordForm(props: { setStage: (stage: number) => 
       });
 
       if (firstFactor.status === "needs_first_factor") {
-        props.setStage(1);
+        props.nextStage();
         toast.message("Check your email", {
           description: "A 6-digit verification code has been sent.",
         });

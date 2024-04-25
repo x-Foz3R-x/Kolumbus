@@ -13,7 +13,7 @@ import SubmitButton from "./submit-button";
 
 type Inputs = z.infer<typeof resetPasswordSchema>;
 
-export default function ResetPasswordConfirmForm(props: { setStage: (stage: number) => void }) {
+export default function ResetPasswordConfirmForm(props: { prevStage: () => void }) {
   const router = useRouter();
   const { isLoaded, signIn, setActive } = useSignIn();
 
@@ -94,7 +94,7 @@ export default function ResetPasswordConfirmForm(props: { setStage: (stage: numb
 
       <div className="flex gap-2.5">
         <Button
-          onClick={() => props.setStage(0)}
+          onClick={() => props.prevStage()}
           variant="appear"
           className="flex h-10 w-full items-center justify-center border bg-white/50 font-medium shadow-sm hover:bg-gray-100"
         >
