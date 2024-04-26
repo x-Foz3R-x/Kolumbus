@@ -8,9 +8,11 @@ import type { z } from "zod";
 
 import type { resetPasswordSchema } from "~/lib/validations/auth";
 import { showErrorToast } from "~/lib/handle-error";
-import { Button, Input } from "~/components/ui";
-import SubmitButton from "./submit-button";
+
+import Form from "./form";
 import PasswordInput from "./password-input";
+import SubmitButton from "./submit-button";
+import { Button, Input } from "~/components/ui";
 
 type Inputs = z.infer<typeof resetPasswordSchema>;
 
@@ -24,11 +26,8 @@ export default function ResetPasswordConfirmForm(props: {
   const [form, setForm] = useState<Inputs>({ code: "", password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
 
-  async function onSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.preventDefault();
-
+  async function handleSubmit() {
     if (!isLoaded) return;
-
     setLoading(true);
 
     try {
@@ -42,21 +41,20 @@ export default function ResetPasswordConfirmForm(props: {
         // TODO: implement 2FA (requires clerk pro plan)
       } else if (attemptFirstFactor.status === "complete") {
         await setActive({ session: attemptFirstFactor.createdSessionId });
-        router.push(`${window.location.origin}/`);
+        router.push("/library");
         toast.success("Password reset successfully.");
       } else {
         console.error(attemptFirstFactor);
       }
     } catch (error) {
       showErrorToast(error);
-      console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <form className="w-full space-y-4">
+    <Form onSubmit={handleSubmit}>
       <div className="pb-4 pt-3 text-center text-sm text-gray-500">
         <span className="block pb-1.5">Enter the 6-digit code sent to your email</span>
         <Input
@@ -104,10 +102,10 @@ export default function ResetPasswordConfirmForm(props: {
         >
           Go back
         </Button>
-        <SubmitButton onSubmit={onSubmit} loading={loading} disabled={props.disabled}>
+        <SubmitButton loading={loading} disabled={props.disabled}>
           Reset Password
         </SubmitButton>
       </div>
-    </form>
+    </Form>
   );
 }

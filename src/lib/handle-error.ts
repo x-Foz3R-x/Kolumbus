@@ -6,7 +6,9 @@ import { unknownError } from "./constants";
 import { TRPCClientError } from "@trpc/client";
 
 export function getErrorMessage(error: unknown) {
-  if (isClerkAPIResponseError(error)) return error.errors[0]?.message ?? unknownError;
+  if (isClerkAPIResponseError(error)) {
+    return error.errors[0]?.longMessage ?? error.errors[0]?.message ?? unknownError;
+  }
   if (error instanceof TRPCClientError || error instanceof z.ZodError || error instanceof Error) {
     return error.message;
   }
@@ -16,6 +18,7 @@ export function getErrorMessage(error: unknown) {
 }
 
 export function showErrorToast(error: unknown) {
+  console.error(error);
   const errorMessage = getErrorMessage(error);
   return toast.error(errorMessage);
 }

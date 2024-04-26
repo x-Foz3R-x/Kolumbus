@@ -8,9 +8,11 @@ import type { z } from "zod";
 
 import type { authSchema } from "~/lib/validations/auth";
 import { showErrorToast } from "~/lib/handle-error";
-import { Input } from "~/components/ui";
-import SubmitButton from "./submit-button";
+
+import Form from "./form";
 import PasswordInput from "./password-input";
+import SubmitButton from "./submit-button";
+import { Input } from "~/components/ui";
 
 type Inputs = z.infer<typeof authSchema>;
 
@@ -21,11 +23,8 @@ export default function SignInForm() {
   const [form, setForm] = useState<Inputs>({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  async function onSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.preventDefault();
-
+  async function onSubmit() {
     if (!isLoaded) return;
-
     setLoading(true);
 
     try {
@@ -34,7 +33,7 @@ export default function SignInForm() {
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
 
-        router.push(`${window.location.origin}/`);
+        router.push("/library");
       } else {
         toast.info(result.status);
         /*Investigate why the login hasn't completed */
@@ -48,7 +47,7 @@ export default function SignInForm() {
   }
 
   return (
-    <form className="w-full space-y-4">
+    <Form onSubmit={onSubmit}>
       <div className="rounded-lg shadow-sm">
         <Input
           id="email"
@@ -77,9 +76,7 @@ export default function SignInForm() {
         />
       </div>
 
-      <SubmitButton onSubmit={onSubmit} loading={loading}>
-        Sign in
-      </SubmitButton>
-    </form>
+      <SubmitButton loading={loading}>Sign in</SubmitButton>
+    </Form>
   );
 }

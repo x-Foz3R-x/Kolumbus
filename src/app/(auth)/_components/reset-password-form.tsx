@@ -7,8 +7,10 @@ import type { z } from "zod";
 
 import type { checkEmailSchema } from "~/lib/validations/auth";
 import { showErrorToast } from "~/lib/handle-error";
-import { Input } from "~/components/ui";
+
+import Form from "./form";
 import SubmitButton from "./submit-button";
+import { Input } from "~/components/ui";
 
 type Inputs = z.infer<typeof checkEmailSchema>;
 
@@ -18,11 +20,8 @@ export default function ResetPasswordForm(props: { nextStage: () => void; disabl
   const [form, setForm] = useState<Inputs>({ email: "" });
   const [loading, setLoading] = useState(false);
 
-  async function onSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.preventDefault();
-
+  async function onSubmit() {
     if (!isLoaded) return;
-
     setLoading(true);
 
     try {
@@ -39,7 +38,6 @@ export default function ResetPasswordForm(props: { nextStage: () => void; disabl
       }
     } catch (error) {
       showErrorToast(error);
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -51,7 +49,7 @@ export default function ResetPasswordForm(props: { nextStage: () => void; disabl
         Enter your email address to receive a <br /> verification code
       </p>
 
-      <form className="w-full space-y-4">
+      <Form onSubmit={onSubmit}>
         <Input
           id="email"
           name="email"
@@ -65,10 +63,10 @@ export default function ResetPasswordForm(props: { nextStage: () => void; disabl
           className={{ container: "rounded-lg shadow-sm" }}
         />
 
-        <SubmitButton onSubmit={onSubmit} loading={loading} disabled={props.disabled}>
+        <SubmitButton loading={loading} disabled={props.disabled}>
           Continue
         </SubmitButton>
-      </form>
+      </Form>
     </>
   );
 }
