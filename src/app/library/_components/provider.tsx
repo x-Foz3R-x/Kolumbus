@@ -144,7 +144,7 @@ export function LibraryProvider(props: {
         );
 
       setSharedMemberships(filteredMemberships);
-      leaveTrip.mutate({ tripId: id }, { onError: () => router.refresh() });
+      leaveTrip.mutate({ id }, { onError: () => router.refresh() });
     },
     [leaveTrip, sharedMemberships, router],
   );
@@ -162,7 +162,7 @@ export function LibraryProvider(props: {
         );
 
       setMemberships(filteredMemberships);
-      deleteTrip.mutate({ tripId: id }, { onError: () => router.refresh() });
+      deleteTrip.mutate({ id }, { onError: () => router.refresh() });
     },
     [deleteTrip, memberships, router],
   );

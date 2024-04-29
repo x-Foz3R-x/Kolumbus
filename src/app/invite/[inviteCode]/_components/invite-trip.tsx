@@ -30,7 +30,7 @@ export default function InviteTrip({ invite }: InviteProps) {
   const tripDuration = differenceInDays(startDate, endDate);
 
   const handleJoin = () => {
-    joinTrip.mutate({ tripId: invite.id }, { onSuccess: () => router.push(`/t/${invite.id}`) });
+    joinTrip.mutate({ id: invite.id }, { onSuccess: () => router.push(`/t/${invite.id}`) });
   };
 
   return (
