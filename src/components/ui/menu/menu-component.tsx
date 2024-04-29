@@ -259,7 +259,7 @@ export function MenuComponent({
                       <motion.ul
                         style={{ transformOrigin: origin }}
                         className={cn(
-                          "flex flex-col overflow-auto rounded-xl border bg-white p-1.5 font-inter shadow-floating dark:border-gray-700 dark:bg-gray-800 dark:text-white",
+                          "flex flex-col overflow-auto rounded-xl bg-white p-1.5 font-inter shadow-floating dark:border-gray-700 dark:bg-gray-800 dark:text-white",
                           className,
                         )}
                         initial="initial"

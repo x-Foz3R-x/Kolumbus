@@ -53,9 +53,7 @@ type InputDefaultProps = HTMLInputProps &
     onUpdate?: (e: React.FocusEvent<HTMLInputElement>) => void;
     preventEmpty?: boolean;
     dynamicWidth?: boolean;
-    fullWidth?: boolean;
-    fullHeight?: boolean;
-    className?: { container?: string; input?: string; label?: string };
+    className?: { container?: string; input?: string; dynamic?: string; label?: string };
     children?: React.ReactNode;
   };
 type InputOTPProps = {
@@ -87,8 +85,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
     autoComplete,
     onUpdate,
     onKeyDown,
-    fullWidth = false,
-    fullHeight = false,
     dynamicWidth = false,
     preventEmpty = false,
     variant = !!inputProps.insetLabel ? "insetLabel" : inputProps.variant,
@@ -117,27 +113,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
 
   return (
     <div
-      style={{ ...(fullWidth && { width: "100%" }), ...(fullHeight && { height: "100%" }) }}
       className={cn(
         "focus-within:z-30",
-        (dynamicWidth || !!insetLabel || !!autoComplete) && "relative",
+        (dynamicWidth || !!insetLabel || !!autoComplete || !!children) && "relative",
         dynamicWidth && "w-fit",
         className?.container,
       )}
     >
-      {/* Dynamic width of input */}
-      {dynamicWidth && (
-        <div
-          role="presentation"
-          className={cn(
-            InputVariants({ variant, size, className }),
-            "invisible w-fit whitespace-pre border-r border-transparent bg-transparent text-transparent",
-          )}
-        >
-          {value}
-        </div>
-      )}
-
       {/* Label for autocomplete identification */}
       {!!autoComplete && (
         <label
@@ -162,6 +144,21 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
         )}
         {...props}
       />
+
+      {/* Dynamic width of input */}
+      {dynamicWidth && (
+        <div
+          role="presentation"
+          className={cn(
+            InputVariants({ variant, size }),
+            className?.input,
+            className?.dynamic,
+            "invisible w-fit whitespace-pre border-r border-transparent bg-transparent text-transparent",
+          )}
+        >
+          {value}
+        </div>
+      )}
 
       {!!insetLabel && (
         <label

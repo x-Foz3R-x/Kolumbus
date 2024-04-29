@@ -209,10 +209,8 @@ export const ActivityDetails = memo(function ActivityDetails({
             onInput={(e) => handleInput({ name: e.currentTarget.value })}
             variant="unset"
             size="unset"
-            className="h-full"
+            className={{ container: "h-full w-full", input: "h-full" }}
             preventEmpty
-            fullWidth
-            fullHeight
           />
           <ScrollIndicator scrollRef={inputScrollRef} />
         </motion.div>
