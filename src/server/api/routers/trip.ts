@@ -1,13 +1,22 @@
 import { and, eq, gt, sql } from "drizzle-orm";
+import { clerkClient } from "@clerk/nextjs/server";
 
 import { error } from "~/lib/trpc";
-import { createId, encodePermissions } from "~/lib/utils";
+import { createId, decodePermissions, encodePermissions } from "~/lib/utils";
 import { MemberPermissionsTemplate } from "~/lib/templates";
+import {
+  createTripSchema,
+  duplicateTripSchema,
+  findTripInviteSchema,
+  joinTripSchema,
+  tripSchema,
+} from "~/lib/validations/trip";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import analyticsServerClient from "~/server/analytics";
 import {
   enforceMembershipLimit,
   enforceRateLimit,
+  getMyMembershipPermissions,
   getMyMembershipsCount,
   getTripMemberCount,
   isUserMemberOfTrip,
@@ -23,14 +32,6 @@ import {
   transportations,
   trips,
 } from "~/server/db/schema";
-import {
-  createTripSchema,
-  duplicateTripSchema,
-  findTripInviteSchema,
-  joinTripSchema,
-  tripSchema,
-} from "~/lib/validations/trip";
-import { clerkClient } from "@clerk/nextjs/server";
 
 export const tripRouter = createTRPCRouter({
   getMy: protectedProcedure.input(tripSchema).query(async ({ ctx, input }) => {
@@ -266,6 +267,54 @@ export const tripRouter = createTRPCRouter({
     });
   }),
 
+  createInvite: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
+    const { id: tripId } = input;
+
+    const inviteCode = await ctx.db.transaction(async (tx) => {
+      const permissions = await getMyMembershipPermissions(tx, ctx.user.id, tripId);
+      const decodedPermissions = decodePermissions(permissions, MemberPermissionsTemplate);
+
+      if (!decodedPermissions?.createInvite) {
+        throw error.unauthorized(
+          "You do not have permission to create an invite link for this trip",
+        );
+      }
+
+      const inviteCode = createId(8);
+      await tx.update(trips).set({ inviteCode }).where(eq(trips.id, tripId));
+      return inviteCode;
+    });
+
+    analyticsServerClient.capture({
+      distinctId: ctx.user.id,
+      event: "create trip invite",
+      properties: { tripId },
+    });
+
+    return inviteCode;
+  }),
+  deleteInvite: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
+    const { id: tripId } = input;
+
+    await ctx.db.transaction(async (tx) => {
+      const permissions = await getMyMembershipPermissions(tx, ctx.user.id, tripId);
+      const decodedPermissions = decodePermissions(permissions, MemberPermissionsTemplate);
+
+      if (!decodedPermissions?.createInvite) {
+        throw error.unauthorized(
+          "You do not have permission to delete an invite link from this trip",
+        );
+      }
+
+      await tx.update(trips).set({ inviteCode: null }).where(eq(trips.id, tripId));
+    });
+
+    analyticsServerClient.capture({
+      distinctId: ctx.user.id,
+      event: "delete trip invite",
+      properties: { tripId },
+    });
+  }),
   findInvite: protectedProcedure.input(findTripInviteSchema).query(async ({ ctx, input }) => {
     // Failed find return codes:
     // Code 0 - Invalid Invite

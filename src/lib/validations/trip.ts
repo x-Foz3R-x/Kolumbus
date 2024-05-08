@@ -10,41 +10,6 @@ import {
 
 export const tripSchema = z.object({ id: z.string() });
 
-export const myTripSchema = z.object({
-  myMemberships: z.array(
-    z.object({
-      trip: z.object({
-        id: z.string(),
-        name: z.string(),
-        startDate: z.string(),
-        endDate: z.string(),
-        image: z.string().nullable(),
-      }),
-      tripPosition: z.number(),
-      createdAt: z.date(),
-      updatedAt: z.date(),
-    }),
-  ),
-  trip: selectTripSchema.extend({
-    members: z.array(
-      z.object({
-        userId: z.string(),
-        name: z.string().nullable(),
-        image: z.string(),
-        permissions: z.number(),
-        createdAt: z.date(),
-      }),
-    ),
-    events: z.array(
-      selectEventSchema.extend({
-        activity: selectActivitySchema,
-        transportation: selectTransportationSchema,
-        flight: selectFlightSchema,
-      }),
-    ),
-  }),
-});
-
 export const tripContextSchema = z.object({
   myMemberships: z.array(
     z.object({

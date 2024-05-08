@@ -1,16 +1,21 @@
 import "server-only";
 
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, inArray, type TablesRelationalConfig } from "drizzle-orm";
+import { and, count, eq, type ExtractTablesWithRelations, inArray } from "drizzle-orm";
 import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
 import { auth } from "@clerk/nextjs/server";
 import ratelimit from "./ratelimit";
 import { error } from "~/lib/trpc";
 import db from "./db";
 
+import type * as schema from "~/server/db/schema";
 import { events, memberships, userRoles } from "./db/schema";
 
-type Transaction = PgTransaction<QueryResultHKT, Record<string, unknown>, TablesRelationalConfig>;
+type Transaction = PgTransaction<
+  QueryResultHKT,
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;
 const validRoles = ["explorer", "navigator", "captain", "fleetCommander", "tester", "admin"];
 
 /*--------------------------------------------------------------------------------------------------
@@ -43,6 +48,21 @@ export async function getMyUserRoleLimits(tx?: Transaction) {
   }
 
   return userRoleLimits;
+}
+
+export async function getMyMembershipPermissions(tx: Transaction, userId: string, tripId: string) {
+  const result = await tx.query.memberships.findFirst({
+    columns: { permissions: true },
+    where: and(eq(memberships.userId, userId), eq(memberships.tripId, tripId)),
+  });
+
+  if (!result) {
+    throw error.internalServerError(
+      "Failed to fetch your membership permissions. Please try again later.",
+    );
+  }
+
+  return result.permissions;
 }
 
 export async function getMyMembershipsCount(tx: Transaction, userId: string, owner?: boolean) {

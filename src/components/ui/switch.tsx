@@ -2,25 +2,25 @@
 
 import { cn } from "~/lib/utils";
 import { Button } from "./button";
-import { cva } from "class-variance-authority";
+// import { cva } from "class-variance-authority";
 
-const switchVariants = cva(
-  "relative h-6 w-11 rounded-full border-2 border-transparent duration-250 ease-kolumb-flow",
-  {
-    variants: {
-      variant: {
-        default: "shadow-border focus:shadow-focus",
-        unset: null,
-      },
-      size: {
-        default: "h-6 w-11",
-        sm: "h-6 w-11",
-        unset: null,
-      },
-    },
-    defaultVariants: { variant: "default", size: "default" },
-  },
-);
+// const switchVariants = cva(
+//   "relative h-6 w-11 rounded-full border-2 border-transparent duration-250 ease-kolumb-flow",
+//   {
+//     variants: {
+//       variant: {
+//         default: "shadow-border focus:shadow-focus",
+//         unset: null,
+//       },
+//       size: {
+//         default: "h-6 w-11",
+//         sm: "h-6 w-11",
+//         unset: null,
+//       },
+//     },
+//     defaultVariants: { variant: "default", size: "default" },
+//   },
+// );
 
 type SwitchProps = {
   checked: boolean;

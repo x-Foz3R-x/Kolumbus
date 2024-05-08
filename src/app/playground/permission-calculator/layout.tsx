@@ -7,7 +7,7 @@ export default function Layout(props: { children: React.ReactNode }) {
       <TopNav name="Permission Calculator" />
 
       <div className="min-h-screen w-screen bg-gray-50">
-        <Window windowName="Calculator ultra deluxe">{props.children}</Window>
+        <Window windowName="P-Cal deluxe 5000">{props.children}</Window>
       </div>
     </>
   );
