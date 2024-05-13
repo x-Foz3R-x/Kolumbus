@@ -52,7 +52,16 @@ export const createTripSchema = insertTripSchema.extend({
 
 export const duplicateTripSchema = tripSchema.extend({ duplicateId: z.string() });
 
+export const updateTripSchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  image: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+});
+
 export const findTripInviteSchema = z.object({ inviteCode: z.string() });
+export const createTripInviteSchema = tripSchema.extend({ inviteCode: z.string() });
 
 export const joinTripSchema = tripSchema.extend({ permissions: z.number().optional() });
 

@@ -1,8 +1,17 @@
 import "server-only";
 
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, type ExtractTablesWithRelations, inArray } from "drizzle-orm";
-import type { PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
+import {
+  and,
+  count,
+  eq,
+  type ExtractTablesWithRelations,
+  inArray,
+  sql,
+  type Subquery,
+  type TableConfig,
+} from "drizzle-orm";
+import type { PgTable, PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
 import { auth } from "@clerk/nextjs/server";
 import ratelimit from "./ratelimit";
 import { error } from "~/lib/trpc";
@@ -10,12 +19,16 @@ import db from "./db";
 
 import type * as schema from "~/server/db/schema";
 import { events, memberships, userRoles } from "./db/schema";
+import { decodePermissions } from "~/lib/utils";
+import { MemberPermissionsTemplate } from "~/lib/templates";
 
 type Transaction = PgTransaction<
   QueryResultHKT,
   typeof schema,
   ExtractTablesWithRelations<typeof schema>
 >;
+type Table = PgTable<TableConfig> | Subquery<string, Record<string, unknown>>;
+
 const validRoles = ["explorer", "navigator", "captain", "fleetCommander", "tester", "admin"];
 
 /*--------------------------------------------------------------------------------------------------
@@ -52,7 +65,7 @@ export async function getMyUserRoleLimits(tx?: Transaction) {
 
 export async function getMyMembershipPermissions(tx: Transaction, userId: string, tripId: string) {
   const result = await tx.query.memberships.findFirst({
-    columns: { permissions: true },
+    columns: { owner: true, permissions: true },
     where: and(eq(memberships.userId, userId), eq(memberships.tripId, tripId)),
   });
 
@@ -62,7 +75,16 @@ export async function getMyMembershipPermissions(tx: Transaction, userId: string
     );
   }
 
-  return result.permissions;
+  return result.owner ? "owner" : result.permissions;
+}
+
+export async function getMyMembershipDecodedPermissions(
+  tx: Transaction,
+  userId: string,
+  tripId: string,
+): Promise<Record<keyof typeof MemberPermissionsTemplate, boolean>> {
+  const permissions = await getMyMembershipPermissions(tx, userId, tripId);
+  return decodePermissions(permissions === "owner" ? -1 : permissions, MemberPermissionsTemplate);
 }
 
 export async function getMyMembershipsCount(tx: Transaction, userId: string, owner?: boolean) {
@@ -115,6 +137,21 @@ export async function getTripsEventCount(tx: Transaction, tripIds: string[]) {
     },
     {} as Record<string, number>,
   );
+}
+
+export async function isIdUsed(tx: Transaction, table: Table, id: string) {
+  const [result] = await tx
+    .select({ keyCount: count() })
+    .from(table)
+    .where(sql`id = ${id}`);
+
+  if (!result) {
+    throw error.internalServerError(
+      "Failed to verify if the ID is already used in the table. Please try again later.",
+    );
+  }
+
+  return result.keyCount > 0;
 }
 
 export async function isUserMemberOfTrip(tx: Transaction, userId: string, tripId: string) {

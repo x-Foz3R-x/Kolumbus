@@ -2,23 +2,26 @@ import { and, eq, gt, sql } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
 
 import { error } from "~/lib/trpc";
-import { createId, decodePermissions, encodePermissions } from "~/lib/utils";
+import { createId, encodePermissions } from "~/lib/utils";
 import { MemberPermissionsTemplate } from "~/lib/templates";
 import {
+  createTripInviteSchema,
   createTripSchema,
   duplicateTripSchema,
   findTripInviteSchema,
   joinTripSchema,
   tripSchema,
+  updateTripSchema,
 } from "~/lib/validations/trip";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import analyticsServerClient from "~/server/analytics";
 import {
   enforceMembershipLimit,
   enforceRateLimit,
-  getMyMembershipPermissions,
+  getMyMembershipDecodedPermissions,
   getMyMembershipsCount,
   getTripMemberCount,
+  isIdUsed,
   isUserMemberOfTrip,
 } from "~/server/queries";
 import {
@@ -34,67 +37,6 @@ import {
 } from "~/server/db/schema";
 
 export const tripRouter = createTRPCRouter({
-  getMy: protectedProcedure.input(tripSchema).query(async ({ ctx, input }) => {
-    const tripContext = await ctx.db.transaction(async (tx) => {
-      const trip = await tx.query.trips.findFirst({
-        where: eq(trips.id, input.id),
-        with: {
-          memberships: {
-            columns: { userId: true, owner: true, permissions: true, createdAt: true },
-            orderBy: (memberships, { asc }) => asc(memberships.createdAt),
-          },
-          events: {
-            orderBy: (events, { asc }) => asc(events.position),
-            with: { activity: true, transportation: true, flight: true },
-          },
-        },
-      });
-
-      const myMemberships = await tx.query.memberships
-        .findMany({
-          columns: { owner: true, tripPosition: true, createdAt: true, updatedAt: true },
-          where: eq(memberships.userId, ctx.user.id),
-          orderBy: (memberships, { asc }) => asc(memberships.tripPosition),
-          with: {
-            trip: {
-              columns: { id: true, name: true, image: true, startDate: true, endDate: true },
-            },
-          },
-        })
-        .then((memberships) =>
-          memberships.map((membership) => ({
-            tripId: membership.trip.id,
-            tripName: membership.trip.name,
-            tripImage: membership.trip.image,
-            tripOwner: membership.owner,
-            tripStartDate: membership.trip.startDate,
-            tripEndDate: membership.trip.endDate,
-            tripPosition: membership.tripPosition,
-            createdAt: membership.createdAt,
-            updatedAt: membership.updatedAt,
-          })),
-        );
-
-      return { trip, myMemberships };
-    });
-
-    if (!tripContext.trip) {
-      throw error.internalServerError("Failed to fetch the trip. Please try again later.");
-    }
-
-    const { memberships: tripMemberships, ...rest } = tripContext.trip;
-
-    const members = tripMemberships
-      ? await Promise.all(
-          tripMemberships.map(async (membership) => {
-            const user = await clerkClient.users.getUser(membership.userId);
-            return { ...membership, name: user.fullName, image: user.imageUrl };
-          }),
-        )
-      : [];
-
-    return { trip: { ...rest, members }, myMemberships: tripContext.myMemberships };
-  }),
   create: protectedProcedure.input(createTripSchema).mutation(async ({ ctx, input }) => {
     const { position, ...trip } = input;
 
@@ -223,6 +165,88 @@ export const tripRouter = createTRPCRouter({
       }
     });
   }),
+  getMy: protectedProcedure.input(tripSchema).query(async ({ ctx, input }) => {
+    const tripContext = await ctx.db.transaction(async (tx) => {
+      const trip = await tx.query.trips.findFirst({
+        where: eq(trips.id, input.id),
+        with: {
+          memberships: {
+            columns: { userId: true, owner: true, permissions: true, createdAt: true },
+            orderBy: (memberships, { asc }) => asc(memberships.createdAt),
+          },
+          events: {
+            orderBy: (events, { asc }) => asc(events.position),
+            with: { activity: true, transportation: true, flight: true },
+          },
+        },
+      });
+
+      const myMemberships = await tx.query.memberships
+        .findMany({
+          columns: { owner: true, tripPosition: true, createdAt: true, updatedAt: true },
+          where: eq(memberships.userId, ctx.user.id),
+          orderBy: (memberships, { asc }) => asc(memberships.tripPosition),
+          with: {
+            trip: {
+              columns: { id: true, name: true, image: true, startDate: true, endDate: true },
+            },
+          },
+        })
+        .then((memberships) =>
+          memberships.map((membership) => ({
+            tripId: membership.trip.id,
+            tripName: membership.trip.name,
+            tripImage: membership.trip.image,
+            tripOwner: membership.owner,
+            tripStartDate: membership.trip.startDate,
+            tripEndDate: membership.trip.endDate,
+            tripPosition: membership.tripPosition,
+            createdAt: membership.createdAt,
+            updatedAt: membership.updatedAt,
+          })),
+        );
+
+      return { trip, myMemberships };
+    });
+
+    if (!tripContext.trip) {
+      throw error.internalServerError("Failed to fetch the trip. Please try again later.");
+    }
+
+    const { memberships: tripMemberships, ...rest } = tripContext.trip;
+
+    const members = tripMemberships
+      ? await Promise.all(
+          tripMemberships.map(async (membership) => {
+            const user = await clerkClient.users.getUser(membership.userId);
+            return { ...membership, name: user.fullName, image: user.imageUrl };
+          }),
+        )
+      : [];
+
+    return { trip: { ...rest, members }, myMemberships: tripContext.myMemberships };
+  }),
+  update: protectedProcedure.input(updateTripSchema).mutation(async ({ ctx, input }) => {
+    const { id: tripId, ...trip } = input;
+
+    await ctx.db.transaction(async (tx) => {
+      const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
+
+      if (!permissions.editTrip) {
+        throw error.unauthorized(
+          "You do not have permission to edit this trip. Please ensure you have the necessary permissions before attempting to update it again.",
+        );
+      }
+
+      await tx.update(trips).set(trip).where(eq(trips.id, tripId));
+    });
+
+    analyticsServerClient.capture({
+      distinctId: ctx.user.id,
+      event: "update trip",
+      properties: { tripId },
+    });
+  }),
   delete: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
     const { id: tripId } = input;
 
@@ -267,54 +291,6 @@ export const tripRouter = createTRPCRouter({
     });
   }),
 
-  createInvite: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
-    const { id: tripId } = input;
-
-    const inviteCode = await ctx.db.transaction(async (tx) => {
-      const permissions = await getMyMembershipPermissions(tx, ctx.user.id, tripId);
-      const decodedPermissions = decodePermissions(permissions, MemberPermissionsTemplate);
-
-      if (!decodedPermissions?.createInvite) {
-        throw error.unauthorized(
-          "You do not have permission to create an invite link for this trip",
-        );
-      }
-
-      const inviteCode = createId(8);
-      await tx.update(trips).set({ inviteCode }).where(eq(trips.id, tripId));
-      return inviteCode;
-    });
-
-    analyticsServerClient.capture({
-      distinctId: ctx.user.id,
-      event: "create trip invite",
-      properties: { tripId },
-    });
-
-    return inviteCode;
-  }),
-  deleteInvite: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
-    const { id: tripId } = input;
-
-    await ctx.db.transaction(async (tx) => {
-      const permissions = await getMyMembershipPermissions(tx, ctx.user.id, tripId);
-      const decodedPermissions = decodePermissions(permissions, MemberPermissionsTemplate);
-
-      if (!decodedPermissions?.createInvite) {
-        throw error.unauthorized(
-          "You do not have permission to delete an invite link from this trip",
-        );
-      }
-
-      await tx.update(trips).set({ inviteCode: null }).where(eq(trips.id, tripId));
-    });
-
-    analyticsServerClient.capture({
-      distinctId: ctx.user.id,
-      event: "delete trip invite",
-      properties: { tripId },
-    });
-  }),
   findInvite: protectedProcedure.input(findTripInviteSchema).query(async ({ ctx, input }) => {
     // Failed find return codes:
     // Code 0 - Invalid Invite
@@ -359,9 +335,62 @@ export const tripRouter = createTRPCRouter({
       };
     });
   }),
+  createInvite: protectedProcedure
+    .input(createTripInviteSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id: tripId, inviteCode: inputInviteCode } = input;
+
+      await enforceRateLimit(ctx.user.id);
+      const inviteCode = await ctx.db.transaction(async (tx) => {
+        const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
+
+        if (!permissions?.createInvite) {
+          throw error.unauthorized(
+            "You do not have permission to create an invite link for this trip",
+          );
+        }
+
+        const inviteCode = (await isIdUsed(tx, trips, inputInviteCode))
+          ? createId(8)
+          : inputInviteCode;
+
+        await tx.update(trips).set({ inviteCode }).where(eq(trips.id, tripId));
+        return inviteCode;
+      });
+
+      analyticsServerClient.capture({
+        distinctId: ctx.user.id,
+        event: "create trip invite",
+        properties: { tripId },
+      });
+
+      return inviteCode;
+    }),
+  deleteInvite: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
+    const { id: tripId } = input;
+
+    await ctx.db.transaction(async (tx) => {
+      const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
+
+      if (!permissions?.createInvite) {
+        throw error.unauthorized(
+          "You do not have permission to delete an invite link from this trip",
+        );
+      }
+
+      await tx.update(trips).set({ inviteCode: null }).where(eq(trips.id, tripId));
+    });
+
+    analyticsServerClient.capture({
+      distinctId: ctx.user.id,
+      event: "delete trip invite",
+      properties: { tripId },
+    });
+  }),
   join: protectedProcedure.input(joinTripSchema).mutation(async ({ ctx, input }) => {
     const { id: tripId, permissions } = input;
 
+    await enforceRateLimit(ctx.user.id);
     await ctx.db.transaction(async (tx) => {
       await enforceMembershipLimit(tx, ctx.user.id);
 

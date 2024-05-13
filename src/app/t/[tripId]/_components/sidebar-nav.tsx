@@ -1,12 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Link from "next/link";
 import { sidebarNavConfig } from "~/config/sidebar-nav";
 
 import ToolLink from "./tool-link";
 import ProfileButton from "~/components/profile-button";
-import { Button, Icons } from "~/components/ui";
 import PageLink from "./page-link";
 
 export default function SidebarNav(props: { tripId: string; tool: number }) {
