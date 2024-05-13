@@ -1,14 +1,16 @@
-import { format } from "date-fns";
+import Link from "next/link";
 import Image from "next/image";
+import { format } from "date-fns";
+
 import type { TripContext } from "~/lib/validations/trip";
+import { tripFallbackUrl } from "~/lib/constants";
 
 import { Icons } from "~/components/ui";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
-import { tripFallbackUrl } from "~/lib/constants";
 
 export default function SwitchTrip(props: { myMemberships: TripContext["myMemberships"] }) {
   const myTripMemberships = props.myMemberships.filter((membership) => membership.tripOwner);
-  const sharedTripMemberships = props.myMemberships.filter((membership) => !membership.tripOwner);
+  // const sharedTripMemberships = props.myMemberships.filter((membership) => !membership.tripOwner);
 
   return (
     <Menu
@@ -20,10 +22,12 @@ export default function SwitchTrip(props: { myMemberships: TripContext["myMember
         variant: "scale",
         size: "unset",
         className: "h-8 w-6 relative overflow-visible before:rounded before:bg-gray-100",
-        children: <Icons.chevronUpDown className="h-4 w-full scale-100 overflow-visible" />,
+        children: <Icons.chevronUpDown className="h-4 w-6 scale-100" />,
       }}
     >
-      <h2>Your Trips</h2>
+      <Link href="/library" className="hover:underline">
+        Your Trips
+      </Link>
       {myTripMemberships.map((membership, index) => (
         <MenuLink
           key={index}

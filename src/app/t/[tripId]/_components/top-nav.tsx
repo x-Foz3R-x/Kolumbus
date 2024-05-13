@@ -47,11 +47,11 @@ export default function TopNav(props: {
   };
 
   return (
-    <nav className="sticky inset-x-0 top-0 z-50 flex h-14 items-center justify-between border-b bg-white/80 px-8 backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
+    <nav className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between border-b bg-white/80 px-[1.375rem] backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
       <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
         <Link
           href="/"
-          className="flex items-center gap-2 font-belanosima text-lg font-bold text-kolumblue-500"
+          className="flex origin-left items-center gap-2 font-belanosima text-lg font-bold text-kolumblue-500"
         >
           <Icons.logo2 className="h-6 fill-kolumblue-500" />
         </Link>
@@ -76,7 +76,7 @@ export default function TopNav(props: {
         </div>
       </section>
 
-      <section className="flex h-full flex-shrink-0 items-center justify-end gap-4">
+      <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
         <Icons.calendar className="h-8 fill-kolumblue-500" />
         <Icons.rangeCalendar className="h-8 fill-kolumblue-500" />
         <Floating
