@@ -1,6 +1,6 @@
-import type { Event, EventTypes, Membership, Trip } from "~/server/db/schema";
-import { formatDate } from "~/lib/utils";
 import { add } from "date-fns";
+import { formatDate } from "~/lib/utils";
+import type { Event, EventTypes, Membership, Trip } from "~/server/db/schema";
 
 export enum MemberPermissionsTemplate {
   // General permissions
