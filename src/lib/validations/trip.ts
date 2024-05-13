@@ -13,13 +13,15 @@ export const tripSchema = z.object({ id: z.string() });
 export const tripContextSchema = z.object({
   myMemberships: z.array(
     z.object({
-      tripId: z.string(),
-      tripName: z.string(),
-      tripImage: z.string().nullable(),
-      tripOwner: z.boolean(),
-      tripStartDate: z.string(),
-      tripEndDate: z.string(),
-      tripPosition: z.number(),
+      trip: z.object({
+        id: z.string(),
+        name: z.string(),
+        image: z.string().nullable(),
+        owner: z.boolean(),
+        startDate: z.string(),
+        endDate: z.string(),
+        position: z.number(),
+      }),
       createdAt: z.date(),
       updatedAt: z.date(),
     }),

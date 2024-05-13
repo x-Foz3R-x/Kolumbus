@@ -194,13 +194,15 @@ export const tripRouter = createTRPCRouter({
         })
         .then((memberships) =>
           memberships.map((membership) => ({
-            tripId: membership.trip.id,
-            tripName: membership.trip.name,
-            tripImage: membership.trip.image,
-            tripOwner: membership.owner,
-            tripStartDate: membership.trip.startDate,
-            tripEndDate: membership.trip.endDate,
-            tripPosition: membership.tripPosition,
+            trip: {
+              id: membership.trip.id,
+              name: membership.trip.name,
+              image: membership.trip.image,
+              owner: membership.owner,
+              startDate: membership.trip.startDate,
+              endDate: membership.trip.endDate,
+              position: membership.tripPosition,
+            },
             createdAt: membership.createdAt,
             updatedAt: membership.updatedAt,
           })),

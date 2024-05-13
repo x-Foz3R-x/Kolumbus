@@ -9,8 +9,8 @@ import { Icons } from "~/components/ui";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
 
 export default function SwitchTrip(props: { myMemberships: TripContext["myMemberships"] }) {
-  const myTripMemberships = props.myMemberships.filter((membership) => membership.tripOwner);
-  const sharedTripMemberships = props.myMemberships.filter((membership) => !membership.tripOwner);
+  const myTripMemberships = props.myMemberships.filter((membership) => membership.trip.owner);
+  const sharedTripMemberships = props.myMemberships.filter((membership) => !membership.trip.owner);
 
   return (
     <Menu
@@ -31,13 +31,13 @@ export default function SwitchTrip(props: { myMemberships: TripContext["myMember
       {myTripMemberships.map((membership, index) => (
         <MenuLink
           key={index}
-          href={`/t/${membership.tripId}`}
-          label={membership.tripName}
+          href={`/t/${membership.trip.id}`}
+          label={membership.trip.name}
           className="relative h-12 min-w-64 text-left"
         >
           <div className="relative h-9 w-9 overflow-hidden rounded-md bg-gray-200">
             <Image
-              src={membership.tripImage ? membership.tripImage : tripFallbackUrl}
+              src={membership.trip.image ? membership.trip.image : tripFallbackUrl}
               alt="Trip photo"
               sizes="224px"
               priority
@@ -46,12 +46,12 @@ export default function SwitchTrip(props: { myMemberships: TripContext["myMember
           </div>
 
           <div className="flex flex-col font-light leading-tight">
-            {membership.tripName}
+            {membership.trip.name}
 
             <span className="text-[12px] text-gray-400">
-              {format(membership.tripStartDate, "d MMM")}
+              {format(new Date(membership.trip.startDate), "d MMM")}
               {" - "}
-              {format(membership.tripEndDate, "d MMM")}
+              {format(new Date(membership.trip.endDate), "d MMM")}
             </span>
           </div>
 
@@ -65,13 +65,13 @@ export default function SwitchTrip(props: { myMemberships: TripContext["myMember
       {sharedTripMemberships.map((membership, index) => (
         <MenuLink
           key={index}
-          href={`/t/${membership.tripId}`}
-          label={membership.tripName}
+          href={`/t/${membership.trip.id}`}
+          label={membership.trip.name}
           className="relative h-12 min-w-64 text-left"
         >
           <div className="relative h-9 w-9 overflow-hidden rounded-md bg-gray-200">
             <Image
-              src={membership.tripImage ? membership.tripImage : tripFallbackUrl}
+              src={membership.trip.image ? membership.trip.image : tripFallbackUrl}
               alt="Trip photo"
               sizes="224px"
               priority
@@ -80,12 +80,12 @@ export default function SwitchTrip(props: { myMemberships: TripContext["myMember
           </div>
 
           <div className="flex flex-col font-light leading-tight">
-            {membership.tripName}
+            {membership.trip.name}
 
             <span className="text-[12px] text-gray-400">
-              {format(membership.tripStartDate, "d MMM")}
+              {format(new Date(membership.trip.startDate), "d MMM")}
               {" - "}
-              {format(membership.tripEndDate, "d MMM")}
+              {format(new Date(membership.trip.endDate), "d MMM")}
             </span>
           </div>
 
