@@ -2,14 +2,23 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 type Overflow = { top: boolean; bottom: boolean; left: boolean; right: boolean };
 
-export function useOverflowObserver(ref: React.MutableRefObject<HTMLElement | null>, disable?: boolean): Overflow {
-  const [overflow, setOverflow] = useState<Overflow>({ top: false, bottom: false, left: false, right: false });
+export function useOverflowObserver(
+  ref: React.MutableRefObject<HTMLElement | null>,
+  disable?: boolean,
+): Overflow {
+  const [overflow, setOverflow] = useState<Overflow>({
+    top: false,
+    bottom: false,
+    left: false,
+    right: false,
+  });
   const overflowRef = useRef(overflow);
 
   const checkOverflow = useCallback(() => {
     if (!ref.current) return;
 
-    const { scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth } = ref.current;
+    const { scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth } =
+      ref.current;
 
     const overflowTop = scrollTop > 0;
     const overflowBottom = scrollTop < scrollHeight - clientHeight;
@@ -22,7 +31,12 @@ export function useOverflowObserver(ref: React.MutableRefObject<HTMLElement | nu
       overflowRight !== overflowRef.current.right ||
       overflowLeft !== overflowRef.current.left
     ) {
-      const newOverflow = { top: overflowTop, bottom: overflowBottom, left: overflowLeft, right: overflowRight };
+      const newOverflow = {
+        top: overflowTop,
+        bottom: overflowBottom,
+        left: overflowLeft,
+        right: overflowRight,
+      };
       setOverflow(newOverflow);
       overflowRef.current = newOverflow;
     }
