@@ -85,7 +85,7 @@ export function SelectInline({
         <ul
           ref={refs.setFloating}
           className={cn(
-            "flex flex-col overflow-y-auto overflow-x-hidden bg-white p-1.5 font-inter dark:bg-gray-800 dark:text-white",
+            "flex flex-col overflow-y-auto overflow-x-hidden bg-white py-1.5 font-inter dark:bg-gray-800 dark:text-white",
             className,
           )}
           {...getFloatingProps()}
@@ -93,13 +93,7 @@ export function SelectInline({
           {children}
         </ul>
 
-        <ScrollIndicator
-          scrollRef={refs.floating}
-          zIndex={10}
-          className={{ start: "mx-2", end: "mx-2" }}
-          size={51}
-          vertical
-        />
+        <ScrollIndicator scrollRef={refs.floating} zIndex={10} size={51} vertical />
       </FloatingList>
     </SelectContext.Provider>
   );
