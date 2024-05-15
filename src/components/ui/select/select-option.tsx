@@ -8,14 +8,16 @@ import { cn } from "~/lib/utils";
 type SelectOptionProps = VariantProps<typeof OptionVariants> & {
   label: string;
   onClick?: () => void;
+  onHover?: (hovering: boolean) => void;
   className?: string;
   activeClassName?: string;
   selectedClassName?: string;
   children?: React.ReactNode;
 };
 export const SelectOption = memo(function SelectOption({
-  onClick,
   label,
+  onClick,
+  onHover,
   variant,
   size,
   className,
@@ -34,6 +36,14 @@ export const SelectOption = memo(function SelectOption({
     handleSelect(item.index);
   }, [onClick, handleSelect, item.index]);
 
+  const handleMouseEnter = useCallback(() => {
+    onHover?.(true);
+  }, [onHover]);
+
+  const handleMouseLeave = useCallback(() => {
+    onHover?.(false);
+  }, [onHover]);
+
   return (
     <button
       ref={item.ref}
@@ -41,7 +51,11 @@ export const SelectOption = memo(function SelectOption({
       tabIndex={isActive ? 0 : -1}
       aria-selected={isActive && isSelected}
       className={cn(OptionVariants({ variant, size }))}
-      {...getItemProps({ onClick: handleClick })}
+      {...getItemProps({
+        onClick: handleClick,
+        onMouseEnter: handleMouseEnter,
+        onMouseLeave: handleMouseLeave,
+      })}
     >
       <div
         className={cn(

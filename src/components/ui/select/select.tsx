@@ -224,7 +224,6 @@ export function Select({
                       zIndex={10}
                       className={{ start: "rounded-t-xl", end: "rounded-b-xl" }}
                       vertical
-                      animate
                     />
                   </FloatingList>
                 )}
