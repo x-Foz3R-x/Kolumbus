@@ -28,6 +28,7 @@ type ComboboxProps = {
     setInputValue: React.Dispatch<React.SetStateAction<string>>;
     activeItemRef: React.MutableRefObject<unknown>;
     list: { value: string; [data: string]: unknown }[];
+    scrollItemIntoView?: ScrollIntoViewOptions;
     className?: string;
     children?: React.ReactNode;
   };
@@ -60,6 +61,7 @@ export const Combobox = {
     setInputValue,
     activeItemRef,
     list,
+    scrollItemIntoView = { behavior: "smooth", block: "nearest", inline: "nearest" },
     className,
     children,
   }: ComboboxProps["root"]) {
@@ -79,6 +81,7 @@ export const Combobox = {
       listRef,
       activeIndex,
       onNavigate: setActiveIndex,
+      scrollItemIntoView,
       virtual: true,
       loop: true,
       allowEscape: true,

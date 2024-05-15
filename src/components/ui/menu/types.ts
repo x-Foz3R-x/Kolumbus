@@ -16,6 +16,7 @@ export type MenuProps = {
   shift?: ShiftOptions | false;
   flip?: FlipOptions | false;
   size?: SizeOptions | false;
+  scrollItemIntoView?: ScrollIntoViewOptions;
   loop?: boolean;
   animation?: keyof typeof TRANSITION | null;
   zIndex?: number;

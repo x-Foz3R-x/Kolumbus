@@ -19,6 +19,7 @@ type SelectProps = {
   defaultSelectedIndex?: number | null;
   selectedIndex?: number | null;
   setSelectedIndex?: (index: number | null) => void;
+  scrollItemIntoView?: ScrollIntoViewOptions;
   className?: string;
   children?: React.ReactNode;
 };
@@ -26,6 +27,7 @@ export function SelectInline({
   defaultSelectedIndex = null,
   selectedIndex: controlledSelectedIndex,
   setSelectedIndex: controlledSetSelectedIndex,
+  scrollItemIntoView = { behavior: "smooth", block: "nearest", inline: "nearest" },
   className,
   children,
 }: SelectProps) {
@@ -54,6 +56,7 @@ export function SelectInline({
     activeIndex,
     selectedIndex,
     onNavigate: setActiveIndex,
+    scrollItemIntoView,
     loop: true,
   });
   const typeahead = useTypeahead(context, {
@@ -93,7 +96,8 @@ export function SelectInline({
         <ScrollIndicator
           scrollRef={refs.floating}
           zIndex={10}
-          className={{ start: "rounded-t-xl", end: "rounded-b-xl" }}
+          className={{ start: "mx-2", end: "mx-2" }}
+          size={51}
           vertical
         />
       </FloatingList>

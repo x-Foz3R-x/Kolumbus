@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useListItem } from "@floating-ui/react";
 import type { VariantProps } from "class-variance-authority";
 import { useSelectContext } from "./select-context";
@@ -44,9 +44,30 @@ export const SelectOption = memo(function SelectOption({
     onHover?.(false);
   }, [onHover]);
 
+  const [node, setNode] = useState<HTMLElement | null>(null);
+
+  const ref = useCallback(
+    (node: HTMLElement | null) => {
+      item.ref(node);
+      setNode(node);
+    },
+    [item],
+  );
+
+  useEffect(() => {
+    if (isSelected && node) {
+      setTimeout(() => {
+        node.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 50);
+    }
+  }, [isSelected, node]);
+
   return (
     <button
-      ref={item.ref}
+      ref={ref}
       role="option"
       tabIndex={isActive ? 0 : -1}
       aria-selected={isActive && isSelected}
@@ -56,6 +77,7 @@ export const SelectOption = memo(function SelectOption({
         onMouseEnter: handleMouseEnter,
         onMouseLeave: handleMouseLeave,
       })}
+      data-selected={isSelected}
     >
       <div
         className={cn(

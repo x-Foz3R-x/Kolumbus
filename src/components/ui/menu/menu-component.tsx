@@ -56,6 +56,7 @@ export function MenuComponent({
       }
     },
   },
+  scrollItemIntoView = { behavior: "smooth", block: "nearest", inline: "nearest" },
   loop,
   animation,
   zIndex,
@@ -115,6 +116,7 @@ export function MenuComponent({
     activeIndex,
     nested: isNested,
     onNavigate: setActiveIndex,
+    scrollItemIntoView,
     loop,
   });
   const typeahead = useTypeahead(context, {

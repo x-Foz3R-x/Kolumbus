@@ -41,6 +41,7 @@ type SelectProps = {
   shift?: ShiftOptions | false;
   flip?: FlipOptions | false;
   size?: SizeOptions | false;
+  scrollItemIntoView?: ScrollIntoViewOptions;
   animation?: Exclude<keyof typeof TRANSITION, "fadeToPosition"> | null;
   className?: string;
   zIndex?: number;
@@ -71,6 +72,7 @@ export function Select({
       }
     },
   },
+  scrollItemIntoView = { behavior: "smooth", block: "nearest", inline: "nearest" },
   animation,
   className,
   zIndex,
@@ -123,6 +125,7 @@ export function Select({
     activeIndex,
     selectedIndex,
     onNavigate: setActiveIndex,
+    scrollItemIntoView,
     loop: true,
   });
   const typeahead = useTypeahead(context, {
