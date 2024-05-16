@@ -1,7 +1,6 @@
 .rdrDateRangeWrapper {
   color: hsl(232, 9%, 17%);
-  width: 18rem;
-  padding: 0.5rem;
+  width: 17rem;
   font-size: 12px;
   display: flex;
   flex-direction: column;

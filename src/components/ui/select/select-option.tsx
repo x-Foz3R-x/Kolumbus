@@ -8,7 +8,7 @@ import { cn } from "~/lib/utils";
 type SelectOptionProps = VariantProps<typeof OptionVariants> & {
   label: string;
   onClick?: () => void;
-  onHover?: (hovering: boolean) => void;
+  onHover?: (isHovered: boolean) => void;
   className?: string;
   activeClassName?: string;
   selectedClassName?: string;
