@@ -59,7 +59,7 @@ export default function TopNav(props: {
             children: (
               <>
                 <Icons.rangeCalendar className="h-full w-full fill-kolumblue-500" />
-                <div className="absolute inset-y-0 left-0 flex w-[35px] flex-col items-center justify-between pb-0.5 pt-[5px] leading-none">
+                <div className="absolute inset-y-0 left-0 flex w-[35px] flex-col items-center justify-between pb-0.5 pt-[5.5px] leading-none">
                   <span className="text-[10px] font-medium uppercase leading-[13px] tracking-tight text-white">
                     {format(new Date(props.trip.startDate), "MMM").toUpperCase()}
                   </span>
@@ -68,7 +68,7 @@ export default function TopNav(props: {
                   </span>
                 </div>
 
-                <div className="absolute inset-y-0 right-0 flex w-[35px] flex-col items-center justify-between pb-0.5 pt-[5px] leading-none">
+                <div className="absolute inset-y-0 right-0 flex w-[35px] flex-col items-center justify-between pb-0.5 pt-[5.5px] leading-none">
                   <span className="text-[10px] font-medium uppercase leading-[13px] tracking-tight text-white">
                     {format(new Date(props.trip.endDate), "MMM").toUpperCase()}
                   </span>

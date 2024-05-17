@@ -8,14 +8,14 @@ import { useEffect, useState } from "react";
 import { type RangeKeyDict, type RangeFocus, DateRange } from "react-date-range";
 import { isBefore } from "date-fns";
 
+import useDateRange from "~/hooks/use-date-range";
 import { differenceInDays, formatDate } from "~/lib/utils";
 
-import { Button, type ButtonProps } from "../ui";
-import { SelectInline } from "../ui/select";
-import { Floating } from "../ui/floating";
-import useDateRange from "~/hooks/use-date-range";
 import { DayOption } from "./day-option";
 import { datePickerNavigation } from "./date-picker-navigation";
+import { Floating } from "../ui/floating";
+import { SelectInline } from "../ui/select";
+import { Button, type ButtonProps } from "../ui";
 
 type Preview = { startDate: Date; endDate: Date } | undefined;
 
