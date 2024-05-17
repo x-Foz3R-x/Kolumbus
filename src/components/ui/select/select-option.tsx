@@ -9,9 +9,7 @@ type SelectOptionProps = VariantProps<typeof OptionVariants> & {
   label: string;
   onClick?: () => void;
   onHover?: (isHovered: boolean) => void;
-  className?: string;
-  activeClassName?: string;
-  selectedClassName?: string;
+  className?: { base?: string; active?: string; selected?: string };
   children?: React.ReactNode;
 };
 export const SelectOption = memo(function SelectOption({
@@ -21,8 +19,6 @@ export const SelectOption = memo(function SelectOption({
   variant,
   size,
   className,
-  activeClassName,
-  selectedClassName,
   children,
 }: SelectOptionProps) {
   const { activeIndex, selectedIndex, getItemProps, handleSelect } = useSelectContext();
@@ -82,9 +78,9 @@ export const SelectOption = memo(function SelectOption({
       <div
         className={cn(
           "flex h-[34px] w-full cursor-default select-none items-center gap-4 px-3 duration-200 ease-kolumb-overflow group-focus:translate-x-1.5",
-          className,
-          isActive && activeClassName,
-          isSelected && selectedClassName,
+          className?.base,
+          isActive && className?.active,
+          isSelected && className?.selected,
         )}
       >
         {children ?? label}

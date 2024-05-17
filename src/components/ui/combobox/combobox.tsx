@@ -318,7 +318,7 @@ export const Combobox = {
         custom={{ index }}
         className={cn(
           ButtonVariants({ variant: "baseScale", size: "unset" }),
-          "w-full cursor-default py-2 before:rounded-md before:bg-black/5 before:shadow-select before:dark:bg-white/10",
+          "w-full cursor-default py-2 before:rounded-md before:bg-black/5 before:shadow-button before:dark:bg-white/10",
           active && "before:scale-100 before:scale-x-100 before:scale-y-100 before:opacity-100",
           className,
         )}

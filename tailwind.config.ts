@@ -95,8 +95,6 @@ export default {
           "0 2px 4px rgba(0,0,0,0.05), 0 2px 10px rgba(0,0,0,0.15), 0 -1px 0 rgba(0,0,0,0.02)",
 
         button:
-          "0 0px 0px 1px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.05)",
-        select:
           "0 0px 3px rgba(0,0,0,0.05), 0 1px 1px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.01), 0 5px 6px rgba(0,0,0,0.01), 0 6px 8px rgba(0,0,0,0.01)",
 
         xs: "0 1px 2px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.01), 0 2px 3px rgba(0,0,0,0.01)",

@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const OptionVariants = cva(
-  "group relative z-10 select-none bg-transparent fill-gray-400 tracking-tight text-gray-800 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:scale-50 before:opacity-0 before:shadow-select before:duration-250 before:ease-kolumb-flow before:focus:scale-100 before:focus:opacity-100 before:focus-visible:scale-100 before:focus-visible:opacity-100 dark:fill-gray-600 dark:text-white",
+  "group relative z-10 select-none bg-transparent fill-gray-400 tracking-tight text-gray-800 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:scale-50 before:opacity-0 before:shadow-button before:duration-250 before:ease-kolumb-flow before:focus:scale-100 before:focus:opacity-100 before:focus-visible:scale-100 before:focus-visible:opacity-100 dark:fill-gray-600 dark:text-white",
   {
     variants: {
       variant: {

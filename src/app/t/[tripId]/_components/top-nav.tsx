@@ -7,7 +7,7 @@ import type { TripContext } from "~/lib/validations/trip";
 
 import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
-import DatePicker from "~/components/date-picker";
+import { DatePicker } from "~/components/date-picker";
 import { Icons } from "~/components/ui";
 
 export default function TopNav(props: {

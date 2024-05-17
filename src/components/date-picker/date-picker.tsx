@@ -4,20 +4,22 @@ import "~/styles/react-date-range/styles.css";
 import "~/styles/react-date-range/date-display.css";
 import "~/styles/react-date-range/navigation.css";
 
-import { memo, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { type RangeKeyDict, type RangeFocus, DateRange } from "react-date-range";
-import { add, isBefore } from "date-fns";
+import { isBefore } from "date-fns";
 
-import { cn, differenceInDays, formatDate } from "~/lib/utils";
+import { differenceInDays, formatDate } from "~/lib/utils";
 
-import { Button, type ButtonProps } from "./ui";
-import { SelectInline, SelectOption, useSelectContext } from "./ui/select";
-import { Floating } from "./ui/floating";
+import { Button, type ButtonProps } from "../ui";
+import { SelectInline } from "../ui/select";
+import { Floating } from "../ui/floating";
 import useDateRange from "~/hooks/use-date-range";
+import { DayOption } from "./day-option";
+import { datePickerNavigation } from "./date-picker-navigation";
 
 type Preview = { startDate: Date; endDate: Date } | undefined;
 
-export default function DatePicker(props: {
+export function DatePicker(props: {
   startDate: string;
   endDate: string;
   daysLimit: number;
@@ -36,15 +38,8 @@ export default function DatePicker(props: {
     focusedRange,
   });
 
-  const newDatesRef = useRef({
-    startDate: new Date(props.startDate),
-    endDate: new Date(props.endDate),
-  });
-
   const handleChange = (item: RangeKeyDict) => {
-    const startDate = item.selection?.startDate ?? dateRange.startDate;
-    const endDate = item.selection?.endDate ?? dateRange.endDate;
-    setDateRange({ startDate, endDate });
+    setDateRange({ startDate: item.selection?.startDate, endDate: item.selection?.endDate });
   };
 
   const handlePreviewChange = (date: Date | undefined) => {
@@ -54,35 +49,23 @@ export default function DatePicker(props: {
       return;
     }
 
-    let startDate = date;
-    let endDate = date;
+    const isDateBefore = isBefore(date, dateRange.startDate);
+    const startDate = focusedRange[1] === 1 && isDateBefore ? date : dateRange.startDate;
+    const endDate = focusedRange[1] === 1 && isDateBefore ? dateRange.startDate : date;
 
-    if (focusedRange[1] === 1) {
-      startDate = isBefore(date, dateRange.startDate) ? date : dateRange.startDate;
-      endDate = isBefore(date, dateRange.startDate) ? dateRange.startDate : date;
-      setDateRange({ days: differenceInDays(dateRange.startDate, dateRange.endDate) });
-    }
-
+    if (focusedRange[1] === 1) setDateRange({ days: differenceInDays(startDate, endDate) });
     setPreview({ startDate, endDate });
   };
 
   const handleApply = () => {
     setIsOpen(false);
 
-    const rangeStartDate = new Date(formatDate(dateRange.startDate));
-    const rangeEndDate = new Date(formatDate(dateRange.endDate));
-    const startDate = new Date(props.startDate);
-    const endDate = new Date(props.endDate);
-    newDatesRef.current = { startDate: rangeStartDate, endDate: rangeEndDate };
-
     if (
-      formatDate(startDate) === formatDate(rangeStartDate) &&
-      formatDate(endDate) === formatDate(rangeEndDate)
+      props.startDate !== formatDate(dateRange.startDate) ||
+      props.endDate !== formatDate(dateRange.endDate)
     ) {
-      return;
+      props.onApply(dateRange.startDate, dateRange.endDate);
     }
-
-    props.onApply(rangeStartDate, rangeEndDate);
   };
 
   const handleCancel = () => {
@@ -136,24 +119,26 @@ export default function DatePicker(props: {
             weekStartsOn={1}
             preventSnapRefocus
             scroll={{ enabled: true, monthHeight: 212, longMonthHeight: 244, calendarHeight: 228 }}
+            navigatorRenderer={(shownDate, changeShownDate) =>
+              datePickerNavigation(shownDate, changeShownDate, minDate, maxDate)
+            }
           />
 
           {/* Controls */}
-          <div className="flex w-full gap-2">
+          <div className="relative z-50 flex w-full gap-2">
             <Button
               onClick={handleCancel}
               animatePress
-              variant="unset"
-              className="w-full rounded-md bg-gray-100 text-xs font-medium text-gray-600 hover:bg-gray-200"
+              variant="scale"
+              className="w-full rounded-md bg-gray-50 text-xs font-medium text-gray-600 before:rounded-md before:bg-gray-100"
             >
               Cancel
             </Button>
             <Button
               onClick={handleApply}
               animatePress
-              variant="unset"
-              size="lg"
-              className="w-full rounded-md bg-kolumblue-100 text-xs font-medium text-kolumblue-600 hover:bg-kolumblue-200"
+              variant="scale"
+              className="w-full rounded-md bg-gray-50 text-xs font-medium text-gray-600 before:rounded-md before:bg-gray-100"
             >
               Apply
             </Button>
@@ -183,52 +168,3 @@ export default function DatePicker(props: {
     </div>
   );
 }
-
-const DayOption = memo(function DayOption(props: {
-  index: number;
-  startDate: Date;
-  onClick: (date: Date) => void;
-  onHover: (preview: Preview) => void;
-}) {
-  const { selectedIndex } = useSelectContext();
-
-  const currentDate = add(props.startDate, { days: props.index });
-  const isSelected = selectedIndex === props.index;
-  const day = props.index + 1;
-
-  const handleClick = () => {
-    props.onClick(currentDate);
-  };
-
-  const handleHover = (isHovered: boolean) => {
-    if (isHovered) props.onHover({ startDate: props.startDate, endDate: currentDate });
-    else props.onHover(undefined);
-  };
-
-  return (
-    <SelectOption
-      onClick={handleClick}
-      onHover={handleHover}
-      label={day.toString()}
-      className="gap-1.5 pl-0 pr-5"
-    >
-      <div
-        className={cn(
-          "flex w-9 flex-shrink-0 items-center justify-end text-right font-light",
-          isSelected && "font-semibold text-kolumblue-500",
-        )}
-      >
-        {props.index + 1}
-      </div>
-
-      <div
-        className={cn(
-          "w-full text-[11px] font-light text-gray-500",
-          isSelected && "font-medium text-kolumblue-400",
-        )}
-      >
-        {day === 1 ? "Day" : "Days"}
-      </div>
-    </SelectOption>
-  );
-});
