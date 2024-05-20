@@ -4,6 +4,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 
 import type { TripContext } from "~/lib/validations/trip";
+import { differenceInDays } from "~/lib/utils";
 
 import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
@@ -34,8 +35,7 @@ export default function TopNav(props: {
       </section>
 
       <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
-        <Icons.calendar className="h-8 fill-kolumblue-500" />
-        <Icons.rangeCalendar className="h-8 fill-kolumblue-500" />
+        <Icons.rangeCalendarOg className="h-[38px] fill-kolumblue-500" />
         <DatePicker
           startDate={props.trip.startDate}
           endDate={props.trip.endDate}
@@ -47,7 +47,7 @@ export default function TopNav(props: {
           buttonProps={{
             variant: "unset",
             size: "unset",
-            className: "relative h-[38px] w-[82px]",
+            className: "relative h-10 fill-kolumblue-500 flex",
             tooltip: {
               placement: "bottom",
               offset: 8,
@@ -58,21 +58,78 @@ export default function TopNav(props: {
             },
             children: (
               <>
-                <Icons.rangeCalendar className="h-full w-full fill-kolumblue-500" />
-                <div className="absolute inset-y-0 left-0 flex w-[35px] flex-col items-center justify-between pb-0.5 pt-[5.5px] leading-none">
-                  <span className="text-[10px] font-medium uppercase leading-[13px] tracking-tight text-white">
+                <Icons.rangeCalendar className="h-full" />
+                <div className="absolute inset-0 flex gap-[2px] px-1 pb-[4.5px] pt-[6px]">
+                  <div className="flex gap-[8.5px]">
+                    <div className="flex w-[30px] flex-col items-center justify-between">
+                      <span className="text-[10px] font-medium uppercase leading-[14.5px] tracking-tight text-white">
+                        {format(new Date(props.trip.startDate), "MMM").toUpperCase()}
+                      </span>
+                      <span className="text-sm leading-[15px]">
+                        {format(new Date(props.trip.startDate), "d")}
+                      </span>
+                    </div>
+
+                    <div className="flex w-[30px] flex-col items-center justify-between">
+                      <span className="text-[10px] font-medium uppercase leading-[14.5px] tracking-tight text-white">
+                        {format(new Date(props.trip.endDate), "MMM").toUpperCase()}
+                      </span>
+                      <span className="text-sm leading-[15px]">
+                        {format(new Date(props.trip.endDate), "d")}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex w-[30px] flex-col items-center justify-between">
+                    <span className="text-[10px] font-medium uppercase leading-[14.5px] tracking-tight text-white">
+                      DAYS
+                    </span>
+                    <span className="text-sm leading-[15px]">
+                      {differenceInDays(props.trip.startDate, props.trip.endDate)}
+                    </span>
+                  </div>
+                </div>
+              </>
+            ),
+          }}
+        />
+        <DatePicker
+          startDate={props.trip.startDate}
+          endDate={props.trip.endDate}
+          daysLimit={14}
+          onApply={(startDate, endDate) => {
+            console.log(startDate, endDate);
+          }}
+          includeDays
+          buttonProps={{
+            variant: "unset",
+            size: "unset",
+            className: "relative h-10 fill-kolumblue-500",
+            tooltip: {
+              placement: "bottom",
+              offset: 8,
+              arrow: true,
+              focus: { enabled: false },
+              zIndex: 50,
+              children: "Date Picker",
+            },
+            children: (
+              <>
+                <Icons.rangeCalendar4 className="h-full" />
+                <div className="absolute inset-y-0 left-0 flex w-[40px] flex-col items-center justify-between pb-1 pl-1 pr-[7px] pt-[7px] leading-none">
+                  <span className="text-[10px] font-medium uppercase leading-[14px] tracking-tight text-white">
                     {format(new Date(props.trip.startDate), "MMM").toUpperCase()}
                   </span>
-                  <span className="text-sm leading-[18px]">
+                  <span className="text-sm leading-[15px]">
                     {format(new Date(props.trip.startDate), "d")}
                   </span>
                 </div>
 
-                <div className="absolute inset-y-0 right-0 flex w-[35px] flex-col items-center justify-between pb-0.5 pt-[5.5px] leading-none">
-                  <span className="text-[10px] font-medium uppercase leading-[13px] tracking-tight text-white">
+                <div className="absolute inset-y-0 right-0 flex w-[40px] flex-col items-center justify-between pb-1 pl-[7px] pr-1 pt-[7px] leading-none">
+                  <span className="text-[10px] font-medium uppercase leading-[14px] tracking-tight text-white">
                     {format(new Date(props.trip.endDate), "MMM").toUpperCase()}
                   </span>
-                  <span className="text-sm leading-[18px]">
+                  <span className="text-sm leading-[15px]">
                     {format(new Date(props.trip.endDate), "d")}
                   </span>
                 </div>
