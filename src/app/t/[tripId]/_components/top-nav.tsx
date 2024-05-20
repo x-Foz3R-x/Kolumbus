@@ -15,10 +15,10 @@ import { DatePicker } from "~/components/date-picker";
 import { Icons } from "~/components/ui";
 
 export default function TopNav() {
-  const { trip, setTrip, myMemberships } = useTripContext();
+  const { trip, setTrip } = useTripContext();
 
   const router = useRouter();
-  const updateTrip = api.trip.update.useMutation(toastHandler("yay"));
+  const updateTrip = api.trip.update.useMutation(toastHandler("Trip dates changed"));
 
   const applyDateRange = (startDate: Date, endDate: Date) => {
     setTrip(
@@ -44,7 +44,7 @@ export default function TopNav() {
 
         <Icons.slash className="size-[22px] stroke-gray-300" />
 
-        <TripStack tripId={trip.id} tripName={trip.name} myMemberships={myMemberships} />
+        <TripStack />
       </section>
 
       <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
@@ -111,7 +111,7 @@ export default function TopNav() {
           onApply={(startDate, endDate) => {
             console.log(startDate, endDate);
           }}
-          includeDays
+          // includeDays
           buttonProps={{
             variant: "unset",
             size: "unset",

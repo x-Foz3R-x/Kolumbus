@@ -1,26 +1,29 @@
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { Input } from "~/components/ui";
-import SwitchTrip from "./switch-trip";
-import type { TripContext } from "~/lib/validations/trip";
 import { api } from "~/trpc/react";
+import { useTripContext } from "./trip-context";
 import { toastHandler } from "~/lib/trpc";
 
-export default function TripStack(props: {
-  tripId: string;
-  tripName: string;
-  myMemberships: TripContext["myMemberships"];
-}) {
-  const updateTrip = api.trip.update.useMutation(toastHandler("Trip name updated"));
+import SwitchTrip from "./switch-trip";
+import { Input } from "~/components/ui";
 
-  const [tripName, setTripName] = useState(props.tripName);
+export default function TripStack() {
+  const { trip, setTrip, myMemberships } = useTripContext();
+
+  const router = useRouter();
+  const updateTrip = api.trip.update.useMutation(toastHandler("Trip name changed"));
+
+  const handleUpdate = (e: React.FocusEvent<HTMLInputElement, Element>) => {
+    setTrip({ ...trip, name: e.target.value }, "Change trip name");
+    updateTrip.mutate({ id: trip.id, name: e.target.value }, { onError: () => router.refresh() });
+  };
 
   return (
     <div className="flex items-center gap-2">
       <Input
-        value={tripName}
-        onChange={(e) => setTripName(e.target.value)}
-        onUpdate={() => updateTrip.mutate({ id: props.tripId, name: tripName })}
+        value={trip.name}
+        onChange={(e) => setTrip({ ...trip, name: e.target.value })}
+        onUpdate={handleUpdate}
         className={{
           container: "h-fit",
           input:
@@ -31,7 +34,7 @@ export default function TripStack(props: {
         dynamicWidth
       />
 
-      <SwitchTrip myMemberships={props.myMemberships} />
+      <SwitchTrip myMemberships={myMemberships} />
     </div>
   );
 }

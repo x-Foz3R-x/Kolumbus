@@ -23,11 +23,13 @@ export const TripContextProvider = (props: {
   context: TripContextType;
   children: React.ReactNode;
 }) => {
-  const [trip, setTrip, {}] = useHistoryState(props.context.trip, {
+  const [trip, setTrip, { changes }] = useHistoryState(props.context.trip, {
     initialDescription: "Fetch",
     limit: 10,
   });
   const [myMemberships, setMyMemberships] = useState(props.context.myMemberships);
+
+  console.log(changes);
 
   const value = useMemo(
     () => ({ trip, setTrip, myMemberships, setMyMemberships }),

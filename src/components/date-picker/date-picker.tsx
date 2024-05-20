@@ -9,7 +9,7 @@ import { type RangeKeyDict, type RangeFocus, DateRange } from "react-date-range"
 import { add, isBefore } from "date-fns";
 
 import useDateRange from "~/hooks/use-date-range";
-import { differenceInDays, formatDate } from "~/lib/utils";
+import { cn, differenceInDays, formatDate } from "~/lib/utils";
 
 import { DayOption } from "./day-option";
 import { datePickerNavigation } from "./date-picker-navigation";
@@ -103,7 +103,7 @@ export function DatePicker(props: {
           tooltip: props.buttonProps.tooltip && { ...props.buttonProps.tooltip, disabled: isOpen },
         }}
       >
-        <div className="space-y-2 py-2 pl-2">
+        <div className={cn("space-y-2", props.includeDays ? "py-2 pl-2" : "p-2")}>
           <DateRange
             ranges={[dateRange]}
             rangeColors={["hsl(210, 78%, 60%)"]}
