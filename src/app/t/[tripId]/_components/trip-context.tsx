@@ -7,7 +7,7 @@ import type { TripContext as TripContextType } from "~/lib/validations/trip";
 
 type TripContext = {
   trip: TripContextType["trip"];
-  setTrip: (trip: TripContextType["trip"]) => void;
+  setTrip: (tripOrIndex: TripContextType["trip"] | number, description?: string) => void;
   myMemberships: TripContextType["myMemberships"];
   setMyMemberships: (myMemberships: TripContextType["myMemberships"]) => void;
 };
@@ -23,7 +23,10 @@ export const TripContextProvider = (props: {
   context: TripContextType;
   children: React.ReactNode;
 }) => {
-  const [trip, setTrip, {}] = useHistoryState(props.context.trip);
+  const [trip, setTrip, {}] = useHistoryState(props.context.trip, {
+    initialDescription: "Fetch",
+    limit: 10,
+  });
   const [myMemberships, setMyMemberships] = useState(props.context.myMemberships);
 
   const value = useMemo(

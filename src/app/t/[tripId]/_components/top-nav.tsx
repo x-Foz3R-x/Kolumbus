@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 
+import { api } from "~/trpc/react";
 import { useTripContext } from "./trip-context";
-import { differenceInDays } from "~/lib/utils";
+import { toastHandler } from "~/lib/trpc";
+import { differenceInDays, formatDate } from "~/lib/utils";
 
 import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
@@ -12,7 +15,22 @@ import { DatePicker } from "~/components/date-picker";
 import { Icons } from "~/components/ui";
 
 export default function TopNav() {
-  const { trip, myMemberships } = useTripContext();
+  const { trip, setTrip, myMemberships } = useTripContext();
+
+  const router = useRouter();
+  const updateTrip = api.trip.update.useMutation(toastHandler("yay"));
+
+  const applyDateRange = (startDate: Date, endDate: Date) => {
+    setTrip(
+      { ...trip, startDate: formatDate(startDate), endDate: formatDate(endDate) },
+      "Change trip dates",
+    );
+
+    updateTrip.mutate(
+      { id: trip.id, startDate: formatDate(startDate), endDate: formatDate(endDate) },
+      { onError: () => router.refresh() },
+    );
+  };
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between border-b bg-white/80 px-[1.375rem] backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
@@ -35,9 +53,7 @@ export default function TopNav() {
           startDate={trip.startDate}
           endDate={trip.endDate}
           daysLimit={14}
-          onApply={(startDate, endDate) => {
-            console.log(startDate, endDate);
-          }}
+          onApply={applyDateRange}
           includeDays
           buttonProps={{
             variant: "unset",
