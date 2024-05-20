@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 
-import type { TripContext } from "~/lib/validations/trip";
+import { useTripContext } from "./trip-context";
 import { differenceInDays } from "~/lib/utils";
 
 import TripStack from "./trip-stack";
@@ -11,10 +11,9 @@ import MembersDropdown from "./members-dropdown";
 import { DatePicker } from "~/components/date-picker";
 import { Icons } from "~/components/ui";
 
-export default function TopNav(props: {
-  trip: TripContext["trip"];
-  myMemberships: TripContext["myMemberships"];
-}) {
+export default function TopNav() {
+  const { trip, myMemberships } = useTripContext();
+
   return (
     <nav className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between border-b bg-white/80 px-[1.375rem] backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
       <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
@@ -27,18 +26,14 @@ export default function TopNav(props: {
 
         <Icons.slash className="size-[22px] stroke-gray-300" />
 
-        <TripStack
-          tripId={props.trip.id}
-          tripName={props.trip.name}
-          myMemberships={props.myMemberships}
-        />
+        <TripStack tripId={trip.id} tripName={trip.name} myMemberships={myMemberships} />
       </section>
 
       <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
         <Icons.rangeCalendarOg className="h-[38px] fill-kolumblue-500" />
         <DatePicker
-          startDate={props.trip.startDate}
-          endDate={props.trip.endDate}
+          startDate={trip.startDate}
+          endDate={trip.endDate}
           daysLimit={14}
           onApply={(startDate, endDate) => {
             console.log(startDate, endDate);
@@ -63,19 +58,19 @@ export default function TopNav(props: {
                   <div className="flex gap-[8.5px]">
                     <div className="flex w-[30px] flex-col items-center justify-between">
                       <span className="text-[10px] font-medium uppercase leading-[14.5px] tracking-tight text-white">
-                        {format(new Date(props.trip.startDate), "MMM").toUpperCase()}
+                        {format(new Date(trip.startDate), "MMM").toUpperCase()}
                       </span>
                       <span className="text-sm leading-[15px]">
-                        {format(new Date(props.trip.startDate), "d")}
+                        {format(new Date(trip.startDate), "d")}
                       </span>
                     </div>
 
                     <div className="flex w-[30px] flex-col items-center justify-between">
                       <span className="text-[10px] font-medium uppercase leading-[14.5px] tracking-tight text-white">
-                        {format(new Date(props.trip.endDate), "MMM").toUpperCase()}
+                        {format(new Date(trip.endDate), "MMM").toUpperCase()}
                       </span>
                       <span className="text-sm leading-[15px]">
-                        {format(new Date(props.trip.endDate), "d")}
+                        {format(new Date(trip.endDate), "d")}
                       </span>
                     </div>
                   </div>
@@ -85,7 +80,7 @@ export default function TopNav(props: {
                       DAYS
                     </span>
                     <span className="text-sm leading-[15px]">
-                      {differenceInDays(props.trip.startDate, props.trip.endDate)}
+                      {differenceInDays(trip.startDate, trip.endDate)}
                     </span>
                   </div>
                 </div>
@@ -94,8 +89,8 @@ export default function TopNav(props: {
           }}
         />
         <DatePicker
-          startDate={props.trip.startDate}
-          endDate={props.trip.endDate}
+          startDate={trip.startDate}
+          endDate={trip.endDate}
           daysLimit={14}
           onApply={(startDate, endDate) => {
             console.log(startDate, endDate);
@@ -118,19 +113,19 @@ export default function TopNav(props: {
                 <Icons.rangeCalendar4 className="h-full" />
                 <div className="absolute inset-y-0 left-0 flex w-[40px] flex-col items-center justify-between pb-1 pl-1 pr-[7px] pt-[7px] leading-none">
                   <span className="text-[10px] font-medium uppercase leading-[14px] tracking-tight text-white">
-                    {format(new Date(props.trip.startDate), "MMM").toUpperCase()}
+                    {format(new Date(trip.startDate), "MMM").toUpperCase()}
                   </span>
                   <span className="text-sm leading-[15px]">
-                    {format(new Date(props.trip.startDate), "d")}
+                    {format(new Date(trip.startDate), "d")}
                   </span>
                 </div>
 
                 <div className="absolute inset-y-0 right-0 flex w-[40px] flex-col items-center justify-between pb-1 pl-[7px] pr-1 pt-[7px] leading-none">
                   <span className="text-[10px] font-medium uppercase leading-[14px] tracking-tight text-white">
-                    {format(new Date(props.trip.endDate), "MMM").toUpperCase()}
+                    {format(new Date(trip.endDate), "MMM").toUpperCase()}
                   </span>
                   <span className="text-sm leading-[15px]">
-                    {format(new Date(props.trip.endDate), "d")}
+                    {format(new Date(trip.endDate), "d")}
                   </span>
                 </div>
               </>
@@ -138,9 +133,9 @@ export default function TopNav(props: {
           }}
         />
         <MembersDropdown
-          tripId={props.trip.id}
-          tripInviteCode={props.trip.inviteCode}
-          tripMembers={props.trip.members}
+          tripId={trip.id}
+          tripInviteCode={trip.inviteCode}
+          tripMembers={trip.members}
         />
       </section>
     </nav>

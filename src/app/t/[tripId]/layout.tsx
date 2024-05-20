@@ -16,8 +16,8 @@ export default async function Layout(props: {
 
   return (
     <TripContextProvider context={tripContext}>
-      <TopNav trip={tripContext.trip} myMemberships={tripContext.myMemberships} />
-      <SidebarNav tripId={tripContext.trip.id} />
+      <TopNav />
+      <SidebarNav tripId={props.params.tripId} />
       {props.children}
     </TripContextProvider>
   );

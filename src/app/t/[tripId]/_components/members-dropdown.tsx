@@ -61,7 +61,11 @@ export default function MembersDropdown({ tripId, tripInviteCode, tripMembers }:
       <div className="flex flex-col gap-4 rounded-lg">
         <div className="flex items-center gap-4">
           Invite
-          <Switch checked={!!invite} onChange={switchInvite} />
+          <Switch
+            checked={!!invite}
+            onChange={switchInvite}
+            loading={createTripInvite.isPending || deleteTripInvite.isPending}
+          />
         </div>
 
         <Input
