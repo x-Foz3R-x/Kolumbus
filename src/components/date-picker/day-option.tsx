@@ -1,7 +1,7 @@
 import { memo } from "react";
-import { SelectOption, useSelectContext } from "../ui/select";
 import { add } from "date-fns";
 import { cn } from "~/lib/utils";
+import { SelectOption, useSelectContext } from "../ui/select";
 
 type Preview = { startDate: Date; endDate: Date } | undefined;
 
@@ -17,10 +17,6 @@ export const DayOption = memo(function DayOption(props: {
   const isSelected = selectedIndex === props.index;
   const day = props.index + 1;
 
-  const handleClick = () => {
-    props.onClick(currentDate);
-  };
-
   const handleHover = (isHovered: boolean) => {
     if (isHovered) props.onHover({ startDate: props.startDate, endDate: currentDate });
     else props.onHover(undefined);
@@ -28,7 +24,7 @@ export const DayOption = memo(function DayOption(props: {
 
   return (
     <SelectOption
-      onClick={handleClick}
+      onClick={() => props.onClick(currentDate)}
       onHover={handleHover}
       label={day.toString()}
       className={{ base: "gap-1.5 pl-0 pr-5" }}

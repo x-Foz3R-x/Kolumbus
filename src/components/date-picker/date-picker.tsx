@@ -6,7 +6,7 @@ import "~/styles/react-date-range/navigation.css";
 
 import { useEffect, useState } from "react";
 import { type RangeKeyDict, type RangeFocus, DateRange } from "react-date-range";
-import { isBefore } from "date-fns";
+import { add, isBefore } from "date-fns";
 
 import useDateRange from "~/hooks/use-date-range";
 import { differenceInDays, formatDate } from "~/lib/utils";
@@ -87,7 +87,7 @@ export function DatePicker(props: {
   }, [props.startDate, props.endDate]);
 
   return (
-    <div id="date-picker">
+    <div id="date-picker" className="flex">
       <Floating
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -149,6 +149,13 @@ export function DatePicker(props: {
           <div className="relative flex h-[24.5rem] flex-col gap-2 overflow-hidden py-0.5">
             <SelectInline
               selectedIndex={dateRange.days - 1}
+              setSelectedIndex={(index) => {
+                if (index === null) return;
+                setDateRange({
+                  endDate: add(dateRange.startDate, { days: index }),
+                  days: index + 1,
+                });
+              }}
               scrollItemIntoView={{ behavior: "smooth", block: "center" }}
               className="px-2"
             >
