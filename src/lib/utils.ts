@@ -114,7 +114,7 @@ export function generateItinerary(
 
   for (let i = 0; i < totalDays; i++) {
     const date = formatDate(addDays(beginningDate, i));
-    const day: Day = { date, events: events.filter((event) => event.date === date) };
+    const day: Day = { id: `d${i}`, date, events: events.filter((event) => event.date === date) };
 
     itinerary.push(day);
   }

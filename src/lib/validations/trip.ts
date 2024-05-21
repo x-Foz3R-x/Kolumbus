@@ -3,7 +3,8 @@ import { insertTripSchema, selectTripSchema } from "~/server/db/schema";
 import { eventSchema } from "./event";
 
 const daySchema = z.object({
-  id: z.string().max(12),
+  id: z.string(),
+  date: z.string(),
   events: eventSchema.array(),
 });
 export const itinerarySchema = daySchema.array();
