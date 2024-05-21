@@ -83,61 +83,73 @@ export default function useHistoryState<T>(
   );
 
   // Add a new entry to the history
-  const addEntry = (value: T, description: string) => {
-    // If the new value is the same as the last one in the history, return
-    if (deepEqual(history[index], value)) return;
+  const addEntry = useCallback(
+    (value: T, description: string) => {
+      // If the new value is the same as the last one in the history, return
+      if (deepEqual(history[index], value)) return;
 
-    const newHistory = [
-      ...history.slice(0, index + 1),
-      { value: structuredClone(value), description },
-    ];
+      const newHistory = [
+        ...history.slice(0, index + 1),
+        { value: structuredClone(value), description },
+      ];
 
-    if (newHistory.length > limit) {
-      const startIndex = keepInitial && newHistory.length > 1 ? 1 : 0;
-      newHistory.splice(startIndex, 1);
-    }
+      if (newHistory.length > limit) {
+        const startIndex = keepInitial && newHistory.length > 1 ? 1 : 0;
+        newHistory.splice(startIndex, 1);
+      }
 
-    setHistory(newHistory);
-    setIndex(newHistory.length - 1);
-  };
+      setHistory(newHistory);
+      setIndex(newHistory.length - 1);
+    },
+    [history, index, limit, keepInitial],
+  );
 
   // Get a specific entry in the history
-  const getEntry = (index: number) => {
-    index = Math.max(0, Math.min(history.length - 1, index < 0 ? history.length + index : index));
-    return structuredClone(history[index]!.value);
-  };
+  const getEntry = useCallback(
+    (index: number) => {
+      index = Math.max(0, Math.min(history.length - 1, index < 0 ? history.length + index : index));
+      return structuredClone(history[index]!.value);
+    },
+    [history],
+  );
 
   // Remove an entry from the history
-  const removeEntry = (index: number) => {
-    if (index < -(history.length - 1) || index >= history.length) return undefined;
-    if (index < 0) index = history.length + index;
+  const removeEntry = useCallback(
+    (index: number) => {
+      if (index < -(history.length - 1) || index >= history.length) return undefined;
+      if (index < 0) index = history.length + index;
 
-    const newHistory = structuredClone(history);
-    newHistory.splice(index, 1);
-    setHistory(newHistory);
-  };
+      const newHistory = structuredClone(history);
+      newHistory.splice(index, 1);
+      setHistory(newHistory);
+    },
+    [history],
+  );
 
   // Set a new value or get it from the history. (used as setter for useState)
-  const updateValue = (valueOrIndex: T | number, description?: string) => {
-    // Updates the value or gets an entry from the history to update value.
-    // If a number is passed, it gets the corresponding entry from the history.
-    // If a non-number value and a description are passed, it adds a new entry to the history.
+  const updateValue = useCallback(
+    (valueOrIndex: T | number, description?: string) => {
+      // Updates the value or gets an entry from the history to update value.
+      // If a number is passed, it gets the corresponding entry from the history.
+      // If a non-number value and a description are passed, it adds a new entry to the history.
 
-    setValue(typeof valueOrIndex === "number" ? getEntry(valueOrIndex) : valueOrIndex);
-    if (!!description && typeof valueOrIndex !== "number") addEntry(valueOrIndex, description);
-  };
+      setValue(typeof valueOrIndex === "number" ? getEntry(valueOrIndex) : valueOrIndex);
+      if (!!description && typeof valueOrIndex !== "number") addEntry(valueOrIndex, description);
+    },
+    [addEntry, getEntry],
+  );
 
   // Get the entire history
-  const getHistory = () => {
+  const getHistory = useCallback(() => {
     return structuredClone(history);
-  };
+  }, [history]);
 
   // Replace the entire history
-  const replaceHistory = (newHistory: Array<{ value: T; description: string }>) => {
+  const replaceHistory = useCallback((newHistory: Array<{ value: T; description: string }>) => {
     const history = structuredClone(newHistory);
     setHistory(history);
     setIndex(history.length - 1);
-  };
+  }, []);
 
   // Handle keyboard shortcuts for undo and redo
   const handleShortcut = useCallback(
