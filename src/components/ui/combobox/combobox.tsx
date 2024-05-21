@@ -17,7 +17,7 @@ import { EASING, TRANSITION } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 import { KEYS } from "~/types";
 
-import { ButtonVariants } from "../";
+import { ButtonVariants, Input } from "../";
 import { ComboboxContext, useComboboxContext } from "./combobox-context";
 
 type ComboboxProps = {
@@ -194,7 +194,10 @@ export const Combobox = {
         exit={containerProps?.exit}
         transition={containerProps?.transition}
       >
-        <input
+        <Input
+          variant="unset"
+          size="unset"
+          className={{ input: cn("bg-transparent py-1", className) }}
           {...animateProps}
           {...combobox.getReferenceProps({
             id: useId(),
@@ -204,7 +207,6 @@ export const Combobox = {
             onKeyDown: handleEnterPress,
             autoComplete: "off",
             autoCorrect: "off",
-            className: cn("bg-transparent w-full py-1", className),
           })}
         />
 
