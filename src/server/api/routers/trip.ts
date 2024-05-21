@@ -10,7 +10,7 @@ import {
   duplicateTripSchema,
   findTripInviteSchema,
   joinTripSchema,
-  tripSchema,
+  tripIdSchema,
   updateTripSchema,
 } from "~/lib/validations/trip";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -165,7 +165,7 @@ export const tripRouter = createTRPCRouter({
       }
     });
   }),
-  getMy: protectedProcedure.input(tripSchema).query(async ({ ctx, input }) => {
+  getMy: protectedProcedure.input(tripIdSchema).query(async ({ ctx, input }) => {
     const tripContext = await ctx.db.transaction(async (tx) => {
       const trip = await tx.query.trips.findFirst({
         where: eq(trips.id, input.id),
@@ -249,7 +249,7 @@ export const tripRouter = createTRPCRouter({
       properties: { tripId },
     });
   }),
-  delete: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
+  delete: protectedProcedure.input(tripIdSchema).mutation(async ({ ctx, input }) => {
     const { id: tripId } = input;
 
     await ctx.db.transaction(async (tx) => {
@@ -368,7 +368,7 @@ export const tripRouter = createTRPCRouter({
 
       return inviteCode;
     }),
-  deleteInvite: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
+  deleteInvite: protectedProcedure.input(tripIdSchema).mutation(async ({ ctx, input }) => {
     const { id: tripId } = input;
 
     await ctx.db.transaction(async (tx) => {
@@ -417,7 +417,7 @@ export const tripRouter = createTRPCRouter({
       properties: { tripId },
     });
   }),
-  leave: protectedProcedure.input(tripSchema).mutation(async ({ ctx, input }) => {
+  leave: protectedProcedure.input(tripIdSchema).mutation(async ({ ctx, input }) => {
     const { id: tripId } = input;
 
     await ctx.db.transaction(async (tx) => {

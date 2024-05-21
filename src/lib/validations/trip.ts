@@ -1,14 +1,26 @@
 import { z } from "zod";
-import {
-  insertTripSchema,
-  selectActivitySchema,
-  selectEventSchema,
-  selectFlightSchema,
-  selectTransportationSchema,
-  selectTripSchema,
-} from "~/server/db/schema";
+import { insertTripSchema, selectTripSchema } from "~/server/db/schema";
+import { eventSchema } from "./event";
 
-export const tripSchema = z.object({ id: z.string() });
+const daySchema = z.object({
+  id: z.string().max(12),
+  events: eventSchema.array(),
+});
+export const itinerarySchema = daySchema.array();
+
+export const tripSchema = selectTripSchema.extend({
+  members: z.array(
+    z.object({
+      userId: z.string(),
+      name: z.string().nullable(),
+      image: z.string(),
+      owner: z.boolean(),
+      permissions: z.number(),
+      createdAt: z.date(),
+    }),
+  ),
+  itinerary: itinerarySchema,
+});
 
 export const tripContextSchema = z.object({
   myMemberships: z.array(
@@ -37,22 +49,17 @@ export const tripContextSchema = z.object({
         createdAt: z.date(),
       }),
     ),
-    events: z.array(
-      selectEventSchema.extend({
-        activity: selectActivitySchema,
-        transportation: selectTransportationSchema,
-        flight: selectFlightSchema,
-      }),
-    ),
+    events: eventSchema.array(),
   }),
 });
+
+export const tripIdSchema = z.object({ id: z.string().length(10) });
 
 export const createTripSchema = insertTripSchema.extend({
   id: z.string(),
   position: z.number().nonnegative(),
 });
-
-export const duplicateTripSchema = tripSchema.extend({ duplicateId: z.string() });
+export const duplicateTripSchema = tripIdSchema.extend({ duplicateId: z.string().length(10) });
 
 export const updateTripSchema = z.object({
   id: z.string(),
@@ -63,13 +70,10 @@ export const updateTripSchema = z.object({
 });
 
 export const findTripInviteSchema = z.object({ inviteCode: z.string() });
-export const createTripInviteSchema = tripSchema.extend({ inviteCode: z.string() });
-
-export const joinTripSchema = tripSchema.extend({ permissions: z.number().optional() });
+export const createTripInviteSchema = tripIdSchema.extend({ inviteCode: z.string() });
+export const joinTripSchema = tripIdSchema.extend({ permissions: z.number().optional() });
 
 export type Trip = z.infer<typeof tripSchema>;
+export type Itinerary = z.infer<typeof itinerarySchema>;
+export type Day = z.infer<typeof daySchema>;
 export type TripContext = z.infer<typeof tripContextSchema>;
-export type CreateTrip = z.infer<typeof createTripSchema>;
-export type DuplicateTrip = z.infer<typeof duplicateTripSchema>;
-export type FindTripInvite = z.infer<typeof findTripInviteSchema>;
-export type JoinTrip = z.infer<typeof joinTripSchema>;

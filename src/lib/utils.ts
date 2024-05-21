@@ -1,24 +1,14 @@
-import { differenceInCalendarDays, format } from "date-fns";
+import { addDays, differenceInCalendarDays, format } from "date-fns";
 import clsx, { type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { customAlphabet } from "nanoid";
 import { env } from "~/env";
 
+import type { Event } from "./validations/event";
+import type { Day, Itinerary } from "./validations/trip";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export function absoluteUrl(path: string) {
-  return `${env.NEXT_PUBLIC_APP_URL}${path}`;
-}
-
-/**
- * Generates a random ID string.
- * @param length The length of the ID string. Defaults to 16.
- * @returns A random ID string.
- */
-export function createId(length = 16) {
-  return customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", length)();
 }
 
 export function os() {
@@ -32,6 +22,19 @@ export function os() {
   else if (/linux/.test(userAgent)) return "linux";
 
   return null;
+}
+
+export function absoluteUrl(path: string) {
+  return `${env.NEXT_PUBLIC_APP_URL}${path}`;
+}
+
+/**
+ * Generates a random ID string.
+ * @param length The length of the ID string. Defaults to 16.
+ * @returns A random ID string.
+ */
+export function createId(length = 16) {
+  return customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", length)();
 }
 
 /**
@@ -91,4 +94,30 @@ export function decodePermissions<T extends Record<string, boolean>>(
   });
 
   return permissions as T;
+}
+
+/**
+ * Generates an itinerary based on the provided start and end dates, and events.
+ * @param startDate - The start date of the itinerary. Can be a string or a Date object.
+ * @param endDate - The end date of the itinerary. Can be a string or a Date object.
+ * @param events - An array of events to include in the itinerary.
+ * @returns The generated itinerary is an array of Day objects.
+ */
+export function generateItinerary(
+  startDate: string | Date,
+  endDate: string | Date,
+  events: Event[],
+): Itinerary {
+  const totalDays = differenceInDays(startDate, endDate);
+  const beginningDate = new Date(startDate);
+  const itinerary: Itinerary = [];
+
+  for (let i = 0; i < totalDays; i++) {
+    const date = formatDate(addDays(beginningDate, i));
+    const day: Day = { date, events: events.filter((event) => event.date === date) };
+
+    itinerary.push(day);
+  }
+
+  return itinerary;
 }
