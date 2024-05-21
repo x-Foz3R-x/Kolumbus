@@ -48,6 +48,7 @@ export default function TopNav() {
       </section>
 
       <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
+        <div id="trash-container" />
         <Icons.rangeCalendarOg className="h-[38px] fill-kolumblue-500" />
         <DatePicker
           startDate={trip.startDate}

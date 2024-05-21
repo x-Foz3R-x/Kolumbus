@@ -5,11 +5,11 @@ import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { useDndItineraryContext } from "./dnd-context";
-import { Day, Itinerary } from "~/types";
 
 import { EventComposer } from "./event-composer";
 import { Calendar } from "../calendar";
 import { cn } from "~/lib/utils";
+import type { Day, Itinerary } from "~/lib/validations/trip";
 
 // todo - Weather API integration to calendar
 
@@ -49,7 +49,7 @@ const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
         <>
           <Calendar
             date={day.date}
-            className={cn("sticky left-56 z-40", calendar)}
+            className={cn("sticky left-20 z-40", calendar)}
             header={
               <div
                 ref={setActivatorNodeRef}

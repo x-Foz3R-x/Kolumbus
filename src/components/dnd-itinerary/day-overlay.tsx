@@ -1,32 +1,26 @@
 import { memo } from "react";
 
-import type { Day } from "~/types";
+import type { Day } from "~/lib/validations/trip";
 
-import { Button, Icons } from "../ui";
-import { ActivityOverlay } from "./events";
 import { Calendar } from "../calendar";
+import { ActivityOverlay } from "./events";
+import { Button, Icons } from "../ui";
 
-const DayOverlay = memo(function DayOverlay({
-  day,
-  enableEventComposer,
-}: {
-  day: Day;
-  enableEventComposer: boolean;
-}) {
+const DayOverlay = memo(function DayOverlay(props: { day: Day; enableEventComposer: boolean }) {
   return (
     <div className="flex w-full cursor-grabbing gap-5">
       <Calendar
-        date={day.date}
+        date={props.day.date}
         header="Dragging"
         className={{ header: "cursor-grabbing rounded-t-xl", body: "cursor-grabbing rounded-b-xl" }}
       />
 
       <ul className="mt-5 flex h-28 w-full min-w-40 list-none gap-2">
-        {day.events.map((event) => (
+        {props.day.events.map((event) => (
           <ActivityOverlay key={event.id} event={event} selectCount={0} />
         ))}
 
-        {enableEventComposer && (
+        {props.enableEventComposer && (
           <Button
             variant="unset"
             size="unset"

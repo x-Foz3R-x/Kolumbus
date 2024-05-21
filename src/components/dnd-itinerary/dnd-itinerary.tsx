@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Active,
-  CollisionDetection,
+  type Active,
+  type CollisionDetection,
   DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragStartEvent,
+  type DragEndEvent,
+  type DragOverEvent,
+  type DragStartEvent,
   KeyboardSensor,
   MeasuringStrategy,
   MouseSensor,
-  Over,
+  type Over,
   TouchSensor,
   closestCenter,
   pointerWithin,
@@ -26,20 +27,20 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { isEqual, pickBy } from "lodash";
+import deepEqual from "deep-equal";
 
-import { onEventCreated, onEventDeleted, onEventUpdated } from ".";
-import { DndItineraryContext, DndItineraryContextProps } from "./dnd-context";
+// import type { onEventCreated, onEventDeleted, onEventUpdated } from ".";
+import { DndItineraryContext, type DndItineraryContextProps } from "./dnd-context";
 import useHistoryState from "~/hooks/use-history-state";
-import { ROLE_BASED_LIMITS } from "~/lib/config";
-import { cn, compareArrays, transformItineraryToCache } from "~/lib/utils";
-import { UpdateEventData } from "~/server/routers/event";
-import { Day, Event, Itinerary, KEYS } from "~/types";
+import { cn } from "~/lib/utils";
 
 import DndDragOverlay from "./dnd-drag-overlay";
 import DndTrash from "./dnd-trash";
 import DndDay from "./dnd-day";
 import { Activity } from "./events";
+import type { Itinerary, Day } from "~/lib/validations/trip";
+import type { Activity as ActivityType, Event } from "~/lib/validations/event";
+import { KEYS } from "~/types";
 
 // * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity
 
@@ -58,37 +59,30 @@ type DndItineraryProps = {
   userId: string;
   tripId: string;
   itinerary: Itinerary;
-  eventLimit?: number;
-  setSaving?: (saving: boolean) => void;
-  onEventCreated?: onEventCreated;
-  onEventUpdated?: onEventUpdated;
-  onEventDeleted?: onEventDeleted;
+  eventLimit: number;
+  // onEventCreated?: onEventCreated;
+  // onEventUpdated?: onEventUpdated;
+  // onEventDeleted?: onEventDeleted;
   calendar?: string;
 };
 export function DndItinerary({
   userId,
   tripId,
   itinerary: tripItinerary,
-  eventLimit = ROLE_BASED_LIMITS["explorer"].eventsLimit,
-  setSaving = () => {},
-  onEventCreated,
-  onEventUpdated,
-  onEventDeleted,
+  eventLimit,
+  // onEventCreated,
+  // onEventUpdated,
+  // onEventDeleted,
   calendar,
 }: DndItineraryProps) {
-  const [
-    itinerary,
-    setItinerary,
-    { changes, jumpTo, addEntry, getEntry, getHistory, replaceHistory },
-  ] = useHistoryState(tripItinerary, {
-    initialDesc: "Fetch",
+  const [itinerary, setItinerary, { addEntry }] = useHistoryState(tripItinerary, {
+    initialDescription: "Fetch",
     limit: 10,
   });
   const [activeItem, setActiveItem] = useState<Day | Event | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const itineraryCacheRef = useRef<Record<string, Event[]>>(transformItineraryToCache(itinerary));
-  const affectedDayIdsRef = useRef<string[]>([]);
+  const affectedDatesRef = useRef<string[]>([]);
 
   const eventCount = useMemo(() => itinerary.flatMap((day) => day.events).length, [itinerary]);
 
@@ -115,7 +109,9 @@ export function DndItinerary({
 
         // To be removed when multi day event select is implemented (event from multiple days)
         // If the array is empty or the selected id is from a different day than the rest, return id as a new array.
-        if (!selectedIds.length || !areEventsOnSameDay(id, selectedIds[0])) return [id];
+        if (!selectedIds.length || (selectedIds[0] && !areEventsOnSameDay(id, selectedIds[0]))) {
+          return [id];
+        }
 
         // If none of the above conditions are met, add the selected id to the array,
         // sort the array by the index of the ids, and return the sorted array.
@@ -124,125 +120,125 @@ export function DndItinerary({
     },
     [itinerary],
   );
-  const updateEvent = useCallback(
-    (
-      event: Event,
-      cache: Event,
-      {
-        dayIndex,
-        entryDescription,
-        preventEntry,
-      }: { dayIndex?: number; entryDescription?: string; preventEntry?: boolean } = {},
-    ) => {
-      const historyClone = getHistory();
-      const handleError = (error: unknown) => {
-        console.error(error);
-        setItinerary(getEntry(-1));
-        replaceHistory(historyClone);
-      };
+  // const updateEvent = useCallback(
+  //   (
+  //     event: Event,
+  //     cache: Event,
+  //     {
+  //       dayIndex,
+  //       entryDescription,
+  //       preventEntry,
+  //     }: { dayIndex?: number; entryDescription?: string; preventEntry?: boolean } = {},
+  //   ) => {
+  //     const historyClone = getHistory();
+  //     const handleError = (error: unknown) => {
+  //       console.error(error);
+  //       setItinerary(getEntry(-1));
+  //       replaceHistory(historyClone);
+  //     };
 
-      const newItinerary = getEntry(-1);
+  //     const newItinerary = getEntry(-1);
 
-      const targetDayIndex = dayIndex ?? newItinerary.findIndex((day) => day.date === event.date);
-      if (targetDayIndex === -1) return;
+  //     const targetDayIndex = dayIndex ?? newItinerary.findIndex((day) => day.date === event.date);
+  //     if (targetDayIndex === -1) return;
 
-      const eventIndex = newItinerary[targetDayIndex].events.findIndex((e) => e.id === event.id);
-      if (eventIndex === -1 || !newItinerary[targetDayIndex].events[eventIndex]) return;
+  //     const eventIndex = newItinerary[targetDayIndex]!.events.findIndex((e) => e.id === event.id);
+  //     if (eventIndex === -1 || !newItinerary[targetDayIndex]!.events[eventIndex]) return;
 
-      event.updatedAt = new Date().toISOString();
-      newItinerary[targetDayIndex].events[eventIndex] = event;
-      const updateData: UpdateEventData = pickBy(
-        event,
-        (value, key) => !isEqual(value, cache[key as keyof Event]),
-      );
+  //     event.updatedAt = new Date();
+  //     newItinerary[targetDayIndex]!.events[eventIndex] = event;
+  //     const updateData: UpdateEventData = pickBy(
+  //       event,
+  //       (value, key) => !deepEqual(value, cache[key as keyof Event]),
+  //     );
 
-      setItinerary(newItinerary);
-      if (!preventEntry) addEntry(newItinerary, entryDescription ?? `Update event ${event.name}`);
-      onEventUpdated?.(event.id, tripId, updateData, handleError);
-    },
-    [tripId, setItinerary, addEntry, getEntry, getHistory, replaceHistory, onEventUpdated],
-  );
-  const createEvent = useCallback(
-    (event: Event, dayIndex?: number, index?: number) => {
-      const historyClone = getHistory();
-      const handleError = (error: unknown) => {
-        console.error(error);
-        setItinerary(getEntry(-1));
-        replaceHistory(historyClone);
-      };
+  //     setItinerary(newItinerary);
+  //     if (!preventEntry) addEntry(newItinerary, entryDescription ?? `Update event ${event.name}`);
+  //     onEventUpdated?.(event.id, tripId, updateData, handleError);
+  //   },
+  //   [tripId, setItinerary, addEntry, getEntry, getHistory, replaceHistory, onEventUpdated],
+  // );
+  // const createEvent = useCallback(
+  //   (event: Event, dayIndex?: number, index?: number) => {
+  //     const historyClone = getHistory();
+  //     const handleError = (error: unknown) => {
+  //       console.error(error);
+  //       setItinerary(getEntry(-1));
+  //       replaceHistory(historyClone);
+  //     };
 
-      const newItinerary = getEntry(-1);
+  //     const newItinerary = getEntry(-1);
 
-      // Find the index of the day that contains the event with the given date or use the provided day index
-      const targetDayIndex = dayIndex ?? newItinerary.findIndex((day) => day.date === event.date);
-      if (targetDayIndex === -1) return;
+  //     // Find the index of the day that contains the event with the given date or use the provided day index
+  //     const targetDayIndex = dayIndex ?? newItinerary.findIndex((day) => day.date === event.date);
+  //     if (targetDayIndex === -1) return;
 
-      // If no index is provided, add the event to the end of the day's events array.
-      // Otherwise, insert the event at the specified index and update the position of the events in the day.
-      if (!index) newItinerary[targetDayIndex].events.push(event);
-      else {
-        newItinerary[targetDayIndex].events.splice(index, 0, event);
-        newItinerary[targetDayIndex].events.slice(index).map((event, i) => {
-          event.position = index + i;
-          if (onEventUpdated && i > 0)
-            onEventUpdated(event.id, tripId, { position: index + i }, handleError);
-        });
-      }
+  //     // If no index is provided, add the event to the end of the day's events array.
+  //     // Otherwise, insert the event at the specified index and update the position of the events in the day.
+  //     if (!index) newItinerary[targetDayIndex]!.events.push(event);
+  //     else {
+  //       newItinerary[targetDayIndex].events.splice(index, 0, event);
+  //       newItinerary[targetDayIndex].events.slice(index).map((event, i) => {
+  //         event.position = index + i;
+  //         if (onEventUpdated && i > 0)
+  //           onEventUpdated(event.id, tripId, { position: index + i }, handleError);
+  //       });
+  //     }
 
-      setItinerary(newItinerary);
-      addEntry(newItinerary, `Add event ${event.name} to day ${targetDayIndex + 1}`);
-      onEventCreated?.(event, handleError);
-    },
-    [
-      tripId,
-      setItinerary,
-      addEntry,
-      getEntry,
-      getHistory,
-      replaceHistory,
-      onEventCreated,
-      onEventUpdated,
-    ],
-  );
-  const deleteEvents = useCallback(
-    (eventIds: string[]) => {
-      const historyClone = getHistory();
-      const handleError = (error: unknown) => {
-        console.error(error);
-        setItinerary(getEntry(-1));
-        replaceHistory(historyClone);
-      };
+  //     setItinerary(newItinerary);
+  //     addEntry(newItinerary, `Add event ${event.name} to day ${targetDayIndex + 1}`);
+  //     onEventCreated?.(event, handleError);
+  //   },
+  //   [
+  //     tripId,
+  //     setItinerary,
+  //     addEntry,
+  //     getEntry,
+  //     getHistory,
+  //     replaceHistory,
+  //     onEventCreated,
+  //     onEventUpdated,
+  //   ],
+  // );
+  // const deleteEvents = useCallback(
+  //   (eventIds: string[]) => {
+  //     const historyClone = getHistory();
+  //     const handleError = (error: unknown) => {
+  //       console.error(error);
+  //       setItinerary(getEntry(-1));
+  //       replaceHistory(historyClone);
+  //     };
 
-      const newItinerary = getEntry(-1);
+  //     const newItinerary = getEntry(-1);
 
-      newItinerary.forEach((day) => {
-        if (day.events.some((event) => eventIds.includes(event.id))) {
-          day.events = updateEventData(filterEventsExcludingIds(day.events, eventIds));
+  //     newItinerary.forEach((day) => {
+  //       if (day.events.some((event) => eventIds.includes(event.id))) {
+  //         day.events = updateEventData(filterEventsExcludingIds(day.events, eventIds));
 
-          if (onEventUpdated) {
-            day.events.forEach((event) =>
-              onEventUpdated(event.id, tripId, { position: event.position }, handleError),
-            );
-          }
-        }
-      });
+  //         if (onEventUpdated) {
+  //           day.events.forEach((event) =>
+  //             onEventUpdated(event.id, tripId, { position: event.position }, handleError),
+  //           );
+  //         }
+  //       }
+  //     });
 
-      setItinerary(newItinerary);
-      addEntry(newItinerary, eventIds.length > 1 ? "Delete selected events" : "Delete event");
-      if (onEventDeleted)
-        eventIds.forEach((eventId) => onEventDeleted(eventId, tripId, handleError));
-    },
-    [
-      tripId,
-      setItinerary,
-      addEntry,
-      getEntry,
-      getHistory,
-      replaceHistory,
-      onEventUpdated,
-      onEventDeleted,
-    ],
-  );
+  //     setItinerary(newItinerary);
+  //     addEntry(newItinerary, eventIds.length > 1 ? "Delete selected events" : "Delete event");
+  //     if (onEventDeleted)
+  //       eventIds.forEach((eventId) => onEventDeleted(eventId, tripId, handleError));
+  //   },
+  //   [
+  //     tripId,
+  //     setItinerary,
+  //     addEntry,
+  //     getEntry,
+  //     getHistory,
+  //     replaceHistory,
+  //     onEventUpdated,
+  //     onEventDeleted,
+  //   ],
+  // );
 
   //#region Drag handlers
   // handleDragStart - handles setting active id and item and cache itinerary
@@ -254,13 +250,12 @@ export function DndItinerary({
 
   const handleDragStart = ({ active }: DragStartEvent) => {
     const activeItem =
-      active.data.current?.type === "day"
+      (active.data.current as DragData)?.type === "day"
         ? itinerary.find((day) => day.id === active.id)
         : itinerary.flatMap((day) => day.events).find((event) => event.id === active.id);
 
     setActiveItem(activeItem ?? null);
     setSelectedIds((selected) => (selected.includes(active.id as string) ? selected : []));
-    itineraryCacheRef.current = transformItineraryToCache(itinerary);
   };
 
   const handleDragOver = ({ active, over }: DragOverEvent) => {
@@ -284,14 +279,16 @@ export function DndItinerary({
     const { type: activeType, dayIndex: activeDayIndex } = activeData;
     const { type: overType, dayIndex: overDayIndex } = overData;
 
-    const activeDay = itinerary[activeDayIndex];
-    const overDay = itinerary[overDayIndex];
+    const activeDay = itinerary[activeDayIndex]!;
+    const overDay = itinerary[overDayIndex]!;
 
     // Add the activeDay and overDay IDs to the update list if they're not already included
-    if (!affectedDayIdsRef.current.includes(activeDay.id as string))
-      affectedDayIdsRef.current.push(activeDay.id as string);
-    if (!affectedDayIdsRef.current.includes(overDay.id as string))
-      affectedDayIdsRef.current.push(overDay.id as string);
+    if (!affectedDatesRef.current.includes(activeDay.date)) {
+      affectedDatesRef.current.push(activeDay.date);
+    }
+    if (!affectedDatesRef.current.includes(overDay.date)) {
+      affectedDatesRef.current.push(overDay.date);
+    }
 
     // Handle dragging of a day within the itinerary.
     if (activeType === "day") {
@@ -321,15 +318,14 @@ export function DndItinerary({
 
     const targetIndex = findTargetIndex(active, over, overDay, overType);
 
-    setItinerary((itinerary) => {
-      const newItinerary = [...itinerary];
-      newItinerary[activeDayIndex].events = updateEventData(activeEvents);
-      newItinerary[overDayIndex].events = updateEventData(
-        insertAt(overDay.events, draggedEvents, targetIndex),
-        overDay.date,
-      );
-      return newItinerary;
-    });
+    const newItinerary = structuredClone(itinerary);
+    newItinerary[activeDayIndex]!.events = updateEventData(activeEvents);
+    newItinerary[overDayIndex]!.events = updateEventData(
+      insertAt(overDay.events, draggedEvents, targetIndex),
+      overDay.id,
+    );
+
+    setItinerary(newItinerary);
 
     recentlyMovedToNewDay.current = true;
   };
@@ -361,12 +357,12 @@ export function DndItinerary({
     const { type: activeType, dayIndex: activeDayIndex } = activeData;
     const { type: overType, dayIndex: overDayIndex } = overData;
 
-    const activeDay = itinerary[activeDayIndex];
-    const overDay = itinerary[overDayIndex];
+    const activeDay = itinerary[activeDayIndex]!;
+    const overDay = itinerary[overDayIndex]!;
 
     // Handle dragging of single or multiple events to the trash.
     if (over.id === "trash" && activeType === "event" && activeItem) {
-      deleteEvents(selectedIds.length ? selectedIds : [active.id as string]);
+      // deleteEvents(selectedIds.length ? selectedIds : [active.id as string]);
       setActiveItem(null);
       setSelectedIds([]);
       return;
@@ -375,14 +371,15 @@ export function DndItinerary({
     // Skip if dragging is not within the same day or if the drag type is a day. Both cases are handled in `DragOver`.
     if (activeDayIndex !== overDayIndex || activeType === "day" || overType === "day") {
       if (activeType === "day") addEntry(itinerary, "Change day position");
-      else
+      else {
         addEntry(
           itinerary,
           selectedIds.length ? "Change selected events position" : "Change event position",
         );
+      }
 
       setActiveItem(null);
-      syncEvents(affectedDayIdsRef.current);
+      // syncEvents(affectedDatesRef.current);
       return;
     }
 
@@ -395,24 +392,21 @@ export function DndItinerary({
     // Use arrayMove to relocate the event from its original to the desired position.
     // Then remove the relocated event at the target index to avoid duplication,
     // since it's already included in the draggedEvents that we insert at that spot.
-    const rearrangedEvents = arrayMove(dayEvents, initialIndex, targetIndex).toSpliced(
+    const rearrangedEvents = arrayMove(dayEvents, initialIndex, targetIndex).splice(
       targetIndex,
       1,
       ...draggedEvents,
     );
 
-    setItinerary((itinerary) => {
-      const newItinerary = [...itinerary];
-      newItinerary[activeDayIndex].events = updateEventData(rearrangedEvents);
-      return newItinerary;
-    });
-    addEntry(itinerary, "Change event position");
+    const newItinerary = [...itinerary];
+    newItinerary[activeDayIndex]!.events = updateEventData(rearrangedEvents);
+    setItinerary(newItinerary, "Change event/s position");
     setActiveItem(null);
-    syncEvents([activeDay.id]);
+    // syncEvents([activeDay.id]);
   };
 
   const handleDragCancel = () => {
-    setItinerary(getEntry(-1));
+    setItinerary(-1);
     setActiveItem(null);
   };
   //#endregion
@@ -445,7 +439,7 @@ export function DndItinerary({
       const pointerIntersections = pointerWithin(args);
       const intersections =
         pointerIntersections.length > 0 ? pointerIntersections : rectIntersection(args);
-      let overId = !intersections || intersections.length === 0 ? null : intersections[0].id;
+      const overId = intersections && !!intersections[0] ? intersections[0].id : null;
 
       if (overId === "trash") return pointerWithin(args);
       if (overId !== null) {
@@ -521,7 +515,7 @@ export function DndItinerary({
       if (!(e.ctrlKey || e.metaKey)) setSelectedIds([]);
     };
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === KEYS.Escape && selectedIds.length !== 0) setSelectedIds([]);
+      if (e.key === (KEYS.Escape as string) && selectedIds.length !== 0) setSelectedIds([]);
     };
 
     document.addEventListener("click", handleClick);
@@ -534,7 +528,7 @@ export function DndItinerary({
 
   // Update itinerary when tripItinerary changes
   useEffect(() => {
-    if (!compareArrays(itinerary, tripItinerary)) setItinerary(tripItinerary);
+    if (!deepEqual(itinerary, tripItinerary)) setItinerary(tripItinerary, "Fetch");
   }, [tripItinerary]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const dndItineraryContext: DndItineraryContextProps = useMemo(
@@ -544,22 +538,21 @@ export function DndItinerary({
       eventCount,
       eventLimit,
 
-      setSaving,
       selectEvent,
-      createEvent,
-      updateEvent,
-      deleteEvents,
+      // createEvent,
+      // updateEvent,
+      // deleteEvents,
     }),
     [
       userId,
       tripId,
       eventCount,
       eventLimit,
+
       selectEvent,
-      createEvent,
-      updateEvent,
-      deleteEvents,
-      setSaving,
+      // createEvent,
+      // updateEvent,
+      // deleteEvents,
     ],
   );
 
@@ -591,14 +584,18 @@ export function DndItinerary({
                   items={filterEvents(day.events).map((event) => event.id)}
                   strategy={horizontalListSortingStrategy}
                 >
-                  {filterEvents(day.events).map((event) => (
-                    <Activity
-                      key={event.id}
-                      event={event}
-                      dayIndex={index}
-                      isSelected={selectedIds.includes(event.id)}
-                    />
-                  ))}
+                  {filterEvents(day.events).map((event) => {
+                    if (event.type === "ACTIVITY")
+                      return (
+                        <Activity
+                          key={event.id}
+                          event={event as ActivityType}
+                          dayIndex={index}
+                          isSelected={selectedIds.includes(event.id)}
+                        />
+                      );
+                    return null;
+                  })}
                 </SortableContext>
               </DndDay>
             ))}
@@ -606,7 +603,7 @@ export function DndItinerary({
             {/* Calendar End */}
             <div
               className={cn(
-                "sticky left-56 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl",
+                "sticky left-20 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl",
                 calendar,
               )}
             >
@@ -699,9 +696,9 @@ export function DndItinerary({
    * @param ids - The array of ids to exclude.
    * @returns An array of events whose ids are not included in the provided ids array.
    */
-  function filterEventsExcludingIds(events: Event[], ids: string[]): Event[] {
-    return events.filter((event) => !ids.includes(event.id));
-  }
+  // function filterEventsExcludingIds(events: Event[], ids: string[]): Event[] {
+  //   return events.filter((event) => !ids.includes(event.id));
+  // }
 
   // Event Manipulation Functions
   /**
@@ -715,7 +712,7 @@ export function DndItinerary({
    * @returns A new array of events with updated date and position properties.
    */
   function updateEventData(events: Event[], date?: string): Event[] {
-    return events.map((event, index) => ({ ...event, date: date || event.date, position: index }));
+    return events.map((event, index) => ({ ...event, date: date ?? event.date, position: index }));
   }
   /**
    * Inserts an array of events at a specific index in another array of events.
@@ -737,39 +734,39 @@ export function DndItinerary({
    *
    * @param affectedDayIds - An array of affected day IDs.
    */
-  function syncEvents(affectedDayIds: string[]) {
-    const currentEvents = affectedDayIds.flatMap(
-      (dayId) => itinerary.find((day) => day.id === dayId)?.events ?? [],
-    );
-    const previousEvents = affectedDayIds.flatMap(
-      (dayId) => itineraryCacheRef.current[dayId] ?? [],
-    );
+  // function syncEvents(affectedDayIds: string[]) {
+  //   const currentEvents = affectedDayIds.flatMap(
+  //     (dayId) => itinerary.find((day) => day.id === dayId)?.events ?? [],
+  //   );
+  //   const previousEvents = affectedDayIds.flatMap(
+  //     (dayId) => itineraryCacheRef.current[dayId] ?? [],
+  //   );
 
-    const areEventsEqual = (event1: Event, event2: Event) => {
-      return (
-        event1.id === event2.id &&
-        event1.date === event2.date &&
-        event1.position === event2.position
-      );
-    };
+  //   const areEventsEqual = (event1: Event, event2: Event) => {
+  //     return (
+  //       event1.id === event2.id &&
+  //       event1.date === event2.date &&
+  //       event1.position === event2.position
+  //     );
+  //   };
 
-    const updatedEvents = currentEvents.filter(
-      (event) => !previousEvents.some((previousEvent) => areEventsEqual(previousEvent, event)),
-    );
+  //   const updatedEvents = currentEvents.filter(
+  //     (event) => !previousEvents.some((previousEvent) => areEventsEqual(previousEvent, event)),
+  //   );
 
-    const historyClone = getHistory();
-    const handleError = (error: unknown) => {
-      console.error(error);
-      setItinerary(getEntry(-1));
-      replaceHistory(historyClone);
-    };
-    updatedEvents.forEach((event) =>
-      onEventUpdated?.(
-        event.id,
-        tripId,
-        { date: event.date, position: event.position },
-        handleError,
-      ),
-    );
-  }
+  //   const historyClone = getHistory();
+  //   const handleError = (error: unknown) => {
+  //     console.error(error);
+  //     setItinerary(getEntry(-1));
+  //     replaceHistory(historyClone);
+  //   };
+  //   updatedEvents.forEach((event) =>
+  //     onEventUpdated?.(
+  //       event.id,
+  //       tripId,
+  //       { date: event.date, position: event.position },
+  //       handleError,
+  //     ),
+  //   );
+  // }
 }

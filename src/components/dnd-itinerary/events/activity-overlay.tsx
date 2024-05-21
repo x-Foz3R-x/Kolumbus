@@ -1,18 +1,18 @@
 import { memo, useRef } from "react";
 import Image from "next/image";
 
-import { EVENT_IMG_FALLBACK } from "~/lib/config";
+import type { Activity } from "~/lib/validations/event";
 import { cn } from "~/lib/utils";
-import { Event } from "~/types";
 
 import { Badge, ScrollIndicator } from "../../ui";
+import { eventFallbackUrl } from "~/lib/constants";
 
 type EventOverlayProps = {
-  event: Event;
+  event: Activity;
   selectCount: number;
   hoverShadow?: boolean;
 };
-export const ActivityOverlay = memo(function EventOverlay({
+export const ActivityOverlay = memo(function ActivityOverlay({
   event,
   selectCount,
   hoverShadow,
@@ -31,7 +31,7 @@ export const ActivityOverlay = memo(function EventOverlay({
         {/* Image */}
         <div className="relative h-[82px] flex-shrink-0">
           <Image
-            src={`${event?.photo ? `/api/get-google-image?photoRef=${event.photo}&width=156&height=82` : EVENT_IMG_FALLBACK}`}
+            src={`${event.activity.images ? `/api/get-google-image?photoRef=${event.activity.images[event.activity.imageIndex]}&width=156&height=82` : eventFallbackUrl}`}
             alt="Event Image"
             className="object-cover object-center"
             sizes="156px"
@@ -43,7 +43,7 @@ export const ActivityOverlay = memo(function EventOverlay({
         {/* Name */}
         <div className="relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
           <div ref={scrollRef} className="w-full select-none">
-            {event.name}
+            {event.activity.name}
             <ScrollIndicator
               scrollRef={scrollRef}
               className={cn(selectCount > 0 && "from-kolumblue-200")}

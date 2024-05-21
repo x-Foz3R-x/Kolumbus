@@ -1,18 +1,14 @@
 "use client";
 
-import { format } from "date-fns";
 import { useTripContext } from "./_components/trip-context";
+import { DndItinerary } from "~/components/dnd-itinerary";
 
 export default function Itinerary() {
-  const { trip } = useTripContext();
+  const { userId, trip } = useTripContext();
 
   return (
     <div className="h-screen pl-20 pt-14">
-      Itinerary {trip.id} {trip.name}
-      <div>
-        {format(new Date(trip.startDate), "yyyy MMMM dd")}__ TO __
-        {format(new Date(trip.endDate), "yyyy MMMM dd")}
-      </div>
+      <DndItinerary userId={userId} tripId={trip.id} itinerary={trip.itinerary} eventLimit={100} />
     </div>
   );
 }

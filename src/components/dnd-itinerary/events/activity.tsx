@@ -1,18 +1,17 @@
 "use client";
 
-import { MouseEvent, memo, useEffect, useRef, useState } from "react";
+import { type MouseEvent, memo, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import cuid2 from "@paralleldrive/cuid2";
-import isEqual from "lodash/isEqual";
+import deepEqual from "deep-equal";
 
 import { useDndItineraryContext } from "../dnd-context";
-import { EVENT_IMG_FALLBACK } from "~/lib/config";
+import type { Activity as ActivityType } from "~/lib/validations/event";
+import { eventFallbackUrl } from "~/lib/constants";
 import { EASING } from "~/lib/motion";
-import { cn } from "~/lib/utils";
-import { Event } from "~/types";
+import { cn, createId } from "~/lib/utils";
 
 import { Button, Icons, ScrollIndicator } from "../../ui";
 import { ActivityUIOverlay } from "./activity-ui-overlay";
@@ -21,39 +20,36 @@ import { ActivityDetails } from "./activity-details";
 // todo - Context Menu (like in floating ui react examples)
 
 type DndEventProps = {
-  event: Event;
+  event: ActivityType;
   dayIndex: number;
   isSelected: boolean;
 };
-export const Activity = memo(function Activity({
-  event: activity,
-  dayIndex,
-  isSelected,
-}: DndEventProps) {
-  const { userId, selectEvent, createEvent, updateEvent, deleteEvents } = useDndItineraryContext();
+export const Activity = memo(function Activity({ event, dayIndex, isSelected }: DndEventProps) {
+  const { userId, selectEvent } = useDndItineraryContext();
+  // const { userId, selectEvent, createEvent, updateEvent, deleteEvents } = useDndItineraryContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const { setNodeRef, active, over, isDragging, attributes, listeners, transform, transition } =
     useSortable({
-      id: activity.id,
+      id: event.id,
       data: { type: "event", dayIndex },
       disabled: isOpen,
       animateLayoutChanges: (args) =>
         args.isSorting || args.wasDragging ? defaultAnimateLayoutChanges(args) : true,
     });
 
-  const cacheRef = useRef(activity);
+  const cacheRef = useRef(event);
   const nameScrollRef = useRef<HTMLDivElement>(null);
 
   //#region Handlers
   const handleOpen = () => {
-    cacheRef.current = activity;
+    cacheRef.current = event;
     setIsOpen(true);
   };
 
   const handleClose = (activity: Event) => {
-    if (isEqual(activity, cacheRef.current)) return;
-    updateEvent(activity, cacheRef.current, { dayIndex });
+    if (deepEqual(activity, cacheRef.current)) return;
+    // updateEvent(activity, cacheRef.current, { dayIndex });
   };
 
   const handleClick = (e: MouseEvent) => {
@@ -61,27 +57,27 @@ export const Activity = memo(function Activity({
     if (e.target instanceof HTMLButtonElement) return;
     if (e.target instanceof HTMLUListElement) return;
 
-    if (e.ctrlKey || e.metaKey) selectEvent(activity.id);
+    if (e.ctrlKey || e.metaKey) selectEvent(event.id);
     else handleOpen();
   };
 
   const handleDuplicate = () => {
-    const position = activity.position + 1;
-    const duplicate: Event = {
-      ...activity,
-      id: cuid2.createId(),
+    const position = event.position + 1;
+    const duplicate: ActivityType = {
+      ...event,
+      id: createId(),
       position,
-      updatedAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
+      updatedAt: new Date(),
+      createdAt: new Date(),
       createdBy: userId,
     };
 
-    createEvent(duplicate, dayIndex, position);
+    // createEvent(duplicate, dayIndex, position);
   };
 
   const handleDelete = () => {
     setIsOpen(false);
-    deleteEvents([activity.id]);
+    // deleteEvents([activity.id]);
   };
   //#endregion
 
@@ -104,7 +100,7 @@ export const Activity = memo(function Activity({
       className={cn(
         "group/event relative flex h-28 w-40 origin-top flex-col overflow-hidden rounded-lg border-2 border-white bg-white font-inter shadow-borderXL",
         isSorting && "-z-10 animate-slideIn border-dashed border-gray-300 bg-gray-50",
-        active?.id === activity.id && over?.id === "trash" && "hidden",
+        active?.id === event.id && over?.id === "trash" && "hidden",
         isSelected && "border-kolumblue-200 bg-kolumblue-200",
       )}
       initial={{ opacity: 0 }}
@@ -134,10 +130,10 @@ export const Activity = memo(function Activity({
       {!isSorting && (
         <>
           <ActivityUIOverlay
-            activity={activity}
+            activity={event}
             disable={isOpen || !!active}
             onOpen={handleOpen}
-            onSelect={() => selectEvent(activity.id)}
+            onSelect={() => selectEvent(event.id)}
             onDuplicate={handleDuplicate}
             onDelete={handleDelete}
           />
@@ -145,7 +141,7 @@ export const Activity = memo(function Activity({
           {/* Image */}
           <div className="relative h-[82px] flex-shrink-0">
             <Image
-              src={`${activity?.photo ? `/api/get-google-image?photoRef=${activity.photo}&width=156&height=82` : EVENT_IMG_FALLBACK}`}
+              src={`${event?.activity.images?.[event.activity.imageIndex] ? `/api/get-google-image?photoRef=${event.activity.images[event.activity.imageIndex]}&width=156&height=82` : eventFallbackUrl}`}
               alt="Event Image"
               className="select-none object-cover object-center"
               sizes="156px"
@@ -157,7 +153,7 @@ export const Activity = memo(function Activity({
           {/* Name */}
           <div className="group relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
             <div ref={nameScrollRef} className="w-full select-none">
-              {activity.name}
+              {event.activity.name}
               <ScrollIndicator
                 scrollRef={nameScrollRef}
                 className={isSelected ? "from-kolumblue-200" : ""}
@@ -166,7 +162,7 @@ export const Activity = memo(function Activity({
 
             {!active && (
               <Button
-                onClick={() => navigator.clipboard.writeText(activity.name)}
+                onClick={() => navigator.clipboard.writeText(event.activity.name)}
                 variant="unset"
                 size="unset"
                 className="absolute inset-y-0 right-0 z-10 fill-gray-500 px-2 opacity-0 duration-300 ease-kolumb-out hover:fill-gray-800 group-hover:opacity-100 group-hover:ease-kolumb-flow"
@@ -184,13 +180,13 @@ export const Activity = memo(function Activity({
             )}
           </div>
 
-          <ActivityDetails
-            activity={activity}
+          {/* <ActivityDetails
+            activity={event}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             onClose={handleClose}
             onDelete={handleDelete}
-          />
+          /> */}
         </>
       )}
     </motion.li>

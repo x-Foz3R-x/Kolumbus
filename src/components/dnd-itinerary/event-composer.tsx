@@ -1,11 +1,10 @@
 import { memo, useRef, useState } from "react";
 
-import api from "~/app/_trpc/client";
+import { api } from "~/trpc/react";
 import { useDndItineraryContext } from "./dnd-context";
-import { EVENT_TEMPLATE } from "~/data/template-data";
+import type { Day } from "~/lib/validations/trip";
 import { EASING } from "~/lib/motion";
-import { cn } from "~/lib/utils";
-import { LANGUAGES } from "~/types";
+import { cn, createId } from "~/lib/utils";
 
 import { Button, Icons, Spinner } from "../ui";
 import { Floating } from "../ui/floating/floating";
@@ -19,7 +18,8 @@ const GAP_WIDTH = 8;
 type Prediction = {
   value: string;
   secondaryValue?: string;
-  matchedSubstring?: { length: number; offset: number }[];
+  valueSubstring?: { length: number; offset: number }[];
+  secondaryValueSubstring?: { length: number; offset: number }[];
   placeId?: string;
 };
 
@@ -33,18 +33,17 @@ export const EventComposer = memo(function EventComposer({
   dayIndex,
   dragging,
 }: EventComposerProps) {
-  const { userId, tripId, eventCount, eventLimit, setSaving, createEvent } =
-    useDndItineraryContext();
+  const { userId, tripId, eventCount, eventLimit } = useDndItineraryContext();
 
-  const autocomplete = api.google.autocomplete.useMutation();
-  const details = api.google.details.useMutation();
+  const autocomplete = api.external.googleAutocomplete.useMutation();
+  const details = api.external.googleDetails.useMutation();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [inputValue, setInputValue] = useState("");
   const [predictionList, setPredictionList] = useState<Prediction[]>([]);
-  const [sessionToken, setSessionToken] = useState(cuid2.createId());
+  const [sessionToken, setSessionToken] = useState(createId());
   const [loading, setLoading] = useState(false);
   const activePredictionRef = useRef<Prediction | null>(null);
 
@@ -53,7 +52,7 @@ export const EventComposer = memo(function EventComposer({
 
     setLoading(true);
     autocomplete.mutate(
-      { searchValue: value, language: LANGUAGES.English, sessionToken },
+      { searchValue: value, sessionToken },
       {
         onSuccess(data) {
           if (data.status === "OK") {
@@ -61,7 +60,9 @@ export const EventComposer = memo(function EventComposer({
               data.predictions.map((prediction) => ({
                 value: prediction.structured_formatting.main_text,
                 secondaryValue: prediction.structured_formatting.secondary_text,
-                matchedSubstring: prediction.structured_formatting.main_text_matched_substrings,
+                valueSubstring: prediction.structured_formatting.main_text_matched_substrings,
+                secondaryValueSubstring:
+                  prediction.structured_formatting.secondary_text_matched_substrings,
                 placeId: prediction.place_id,
               })),
             );
@@ -79,66 +80,65 @@ export const EventComposer = memo(function EventComposer({
           setPredictionList([]);
           console.error(`Unexpected error occurred: ${error.message}`);
         },
-        onSettled: () => setLoading(false),
       },
     );
   };
 
-  const handleAdd = () => {
-    if (eventCount >= eventLimit) return;
+  // const handleAdd = () => {
+  //   if (eventCount >= eventLimit) return;
 
-    const prediction = activePredictionRef.current;
-    const event = EVENT_TEMPLATE({
-      id: cuid2.createId(),
-      tripId,
-      date: day.date,
-      position: day.events.length,
-      createdBy: userId,
-    });
+  //   const prediction = activePredictionRef.current;
+  //   const event = EVENT_TEMPLATE({
+  //     id: createId(),
+  //     tripId,
+  //     date: day.date,
+  //     position: day.events.length,
+  //     createdBy: userId,
+  //   });
 
-    if (prediction === null) {
-      event.name = inputValue;
-      createEvent(event, dayIndex, day.events.length);
-    } else if (prediction.placeId) {
-      setSaving(true);
-      event.placeId = prediction.placeId;
-      details.mutate(
-        {
-          place_id: prediction.placeId,
-          fields: FieldsGroup.Basic + FieldsGroup.Contact,
-          language: LANGUAGES.English,
-          sessionToken,
-        },
-        {
-          onSuccess(data) {
-            const place = data.result;
+  //   if (prediction === null) {
+  //     event.name = inputValue;
+  //     createEvent(event, dayIndex, day.events.length);
+  //   } else if (prediction.placeId) {
+  //     setSaving(true);
+  //     event.placeId = prediction.placeId;
+  //     details.mutate(
+  //       {
+  //         place_id: prediction.placeId,
+  //         fields: FieldsGroup.Basic + FieldsGroup.Contact,
+  //         language: LANGUAGES.English,
+  //         sessionToken,
+  //       },
+  //       {
+  //         onSuccess(data) {
+  //           const place = data.result;
 
-            event.name = place.name ?? event.name;
-            event.photo = place.photos?.[0]?.photo_reference ?? event.photo;
-            event.address = place.formatted_address ?? event.address;
-            event.phoneNumber =
-              place.international_phone_number ??
-              place.international_phone_number ??
-              event.phoneNumber;
-            event.url = place.url ?? event.url;
-            event.website = place.website ?? event.website;
-            event.openingHours = place.opening_hours ?? event.openingHours;
+  //           event.name = place.name ?? event.name;
+  //           event.photo = place.photos?.[0]?.photo_reference ?? event.photo;
+  //           event.address = place.formatted_address ?? event.address;
+  //           event.phoneNumber =
+  //             place.international_phone_number ??
+  //             place.international_phone_number ??
+  //             event.phoneNumber;
+  //           event.url = place.url ?? event.url;
+  //           event.website = place.website ?? event.website;
+  //           event.openingHours = place.opening_hours ?? event.openingHours;
 
-            createEvent(event, dayIndex, day.events.length);
-          },
-          onError: (error: unknown) => console.error(error),
-          onSettled: () => setSaving(false),
-        },
-      );
-    } else {
-      event.name = prediction.value;
-      createEvent(event, dayIndex, day.events.length);
-    }
+  //           createEvent(event, dayIndex, day.events.length);
+  //         },
+  //         onError: (error: unknown) => console.error(error),
+  //         onSettled: () => setSaving(false),
+  //       },
+  //     );
+  //   } else {
+  //     event.name = prediction.text;
+  //     createEvent(event, dayIndex, day.events.length);
+  //   }
 
-    setIsOpen(false);
-    handleClear();
-    setSessionToken(cuid2.createId());
-  };
+  //   setIsOpen(false);
+  //   handleClear();
+  //   setSessionToken(cuid2.createId());
+  // };
 
   const handleClear = () => {
     if (inputValue === "" && predictionList.length === 0) setIsOpen(false);
@@ -217,7 +217,7 @@ export const EventComposer = memo(function EventComposer({
         <Combobox.Input
           placeholder="Search or enter name"
           onInputChange={handleInput}
-          onEnterPress={handleAdd}
+          // onEnterPress={handleAdd}
           initial={{ opacity: 0, paddingLeft: "0px" }}
           animate={{ opacity: 1, paddingLeft: "16px" }}
           exit={{ opacity: 0, paddingLeft: "0px" }}
@@ -246,7 +246,7 @@ export const EventComposer = memo(function EventComposer({
           }}
         >
           <Button
-            onClick={handleAdd}
+            // onClick={handleAdd}
             variant="unset"
             size="unset"
             className="h-full rounded-none duration-100 hover:fill-gray-800 focus-visible:fill-gray-800 dark:hover:fill-gray-300 dark:focus-visible:fill-gray-300"
@@ -325,7 +325,7 @@ export const EventComposer = memo(function EventComposer({
 
           {predictionList.length === 0 && (
             <div className="flex w-full items-center justify-center text-xs font-medium text-gray-400">
-              {loading ? <Spinner size="xs" /> : "No results"}
+              {loading ? <Spinner.default size="sm" /> : "No results"}
             </div>
           )}
         </Combobox.List>
