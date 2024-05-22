@@ -1,4 +1,4 @@
-import type { UpdateEvent } from "~/lib/validations/event";
+import type { Event, UpdateEvent } from "~/lib/validations/event";
 
 export { DndItinerary } from "./dnd-itinerary";
 
@@ -8,4 +8,4 @@ export type onEventUpdated = (
   tripId: string,
   eventData: UpdateEvent["data"],
 ) => void;
-export type onEventDeleted = (eventId: string, tripId: string) => void;
+export type onEventDeleted = (eventIds: string | string[], tripId: string) => void;

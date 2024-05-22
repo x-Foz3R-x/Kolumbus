@@ -8,25 +8,24 @@ import { CSS } from "@dnd-kit/utilities";
 import deepEqual from "deep-equal";
 
 import { useDndItineraryContext } from "../dnd-context";
-import type { Activity as ActivityType } from "~/lib/validations/event";
-import { eventFallbackUrl } from "~/lib/constants";
+import type { ActivityEvent } from "~/lib/validations/event";
 import { EASING } from "~/lib/motion";
 import { cn, createId } from "~/lib/utils";
 
 import { Button, Icons, ScrollIndicator } from "../../ui";
 import { ActivityUIOverlay } from "./activity-ui-overlay";
 import { ActivityDetails } from "./activity-details";
+import { getActivityImageUrl } from ".";
 
 // todo - Context Menu (like in floating ui react examples)
 
 type DndEventProps = {
-  event: ActivityType;
+  event: ActivityEvent;
   dayIndex: number;
   isSelected: boolean;
 };
 export const Activity = memo(function Activity({ event, dayIndex, isSelected }: DndEventProps) {
-  const { userId, selectEvent } = useDndItineraryContext();
-  // const { userId, selectEvent, createEvent, updateEvent, deleteEvents } = useDndItineraryContext();
+  const { userId, selectEvent, createEvent, updateEvent, deleteEvents } = useDndItineraryContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const { setNodeRef, active, over, isDragging, attributes, listeners, transform, transition } =
@@ -47,9 +46,9 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
     setIsOpen(true);
   };
 
-  const handleClose = (activity: Event) => {
-    if (deepEqual(activity, cacheRef.current)) return;
-    // updateEvent(activity, cacheRef.current, { dayIndex });
+  const handleClose = (event: ActivityEvent) => {
+    if (deepEqual(event, cacheRef.current)) return;
+    updateEvent(event, cacheRef.current, { dayIndex });
   };
 
   const handleClick = (e: MouseEvent) => {
@@ -63,7 +62,7 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
 
   const handleDuplicate = () => {
     const position = event.position + 1;
-    const duplicate: ActivityType = {
+    const duplicate: ActivityEvent = {
       ...event,
       id: createId(),
       position,
@@ -72,12 +71,12 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
       createdBy: userId,
     };
 
-    // createEvent(duplicate, dayIndex, position);
+    createEvent(duplicate, dayIndex, position);
   };
 
   const handleDelete = () => {
     setIsOpen(false);
-    // deleteEvents([activity.id]);
+    deleteEvents([event.id]);
   };
   //#endregion
 
@@ -141,7 +140,7 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
           {/* Image */}
           <div className="relative h-[82px] flex-shrink-0">
             <Image
-              src={`${event?.activity.images?.[event.activity.imageIndex] ? `/api/get-google-image?photoRef=${event.activity.images[event.activity.imageIndex]}&width=156&height=82` : eventFallbackUrl}`}
+              src={getActivityImageUrl(event)}
               alt="Event Image"
               className="select-none object-cover object-center"
               sizes="156px"
@@ -180,13 +179,13 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
             )}
           </div>
 
-          {/* <ActivityDetails
-            activity={event}
+          <ActivityDetails
+            event={event}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             onClose={handleClose}
             onDelete={handleDelete}
-          /> */}
+          />
         </>
       )}
     </motion.li>

@@ -3,13 +3,16 @@
 import { createContext, useContext, useMemo, useState } from "react";
 
 import useHistoryState from "~/hooks/use-history-state";
-import { generateItinerary } from "~/lib/utils";
+import { MemberPermissionsTemplate } from "~/lib/templates";
+import { decodePermissions, generateItinerary } from "~/lib/utils";
 import type { Trip, TripContext as TripContextType } from "~/lib/validations/trip";
+import type { MemberPermissions } from "~/types";
 
 type TripContext = {
   userId: string;
   trip: Trip;
   setTrip: (tripOrIndex: Trip | number, description?: string) => void;
+  permissions: MemberPermissions;
   myMemberships: TripContextType["myMemberships"];
   setMyMemberships: (myMemberships: TripContextType["myMemberships"]) => void;
 };
@@ -32,11 +35,20 @@ export const TripContextProvider = (props: {
   });
   const [myMemberships, setMyMemberships] = useState(props.context.myMemberships);
 
+  const permissions = useMemo(
+    () =>
+      decodePermissions<MemberPermissions>(
+        trip.members.find((member) => member.userId === props.userId)?.permissions ?? 0,
+        MemberPermissionsTemplate,
+      ),
+    [trip.members, props.userId],
+  );
+
   console.log(trip);
 
   const value = useMemo(
-    () => ({ userId: props.userId, trip, setTrip, myMemberships, setMyMemberships }),
-    [props.userId, trip, setTrip, myMemberships],
+    () => ({ userId: props.userId, trip, setTrip, permissions, myMemberships, setMyMemberships }),
+    [props.userId, trip, permissions, setTrip, myMemberships],
   );
 
   return <TripContext.Provider value={value}>{props.children}</TripContext.Provider>;

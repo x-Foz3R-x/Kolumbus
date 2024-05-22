@@ -1,14 +1,14 @@
 import { memo, useRef } from "react";
 import Image from "next/image";
 
-import type { Activity } from "~/lib/validations/event";
+import type { ActivityEvent } from "~/lib/validations/event";
 import { cn } from "~/lib/utils";
 
 import { Badge, ScrollIndicator } from "../../ui";
 import { eventFallbackUrl } from "~/lib/constants";
 
 type EventOverlayProps = {
-  event: Activity;
+  event: ActivityEvent;
   selectCount: number;
   hoverShadow?: boolean;
 };

@@ -26,7 +26,7 @@ const TextAreaVariants = cva(
 
 type TextAreaProps = Omit<React.InputHTMLAttributes<HTMLTextAreaElement>, "size"> &
   VariantProps<typeof TextAreaVariants> & {
-    onChange?: (e: React.FocusEvent<HTMLInputElement>) => void;
+    onUpdate?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
     minRows?: number;
     maxRows?: number;
     preventEmpty?: boolean;
@@ -38,7 +38,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       value,
       defaultValue,
       autoComplete,
-      onChange,
+      onUpdate,
       minRows = 2,
       maxRows = Infinity,
       preventEmpty,
@@ -53,14 +53,14 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 
     const [height, setHeight] = useState(0);
 
-    const handleChange = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    const handleUpdate = (e: React.FocusEvent<HTMLTextAreaElement>) => {
       if (
         !z.string().safeParse(e.target.value).success ||
         e.target.value === previousValue.current ||
         (preventEmpty && e.target.value.length < 1)
       )
         return;
-      if (onChange) onChange(e);
+      if (onUpdate) onUpdate(e);
       previousValue.current = e.target.value;
     };
 
@@ -130,8 +130,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         value={value}
         defaultValue={defaultValue}
         autoComplete={autoComplete}
-        onChange={() => !value && resize()}
-        onBlur={handleChange}
+        onInput={() => !value && resize()}
+        onBlur={handleUpdate}
         style={{ ...style, height }}
         className={cn(TextAreaVariants({ variant, size, className }))}
         {...props}

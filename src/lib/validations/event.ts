@@ -7,10 +7,18 @@ import {
   selectTransportationSchema,
 } from "~/server/db/schema";
 
+export const deleteEventSchema = z.object({
+  id: z.string().length(16),
+  tripId: z.string().length(10),
+  date: z.string(),
+  position: z.number(),
+  createdBy: z.string().optional(),
+});
+
 export const eventSchema = selectEventSchema.extend({
-  activity: selectActivitySchema.nullable(),
-  transportation: selectTransportationSchema.nullable(),
-  flight: selectFlightSchema.nullable(),
+  activity: selectActivitySchema.nullable().optional(),
+  transportation: selectTransportationSchema.nullable().optional(),
+  flight: selectFlightSchema.nullable().optional(),
 });
 
 export const updateEventSchema = z.object({
@@ -28,4 +36,4 @@ export const activitySchema = selectEventSchema.extend({ activity: selectActivit
 export type Event = z.infer<typeof eventSchema>;
 export type UpdateEvent = z.infer<typeof updateEventSchema>;
 
-export type Activity = z.infer<typeof activitySchema>;
+export type ActivityEvent = z.infer<typeof activitySchema>;

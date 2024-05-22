@@ -2,12 +2,12 @@ import { DragOverlay } from "@dnd-kit/core";
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 
 import type { Day } from "~/lib/validations/trip";
-import type { Event } from "~/lib/validations/event";
+import type { ActivityEvent, Event } from "~/lib/validations/event";
 
-// import DayOverlay from "./day-overlay";
-// import { ActivityOverlay } from "./events";
+import DayOverlay from "./day-overlay";
+import { ActivityOverlay } from "./events";
 
-const EVENT_WIDTH = 160;
+const ACTIVITY_WIDTH = 160;
 
 type OverlayProps = {
   activeItem: Day | Event | null;
@@ -22,7 +22,7 @@ export default function DndDragOverlay({
   // To keep the cursor over the drag overlay during drag-and-drop of multiple events,
   // The drag overlay is shifted to the right and it equals the activeItem.id index in the selectedIds array times the EVENT_WIDTH
   const translateX =
-    activeItem && selectedIds.length > 1 ? selectedIds.indexOf(activeItem.id) * EVENT_WIDTH : 0;
+    activeItem && selectedIds.length > 1 ? selectedIds.indexOf(activeItem.id) * ACTIVITY_WIDTH : 0;
 
   const modifiers =
     activeItem && "events" in activeItem
@@ -43,16 +43,14 @@ export default function DndDragOverlay({
 function Overlay({ activeItem, selectedIds, enableEventComposer }: OverlayProps) {
   if (!activeItem) return null;
 
-  // if ("events" in activeItem)
-  //   return <DayOverlay day={activeItem} enableEventComposer={enableEventComposer} />;
+  if ("events" in activeItem)
+    return <DayOverlay day={activeItem} enableEventComposer={enableEventComposer} />;
 
-  return null;
-
-  // return (
-  //   <ActivityOverlay
-  //     event={activeItem}
-  //     selectCount={selectedIds.length ? selectedIds.length : 0}
-  //     hoverShadow
-  //   />
-  // );
+  return (
+    <ActivityOverlay
+      event={activeItem as ActivityEvent}
+      selectCount={selectedIds.length ? selectedIds.length : 0}
+      hoverShadow
+    />
+  );
 }

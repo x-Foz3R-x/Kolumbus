@@ -282,7 +282,7 @@ export const tripRouter = createTRPCRouter({
       await tx
         .delete(trips)
         .where(
-          and(eq(trips.ownerId, ctx.user.id), eq(trips.id, input.id), eq(memberships.owner, true)),
+          and(eq(trips.ownerId, ctx.user.id), eq(trips.id, tripId), eq(memberships.owner, true)),
         );
     });
 

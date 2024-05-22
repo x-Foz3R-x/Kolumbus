@@ -4,6 +4,7 @@ import { createId } from "~/lib/utils";
 
 import { Currency } from "./enums";
 import { events } from "./events";
+import { z } from "zod";
 
 type OpeningHoursPeriod = {
   day: number;
@@ -43,5 +44,7 @@ export const activities = pgTable(
 export type Activity = typeof activities.$inferSelect;
 export type NewActivity = typeof activities.$inferInsert;
 
-export const selectActivitySchema = createSelectSchema(activities);
+export const selectActivitySchema = createSelectSchema(activities).extend({
+  images: z.array(z.string()),
+});
 export const insertActivitySchema = createInsertSchema(activities);

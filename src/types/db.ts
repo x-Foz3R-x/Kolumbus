@@ -1,20 +1,7 @@
+import type { MemberPermissionsTemplate } from "~/lib/templates";
 import type { Membership } from "~/server/db/schema";
 
-export type MemberPermissions = {
-  // General permissions
-  shareInvite: boolean;
-  createInvite: boolean;
-  kickMembers: boolean;
-  managePermissions: boolean;
-
-  // Trip permissions
-  editTrip: boolean;
-  addEvents: boolean;
-  editEvents: boolean;
-  deleteEvents: boolean;
-  editOwnEvents: boolean;
-  deleteOwnEvents: boolean;
-};
+export type MemberPermissions = Record<keyof typeof MemberPermissionsTemplate, boolean>;
 
 export type MyMembership = Membership & {
   trip: {
