@@ -1,6 +1,7 @@
 import { add } from "date-fns";
 import { formatDate } from "~/lib/utils";
-import type { Event, EventTypes, Membership, Trip } from "~/server/db/schema";
+import type { Activity, Event, EventTypes, Membership, Trip } from "~/server/db/schema";
+import type { ActivityEvent } from "./validations/event";
 
 export enum MemberPermissionsTemplate {
   // General permissions
@@ -18,7 +19,7 @@ export enum MemberPermissionsTemplate {
   deleteOwnEvents = 1 << 9,
 }
 
-type BuildTripProps = {
+type CreateTripProps = {
   id: string;
   ownerId: string;
   name?: string;
@@ -28,7 +29,7 @@ type BuildTripProps = {
   inviteCode?: string;
   inviteCreatedAt?: Date;
 };
-export function buildTrip(data: BuildTripProps): Trip {
+export function createTrip(data: CreateTripProps): Trip {
   return {
     id: data.id,
     ownerId: data.ownerId,
@@ -43,26 +44,25 @@ export function buildTrip(data: BuildTripProps): Trip {
   };
 }
 
-type BuildMembershipProps = {
+type CreateMembershipProps = {
   userId: string;
   tripId: string;
   tripPosition: number;
   owner: boolean;
   permissions?: number;
 };
-export function buildMembership(data: BuildMembershipProps): Membership {
+export function createMembership(data: CreateMembershipProps): Membership {
   return {
     userId: data.userId,
     tripId: data.tripId,
     tripPosition: data.tripPosition,
-    owner: data.owner,
     permissions: data.permissions ?? 0,
     updatedAt: new Date(),
     createdAt: new Date(),
   };
 }
 
-type BuildEventProps = {
+type CreateEventProps = {
   id: string;
   tripId: string;
   date: string;
@@ -70,7 +70,7 @@ type BuildEventProps = {
   type: EventTypes;
   createdBy: string;
 };
-export function buildEvent(event: BuildEventProps): Event {
+export function createEvent(event: CreateEventProps): Event {
   return {
     id: event.id,
     tripId: event.tripId,
@@ -80,5 +80,53 @@ export function buildEvent(event: BuildEventProps): Event {
     createdBy: event.createdBy,
     createdAt: new Date(),
     updatedAt: new Date(),
+  };
+}
+
+type CreateActivityProps = {
+  tripId: string;
+  eventId: string;
+  activityId: string;
+  placeId?: string;
+
+  name?: string;
+  startTime?: string;
+  endTime?: string;
+  openingHours?: { day: number; open: string; close?: string }[];
+  address?: string;
+  phoneNumber?: string;
+  website?: string;
+  cost?: string;
+  currency?: Activity["currency"];
+  images?: string[];
+  imageIndex?: number;
+  note?: string;
+  url?: string;
+
+  date: string;
+  position: number;
+  createdBy: string;
+};
+export function createActivityEvent(event: CreateActivityProps): ActivityEvent {
+  return {
+    ...createEvent({ ...event, id: event.eventId, type: "ACTIVITY" }),
+    activity: {
+      id: event.activityId,
+      eventId: event.eventId,
+      placeId: event.placeId ?? null,
+      name: event.name ?? "",
+      startTime: event.startTime ?? null,
+      endTime: event.endTime ?? null,
+      openingHours: event.openingHours ?? [],
+      address: event.address ?? null,
+      phoneNumber: event.phoneNumber ?? null,
+      website: event.website ?? null,
+      cost: event.cost ?? "0",
+      currency: event.currency ?? "USD",
+      images: event.images ?? [],
+      imageIndex: event.imageIndex ?? 0,
+      note: event.note ?? null,
+      url: event.url ?? null,
+    },
   };
 }

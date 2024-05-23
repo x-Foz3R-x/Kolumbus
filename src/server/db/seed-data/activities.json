@@ -4,7 +4,7 @@
     "eventId": "BjyHFtRZx8FqrTdd",
     "name": "Warsaw",
     "address": "Warsaw, Poland",
-    "photos": [
+    "images": [
       "AWU5eFgaD6KV7jk0Opv1E3hcyFqVq1MstecRDcie0v6oifKWR7ShZgY0AdQTxy5-JnFYzot9HmlLenXcF8oNo6JVDb5fjE2FFvm6MxVz-xV7_PPejY_tH3hxMWnMD4ngBvIGaa1WW64y2pZEOQtjPXIaSX1EE0DWtwdck7_QdOOHmS1iBiNa"
     ]
   },
@@ -13,7 +13,7 @@
     "eventId": "pZB7WdF2vsRe1XYL",
     "name": "Helsinki",
     "address": "Helsinki, Finland",
-    "photos": [
+    "images": [
       "ATplDJamwMaLHGiaMZgk3BOlZxrAwlvPNmbqVOUUCmQQowUK5jlcNP5EETn7hz7fJ67oRFlXQIw_6Rb8IVbZKR-sk5oh6KtxNtvKk4RaQKeRyONqYslwPUpT_aWXcC63EE8GxwL_mLx-dJmG0cT9o2__2k6XmahdI4WAES-eNLHWmIKSupEz"
     ]
   },
@@ -22,7 +22,7 @@
     "eventId": "1QUy0TlLnXZNoQry",
     "name": "Berlin",
     "address": "Berlin, Germany",
-    "photos": [
+    "images": [
       "ATplDJZ4E6FfheiwWrQ67ALBiDv5fRZ9NF5IvI6zWShOPC3dFZjW2_X10l_Vj9QbyKGzLRnfNoYCM3rfgHJo89kpYMXJQWX_VvQ6Fbme3a0xOJU6pomepRgNvTnZupCkqgyZYoGb0ApJ51AWR-vOBd9MABjhftVnJ5h2n_EcwHJabNPFN2VK"
     ]
   },
@@ -66,7 +66,7 @@
     "address": "Warsaw, Poland",
     "phoneNumber": "+48 504 243 783",
     "website": "https://www.lazienki-krolewskie.pl/",
-    "photos": [
+    "images": [
       "ATplDJb7g0HVir04gfSE8khV1pr0WGupZQxlEPld0gqwTIv__5DA7HfO0lWEhabw1C30J-DPYbU1azR8mR1detgn_May2mfVH8MKUi7heJ4cNziM-SV8fqcV86PgX0NbKDq_QUW4g0QBZ49Qbabja15uWGEd0Ad2jPE-WR_LK_acFsoxJcS2"
     ],
     "url": "https://maps.google.com/?cid=10112470542589209201"
@@ -81,7 +81,7 @@
     "phoneNumber": "1-471-234-2496",
     "website": "http://pizzeria-dworska.pl/",
     "cost": "32",
-    "photos": [
+    "images": [
       "ATplDJZeNdOF3Z9tEpibHKLhJRcn5MUVF_3P90_XDlXaI9tD-ZwiXtufEXOg3Jyd_7RcBg2i6AojvgC9mDY0ZTJGRx7m_WF4eAvzBEld8r2QH-3JN35wPWtoMGiB7lwTwJ0Vv4NGs1jnDo4iohWzTi-IAPnS5tmzUIKE70Zx_7OO5X6-wq5Q"
     ],
     "url": "https://maps.google.com/?cid=14114721647506581274"
@@ -92,7 +92,7 @@
     "eventId": "0IVKDosPvyCS3hmk",
     "name": "Warsaw",
     "address": "Warsaw, Poland",
-    "photos": [
+    "images": [
       "AWU5eFgaD6KV7jk0Opv1E3hcyFqVq1MstecRDcie0v6oifKWR7ShZgY0AdQTxy5-JnFYzot9HmlLenXcF8oNo6JVDb5fjE2FFvm6MxVz-xV7_PPejY_tH3hxMWnMD4ngBvIGaa1WW64y2pZEOQtjPXIaSX1EE0DWtwdck7_QdOOHmS1iBiNa"
     ]
   }

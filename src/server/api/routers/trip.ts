@@ -165,7 +165,7 @@ export const tripRouter = createTRPCRouter({
       }
     });
   }),
-  getMy: protectedProcedure.input(tripIdSchema).query(async ({ ctx, input }) => {
+  getContext: protectedProcedure.input(tripIdSchema).query(async ({ ctx, input }) => {
     const tripContext = await ctx.db.transaction(async (tx) => {
       const trip = await tx.query.trips.findFirst({
         where: eq(trips.id, input.id),

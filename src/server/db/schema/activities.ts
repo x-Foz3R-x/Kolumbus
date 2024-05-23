@@ -5,6 +5,7 @@ import { createId } from "~/lib/utils";
 import { Currency } from "./enums";
 import { events } from "./events";
 import { z } from "zod";
+import { sql } from "drizzle-orm";
 
 type OpeningHoursPeriod = {
   day: number;
@@ -25,13 +26,20 @@ export const activities = pgTable(
     name: text("name").notNull(),
     startTime: text("start_time"),
     endTime: text("end_time"),
-    openingHours: jsonb("opening_hours").$type<OpeningHoursPeriod>().array(),
+    openingHours: jsonb("opening_hours")
+      .$type<OpeningHoursPeriod>()
+      .array()
+      .default(sql`ARRAY[]::jsonb[]`)
+      .notNull(),
     address: text("address"),
     phoneNumber: text("phone_number"),
     website: text("website"),
     cost: decimal("cost", { precision: 10, scale: 2 }).default("0").notNull(),
     currency: Currency("currency").default("USD").notNull(),
-    images: text("images").array(),
+    images: text("images")
+      .array()
+      .default(sql`ARRAY[]::text[]`)
+      .notNull(),
     imageIndex: smallint("image_index").default(0).notNull(),
     note: text("note"),
     url: text("url"),
