@@ -35,7 +35,7 @@ type ComboboxProps = {
   input: {
     placeholder?: string;
     childrenWidth?: number;
-    onInputChange?: (value: string) => void | Promise<void>;
+    onChange?: (value: string) => void | Promise<void>;
     onEnterPress?: (activeIndex: number | null) => void;
     style?: React.CSSProperties;
     className?: string;
@@ -128,7 +128,7 @@ export const Combobox = {
 
   Input({
     placeholder,
-    onInputChange,
+    onChange,
     onEnterPress,
     containerProps,
     className,
@@ -137,7 +137,7 @@ export const Combobox = {
   }: ComboboxProps["input"]) {
     const combobox = useComboboxContext();
 
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       combobox.activeItemRef.current = null;
 
       const value = z.string().default("").parse(e.target.value);
@@ -146,7 +146,7 @@ export const Combobox = {
       if (value) {
         combobox.setActiveIndex(null);
         combobox.setOpen(true);
-        void onInputChange?.(value);
+        void onChange?.(value);
       } else combobox.setOpen(false);
     };
 
@@ -203,7 +203,7 @@ export const Combobox = {
             id: useId(),
             value: combobox.inputValue,
             placeholder,
-            onInput: handleInput,
+            onChange: handleChange,
             onKeyDown: handleEnterPress,
             autoComplete: "off",
             autoCorrect: "off",
