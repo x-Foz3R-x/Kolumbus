@@ -35,6 +35,7 @@ export const events = pgTable(
     position: smallint("position").notNull(),
     type: EventTypes("type").notNull(),
     createdBy: text("created_by").notNull(),
+    updatedBy: text("updated_by").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .$onUpdateFn(() => new Date())
@@ -59,11 +60,6 @@ export const eventsRelations = relations(events, ({ one }) => ({
   flight: one(flights, { fields: [events.id], references: [flights.eventId] }),
 }));
 
-export type Event = typeof events.$inferSelect;
-export type NewEvent = typeof events.$inferInsert;
-
-const eventTypeSchema = z.enum(EventTypes.enumValues);
-export type EventTypes = z.infer<typeof eventTypeSchema>;
-
+export const eventTypeSchema = z.enum(EventTypes.enumValues);
 export const selectEventSchema = createSelectSchema(events);
 export const insertEventSchema = createInsertSchema(events);

@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { index, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { createId } from "~/lib/utils";
 
@@ -17,6 +17,7 @@ export const trips = pgTable(
     image: text("image"),
     startDate: text("start_date").notNull(),
     endDate: text("end_date").notNull(),
+    tierLevel: smallint("tier_level").default(0).notNull(),
     inviteCode: text("invite_code").unique(),
     inviteCreatedAt: timestamp("invite_created_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -32,9 +33,6 @@ export const tripsRelations = relations(trips, ({ many }) => ({
   memberships: many(memberships),
   events: many(events),
 }));
-
-export type Trip = typeof trips.$inferSelect;
-export type NewTrip = typeof trips.$inferInsert;
 
 export const selectTripSchema = createSelectSchema(trips);
 export const insertTripSchema = createInsertSchema(trips);

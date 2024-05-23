@@ -45,8 +45,5 @@ export const transportations = pgTable(
   }),
 );
 
-export type Transportation = typeof transportations.$inferSelect;
-export type NewTransportation = typeof transportations.$inferInsert;
-
 export const selectTransportationSchema = createSelectSchema(transportations);
 export const insertTransportationSchema = createInsertSchema(transportations);

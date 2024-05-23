@@ -39,8 +39,5 @@ export const flights = pgTable(
   }),
 );
 
-export type Flight = typeof flights.$inferSelect;
-export type NewFlight = typeof flights.$inferInsert;
-
 export const selectFlightSchema = createSelectSchema(flights);
 export const insertFlightSchema = createInsertSchema(flights);

@@ -41,8 +41,5 @@ export const membershipsRelations = relations(memberships, ({ one }) => ({
   trip: one(trips, { fields: [memberships.tripId], references: [trips.id] }),
 }));
 
-export type Membership = typeof memberships.$inferSelect;
-export type NewMembership = typeof memberships.$inferInsert;
-
 export const selectMembershipSchema = createSelectSchema(memberships);
 export const insertMembershipSchema = createInsertSchema(memberships);

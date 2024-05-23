@@ -9,7 +9,10 @@ import memberships from "./seed-data/memberships.json";
 import events from "./seed-data/events.json";
 import activities from "./seed-data/activities.json";
 
-const connection = postgres("", { prepare: false });
+const connection = postgres(
+  "postgres://postgres.azkhztdwoqyqaqayrdph:lnYoQ6Cum70t5xBy@aws-0-eu-central-1.pooler.supabase.com:6543/postgres",
+  { prepare: false },
+);
 const db = drizzle(connection, { schema });
 
 const main = async () => {
