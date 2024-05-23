@@ -1,4 +1,5 @@
 import { pgEnum } from "drizzle-orm/pg-core";
+import { z } from "zod";
 
 export const Currency = pgEnum("currency", [
   "AUD",
@@ -14,3 +15,5 @@ export const Currency = pgEnum("currency", [
   "RUB",
   "USD",
 ]);
+
+export const CurrencySchema = z.enum(Currency.enumValues);
