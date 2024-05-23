@@ -1,9 +1,9 @@
-import { type Config } from "drizzle-kit";
+import { defineConfig } from "drizzle-kit";
 
 import { env } from "~/env";
 
-export default {
-  driver: "pg",
+export default defineConfig({
+  dialect: "postgresql",
   schema: "./src/server/db/schema",
-  dbCredentials: { connectionString: env.DATABASE_URL },
-} satisfies Config;
+  dbCredentials: { url: env.DATABASE_URL },
+});
