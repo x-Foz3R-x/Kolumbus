@@ -4,6 +4,10 @@ import { Divider, Icons } from "~/components/ui";
 import OAuthSignIn from "../_components/oauth-signin";
 import SignInForm from "../_components/signin-form";
 
+export const metadata = {
+  title: "Sign In",
+};
+
 export default function SignIn() {
   return (
     <>

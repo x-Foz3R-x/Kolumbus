@@ -4,6 +4,10 @@ import StageManager from "~/components/stage-manager";
 import SignUpForm from "../_components/signup-form";
 import VerifyEmailForm from "../_components/verify-email-form";
 
+export const metadata = {
+  title: "Sign Up",
+};
+
 export default function SignUp() {
   return (
     <>
