@@ -25,6 +25,8 @@ export default function SignUp() {
         // debug
         style={{ marginTop: "4px" }}
       />
+
+      <div id="clerk-captcha" />
     </>
   );
 }
