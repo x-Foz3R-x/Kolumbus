@@ -85,7 +85,7 @@ export function SelectInline({
         <ul
           ref={refs.setFloating}
           className={cn(
-            "flex flex-col overflow-y-auto overflow-x-hidden bg-white py-1.5 font-inter dark:bg-gray-800 dark:text-white",
+            "flex flex-col overflow-y-auto overflow-x-hidden bg-white py-1.5 font-inter font-normal antialiased dark:bg-gray-800 dark:text-white",
             className,
           )}
           {...getFloatingProps()}

@@ -185,7 +185,7 @@ export function Floating({
                     animate="animate"
                     exit="exit"
                     variants={variants}
-                    className={cn("relative font-inter", className)}
+                    className={cn("relative font-inter font-normal antialiased", className)}
                   >
                     {children}
                   </motion.div>

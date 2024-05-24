@@ -121,7 +121,9 @@ export const Combobox = {
 
     return (
       <ComboboxContext.Provider value={contextValue}>
-        <motion.div className={cn("relative", className)}>{children}</motion.div>
+        <motion.div className={cn("relative font-inter font-normal antialiased", className)}>
+          {children}
+        </motion.div>
       </ComboboxContext.Provider>
     );
   },
