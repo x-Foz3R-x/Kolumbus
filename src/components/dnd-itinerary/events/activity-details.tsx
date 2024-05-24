@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import type { ActivityEvent } from "~/lib/validations/event";
+import type { ActivityEventSchema } from "~/lib/validations/event";
 import { EASING } from "~/lib/motion";
 import { Floating } from "~/components/ui/floating";
 import { ActivityDetailsContent } from "./activity-details-content";
@@ -11,10 +11,10 @@ const DETAILS_INIT_HEIGHT = 264;
 const DETAILS_SECTION_INIT_HEIGHT = 246;
 
 type ActivityDetailsProps = {
-  event: ActivityEvent;
+  event: ActivityEventSchema;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onClose: (event: ActivityEvent) => void;
+  onClose: (event: ActivityEventSchema) => void;
   onDelete: () => void;
 };
 export const ActivityDetails = memo(function ActivityDetailsWrapper({

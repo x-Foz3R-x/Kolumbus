@@ -1,6 +1,6 @@
 "use client";
 
-import useLibraryContext from "./provider";
+import useLibraryContext from "./library-provider";
 import TripCards from "./trip-cards";
 
 export default function SharedTrips() {

@@ -1,12 +1,13 @@
 "use client";
 
-import { Icons } from "~/components/ui";
-import { CreateTripModal } from "./create-trip-modal";
-import useLibraryContext from "./provider";
+import useLibraryContext from "./library-provider";
+
 import TripCards from "./trip-cards";
+import { CreateTripModal } from "~/components/create-trip-modal";
+import { Icons } from "~/components/ui";
 
 export default function MyTrips() {
-  const { memberships, userRoleLimits, createTrip } = useLibraryContext();
+  const { memberships, userType, createTrip } = useLibraryContext();
 
   return (
     <section className="mx-auto max-w-screen-lg space-y-5 py-5">
@@ -16,8 +17,9 @@ export default function MyTrips() {
         <TripCards memberships={memberships} />
 
         {/* Create Trip Modal */}
-        {memberships.length > userRoleLimits.membershipsLimit ? null : (
+        {memberships.length > userType.maxMemberships ? null : (
           <CreateTripModal
+            maxDays={14}
             onCreate={createTrip}
             buttonProps={{
               variant: "unset",

@@ -8,10 +8,10 @@ import { format } from "date-fns";
 import { tripFallbackUrl } from "~/lib/constants";
 import { differenceInDays, cn } from "~/lib/utils";
 
-import { Icons, ScrollIndicator } from "~/components/ui";
+import { TripDeleteModal } from "~/components/trip-delete-modal";
+import { TripLeaveModal } from "~/components/trip-leave-modal";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
-import { ConfirmTripDelete } from "./confirm-trip-delete";
-import { ConfirmTripLeave } from "./confirm-trip-leave";
+import { Icons, ScrollIndicator } from "~/components/ui";
 
 type TripCardProps = {
   trip: {
@@ -125,12 +125,12 @@ const TripCard = memo(function TripCard({
         )}
       </Menu>
 
-      <ConfirmTripLeave
+      <TripLeaveModal
         isOpen={isLeaveModalOpen}
         setOpen={setLeaveModalOpen}
         onLeave={handleLeave!}
       />
-      <ConfirmTripDelete
+      <TripDeleteModal
         isOpen={isDeleteModalOpen}
         setOpen={setDeleteModalOpen}
         onDelete={handleDelete!}

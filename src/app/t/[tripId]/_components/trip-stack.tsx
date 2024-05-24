@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 
 import { api } from "~/trpc/react";
-import { useTripContext } from "./trip-context";
+import { useTripContext } from "./trip-provider";
 import { toastHandler } from "~/lib/trpc";
 
 import SwitchTrip from "./switch-trip";

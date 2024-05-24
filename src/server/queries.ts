@@ -7,6 +7,7 @@ import {
   eq,
   type ExtractTablesWithRelations,
   inArray,
+  ne,
   sql,
   type Subquery,
   type TableConfig,
@@ -15,12 +16,12 @@ import type { PgTable, PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core
 import { auth } from "@clerk/nextjs/server";
 import ratelimit from "./ratelimit";
 import { error } from "~/lib/trpc";
-import db from "./db";
 
 import type * as schema from "~/server/db/schema";
-import { events, memberships, userRoles } from "./db/schema";
+import { events, memberships } from "./db/schema";
 import { decodePermissions } from "~/lib/utils";
-import { MemberPermissionsTemplate } from "~/lib/templates";
+import { MemberPermissionFlags } from "~/lib/validations/membership";
+import type { UserTypeSchema } from "~/lib/validations/auth";
 
 type Transaction = PgTransaction<
   QueryResultHKT,
@@ -29,43 +30,13 @@ type Transaction = PgTransaction<
 >;
 type Table = PgTable<TableConfig> | Subquery<string, Record<string, unknown>>;
 
-const validRoles = ["explorer", "navigator", "captain", "fleetCommander", "tester", "admin"];
-
 /*--------------------------------------------------------------------------------------------------
  * Read
  *------------------------------------------------------------------------------------------------*/
 
-export async function getMyUserRoleLimits(tx?: Transaction) {
-  const userRole = getUserRole();
-
-  const [userRoleLimits] = tx
-    ? await tx
-        .select({
-          membershipsLimit: userRoles.membershipsLimit,
-          daysLimit: userRoles.daysLimit,
-          eventsLimit: userRoles.eventsLimit,
-        })
-        .from(userRoles)
-        .where(eq(userRoles.role, userRole))
-    : await db
-        .select({
-          membershipsLimit: userRoles.membershipsLimit,
-          daysLimit: userRoles.daysLimit,
-          eventsLimit: userRoles.eventsLimit,
-        })
-        .from(userRoles)
-        .where(eq(userRoles.role, userRole));
-
-  if (!userRoleLimits) {
-    throw error.internalServerError("Failed to fetch your user role. Please try again later.");
-  }
-
-  return userRoleLimits;
-}
-
 export async function getMyMembershipPermissions(tx: Transaction, userId: string, tripId: string) {
   const result = await tx.query.memberships.findFirst({
-    columns: { owner: true, permissions: true },
+    columns: { permissions: true },
     where: and(eq(memberships.userId, userId), eq(memberships.tripId, tripId)),
   });
 
@@ -75,29 +46,28 @@ export async function getMyMembershipPermissions(tx: Transaction, userId: string
     );
   }
 
-  return result.owner ? "owner" : result.permissions;
+  return result.permissions;
 }
 
 export async function getMyMembershipDecodedPermissions(
   tx: Transaction,
   userId: string,
   tripId: string,
-): Promise<Record<keyof typeof MemberPermissionsTemplate, boolean>> {
+): Promise<Record<keyof typeof MemberPermissionFlags, boolean>> {
   const permissions = await getMyMembershipPermissions(tx, userId, tripId);
-  return decodePermissions(permissions === "owner" ? -1 : permissions, MemberPermissionsTemplate);
+  return decodePermissions(permissions, MemberPermissionFlags);
 }
 
 export async function getMyMembershipsCount(tx: Transaction, userId: string, owner?: boolean) {
-  const [result] =
-    owner !== undefined
-      ? await tx
-          .select({ membershipsCount: count() })
-          .from(memberships)
-          .where(and(eq(memberships.userId, userId), eq(memberships.owner, owner)))
-      : await tx
-          .select({ membershipsCount: count() })
-          .from(memberships)
-          .where(eq(memberships.userId, userId));
+  const [result] = owner
+    ? await tx
+        .select({ membershipsCount: count() })
+        .from(memberships)
+        .where(and(eq(memberships.userId, userId), eq(memberships.permissions, -1)))
+    : await tx
+        .select({ membershipsCount: count() })
+        .from(memberships)
+        .where(and(eq(memberships.userId, userId), ne(memberships.permissions, -1)));
 
   if (!result) {
     throw error.internalServerError(
@@ -187,20 +157,17 @@ export async function enforceMembershipLimit<T>(
   userId: string,
   returnValueOnEnforce?: T,
 ) {
-  const userRole = await getMyUserRoleLimits(tx);
+  const userType = await getMyUserType();
   const membershipsCount = await getMyMembershipsCount(tx, userId);
 
-  if (membershipsCount >= userRole.membershipsLimit) {
+  if (membershipsCount >= userType.maxMemberships) {
     if (returnValueOnEnforce) return returnValueOnEnforce;
-
-    throw error.badRequest(
-      `You've reached your limit of ${userRole.membershipsLimit} memberships.`,
-    );
+    throw error.badRequest(`You've reached your limit of ${userType.maxMemberships} memberships.`);
   }
 }
 
 /*--------------------------------------------------------------------------------------------------
- * Helpers
+ * Auth
  *------------------------------------------------------------------------------------------------*/
 
 export function getUserId() {
@@ -209,19 +176,40 @@ export function getUserId() {
   return userId;
 }
 
-export function getUserRole() {
+export async function getMyUserType(): Promise<UserTypeSchema> {
   const { userId, sessionClaims } = auth();
-  if (!userId) {
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: "Unauthorized. Please sign in to continue.",
-    });
-  }
+  if (!userId) throw error.unauthorized("Unauthorized. Please sign in to continue.");
 
-  const userRole =
-    sessionClaims?.metadata.role && validRoles.includes(sessionClaims.metadata.role)
-      ? sessionClaims.metadata.role
-      : "explorer";
+  const type = sessionClaims.public_metadata.type ?? 0;
 
-  return userRole;
+  if (type === 1)
+    return {
+      value: 1,
+      name: "Navigator",
+      maxMemberships: 16,
+      maxTripUpgrades: 8,
+      memories: true,
+    };
+  else if (type === 2)
+    return {
+      value: 2,
+      name: "Captain",
+      maxMemberships: 24,
+      maxTripUpgrades: 12,
+      memories: true,
+    };
+
+  return {
+    value: 0,
+    name: "Explorer",
+    maxMemberships: 16,
+    maxTripUpgrades: 0,
+    memories: false,
+  };
+}
+
+export async function getMyUserFlags() {
+  const { userId, sessionClaims } = auth();
+  if (!userId) throw error.unauthorized("Unauthorized. Please sign in to continue.");
+  return sessionClaims.public_metadata.flags;
 }

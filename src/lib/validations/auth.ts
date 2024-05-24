@@ -31,8 +31,27 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-export const userPrivateMetadataSchema = z.object({
-  role: z.enum(["user", "premium", "premium+", "company", "admin", "super_admin"]),
+export const userTypeSchema = z.object({
+  value: z.number(),
+  name: z.enum(["Explorer", "Navigator", "Captain"]),
+
+  maxMemberships: z.number(),
+  maxTripUpgrades: z.number(),
+
+  // Allows uploading memories (photos) for events during a trip. Uploads permitted until the next day.
+  memories: z.boolean(),
 });
 
-export type UserPrivateMetadataSchema = z.infer<typeof userPrivateMetadataSchema>;
+// To be defined
+export enum UserFlags {
+  STAFF = 1 << 0,
+  PARTNER = 1 << 1,
+}
+
+export const publicMetadataSchema = z.object({
+  type: z.number(),
+  flags: z.number(),
+});
+
+export type UserTypeSchema = z.infer<typeof userTypeSchema>;
+export type PublicMetadataSchema = z.infer<typeof publicMetadataSchema>;

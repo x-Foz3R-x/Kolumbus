@@ -16,4 +16,4 @@ export const Currency = pgEnum("currency", [
   "USD",
 ]);
 
-export const CurrencySchema = z.enum(Currency.enumValues);
+export const currencySchema = z.enum(Currency.enumValues);

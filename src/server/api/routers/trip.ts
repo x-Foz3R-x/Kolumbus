@@ -1,16 +1,14 @@
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, eq, gt, ne, sql } from "drizzle-orm";
 import { clerkClient } from "@clerk/nextjs/server";
 
 import { error } from "~/lib/trpc";
-import { createId, encodePermissions } from "~/lib/utils";
-import { MemberPermissionsTemplate } from "~/lib/templates";
+import { createId } from "~/lib/utils";
 import {
-  createTripInviteSchema,
   createTripSchema,
   duplicateTripSchema,
-  findTripInviteSchema,
-  joinTripSchema,
+  findInviteSchema,
   tripIdSchema,
+  updateInviteSchema,
   updateTripSchema,
 } from "~/lib/validations/trip";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -21,7 +19,6 @@ import {
   getMyMembershipDecodedPermissions,
   getMyMembershipsCount,
   getTripMemberCount,
-  isIdUsed,
   isUserMemberOfTrip,
 } from "~/server/queries";
 import {
@@ -29,12 +26,13 @@ import {
   events,
   flights,
   memberships,
-  type NewActivity,
-  type NewFlight,
-  type NewTransportation,
   transportations,
   trips,
 } from "~/server/db/schema";
+
+type NewActivity = typeof activities.$inferInsert;
+type NewTransportation = typeof transportations.$inferInsert;
+type NewFlight = typeof flights.$inferInsert;
 
 export const tripRouter = createTRPCRouter({
   create: protectedProcedure.input(createTripSchema).mutation(async ({ ctx, input }) => {
@@ -48,8 +46,7 @@ export const tripRouter = createTRPCRouter({
         tripId: trip.id,
         userId: ctx.user.id,
         tripPosition: position,
-        owner: true,
-        permissions: encodePermissions(true, MemberPermissionsTemplate),
+        permissions: -1,
       });
     });
 
@@ -100,7 +97,7 @@ export const tripRouter = createTRPCRouter({
         .where(
           and(
             eq(memberships.userId, ctx.user.id),
-            eq(memberships.owner, true),
+            eq(memberships.permissions, -1),
             gt(memberships.tripPosition, originalTrip.memberships[0]!.tripPosition),
           ),
         );
@@ -110,8 +107,7 @@ export const tripRouter = createTRPCRouter({
         tripId: duplicateId,
         userId: ctx.user.id,
         tripPosition: originalTrip.memberships[0]!.tripPosition + 1,
-        owner: true,
-        permissions: encodePermissions(true, MemberPermissionsTemplate),
+        permissions: -1,
       });
 
       if (originalTrip.events.length > 0) {
@@ -119,11 +115,7 @@ export const tripRouter = createTRPCRouter({
         const duplicatedEvents = await tx
           .insert(events)
           .values(
-            originalTrip.events.map((event) => ({
-              ...event,
-              id: createId(),
-              tripId: duplicateId,
-            })),
+            originalTrip.events.map((event) => ({ ...event, id: createId(), tripId: duplicateId })),
           )
           .returning();
 
@@ -171,7 +163,7 @@ export const tripRouter = createTRPCRouter({
         where: eq(trips.id, input.id),
         with: {
           memberships: {
-            columns: { userId: true, owner: true, permissions: true, createdAt: true },
+            columns: { userId: true, permissions: true, createdAt: true },
             orderBy: (memberships, { asc }) => asc(memberships.createdAt),
           },
           events: {
@@ -183,12 +175,19 @@ export const tripRouter = createTRPCRouter({
 
       const myMemberships = await tx.query.memberships
         .findMany({
-          columns: { owner: true, tripPosition: true, createdAt: true, updatedAt: true },
+          columns: { tripPosition: true, permissions: true, createdAt: true, updatedAt: true },
           where: eq(memberships.userId, ctx.user.id),
           orderBy: (memberships, { asc }) => asc(memberships.tripPosition),
           with: {
             trip: {
-              columns: { id: true, name: true, image: true, startDate: true, endDate: true },
+              columns: {
+                id: true,
+                ownerId: true,
+                name: true,
+                image: true,
+                startDate: true,
+                endDate: true,
+              },
             },
           },
         })
@@ -198,10 +197,10 @@ export const tripRouter = createTRPCRouter({
               id: membership.trip.id,
               name: membership.trip.name,
               image: membership.trip.image,
-              owner: membership.owner,
               startDate: membership.trip.startDate,
               endDate: membership.trip.endDate,
               position: membership.tripPosition,
+              owner: membership.trip.ownerId === ctx.user.id,
             },
             createdAt: membership.createdAt,
             updatedAt: membership.updatedAt,
@@ -254,7 +253,7 @@ export const tripRouter = createTRPCRouter({
 
     await ctx.db.transaction(async (tx) => {
       const membership = await tx.query.memberships.findFirst({
-        columns: { owner: true, tripPosition: true },
+        columns: { permissions: true, tripPosition: true },
         where: and(eq(memberships.userId, ctx.user.id), eq(memberships.tripId, tripId)),
       });
 
@@ -263,7 +262,7 @@ export const tripRouter = createTRPCRouter({
           "Failed to fetch your membership of the trip you're trying to delete. Please try again later.",
         );
       }
-      if (!membership.owner) {
+      if (membership.permissions !== -1) {
         throw error.unauthorized(
           "You cannot delete a trip that you do NOT own. Please obtain ownership of the trip before attempting to delete it again.",
         );
@@ -275,15 +274,11 @@ export const tripRouter = createTRPCRouter({
         .where(
           and(
             eq(memberships.userId, ctx.user.id),
-            eq(memberships.owner, true),
+            eq(memberships.permissions, -1),
             gt(memberships.tripPosition, membership.tripPosition),
           ),
         );
-      await tx
-        .delete(trips)
-        .where(
-          and(eq(trips.ownerId, ctx.user.id), eq(trips.id, tripId), eq(memberships.owner, true)),
-        );
+      await tx.delete(trips).where(and(eq(trips.ownerId, ctx.user.id), eq(trips.id, tripId)));
     });
 
     analyticsServerClient.capture({
@@ -293,7 +288,7 @@ export const tripRouter = createTRPCRouter({
     });
   }),
 
-  findInvite: protectedProcedure.input(findTripInviteSchema).query(async ({ ctx, input }) => {
+  findInvite: protectedProcedure.input(findInviteSchema).query(async ({ ctx, input }) => {
     // Failed find return codes:
     // Code 0 - Invalid Invite
     // Code 1 - Unknown Invite
@@ -337,60 +332,31 @@ export const tripRouter = createTRPCRouter({
       };
     });
   }),
-  createInvite: protectedProcedure
-    .input(createTripInviteSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { id: tripId, inviteCode: inputInviteCode } = input;
+  updateInvite: protectedProcedure.input(updateInviteSchema).mutation(async ({ ctx, input }) => {
+    const { id: tripId, inviteCode } = input;
 
-      await enforceRateLimit(ctx.user.id);
-      const inviteCode = await ctx.db.transaction(async (tx) => {
-        const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
-
-        if (!permissions?.createInvite) {
-          throw error.unauthorized(
-            "You do not have permission to create an invite link for this trip",
-          );
-        }
-
-        const inviteCode = (await isIdUsed(tx, trips, inputInviteCode))
-          ? createId(8)
-          : inputInviteCode;
-
-        await tx.update(trips).set({ inviteCode }).where(eq(trips.id, tripId));
-        return inviteCode;
-      });
-
-      analyticsServerClient.capture({
-        distinctId: ctx.user.id,
-        event: "create trip invite",
-        properties: { tripId },
-      });
-
-      return inviteCode;
-    }),
-  deleteInvite: protectedProcedure.input(tripIdSchema).mutation(async ({ ctx, input }) => {
-    const { id: tripId } = input;
-
+    await enforceRateLimit(ctx.user.id);
     await ctx.db.transaction(async (tx) => {
       const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
 
-      if (!permissions?.createInvite) {
+      if (!permissions?.editInvite) {
         throw error.unauthorized(
-          "You do not have permission to delete an invite link from this trip",
+          "You do not have permission to change an invite link for this trip",
         );
       }
 
-      await tx.update(trips).set({ inviteCode: null }).where(eq(trips.id, tripId));
+      await tx.update(trips).set({ inviteCode }).where(eq(trips.id, tripId));
+      return inviteCode;
     });
 
     analyticsServerClient.capture({
       distinctId: ctx.user.id,
-      event: "delete trip invite",
+      event: "create trip invite",
       properties: { tripId },
     });
   }),
-  join: protectedProcedure.input(joinTripSchema).mutation(async ({ ctx, input }) => {
-    const { id: tripId, permissions } = input;
+  join: protectedProcedure.input(tripIdSchema).mutation(async ({ ctx, input }) => {
+    const { id: tripId } = input;
 
     await enforceRateLimit(ctx.user.id);
     await ctx.db.transaction(async (tx) => {
@@ -406,8 +372,7 @@ export const tripRouter = createTRPCRouter({
         tripId: tripId,
         userId: ctx.user.id,
         tripPosition: sharedMembershipsCount,
-        owner: false,
-        permissions: permissions ?? 0,
+        permissions: 801,
       });
     });
 
@@ -422,7 +387,7 @@ export const tripRouter = createTRPCRouter({
 
     await ctx.db.transaction(async (tx) => {
       const membership = await tx.query.memberships.findFirst({
-        columns: { owner: true, tripPosition: true },
+        columns: { permissions: true, tripPosition: true },
         where: and(eq(memberships.userId, ctx.user.id), eq(memberships.tripId, tripId)),
       });
       if (!membership) {
@@ -430,7 +395,7 @@ export const tripRouter = createTRPCRouter({
           "Failed to fetch your membership of the trip you're trying to leave. Please try again later.",
         );
       }
-      if (membership.owner) {
+      if (membership.permissions === -1) {
         throw error.unauthorized(
           "You cannot leave a trip that you own. Please transfer ownership before trying again.",
         );
@@ -442,7 +407,7 @@ export const tripRouter = createTRPCRouter({
         .where(
           and(
             eq(memberships.userId, ctx.user.id),
-            eq(memberships.owner, false),
+            ne(memberships.permissions, -1),
             gt(memberships.tripPosition, membership.tripPosition),
           ),
         );
@@ -452,7 +417,7 @@ export const tripRouter = createTRPCRouter({
           and(
             eq(memberships.userId, ctx.user.id),
             eq(memberships.tripId, tripId),
-            eq(memberships.owner, false),
+            ne(memberships.permissions, -1),
           ),
         );
     });

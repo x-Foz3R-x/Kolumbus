@@ -1,6 +1,6 @@
 "use client";
 
-import { useTripContext } from "./_components/trip-context";
+import { useTripContext } from "./_components/trip-provider";
 import { DndItinerary } from "~/components/dnd-itinerary";
 
 export default function Itinerary() {

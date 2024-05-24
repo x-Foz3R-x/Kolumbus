@@ -2,12 +2,16 @@ import { isValidElement, memo, useMemo } from "react";
 import { format, getDay, isToday } from "date-fns";
 import { cn } from "~/lib/utils";
 
-type Calendar = {
+type Props = {
   date: string | Date;
   header: string | React.ReactNode;
   className?: string | { container?: string; header?: string; body?: string };
 };
-export const Calendar = memo(function Calendar({ date, header, className }: Calendar) {
+export const ItineraryCalendar = memo(function ItineraryCalendar({
+  date,
+  header,
+  className,
+}: Props) {
   const d = useMemo(() => new Date(date), [date]);
   const isDateToday = useMemo(() => isToday(d), [d]);
 

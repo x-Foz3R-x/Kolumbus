@@ -8,34 +8,34 @@ import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/compo
 type Props = {
   isOpen: boolean;
   setOpen: (open: boolean) => void;
-  onDelete: () => void;
+  onLeave: () => void;
 };
-export const ConfirmTripDelete = memo(function DeleteTripModal({
+export const TripLeaveModal = memo(function DeleteTripModal({
   isOpen,
   setOpen,
-  onDelete: handleDelete,
+  onLeave: handleLeave,
 }: Props) {
   return (
-    <Modal open={isOpen} setOpen={setOpen}>
+    <Modal isOpen={isOpen} setOpen={setOpen}>
       <ModalBody.iconDesign variant="danger" icon={<Icons.triangleExclamation />}>
-        <ModalHeader>Trip Deletion</ModalHeader>
-        <ModalText>Are you sure you want to delete this trip? There’s no turning back.</ModalText>
+        <ModalHeader>Planning to Leave this Trip?</ModalHeader>
+        <ModalText>Are you sure you want to leave this trip? There’s no turning back.</ModalText>
       </ModalBody.iconDesign>
 
       <ModalControls>
         <Button onClick={() => setOpen(false)} whileHover={{ scale: 1.05 }} animatePress>
-          Cancel
+          I’m Staying
         </Button>
         <Button
           onClick={() => {
-            handleDelete();
+            handleLeave();
             setOpen(false);
           }}
           whileHover={{ scale: 1.05 }}
           animatePress
           className="whitespace-nowrap bg-red-500 text-white"
         >
-          Delete Trip
+          I’m Leaving
         </Button>
       </ModalControls>
     </Modal>

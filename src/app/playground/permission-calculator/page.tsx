@@ -3,8 +3,7 @@
 import { useState } from "react";
 
 import { decodePermissions, encodePermissions } from "~/lib/utils";
-import { MemberPermissionsTemplate } from "~/lib/templates";
-import type { MemberPermissions } from "~/types";
+import { type MemberPermissions, MemberPermissionFlags } from "~/lib/validations/membership";
 
 import { Input } from "~/components/ui";
 import PermissionCheckbox from "./_components/permission-checkbox";
@@ -14,7 +13,7 @@ export default function PermissionCalculator() {
   const [decodedPermission, setDecodedPermission] = useState(801);
   const [selectedPermissions, setSelectedPermissions] = useState<MemberPermissions>({
     shareInvite: false,
-    createInvite: false,
+    editInvite: false,
     kickMembers: false,
     managePermissions: false,
 
@@ -34,11 +33,8 @@ export default function PermissionCalculator() {
   const generalPermissionsKeys = permissionsKeys.slice(0, 4);
   const tripPermissionsKeys = permissionsKeys.slice(4);
 
-  const encoded = encodePermissions(selectedPermissions, MemberPermissionsTemplate);
-  const decoded = decodePermissions<MemberPermissions>(
-    decodedPermission,
-    MemberPermissionsTemplate,
-  );
+  const encoded = encodePermissions(selectedPermissions, MemberPermissionFlags);
+  const decoded = decodePermissions<MemberPermissions>(decodedPermission, MemberPermissionFlags);
 
   return (
     <>

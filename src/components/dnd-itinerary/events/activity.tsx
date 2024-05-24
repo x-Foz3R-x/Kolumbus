@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities";
 import deepEqual from "deep-equal";
 
 import { useDndItineraryContext } from "../dnd-context";
-import type { ActivityEvent } from "~/lib/validations/event";
+import type { ActivityEventSchema } from "~/lib/validations/event";
 import { EASING } from "~/lib/motion";
 import { cn, createId } from "~/lib/utils";
 
@@ -20,7 +20,7 @@ import { getActivityImageUrl } from ".";
 // todo - Context Menu (like in floating ui react examples)
 
 type DndEventProps = {
-  event: ActivityEvent;
+  event: ActivityEventSchema;
   dayIndex: number;
   isSelected: boolean;
 };
@@ -46,7 +46,7 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
     setIsOpen(true);
   };
 
-  const handleClose = (event: ActivityEvent) => {
+  const handleClose = (event: ActivityEventSchema) => {
     if (deepEqual(event, cacheRef.current)) return;
     updateEvent(event, cacheRef.current, { dayIndex });
   };
@@ -62,7 +62,7 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
 
   const handleDuplicate = () => {
     const position = event.position + 1;
-    const duplicate: ActivityEvent = {
+    const duplicate: ActivityEventSchema = {
       ...event,
       id: createId(),
       position,

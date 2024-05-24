@@ -1,16 +1,16 @@
-import type { ActivityEvent } from "~/lib/validations/event";
+import type { ActivityEventSchema } from "~/lib/validations/event";
 import { eventFallbackUrl } from "~/lib/constants";
 
 export { Activity } from "./activity";
 export { ActivityOverlay } from "./activity-overlay";
 
-export function getActivityImageUrl(event: ActivityEvent) {
+export function getActivityImageUrl(event: ActivityEventSchema) {
   const images = event?.activity?.images;
   const imageIndex = event?.activity?.imageIndex;
 
-  if (!images) return eventFallbackUrl;
+  if (!images || images.length < 1) return eventFallbackUrl;
 
-  return images[imageIndex]
+  return !!images[imageIndex]
     ? `/api/get-google-image?imageRef=${images[imageIndex]}&width=156&height=82`
     : eventFallbackUrl;
 }

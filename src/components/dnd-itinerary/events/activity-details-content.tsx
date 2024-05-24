@@ -8,7 +8,7 @@ import { EASING } from "~/lib/motion";
 import { cn, os } from "~/lib/utils";
 
 import { Button, Icons, Input, ScrollIndicator, TextArea } from "~/components/ui";
-import type { ActivityEvent } from "~/lib/validations/event";
+import type { ActivityEventSchema } from "~/lib/validations/event";
 import { getActivityImageUrl } from ".";
 
 // todo - Decouple logic from floating component so only when it is open state will be created
@@ -26,7 +26,7 @@ import { getActivityImageUrl } from ".";
 // todo - way to remove/choose photo
 
 type ActivityDetailsProps = {
-  event: ActivityEvent;
+  event: ActivityEventSchema;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   detailsRef: React.MutableRefObject<HTMLDivElement | null>;

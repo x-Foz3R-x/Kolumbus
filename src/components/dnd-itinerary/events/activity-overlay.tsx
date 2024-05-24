@@ -1,14 +1,14 @@
 import { memo, useRef } from "react";
 import Image from "next/image";
 
-import type { ActivityEvent } from "~/lib/validations/event";
+import type { ActivityEventSchema } from "~/lib/validations/event";
 import { cn } from "~/lib/utils";
 
 import { Badge, ScrollIndicator } from "../../ui";
-import { eventFallbackUrl } from "~/lib/constants";
+import { getActivityImageUrl } from ".";
 
 type EventOverlayProps = {
-  event: ActivityEvent;
+  event: ActivityEventSchema;
   selectCount: number;
   hoverShadow?: boolean;
 };
@@ -31,7 +31,7 @@ export const ActivityOverlay = memo(function ActivityOverlay({
         {/* Image */}
         <div className="relative h-[82px] flex-shrink-0">
           <Image
-            src={`${event.activity.images ? `/api/get-google-image?photoRef=${event.activity.images[event.activity.imageIndex]}&width=156&height=82` : eventFallbackUrl}`}
+            src={getActivityImageUrl(event)}
             alt="Event Image"
             className="object-cover object-center"
             sizes="156px"

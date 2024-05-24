@@ -1,11 +1,10 @@
-import type { UserRole } from "~/types";
+import type { PublicMetadataSchema } from "~/lib/validations/auth";
 
 export {};
 
 declare global {
   interface CustomJwtSessionClaims {
-    metadata: {
-      role?: UserRole;
-    };
+    public_metadata: PublicMetadataSchema;
+    unsafe_metadata: object;
   }
 }

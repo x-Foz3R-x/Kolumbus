@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Event, UpdateEvent } from "~/lib/validations/event";
+import type { EventSchema, UpdateEventSchema } from "~/lib/validations/event";
 
 export type DndItineraryContextProps = {
   userId: string;
@@ -8,10 +8,10 @@ export type DndItineraryContextProps = {
   eventLimit: number;
 
   selectEvent: (eventId: string) => void;
-  createEvent: (event: Event, dayIndex?: number, index?: number) => void;
+  createEvent: (event: EventSchema, dayIndex?: number, index?: number) => void;
   updateEvent: (
-    event: Event,
-    updateData: UpdateEvent["data"],
+    event: EventSchema,
+    updateData: UpdateEventSchema["data"],
     {
       dayIndex,
       entryDescription,

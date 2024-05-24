@@ -21,14 +21,13 @@ type Props = {
     name: string | null;
     image: string;
     permissions: number;
-    owner: boolean;
+    createdAt: Date;
   }[];
 };
 export default function MembersDropdown({ tripId, tripInviteCode, tripMembers }: Props) {
   const router = useRouter();
 
-  const createTripInvite = api.trip.createInvite.useMutation(toastHandler());
-  const deleteTripInvite = api.trip.deleteInvite.useMutation(toastHandler());
+  const updateTripInvite = api.trip.updateInvite.useMutation(toastHandler());
 
   const [invite, setInvite] = useState(tripInviteCode);
 
@@ -37,16 +36,13 @@ export default function MembersDropdown({ tripId, tripInviteCode, tripMembers }:
       const inviteCode = createId(8);
       setInvite(inviteCode);
 
-      createTripInvite.mutate(
-        { id: tripId, inviteCode },
-        {
-          onSuccess: (inviteCode) => setInvite(inviteCode),
-          onError: () => setInvite(null),
-        },
-      );
+      updateTripInvite.mutate({ id: tripId, inviteCode }, { onError: () => router.refresh() });
     } else {
       setInvite(null);
-      deleteTripInvite.mutate({ id: tripId }, { onError: () => router.refresh() });
+      updateTripInvite.mutate(
+        { id: tripId, inviteCode: null },
+        { onError: () => router.refresh() },
+      );
     }
   };
 
@@ -61,11 +57,7 @@ export default function MembersDropdown({ tripId, tripInviteCode, tripMembers }:
       <div className="flex flex-col gap-4 rounded-lg">
         <div className="flex items-center gap-4">
           Invite
-          <Switch
-            checked={!!invite}
-            onChange={switchInvite}
-            loading={createTripInvite.isPending || deleteTripInvite.isPending}
-          />
+          <Switch checked={!!invite} onChange={switchInvite} loading={updateTripInvite.isPending} />
         </div>
 
         <Input
@@ -106,7 +98,7 @@ export default function MembersDropdown({ tripId, tripInviteCode, tripMembers }:
                 <img src={member.image} alt="user avatar" className="size-8 rounded-full" />
                 <span>{member.name}</span>
               </div>
-              {member.owner ? (
+              {member.permissions === -1 ? (
                 <span className="rounded border-[1.5px] border-orange-400 px-2 py-px text-xs font-medium text-orange-500">
                   owner
                 </span>

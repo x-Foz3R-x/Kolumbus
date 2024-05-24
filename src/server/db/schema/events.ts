@@ -60,6 +60,6 @@ export const eventsRelations = relations(events, ({ one }) => ({
   flight: one(flights, { fields: [events.id], references: [flights.eventId] }),
 }));
 
-export const eventTypeSchema = z.enum(EventTypes.enumValues);
+export const eventTypesSchema = z.enum(EventTypes.enumValues);
 export const selectEventSchema = createSelectSchema(events);
 export const insertEventSchema = createInsertSchema(events);

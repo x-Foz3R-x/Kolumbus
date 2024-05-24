@@ -7,16 +7,16 @@ import { CSS } from "@dnd-kit/utilities";
 import { useDndItineraryContext } from "./dnd-context";
 
 import { EventComposer } from "./event-composer";
-import { Calendar } from "../calendar";
+import { ItineraryCalendar } from "../itinerary-calendar";
 import { cn } from "~/lib/utils";
-import type { Day, Itinerary } from "~/lib/validations/trip";
+import type { DaySchema, ItinerarySchema } from "~/lib/validations/trip";
 
 // todo - Weather API integration to calendar
 
 type DndDayProps = {
-  day: Day;
+  day: DaySchema;
   dayIndex: number;
-  itinerary: Itinerary;
+  itinerary: ItinerarySchema;
   calendar?: string;
   children?: React.ReactNode;
 };
@@ -47,7 +47,7 @@ const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
     >
       {!isDragging && (
         <>
-          <Calendar
+          <ItineraryCalendar
             date={day.date}
             className={cn("sticky left-20 z-40", calendar)}
             header={

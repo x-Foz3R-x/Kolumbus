@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 
 import { api } from "~/trpc/react";
-import { useTripContext } from "./trip-context";
+import { useTripContext } from "./trip-provider";
 import { toastHandler } from "~/lib/trpc";
-import { differenceInDays, formatDate } from "~/lib/utils";
+import { formatDate } from "~/lib/utils";
 
 import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
@@ -53,66 +53,18 @@ export default function TopNav() {
         <DatePicker
           startDate={trip.startDate}
           endDate={trip.endDate}
-          daysLimit={14}
+          maxDays={14}
           onApply={applyDateRange}
           includeDays
-          buttonProps={{
-            variant: "unset",
-            size: "unset",
-            className: "relative h-10 fill-kolumblue-500 flex",
-            tooltip: {
-              placement: "bottom",
-              offset: 8,
-              arrow: true,
-              focus: { enabled: false },
-              zIndex: 50,
-              children: "Date Picker",
-            },
-            children: (
-              <>
-                <Icons.rangeCalendar className="h-full" />
-                <div className="absolute inset-0 flex gap-[2px] px-1 pb-[4.5px] pt-[6px]">
-                  <div className="flex gap-[8.5px]">
-                    <div className="flex w-[30px] flex-col items-center justify-between">
-                      <span className="text-[10px] font-medium uppercase leading-[14.5px] tracking-tight text-white">
-                        {format(new Date(trip.startDate), "MMM").toUpperCase()}
-                      </span>
-                      <span className="text-sm leading-[15px]">
-                        {format(new Date(trip.startDate), "d")}
-                      </span>
-                    </div>
-
-                    <div className="flex w-[30px] flex-col items-center justify-between">
-                      <span className="text-[10px] font-medium uppercase leading-[14.5px] tracking-tight text-white">
-                        {format(new Date(trip.endDate), "MMM").toUpperCase()}
-                      </span>
-                      <span className="text-sm leading-[15px]">
-                        {format(new Date(trip.endDate), "d")}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex w-[30px] flex-col items-center justify-between">
-                    <span className="text-[10px] font-medium uppercase leading-[14.5px] tracking-tight text-white">
-                      DAYS
-                    </span>
-                    <span className="text-sm leading-[15px]">
-                      {differenceInDays(trip.startDate, trip.endDate)}
-                    </span>
-                  </div>
-                </div>
-              </>
-            ),
-          }}
+          includeTooltip
         />
         <DatePicker
           startDate={trip.startDate}
           endDate={trip.endDate}
-          daysLimit={14}
+          maxDays={14}
           onApply={(startDate, endDate) => {
             console.log(startDate, endDate);
           }}
-          // includeDays
           buttonProps={{
             variant: "unset",
             size: "unset",

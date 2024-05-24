@@ -2,15 +2,16 @@ import { memo, useRef, useState } from "react";
 
 import { api } from "~/trpc/react";
 import { useDndItineraryContext } from "./dnd-context";
-import type { Day } from "~/lib/validations/trip";
+import type { DaySchema } from "~/lib/validations/trip";
 import { EASING } from "~/lib/motion";
 import { cn, createId } from "~/lib/utils";
 
 import { Button, Icons, Spinner } from "../ui";
 import { Floating } from "../ui/floating/floating";
 import { Combobox } from "../ui/combobox";
-
-// todo - Add <Toast /> component to display api errors
+import { constructActivityEvent } from "~/lib/constructors";
+import { toastHandler } from "~/lib/trpc";
+import { FieldsGroup } from "~/lib/validations/google";
 
 const ACTIVITY_WIDTH = 160;
 const GAP_WIDTH = 8;
@@ -24,7 +25,7 @@ type Prediction = {
 };
 
 type EventComposerProps = {
-  day: Day;
+  day: DaySchema;
   dayIndex: number;
   dragging: boolean;
 };
@@ -33,10 +34,10 @@ export const EventComposer = memo(function EventComposer({
   dayIndex,
   dragging,
 }: EventComposerProps) {
-  const { userId, tripId, eventCount, eventLimit } = useDndItineraryContext();
+  const { userId, tripId, createEvent, eventCount, eventLimit } = useDndItineraryContext();
 
-  const autocomplete = api.external.googleAutocomplete.useMutation();
-  const details = api.external.googleDetails.useMutation();
+  const autocomplete = api.external.googleAutocomplete.useMutation(toastHandler());
+  const details = api.external.googleDetails.useMutation(toastHandler());
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -47,7 +48,7 @@ export const EventComposer = memo(function EventComposer({
   const [loading, setLoading] = useState(false);
   const activePredictionRef = useRef<Prediction | null>(null);
 
-  const handleInput = async (value: string) => {
+  const handleChange = async (value: string) => {
     if (eventCount >= eventLimit) return;
 
     setLoading(true);
@@ -84,61 +85,61 @@ export const EventComposer = memo(function EventComposer({
     );
   };
 
-  // const handleAdd = () => {
-  //   if (eventCount >= eventLimit) return;
+  const handleAdd = () => {
+    if (eventCount >= eventLimit) return;
 
-  //   const prediction = activePredictionRef.current;
-  //   const event = EVENT_TEMPLATE({
-  //     id: createId(),
-  //     tripId,
-  //     date: day.date,
-  //     position: day.events.length,
-  //     createdBy: userId,
-  //   });
+    const prediction = activePredictionRef.current;
+    const event = constructActivityEvent({
+      id: createId(),
+      tripId,
+      date: day.date,
+      position: day.events.length,
+      createdBy: userId,
+      activity: { id: createId() },
+    });
 
-  //   if (prediction === null) {
-  //     event.name = inputValue;
-  //     createEvent(event, dayIndex, day.events.length);
-  //   } else if (prediction.placeId) {
-  //     setSaving(true);
-  //     event.placeId = prediction.placeId;
-  //     details.mutate(
-  //       {
-  //         place_id: prediction.placeId,
-  //         fields: FieldsGroup.Basic + FieldsGroup.Contact,
-  //         language: LANGUAGES.English,
-  //         sessionToken,
-  //       },
-  //       {
-  //         onSuccess(data) {
-  //           const place = data.result;
+    if (prediction === null) {
+      event.activity.name = inputValue;
+      createEvent(event, dayIndex, day.events.length);
+    } else if (prediction.placeId) {
+      event.activity.placeId = prediction.placeId;
+      details.mutate(
+        {
+          place_id: prediction.placeId,
+          fields: FieldsGroup.Basic + FieldsGroup.Contact,
+          sessionToken,
+        },
+        {
+          onSuccess(data) {
+            const place = data.result;
 
-  //           event.name = place.name ?? event.name;
-  //           event.photo = place.photos?.[0]?.photo_reference ?? event.photo;
-  //           event.address = place.formatted_address ?? event.address;
-  //           event.phoneNumber =
-  //             place.international_phone_number ??
-  //             place.international_phone_number ??
-  //             event.phoneNumber;
-  //           event.url = place.url ?? event.url;
-  //           event.website = place.website ?? event.website;
-  //           event.openingHours = place.opening_hours ?? event.openingHours;
+            event.activity.name = place.name ?? event.activity.name;
+            event.activity.images =
+              place.photos?.map((photo) => photo.photo_reference) ?? event.activity.images;
+            event.activity.address = place.formatted_address ?? event.activity.address;
+            event.activity.phoneNumber =
+              place.international_phone_number ?? event.activity.phoneNumber;
+            event.activity.url = place.url ?? event.activity.url;
+            event.activity.website = place.website ?? event.activity.website;
+            event.activity.openingHours =
+              place.opening_hours?.periods?.map((period) => ({
+                day: period.open.day,
+                open: period.open.time,
+                close: period.close?.time,
+              })) ?? event.activity.openingHours;
 
-  //           createEvent(event, dayIndex, day.events.length);
-  //         },
-  //         onError: (error: unknown) => console.error(error),
-  //         onSettled: () => setSaving(false),
-  //       },
-  //     );
-  //   } else {
-  //     event.name = prediction.text;
-  //     createEvent(event, dayIndex, day.events.length);
-  //   }
+            createEvent(event, dayIndex, day.events.length);
+          },
+        },
+      );
+    } else {
+      event.activity.name = prediction.value;
+      createEvent(event, dayIndex, day.events.length);
+    }
 
-  //   setIsOpen(false);
-  //   handleClear();
-  //   setSessionToken(cuid2.createId());
-  // };
+    setIsOpen(false);
+    setSessionToken(createId());
+  };
 
   const handleClear = () => {
     if (inputValue === "" && predictionList.length === 0) setIsOpen(false);
@@ -216,8 +217,8 @@ export const EventComposer = memo(function EventComposer({
       >
         <Combobox.Input
           placeholder="Search or enter name"
-          onInputChange={handleInput}
-          // onEnterPress={handleAdd}
+          onChange={handleChange}
+          onEnterPress={handleAdd}
           initial={{ opacity: 0, paddingLeft: "0px" }}
           animate={{ opacity: 1, paddingLeft: "16px" }}
           exit={{ opacity: 0, paddingLeft: "0px" }}
@@ -246,7 +247,7 @@ export const EventComposer = memo(function EventComposer({
           }}
         >
           <Button
-            // onClick={handleAdd}
+            onClick={handleAdd}
             variant="unset"
             size="unset"
             className="h-full rounded-none duration-100 hover:fill-gray-800 focus-visible:fill-gray-800 dark:hover:fill-gray-300 dark:focus-visible:fill-gray-300"

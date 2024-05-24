@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { insertTripSchema, selectTripSchema } from "~/server/db/schema";
+import { insertTripSchema, selectTripSchema as trip } from "~/server/db/schema";
 import { eventSchema } from "./event";
 
 const daySchema = z.object({
@@ -9,13 +9,14 @@ const daySchema = z.object({
 });
 export const itinerarySchema = daySchema.array();
 
-export const tripSchema = selectTripSchema.extend({
+export { trip };
+
+export const tripSchema = trip.extend({
   members: z.array(
     z.object({
       userId: z.string(),
       name: z.string().nullable(),
       image: z.string(),
-      owner: z.boolean(),
       permissions: z.number(),
       createdAt: z.date(),
     }),
@@ -30,22 +31,21 @@ export const tripContextSchema = z.object({
         id: z.string(),
         name: z.string(),
         image: z.string().nullable(),
-        owner: z.boolean(),
         startDate: z.string(),
         endDate: z.string(),
         position: z.number(),
+        owner: z.boolean(),
       }),
       createdAt: z.date(),
       updatedAt: z.date(),
     }),
   ),
-  trip: selectTripSchema.extend({
+  trip: trip.extend({
     members: z.array(
       z.object({
         userId: z.string(),
         name: z.string().nullable(),
         image: z.string(),
-        owner: z.boolean(),
         permissions: z.number(),
         createdAt: z.date(),
       }),
@@ -70,11 +70,11 @@ export const updateTripSchema = z.object({
   endDate: z.string().optional(),
 });
 
-export const findTripInviteSchema = z.object({ inviteCode: z.string() });
-export const createTripInviteSchema = tripIdSchema.extend({ inviteCode: z.string() });
-export const joinTripSchema = tripIdSchema.extend({ permissions: z.number().optional() });
+export const findInviteSchema = z.object({ inviteCode: z.string() });
+export const updateInviteSchema = tripIdSchema.extend({ inviteCode: z.string().nullable() });
 
-export type Trip = z.infer<typeof tripSchema>;
-export type Itinerary = z.infer<typeof itinerarySchema>;
-export type Day = z.infer<typeof daySchema>;
-export type TripContext = z.infer<typeof tripContextSchema>;
+export type Trip = z.infer<typeof trip>;
+export type TripSchema = z.infer<typeof tripSchema>;
+export type ItinerarySchema = z.infer<typeof itinerarySchema>;
+export type DaySchema = z.infer<typeof daySchema>;
+export type TripContextSchema = z.infer<typeof tripContextSchema>;

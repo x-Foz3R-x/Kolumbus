@@ -1,11 +1,14 @@
 import { z } from "zod";
 
 import {
-  selectActivitySchema,
-  selectEventSchema,
+  selectEventSchema as event,
   selectFlightSchema,
   selectTransportationSchema,
+  type eventTypesSchema,
 } from "~/server/db/schema";
+import { activitySchema } from "./activity";
+
+export { event };
 
 export const deleteEventSchema = z.object({
   id: z.string().length(16),
@@ -15,8 +18,8 @@ export const deleteEventSchema = z.object({
   createdBy: z.string().optional(),
 });
 
-export const eventSchema = selectEventSchema.extend({
-  activity: selectActivitySchema.nullable().optional(),
+export const eventSchema = event.extend({
+  activity: activitySchema.nullable().optional(),
   transportation: selectTransportationSchema.nullable().optional(),
   flight: selectFlightSchema.nullable().optional(),
 });
@@ -24,16 +27,17 @@ export const eventSchema = selectEventSchema.extend({
 export const updateEventSchema = z.object({
   eventId: z.string(),
   tripId: z.string(),
-  data: selectEventSchema.partial().extend({
-    activity: selectActivitySchema.partial().optional(),
+  data: event.partial().extend({
+    activity: activitySchema.partial().optional(),
     transportation: selectTransportationSchema.partial().optional(),
     flight: selectFlightSchema.partial().optional(),
   }),
 });
 
-export const activitySchema = selectEventSchema.extend({ activity: selectActivitySchema });
+export const activityEventSchema = event.extend({ activity: activitySchema });
 
-export type Event = z.infer<typeof eventSchema>;
-export type UpdateEvent = z.infer<typeof updateEventSchema>;
-
-export type ActivityEvent = z.infer<typeof activitySchema>;
+export type Event = z.infer<typeof event>;
+export type EventTypes = z.infer<typeof eventTypesSchema>;
+export type EventSchema = z.infer<typeof eventSchema>;
+export type UpdateEventSchema = z.infer<typeof updateEventSchema>;
+export type ActivityEventSchema = z.infer<typeof activityEventSchema>;

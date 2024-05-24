@@ -70,7 +70,7 @@ export function MenuComponent({
   const [isMounted, setIsMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const open = controlledOpen ?? uncontrolledOpen;
+  const isOpen = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
 
   //#region Floating UI
@@ -88,7 +88,7 @@ export function MenuComponent({
   const { floatingStyles, refs, context } = useFloating<HTMLButtonElement>({
     nodeId,
     placement,
-    open: open,
+    open: isOpen,
     onOpenChange: setOpen,
     whileElementsMounted: autoUpdate,
     middleware: [
@@ -122,7 +122,7 @@ export function MenuComponent({
   const typeahead = useTypeahead(context, {
     listRef: labelsRef,
     activeIndex,
-    onMatch: open ? setActiveIndex : undefined,
+    onMatch: isOpen ? setActiveIndex : undefined,
   });
 
   // Event emitter allows you to communicate across tree components.
@@ -151,10 +151,10 @@ export function MenuComponent({
   }, [setOpen, tree, nodeId, parentId]);
 
   useEffect(() => {
-    if (open && tree) {
+    if (isOpen && tree) {
       tree.events.emit("menuopen", { parentId, nodeId });
     }
-  }, [tree, open, nodeId, parentId]);
+  }, [tree, isOpen, nodeId, parentId]);
 
   const ref = useMergeRefs([refs.setReference, item.ref]);
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
@@ -195,12 +195,12 @@ export function MenuComponent({
     return TRANSITION.fadeInScale;
   }, [animation, placement]);
   const tooltipProps = useMemo(() => {
-    return open
+    return isOpen
       ? undefined
       : rootSelector && buttonProps?.tooltip
         ? { ...buttonProps.tooltip, rootSelector }
         : buttonProps?.tooltip;
-  }, [open, rootSelector, buttonProps]);
+  }, [isOpen, rootSelector, buttonProps]);
   const ButtonComponent = useMemo(
     () => (
       <Button
@@ -217,18 +217,18 @@ export function MenuComponent({
 
   const menuContext = useMemo(
     () => ({
-      isOpen: open,
+      isOpen: isOpen,
       activeIndex,
       setActiveIndex,
       getItemProps,
     }),
-    [open, activeIndex, setActiveIndex, getItemProps],
+    [isOpen, activeIndex, setActiveIndex, getItemProps],
   );
 
   // Set isMounted to true when open becomes true
   useEffect(() => {
-    open && setIsMounted(true);
-  }, [open]);
+    isOpen && setIsMounted(true);
+  }, [isOpen]);
 
   return (
     <FloatingNode id={nodeId}>
@@ -256,7 +256,7 @@ export function MenuComponent({
                 {...getFloatingProps()}
               >
                 <AnimatePresence onExitComplete={() => setIsMounted(false)}>
-                  {open && (
+                  {isOpen && (
                     <FloatingList elementsRef={elementsRef} labelsRef={labelsRef}>
                       <motion.ul
                         style={{ transformOrigin: origin }}

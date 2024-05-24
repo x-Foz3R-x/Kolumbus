@@ -6,7 +6,7 @@ import { add } from "date-fns";
 
 import { cn } from "~/lib/utils";
 
-import { Calendar } from "../../components/calendar";
+import { ItineraryCalendar } from "../../components/itinerary-calendar";
 import Event, { type Event as EventType } from "./event";
 
 const HERO_EVENTS: EventType[] = [
@@ -50,7 +50,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={10}
         className="animate-[levitate_10s_ease_infinite]"
       >
-        <Calendar
+        <ItineraryCalendar
           date={add(new Date(), { days: -1 })}
           header="Yesterday"
           className={{
@@ -70,7 +70,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={13}
         className="animate-[levitate_12s_ease_infinite_reverse]"
       >
-        <Calendar
+        <ItineraryCalendar
           date={new Date()}
           header="Today"
           className={{
@@ -92,7 +92,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={11}
         className="animate-[levitate_13s_ease_infinite]"
       >
-        <Calendar
+        <ItineraryCalendar
           date={add(new Date(), { days: 1 })}
           header="Tomorrow"
           className={{

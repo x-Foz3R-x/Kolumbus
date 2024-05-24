@@ -38,8 +38,12 @@ import DndDragOverlay from "./dnd-drag-overlay";
 import DndTrash from "./dnd-trash";
 import DndDay from "./dnd-day";
 import { Activity } from "./events";
-import type { Itinerary, Day } from "~/lib/validations/trip";
-import type { ActivityEvent as ActivityType, Event, UpdateEvent } from "~/lib/validations/event";
+import type { ItinerarySchema, DaySchema } from "~/lib/validations/trip";
+import type {
+  ActivityEventSchema as ActivityType,
+  EventSchema,
+  UpdateEventSchema,
+} from "~/lib/validations/event";
 import { KEYS } from "~/types";
 
 // * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity
@@ -58,7 +62,7 @@ import { KEYS } from "~/types";
 type DndItineraryProps = {
   userId: string;
   tripId: string;
-  itinerary: Itinerary;
+  itinerary: ItinerarySchema;
   eventLimit: number;
   onEventCreated?: onEventCreated;
   onEventUpdated?: onEventUpdated;
@@ -81,7 +85,7 @@ export function DndItinerary({
     initialDescription: "Fetch",
     limit: 10,
   });
-  const [activeItem, setActiveItem] = useState<Day | Event | null>(null);
+  const [activeItem, setActiveItem] = useState<DaySchema | EventSchema | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const affectedDatesRef = useRef<string[]>([]);
@@ -123,7 +127,7 @@ export function DndItinerary({
     [itinerary],
   );
   const createEvent = useCallback(
-    (event: Event, dayIndex?: number, index?: number) => {
+    (event: EventSchema, dayIndex?: number, index?: number) => {
       const newItinerary = structuredClone(itinerary);
 
       // Find the index of the day that contains the event with the given date or use the provided day index
@@ -151,8 +155,8 @@ export function DndItinerary({
   );
   const updateEvent = useCallback(
     (
-      event: Event,
-      updateData: UpdateEvent["data"],
+      event: EventSchema,
+      updateData: UpdateEventSchema["data"],
       {
         dayIndex,
         entryDescription,
@@ -594,7 +598,12 @@ export function DndItinerary({
    * @param overType - The type of element being dragged over, either "day" or "event".
    * @returns The target index for the dragged event in the list of events for the given day.
    */
-  function findTargetIndex(active: Active, over: Over, overDay: Day, overType: "day" | "event") {
+  function findTargetIndex(
+    active: Active,
+    over: Over,
+    overDay: DaySchema,
+    overType: "day" | "event",
+  ) {
     const filteredOverDayEvents = filterEvents(overDay.events);
     const totalEvents = filteredOverDayEvents.length;
 
@@ -625,7 +634,7 @@ export function DndItinerary({
    * @param excludeActiveEvent - Optional. If true, the active event is excluded from the new array. Default is false.
    * @returns  A new array of events excluding the selected ones and optionally the active event.
    */
-  function filterEvents(events: Event[], excludeActiveEvent = false): Event[] {
+  function filterEvents(events: EventSchema[], excludeActiveEvent = false): EventSchema[] {
     if (!activeItem) return events;
 
     if (excludeActiveEvent)
@@ -641,7 +650,7 @@ export function DndItinerary({
    * @param events - The array of events to filter.
    * @returns An array of events that are currently being dragged or the original array.
    */
-  function filterDraggedEvents(events: Event[]): Event[] {
+  function filterDraggedEvents(events: EventSchema[]): EventSchema[] {
     if (!activeItem) return events;
     return events.filter((event) => event.id === activeItem.id || selectedIds.includes(event.id));
   }
@@ -652,7 +661,7 @@ export function DndItinerary({
    * @param ids - The array of ids to exclude.
    * @returns An array of events whose ids are not included in the provided ids array.
    */
-  function filterEventsExcludingIds(events: Event[], ids: string[]): Event[] {
+  function filterEventsExcludingIds(events: EventSchema[], ids: string[]): EventSchema[] {
     return events.filter((event) => !ids.includes(event.id));
   }
 
@@ -667,7 +676,7 @@ export function DndItinerary({
    * @param date - Optional. The new date for the events. If not provided, the date of each event remains the same.
    * @returns A new array of events with updated date and position properties.
    */
-  function updateEventData(events: Event[], date?: string): Event[] {
+  function updateEventData(events: EventSchema[], date?: string): EventSchema[] {
     return events.map((event, index) => ({ ...event, date: date ?? event.date, position: index }));
   }
   /**
@@ -681,7 +690,7 @@ export function DndItinerary({
    * @param index - The index at which to insert the events.
    * @returns A new array with the events inserted at the specified index.
    */
-  function insertAt(array: Event[], events: Event[], index: number): Event[] {
+  function insertAt(array: EventSchema[], events: EventSchema[], index: number): EventSchema[] {
     return [...array.slice(0, index), ...events, ...array.slice(index)];
   }
 

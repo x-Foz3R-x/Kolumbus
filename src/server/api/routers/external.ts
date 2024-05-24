@@ -1,9 +1,12 @@
 import { z } from "zod";
 import { env } from "~/env";
+import {
+  type DiscordServerResponseSchema,
+  discordServerResponseSchema,
+} from "~/lib/validations/discord";
 import { PlacesAutocompleteResponse, PlacesDetailsResponse } from "~/lib/validations/google";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { type DiscordServerResponse, DiscordServerResponseSchema } from "~/types";
 
 export const externalRouter = createTRPCRouter({
   googleAutocomplete: publicProcedure
@@ -37,9 +40,9 @@ export const externalRouter = createTRPCRouter({
 
       return response;
     }),
-  discordServer: publicProcedure.output(DiscordServerResponseSchema).query(async () => {
+  discordServer: publicProcedure.output(discordServerResponseSchema).query(async () => {
     return (await (
       await fetch("https://discord.com/api/v9/invites/UH5BP8Hy8z?with_counts=true")
-    ).json()) as DiscordServerResponse;
+    ).json()) as DiscordServerResponseSchema;
   }),
 });

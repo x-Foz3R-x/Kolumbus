@@ -1,25 +1,30 @@
 "use client";
 
-import { memo, useRef, useState } from "react";
+import { memo, useState } from "react";
 
 import { Button, type ButtonProps, Icons, Input } from "~/components/ui";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
-
-// todo: add date/days picker
+import { DatePicker } from "./date-picker";
+import { formatDate } from "~/lib/utils";
+import { add } from "date-fns";
 
 type Props = {
-  onCreate: (name: string) => void;
+  maxDays: number;
+  onCreate: (name: string, startDate: string, endDate: string) => void;
   buttonProps: ButtonProps;
 };
 export const CreateTripModal = memo(function CreateTripModal({
+  maxDays,
   onCreate: handleCreate,
   buttonProps,
 }: Props) {
   const [isOpen, setOpen] = useState(false);
-  const nameRef = useRef("");
+  const [name, setName] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(add(new Date(), { days: 5 }));
 
   const createNewTrip = () => {
-    handleCreate(nameRef.current);
+    handleCreate(name, formatDate(startDate), formatDate(endDate));
     setOpen(false);
   };
 
@@ -27,7 +32,7 @@ export const CreateTripModal = memo(function CreateTripModal({
     <>
       <Button onClick={() => setOpen(true)} {...buttonProps} />
 
-      <Modal open={isOpen} setOpen={setOpen} dismissible>
+      <Modal isOpen={isOpen} setOpen={setOpen} dismissible>
         <ModalBody.iconDesign icon={<Icons.defaultTrip />}>
           <ModalHeader>Create Trip</ModalHeader>
 
@@ -35,7 +40,21 @@ export const CreateTripModal = memo(function CreateTripModal({
             Enter details below to create a new trip and start planning your itinerary.
           </ModalText>
 
-          <Input insetLabel="Trip Name" onUpdate={(e) => (nameRef.current = e.target.value)} />
+          <div className="flex gap-3">
+            <Input value={name} insetLabel="Trip Name" onChange={(e) => setName(e.target.value)} />
+
+            <DatePicker
+              startDate={formatDate(startDate)}
+              endDate={formatDate(endDate)}
+              maxDays={maxDays}
+              onApply={(startDate, endDate) => {
+                setStartDate(startDate);
+                setEndDate(endDate);
+              }}
+              placement="right"
+              className="scale-110"
+            />
+          </div>
         </ModalBody.iconDesign>
 
         <ModalControls>

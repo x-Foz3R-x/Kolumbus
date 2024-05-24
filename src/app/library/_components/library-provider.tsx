@@ -10,20 +10,20 @@ import {
   useRef,
 } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 
 import { api } from "~/trpc/react";
 import { createId } from "~/lib/utils";
 import { toastHandler } from "~/lib/trpc";
-import { buildMembership, buildTrip } from "~/lib/templates";
-import type { MyMembership, UserRoleLimits } from "~/types";
+import { constructMembership, constructTrip } from "~/lib/constructors";
+import type { MyMembershipSchema } from "~/lib/validations/membership";
+import type { UserTypeSchema } from "~/lib/validations/auth";
 
 type LibraryContext = {
-  userRoleLimits: UserRoleLimits;
-  memberships: MyMembership[];
-  sharedMemberships: MyMembership[];
+  userType: UserTypeSchema;
+  memberships: MyMembershipSchema[];
+  sharedMemberships: MyMembershipSchema[];
   loadingTripId: string | null;
-  createTrip: (name: string) => void;
+  createTrip: (name: string, startDate: string, endDate: string) => void;
   duplicateTrip: (id: string) => void;
   leaveTrip: (id: string) => void;
   deleteTrip: (id: string) => void;
@@ -36,13 +36,13 @@ export default function useLibraryContext() {
 }
 
 export function LibraryProvider(props: {
-  userRoleLimits: UserRoleLimits;
-  memberships: MyMembership[];
-  sharedMemberships: MyMembership[];
+  userId: string;
+  userType: UserTypeSchema;
+  memberships: MyMembershipSchema[];
+  sharedMemberships: MyMembershipSchema[];
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { user } = useUser();
 
   const [memberships, setMemberships] = useState(props.memberships);
   const [sharedMemberships, setSharedMemberships] = useState(props.sharedMemberships);
@@ -55,17 +55,21 @@ export function LibraryProvider(props: {
   const deleteTrip = api.trip.delete.useMutation(toastHandler());
 
   const handleCreate = useCallback(
-    (name: string) => {
-      if (!user) return;
-
+    (name: string, startDate: string, endDate: string) => {
       const position = memberships.length;
-      const trip = buildTrip({ id: createId(10), ownerId: user.id, name });
-      const membership: MyMembership = {
-        ...buildMembership({
-          userId: user.id,
+      const trip = constructTrip({
+        id: createId(10),
+        ownerId: props.userId,
+        name,
+        startDate,
+        endDate,
+      });
+      const membership: MyMembershipSchema = {
+        ...constructMembership({
+          userId: props.userId,
           tripId: trip.id,
           tripPosition: position,
-          owner: true,
+          permissions: -1,
         }),
         trip: {
           name: trip.name,
@@ -89,18 +93,17 @@ export function LibraryProvider(props: {
         },
       );
     },
-    [user, createTrip, memberships],
+    [props.userId, createTrip, memberships],
   );
   const handleDuplicate = useCallback(
     (id: string) => {
-      if (!user) return;
-
       // Find the membership to duplicate
       const originalMembership = memberships.find((membership) => membership.tripId === id);
       if (!originalMembership) return;
 
       // Create membership duplicate
       const duplicatedMembership = structuredClone(originalMembership);
+      duplicatedMembership.userId = props.userId;
       duplicatedMembership.tripId = createId(10);
       duplicatedMembership.tripPosition += 1;
       duplicatedMembership.createdAt = new Date();
@@ -126,7 +129,7 @@ export function LibraryProvider(props: {
         },
       );
     },
-    [user, duplicateTrip, memberships],
+    [props.userId, duplicateTrip, memberships],
   );
   const handleLeave = useCallback(
     (id: string) => {
@@ -171,11 +174,11 @@ export function LibraryProvider(props: {
   useEffect(() => {
     setMemberships(props.memberships);
     setSharedMemberships(props.sharedMemberships);
-  }, [props]);
+  }, [props.memberships, props.sharedMemberships]);
 
   const value = useMemo(
     () => ({
-      userRoleLimits: props.userRoleLimits,
+      userType: props.userType,
       memberships,
       sharedMemberships,
       loadingTripId: loadingTripIdRef.current,
@@ -187,7 +190,7 @@ export function LibraryProvider(props: {
     [
       memberships,
       sharedMemberships,
-      props.userRoleLimits,
+      props.userType,
       handleCreate,
       handleDuplicate,
       handleLeave,

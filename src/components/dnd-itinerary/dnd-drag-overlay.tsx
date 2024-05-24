@@ -1,8 +1,8 @@
 import { DragOverlay } from "@dnd-kit/core";
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 
-import type { Day } from "~/lib/validations/trip";
-import type { ActivityEvent, Event } from "~/lib/validations/event";
+import type { DaySchema } from "~/lib/validations/trip";
+import type { ActivityEventSchema, EventSchema } from "~/lib/validations/event";
 
 import DayOverlay from "./day-overlay";
 import { ActivityOverlay } from "./events";
@@ -10,7 +10,7 @@ import { ActivityOverlay } from "./events";
 const ACTIVITY_WIDTH = 160;
 
 type OverlayProps = {
-  activeItem: Day | Event | null;
+  activeItem: DaySchema | EventSchema | null;
   selectedIds: string[];
   enableEventComposer: boolean;
 };
@@ -48,7 +48,7 @@ function Overlay({ activeItem, selectedIds, enableEventComposer }: OverlayProps)
 
   return (
     <ActivityOverlay
-      event={activeItem as ActivityEvent}
+      event={activeItem as ActivityEventSchema}
       selectCount={selectedIds.length ? selectedIds.length : 0}
       hoverShadow
     />

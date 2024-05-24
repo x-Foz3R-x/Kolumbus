@@ -1,9 +1,9 @@
-import useLibraryContext from "./provider";
-import type { MyMembership } from "~/types";
+import useLibraryContext from "./library-provider";
+import type { MyMembershipSchema } from "~/lib/validations/membership";
 
 import TripCard from "./trip-card";
 
-export default function TripCards(props: { memberships: MyMembership[]; shared?: boolean }) {
+export default function TripCards(props: { memberships: MyMembershipSchema[]; shared?: boolean }) {
   const { loadingTripId, duplicateTrip, leaveTrip, deleteTrip } = useLibraryContext();
 
   return props.memberships.map((membership) => {

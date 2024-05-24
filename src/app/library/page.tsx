@@ -1,20 +1,25 @@
-import { getMyUserRoleLimits } from "~/server/queries";
+import { getMyUserType } from "~/server/queries";
+import { auth } from "@clerk/nextjs/server";
 
-import { LibraryProvider } from "./_components/provider";
+import { api } from "~/trpc/server";
+import { LibraryProvider } from "./_components/library-provider";
 import MyTrips from "./_components/my-trips";
 import SharedTrips from "./_components/shared-trips";
-import { api } from "~/trpc/server";
 
 export default async function Library() {
-  const userRoleLimits = await getMyUserRoleLimits();
+  const user = auth();
+  const userType = await getMyUserType();
   const memberships = await api.membership.getMy();
 
-  const myMemberships = memberships.filter((membership) => membership.owner);
-  const sharedMemberships = memberships.filter((membership) => !membership.owner);
+  const myMemberships = memberships.filter((membership) => membership.permissions === -1);
+  const sharedMemberships = memberships.filter((membership) => membership.permissions !== -1);
+
+  if (!user.userId) return null;
 
   return (
     <LibraryProvider
-      userRoleLimits={userRoleLimits}
+      userId={user.userId}
+      userType={userType}
       memberships={myMemberships}
       sharedMemberships={sharedMemberships}
     >

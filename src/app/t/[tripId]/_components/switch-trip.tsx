@@ -2,13 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
 
-import type { TripContext } from "~/lib/validations/trip";
+import type { TripContextSchema } from "~/lib/validations/trip";
 import { tripFallbackUrl } from "~/lib/constants";
 
 import { Icons } from "~/components/ui";
-import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
+import { Menu, MenuLink } from "~/components/ui/menu";
 
-export default function SwitchTrip(props: { myMemberships: TripContext["myMemberships"] }) {
+export default function SwitchTrip(props: { myMemberships: TripContextSchema["myMemberships"] }) {
   const myTripMemberships = props.myMemberships.filter((membership) => membership.trip.owner);
   const sharedTripMemberships = props.myMemberships.filter((membership) => !membership.trip.owner);
 
@@ -58,8 +58,6 @@ export default function SwitchTrip(props: { myMemberships: TripContext["myMember
           <Icons.gripLines className="ml-auto h-1.5 fill-gray-400 px-2 opacity-0 group-hover:opacity-100" />
         </MenuLink>
       ))}
-
-      <MenuOption label="+ New Trip"></MenuOption>
 
       {sharedTripMemberships.length > 0 && <div>Shared Trips</div>}
       {sharedTripMemberships.map((membership, index) => (

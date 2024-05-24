@@ -5,8 +5,9 @@ import "~/styles/react-date-range/date-display.css";
 import "~/styles/react-date-range/navigation.css";
 
 import { useEffect, useState } from "react";
+import type { Placement } from "@floating-ui/react";
 import { type RangeKeyDict, type RangeFocus, DateRange } from "react-date-range";
-import { add, isBefore } from "date-fns";
+import { add, format, isBefore } from "date-fns";
 
 import useDateRange from "~/hooks/use-date-range";
 import { cn, differenceInDays, formatDate } from "~/lib/utils";
@@ -15,17 +16,20 @@ import { DayOption } from "./day-option";
 import { datePickerNavigation } from "./date-picker-navigation";
 import { Floating } from "../ui/floating";
 import { SelectInline } from "../ui/select";
-import { Button, type ButtonProps } from "../ui";
+import { Button, Icons, type ButtonProps } from "../ui";
 
 type Preview = { startDate: Date; endDate: Date } | undefined;
 
 export function DatePicker(props: {
   startDate: string;
   endDate: string;
-  daysLimit: number;
+  maxDays: number;
   onApply: (startDate: Date, endDate: Date) => void;
+  placement?: Placement;
   includeDays?: boolean;
-  buttonProps: ButtonProps;
+  includeTooltip?: boolean;
+  className?: string;
+  buttonProps?: ButtonProps;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedRange, setFocusedRange] = useState<RangeFocus>([0, 0]);
@@ -34,7 +38,7 @@ export function DatePicker(props: {
   const [dateRange, setDateRange, { minDate, maxDate }] = useDateRange({
     startDate: props.startDate,
     endDate: props.endDate,
-    daysLimit: props.daysLimit,
+    daysLimit: props.maxDays,
     focusedRange,
   });
 
@@ -91,17 +95,71 @@ export function DatePicker(props: {
       <Floating
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        placement="bottom-end"
+        placement={props.placement ?? "bottom-end"}
         offset={{ mainAxis: 6, crossAxis: 12 }}
-        flip={false}
         click={{ enabled: true }}
-        animation="fadeInScale"
-        className="flex origin-top-right overflow-hidden rounded-xl border bg-white shadow-floating dark:border-gray-700 dark:bg-gray-900"
+        className="flex overflow-scroll rounded-xl border bg-white shadow-floating dark:border-gray-700 dark:bg-gray-900"
         rootSelector="#date-picker"
-        triggerProps={{
-          ...props.buttonProps,
-          tooltip: props.buttonProps.tooltip && { ...props.buttonProps.tooltip, disabled: isOpen },
-        }}
+        triggerProps={
+          !!props.buttonProps
+            ? {
+                ...props.buttonProps,
+                tooltip: props.buttonProps.tooltip && {
+                  ...props.buttonProps.tooltip,
+                  disabled: isOpen,
+                },
+              }
+            : {
+                variant: "unset",
+                size: "unset",
+                className: "relative h-10 fill-kolumblue-500 flex hover:brightness-110",
+                tooltip: props.includeTooltip
+                  ? {
+                      placement: "bottom",
+                      offset: 8,
+                      arrow: true,
+                      focus: { enabled: false },
+                      zIndex: 50,
+                      children: "Date Picker",
+                    }
+                  : undefined,
+                children: (
+                  <>
+                    <Icons.rangeCalendar className="h-full" />
+                    <div className="absolute inset-0 flex gap-[2px] px-1 pb-[4.5px] pt-[6px]">
+                      <div className="flex gap-[8.5px]">
+                        <div className="flex w-[30px] flex-col items-center justify-between">
+                          <span className="text-[10px] font-semibold uppercase leading-[14.5px] tracking-tight text-white">
+                            {format(new Date(props.startDate), "MMM").toUpperCase()}
+                          </span>
+                          <span className="text-sm leading-[15px]">
+                            {format(new Date(props.startDate), "d")}
+                          </span>
+                        </div>
+
+                        <div className="flex w-[30px] flex-col items-center justify-between">
+                          <span className="text-[10px] font-semibold uppercase leading-[14.5px] tracking-tight text-white">
+                            {format(new Date(props.endDate), "MMM").toUpperCase()}
+                          </span>
+                          <span className="text-sm leading-[15px]">
+                            {format(new Date(props.endDate), "d")}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex w-[30px] flex-col items-center justify-between">
+                        <span className="text-[10px] font-semibold uppercase leading-[14.5px] tracking-tight text-white">
+                          DAYS
+                        </span>
+                        <span className="text-sm leading-[15px]">
+                          {differenceInDays(props.startDate, props.endDate)}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                ),
+              }
+        }
       >
         <div className={cn("space-y-2", props.includeDays ? "py-2 pl-2" : "p-2")}>
           <DateRange
@@ -159,7 +217,7 @@ export function DatePicker(props: {
               scrollItemIntoView={{ behavior: "smooth", block: "center" }}
               className="px-2"
             >
-              {Array.from({ length: props.daysLimit }).map((_, i) => (
+              {Array.from({ length: props.maxDays }).map((_, i) => (
                 <DayOption
                   key={i}
                   index={i}

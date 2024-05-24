@@ -4,8 +4,8 @@ import { twMerge } from "tailwind-merge";
 import { customAlphabet } from "nanoid";
 import { env } from "~/env";
 
-import type { Event } from "./validations/event";
-import type { Day, Itinerary } from "./validations/trip";
+import type { EventSchema } from "./validations/event";
+import type { DaySchema, ItinerarySchema } from "./validations/trip";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -106,15 +106,19 @@ export function decodePermissions<T extends Record<string, boolean>>(
 export function generateItinerary(
   startDate: string | Date,
   endDate: string | Date,
-  events: Event[],
-): Itinerary {
+  events: EventSchema[],
+): ItinerarySchema {
   const totalDays = differenceInDays(startDate, endDate);
   const beginningDate = new Date(startDate);
-  const itinerary: Itinerary = [];
+  const itinerary: ItinerarySchema = [];
 
   for (let i = 0; i < totalDays; i++) {
     const date = formatDate(addDays(beginningDate, i));
-    const day: Day = { id: `d${i}`, date, events: events.filter((event) => event.date === date) };
+    const day: DaySchema = {
+      id: `d${i}`,
+      date,
+      events: events.filter((event) => event.date === date),
+    };
 
     itinerary.push(day);
   }

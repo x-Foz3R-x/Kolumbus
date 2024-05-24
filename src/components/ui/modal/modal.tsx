@@ -37,7 +37,7 @@ const ModalVariants = cva(
 
 type ModalProps = VariantProps<typeof ModalVariants> & {
   initialOpen?: boolean;
-  open?: boolean;
+  isOpen?: boolean;
   setOpen?: (open: boolean) => void;
   animation?: Exclude<keyof typeof TRANSITION, "fadeToPosition"> | null;
   className?: string;
@@ -49,7 +49,7 @@ type ModalProps = VariantProps<typeof ModalVariants> & {
 };
 export function Modal({
   initialOpen = false,
-  open: controlledOpen,
+  isOpen: controlledOpen,
   setOpen: setControlledOpen,
   animation,
   size,
@@ -64,13 +64,15 @@ export function Modal({
   const [isMounted, setIsMounted] = useState(false);
   const [labelId, setLabelId] = useState<string | undefined>();
 
-  const open = controlledOpen ?? uncontrolledOpen;
+  const isOpen = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
 
-  //#region Floating UI
-  const data = useFloating({ open: open, onOpenChange: setOpen });
+  console.log("modal", isOpen, isMounted);
 
-  const click = useClick(data.context, { enabled: controlledOpen == null });
+  //#region Floating UI
+  const data = useFloating({ open: isOpen, onOpenChange: setOpen });
+
+  const click = useClick(data.context, { enabled: controlledOpen === null });
   const dismiss = useDismiss(data.context, {
     enabled: dismissible,
     outsidePressEvent: "mousedown",
@@ -91,12 +93,12 @@ export function Modal({
     return TRANSITION.scaleInOut;
   }, [animation]);
   const tooltipProps = useMemo(() => {
-    return open
+    return isOpen
       ? undefined
       : rootSelector && buttonProps?.tooltip
         ? { ...buttonProps.tooltip, rootSelector }
         : buttonProps?.tooltip;
-  }, [open, rootSelector, buttonProps]);
+  }, [isOpen, rootSelector, buttonProps]);
   const ButtonComponent = useMemo(
     () => (
       <Button
@@ -112,7 +114,7 @@ export function Modal({
 
   const modalContext = useMemo(
     () => ({
-      open,
+      open: isOpen,
       setOpen,
       getFloatingProps,
       getItemProps,
@@ -120,17 +122,17 @@ export function Modal({
       setLabelId,
       ...data,
     }),
-    [open, setOpen, getFloatingProps, getItemProps, getReferenceProps, data],
+    [isOpen, setOpen, getFloatingProps, getItemProps, getReferenceProps, data],
   );
 
   // Set isMounted to true when open becomes true
   useEffect(() => {
-    open && setIsMounted(true);
-  }, [open]);
+    isOpen && setIsMounted(true);
+  }, [isOpen]);
 
   return (
     <ModalContext.Provider value={modalContext}>
-      {controlledOpen == null && ButtonComponent}
+      {controlledOpen === null && ButtonComponent}
 
       {isMounted && (
         <FloatingPortal
@@ -139,6 +141,7 @@ export function Modal({
               ? (document.querySelector(rootSelector) as HTMLElement | undefined)
               : undefined
           }
+          preserveTabOrder
         >
           <FloatingOverlay
             style={{ zIndex }}
@@ -147,7 +150,7 @@ export function Modal({
           >
             <FloatingFocusManager context={data.context}>
               <AnimatePresence onExitComplete={() => setIsMounted(false)}>
-                {open && (
+                {isOpen && (
                   <>
                     <motion.div
                       ref={data.refs.setFloating}
