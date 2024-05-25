@@ -67,8 +67,6 @@ export function Modal({
   const isOpen = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
 
-  console.log("modal", isOpen, isMounted);
-
   //#region Floating UI
   const data = useFloating({ open: isOpen, onOpenChange: setOpen });
 
