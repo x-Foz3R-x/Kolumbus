@@ -126,7 +126,7 @@ export function DatePicker(props: {
                 children: (
                   <>
                     <Icons.rangeCalendar className="h-full" />
-                    <div className="absolute inset-0 flex gap-[2px] px-1 pb-[4.5px] pt-[6px]">
+                    <div className="absolute inset-0 flex gap-[2px] px-1 pb-[4.5px] pt-[5px]">
                       <div className="flex gap-[8.5px]">
                         <div className="flex w-[30px] flex-col items-center justify-between">
                           <span className="text-[10px] font-semibold uppercase leading-[14.5px] tracking-tight text-white">
@@ -147,7 +147,7 @@ export function DatePicker(props: {
                         </div>
                       </div>
 
-                      <div className="flex w-[30px] flex-col items-center justify-between">
+                      <div className="flex w-[35px] flex-col items-center justify-between">
                         <span className="text-[10px] font-semibold uppercase leading-[14.5px] tracking-tight text-white">
                           DAYS
                         </span>
