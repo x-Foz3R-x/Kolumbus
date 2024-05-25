@@ -58,7 +58,6 @@ export default function TopNav() {
           maxDays={14}
           onApply={applyDateRange}
           includeDays
-          includeTooltip
         />
         <DatePicker
           startDate={trip.startDate}
