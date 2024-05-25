@@ -206,7 +206,7 @@ export function DatePicker(props: {
         {props.includeDays && (
           <div className="relative flex h-[24.5rem] flex-col gap-2 overflow-hidden py-0.5">
             <SelectInline
-              selectedIndex={dateRange.days - 1}
+              selectedIndex={dateRange.days}
               setSelectedIndex={(index) => {
                 if (index === null) return;
                 setDateRange({
