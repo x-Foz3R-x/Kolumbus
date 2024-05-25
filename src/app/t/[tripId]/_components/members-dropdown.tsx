@@ -52,7 +52,10 @@ export default function MembersDropdown({ tripId, tripInviteCode, tripMembers }:
       offset={{ mainAxis: 6, crossAxis: 8 }}
       className="w-[23.5rem] space-y-4 rounded-xl bg-white p-4 shadow-floating"
       zIndex={50}
-      triggerProps={{ children: <Icons.members className="h-4" /> }}
+      triggerProps={{
+        className: "size-9 p-0 flex justify-center items-center bg-gray-300",
+        children: <Icons.members className="h-4" />,
+      }}
     >
       <div className="flex flex-col gap-4 rounded-lg">
         <div className="flex items-center gap-4">
