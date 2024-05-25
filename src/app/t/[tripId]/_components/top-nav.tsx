@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { api } from "~/trpc/react";
 import { useTripContext } from "./trip-provider";
 import { toastHandler } from "~/lib/trpc";
-import { formatDate } from "~/lib/utils";
+import { formatDate, generateItinerary } from "~/lib/utils";
 
 import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
@@ -23,8 +23,17 @@ export default function TopNav() {
   const updateTrip = api.trip.update.useMutation(toastHandler("Trip dates changed"));
 
   const applyDateRange = (startDate: Date, endDate: Date) => {
+    const events = trip.itinerary.flatMap((day) => day.events);
+    const itinerary = generateItinerary(startDate, endDate, events);
+
     setTrip(
-      { ...trip, startDate: formatDate(startDate), endDate: formatDate(endDate) },
+      {
+        ...trip,
+        itinerary,
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+        updatedAt: new Date(),
+      },
       "Change trip dates",
     );
 

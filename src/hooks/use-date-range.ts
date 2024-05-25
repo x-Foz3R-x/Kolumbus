@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
-import { add, addDays, differenceInDays, isBefore } from "date-fns";
+import { add, addDays, isBefore } from "date-fns";
+import { differenceInDays } from "~/lib/utils";
 
 export default function useDateRange(props: {
   startDate: string;
   endDate: string;
-  daysLimit: number;
+  maxDays: number;
   focusedRange: [number, number];
 }) {
   const [dateRange, setDateRange] = useState({
@@ -17,16 +18,16 @@ export default function useDateRange(props: {
   const minDate = useMemo(
     () =>
       props.focusedRange[1] === 1
-        ? addDays(dateRange.startDate, -props.daysLimit + 1)
+        ? addDays(dateRange.startDate, -props.maxDays + 1)
         : new Date("2023-01-01"),
-    [props.focusedRange, dateRange.startDate, props.daysLimit],
+    [props.focusedRange, dateRange.startDate, props.maxDays],
   );
   const maxDate = useMemo(
     () =>
       props.focusedRange[1] === 1
-        ? addDays(dateRange.startDate, props.daysLimit - 1)
+        ? addDays(dateRange.startDate, props.maxDays - 1)
         : addDays(new Date(), 1095),
-    [props.focusedRange, dateRange.startDate, props.daysLimit],
+    [props.focusedRange, dateRange.startDate, props.maxDays],
   );
 
   const handleChange = (changeProps: { startDate?: Date; endDate?: Date; days?: number }) => {
@@ -39,9 +40,9 @@ export default function useDateRange(props: {
 
     let calculatedDays = differenceInDays(newEndDate, newStartDate);
 
-    if (calculatedDays > props.daysLimit) {
-      newEndDate = add(newStartDate, { days: props.daysLimit - 1 });
-      calculatedDays = props.daysLimit;
+    if (calculatedDays > props.maxDays) {
+      newEndDate = add(newStartDate, { days: props.maxDays - 1 });
+      calculatedDays = props.maxDays;
     }
 
     setDateRange({
