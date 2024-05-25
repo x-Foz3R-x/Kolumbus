@@ -14,6 +14,8 @@ import MembersDropdown from "./members-dropdown";
 import { DatePicker } from "~/components/date-picker";
 import { Icons } from "~/components/ui";
 
+// todo: check if changed date has required action with events in applyDateRange
+
 export default function TopNav() {
   const { trip, setTrip } = useTripContext();
 
