@@ -1,4 +1,3 @@
-import { usePathname } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import clsx, { ClassValue } from "clsx";
 import { z } from "zod";
@@ -206,13 +205,3 @@ export function generateErrorResponse(error: unknown) {
   return new Response("Something went wrong", { status: 500 });
 }
 //#endregion
-
-// todo - to be removed
-/**
- * Compares the current URL pathname with the provided URL.
- * @param url - The URL to compare with the current URL pathname.
- * @returns True if the current URL pathname matches the provided URL, false otherwise.
- */
-export function compareURLs(url: string): boolean {
-  return usePathname() === url ? true : false; // eslint-disable-line react-hooks/rules-of-hooks
-}

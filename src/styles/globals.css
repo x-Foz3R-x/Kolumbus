@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+*:focus {
+  outline: 0;
+}
+
+input::-webkit-inner-spin-button {
+  appearance: none;
+}
+input::-webkit-outer-spin-button {
+  appearance: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow:
+    0 0 0px 1000px hsla(210, 78%, 60%, 0.1) inset,
+    0 0 0 1px hsl(232, 9%, 90%);
+}
+
+input:-webkit-autofill:focus {
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow:
+    0 0 0px 1000px hsla(210, 78%, 60%, 0.1) inset,
+    0 0 0 1px hsla(210, 78%, 60%),
+    0 0 0 3px hsla(210, 78%, 60%, 0.3);
+}
+
+.detectAutofill:-webkit-autofill {
+  animation-name: autofillStart;
+}
+.detectAutofill:not(:-webkit-autofill) {
+  animation-name: autofillCancel;
+}
+@keyframes autofillStart {
+  from {
+  }
+}
+@keyframes autofillCancel {
+  from {
+  }
+}

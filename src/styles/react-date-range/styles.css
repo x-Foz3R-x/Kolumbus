@@ -1,0 +1,317 @@
+.rdrDateRangeWrapper {
+  color: hsl(232, 9%, 17%);
+  width: 17rem;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.rdrWeekDays {
+  display: flex;
+  padding: 0.25rem 0.5rem;
+}
+
+.rdrWeekDay {
+  width: 100%;
+  color: hsl(232, 9%, 60%);
+  font-family: var(--font-inconsolata);
+  font-size: 0.875rem;
+  font-weight: 300;
+  text-align: center;
+}
+
+.rdrInfiniteMonths {
+  background-color: hsl(232, 9%, 98%);
+  border: 1px solid hsl(232, 9%, 94%);
+  border-radius: 0.75rem;
+  overflow: auto;
+}
+
+.rdrMonth {
+  width: 100%;
+  padding-inline: 0.5rem;
+}
+
+.rdrMonthName {
+  color: hsl(232, 9%, 60%);
+  padding-top: 0.5rem;
+  padding-inline: 0.5rem;
+  font-weight: 500;
+}
+
+.rdrMonths.rdrMonthsVertical .rdrMonth:first-child .rdrMonthName {
+  display: none;
+}
+
+.rdrDays {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rdrDay {
+  position: relative;
+  background: transparent;
+  width: calc(100% / 7);
+  height: 2.25rem;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.rdrDayNumber {
+  position: absolute;
+  font-weight: 300;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rdrDayNumber span {
+  color: hsl(232, 9%, 17%);
+}
+
+.rdrDayToday .rdrDayNumber span:after {
+  content: "";
+  background: hsl(210, 78%, 60%);
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  transform: translate(-50%, 0);
+}
+
+.rdrDayToday .rdrDayNumber span {
+  font-weight: 500;
+}
+
+.rdrDayDisabled {
+  cursor: not-allowed;
+}
+
+.rdrDayStartPreview,
+.rdrDayInPreview,
+.rdrDayEndPreview {
+  pointer-events: none;
+}
+
+.rdrDayToday:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span:after,
+.rdrDayToday:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span:after,
+.rdrDayToday:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span:after {
+  background: white;
+  height: 1.5px;
+}
+
+.rdrDay:not(.rdrDayPassive) .rdrStartEdge ~ .rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrEndEdge ~ .rdrDayNumber span,
+.rdrDay:not(.rdrDayPassive) .rdrSelected ~ .rdrDayNumber span {
+  color: white;
+  font-weight: 600;
+}
+
+.rdrSelected,
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+  background-color: hsl(210, 78%, 90%);
+  position: absolute;
+  top: 3px;
+  left: 0px;
+  right: 0px;
+  bottom: 3px;
+  pointer-events: none;
+}
+
+.rdrSelected {
+  left: 2px;
+  right: 2px;
+}
+
+.rdrStartEdge {
+  overflow: visible;
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+  left: 2px;
+}
+
+.rdrStartEdge::after {
+  overflow: visible;
+  content: "";
+  background-color: hsl(210, 78%, 60%);
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: -2px;
+  right: 0px;
+  border-radius: 0.75rem;
+}
+.rdrDayEndOfWeek .rdrStartEdge::after {
+  right: -2px;
+}
+
+.rdrEndEdge {
+  overflow: visible;
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  right: 2px;
+}
+
+.rdrEndEdge::after {
+  overflow: visible;
+  content: "";
+  background-color: hsl(210, 78%, 60%);
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 0px;
+  right: -2px;
+  border-radius: 0.75rem;
+}
+
+.rdrDayStartOfWeek .rdrEndEdge::after {
+  left: -2px;
+}
+
+.rdrEndEdge.rdrStartEdge::after {
+  left: -2px;
+  right: -2px;
+}
+
+.rdrSelected {
+  border-radius: 0.75rem;
+}
+
+.rdrDayStartOfMonth .rdrInRange,
+.rdrDayStartOfMonth .rdrEndEdge,
+.rdrDayStartOfWeek .rdrInRange,
+.rdrDayStartOfWeek .rdrEndEdge {
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+  left: 2px;
+}
+
+.rdrDayEndOfMonth .rdrInRange,
+.rdrDayEndOfMonth .rdrStartEdge,
+.rdrDayEndOfWeek .rdrInRange,
+.rdrDayEndOfWeek .rdrStartEdge {
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  right: 2px;
+}
+
+.rdrDayStartOfMonth .rdrDayInPreview,
+.rdrDayStartOfMonth .rdrDayEndPreview,
+.rdrDayStartOfWeek .rdrDayInPreview,
+.rdrDayStartOfWeek .rdrDayEndPreview {
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+  border-left-width: 1px;
+  left: 0px;
+}
+
+.rdrDayEndOfMonth .rdrDayInPreview,
+.rdrDayEndOfMonth .rdrDayStartPreview,
+.rdrDayEndOfWeek .rdrDayInPreview,
+.rdrDayEndOfWeek .rdrDayStartPreview {
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  border-right-width: 1px;
+  right: 0px;
+}
+
+.rdrDayStartPreview,
+.rdrDayInPreview,
+.rdrDayEndPreview {
+  background: rgba(255, 255, 255, 0.1);
+  position: absolute;
+  top: 1px;
+  left: 0px;
+  right: 0px;
+  bottom: 1px;
+  pointer-events: none;
+  border: 0px solid hsl(210, 78%, 60%);
+  z-index: 1;
+}
+
+.rdrDayStartPreview {
+  border-top-width: 1px;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+  left: 0px;
+}
+
+.rdrDayInPreview {
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+}
+
+.rdrDayEndPreview {
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  right: 0px;
+}
+
+/* .rdrDayEndPreview::after {
+  content: var(--day-number);
+  background-color: hsl(232 9% 27%);
+  color: white;
+  position: absolute;
+  top: -1.75rem;
+  left: 50%;
+  width: fit-content;
+  transform: translateX(-50%);
+  padding-block: 0.125rem;
+  padding-inline: 0.25rem;
+  border-radius: 0.375rem;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 1px 4px rgba(0, 0, 0, 0.03),
+    0 1px 8px rgba(0, 0, 0, 0.02);
+  z-index: 10;
+} */
+
+.rdrDayPassive {
+  pointer-events: none;
+}
+
+.rdrDayPassive .rdrDayNumber span {
+  color: #d5dce0;
+}
+
+.rdrDayPassive .rdrInRange,
+.rdrDayPassive .rdrStartEdge,
+.rdrDayPassive .rdrEndEdge,
+.rdrDayPassive .rdrSelected,
+.rdrDayPassive .rdrDayStartPreview,
+.rdrDayPassive .rdrDayInPreview,
+.rdrDayPassive .rdrDayEndPreview {
+  display: none;
+}
+
+.rdrDayDisabled .rdrDayNumber span {
+  color: #aeb9bf;
+}
+
+.rdrDayDisabled .rdrInRange,
+.rdrDayDisabled .rdrStartEdge,
+.rdrDayDisabled .rdrEndEdge,
+.rdrDayDisabled .rdrSelected,
+.rdrDayDisabled .rdrDayStartPreview,
+.rdrDayDisabled .rdrDayInPreview,
+.rdrDayDisabled .rdrDayEndPreview {
+  filter: grayscale(100%) opacity(60%);
+}

@@ -128,14 +128,14 @@ export default function Index() {
         <p className="text-lg">Join Kolumbus and transform the way you plan your trips.</p>
         <div className="mt-4 flex items-center justify-center">
           <Link
-            href="/sign-in"
+            href="/signin"
             className="relative flex items-center gap-1 bg-transparent fill-gray-900 px-6 py-3 font-bold before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:scale-50 before:rounded-full before:bg-gray-100 before:opacity-0 before:shadow-button before:duration-300 before:ease-kolumb-flow hover:fill-gray-900 hover:text-gray-900 before:hover:scale-100 before:hover:opacity-100 focus-visible:fill-gray-900 focus-visible:text-gray-900 before:focus-visible:scale-100 before:focus-visible:opacity-100"
           >
             Sign in
             <Icon.chevronBold className="w-2.5 -rotate-90" />
           </Link>
           <Link
-            href="/sign-up"
+            href="/signup"
             className="relative flex items-center gap-1 bg-transparent fill-gray-900 px-6 py-3 font-bold before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:scale-50 before:rounded-full before:bg-gray-100 before:opacity-0 before:shadow-button before:duration-300 before:ease-kolumb-flow hover:fill-gray-900 hover:text-gray-900 before:hover:scale-100 before:hover:opacity-100 focus-visible:fill-gray-900 focus-visible:text-gray-900 before:focus-visible:scale-100 before:focus-visible:opacity-100"
           >
             Sign up

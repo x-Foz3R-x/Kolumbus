@@ -2,9 +2,19 @@
 
 import { forwardRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import Icon from "@/components/icons";
-import { compareURLs, cn } from "@/lib/utils";
+
+/**
+ * Compares the current URL pathname with the provided URL.
+ * @param url - The URL to compare with the current URL pathname.
+ * @returns True if the current URL pathname matches the provided URL, false otherwise.
+ */
+export function compareURLs(url: string): boolean {
+  return usePathname() === url ? true : false; // eslint-disable-line react-hooks/rules-of-hooks
+}
 
 export default function Tools({ tripId }: { tripId: string }) {
   const Tile = forwardRef<HTMLAnchorElement, { href: string; className?: string; children?: React.ReactNode }>(

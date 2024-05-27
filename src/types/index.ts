@@ -15,6 +15,8 @@ export enum USER_ROLE {
   User = "USER",
 }
 
+export type UserRole = "explorer" | "navigator" | "captain" | "fleetCommander" | "tester" | "admin";
+
 export enum KEY {
   Backspace = "Backspace",
   Tab = "Tab",

@@ -36,6 +36,7 @@ export type InputProps = Omit<HTMLMotionProps<"input">, "size"> &
     dynamicWidth?: boolean;
     preventEmpty?: boolean;
     labelClassName?: string;
+    containerClassName?: string;
   };
 /**
  * A customizable input component.
@@ -75,6 +76,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
     size,
     className,
     labelClassName,
+    containerClassName,
     ...props
   } = inputProps;
   const isDynamicWidth = useMemo(() => dynamicWidth && !defaultValue, [dynamicWidth, defaultValue]);
@@ -115,7 +117,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((inputProps, ref) 
   return (
     <div
       style={{ ...(fullWidth && { width: "100%" }), ...(fullHeight && { height: "100%" }) }}
-      className={cn("focus-within:z-30", (isDynamicWidth || autoComplete || label) && "relative")}
+      className={cn("focus-within:z-30", (isDynamicWidth || autoComplete || label) && "relative", containerClassName)}
     >
       {/* Dynamic width of input */}
       {isDynamicWidth && (

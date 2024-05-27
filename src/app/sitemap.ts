@@ -23,12 +23,12 @@ export default async function sitemap() {
       priority: 1.0,
     },
     {
-      url: "https://www.kolumbus.app/sign-in",
+      url: "https://www.kolumbus.app/signin",
       lastModified: "2023-12-05",
       priority: 0.8,
     },
     {
-      url: "https://www.kolumbus.app/sign-up",
+      url: "https://www.kolumbus.app/signup",
       lastModified: "2023-12-05",
       priority: 0.8,
     },

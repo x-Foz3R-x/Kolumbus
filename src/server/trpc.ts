@@ -1,5 +1,5 @@
 import { TRPCError, initTRPC } from "@trpc/server";
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 
 const t = initTRPC.create();
 

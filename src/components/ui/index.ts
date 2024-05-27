@@ -13,5 +13,6 @@ export { Divider } from "./divider";
 export { Progress } from "./progress";
 
 export { Spinner } from "./spinner";
+export { Spinner as SpinnerCopy } from "./spinner copy";
 
 export { ScrollIndicator } from "./scroll-indicator";
