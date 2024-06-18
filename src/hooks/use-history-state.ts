@@ -17,18 +17,16 @@ type HistoryProps<T> = {
   redo: () => void;
   /** A function to jump to a specific point in the history. */
   jumpTo: (index: number) => void;
-  /** The default setter function of useState. */
-  setValue: React.Dispatch<React.SetStateAction<T>>;
   /** A function to add a new entry to the history. */
-  addEntry: (value: T, description: string) => void;
+  addEntry: (value: T, desc: string) => void;
   /** A function to get an entry value from the history. */
   getEntry: (index: number) => T;
   /** A function to remove an entry from the history. */
   removeEntry: (index: number) => void;
   /** A function to get the entire history. */
-  getHistory: () => Array<{ value: T; description: string }>;
+  getHistory: () => Array<{ value: T; desc: string }>;
   /** A function to replace the entire history. */
-  replaceHistory: (newHistory: Array<{ value: T; description: string }>) => void;
+  replaceHistory: (newHistory: Array<{ value: T; desc: string }>) => void;
   /** A function to handle undo/redo keyboard shortcuts. */
   handleShortcut: (e: KeyboardEvent) => void;
 };
@@ -46,14 +44,14 @@ type HistoryProps<T> = {
 export default function useHistoryState<T>(
   initialValue: T,
   { initialDescription = "Open", limit = 20, keepInitial = false }: Options = {},
-): [T, (valueOrIndex: T | number, description?: string) => void, HistoryProps<T>] {
+): [T, (valueOrIndex: T | number, desc?: string) => void, HistoryProps<T>] {
   const [value, setValue] = useState<T>(initialValue);
-  const [history, setHistory] = useState<Array<{ value: T; description: string }>>([
-    { value: structuredClone(initialValue), description: initialDescription },
+  const [history, setHistory] = useState<Array<{ value: T; desc: string }>>([
+    { value: structuredClone(initialValue), desc: initialDescription },
   ]);
   const [index, setIndex] = useState(0);
 
-  const changes = useMemo(() => history.map((entry) => entry.description ?? "unknown"), [history]);
+  const changes = useMemo(() => history.map((entry) => entry.desc), [history]);
   const initialValueRef = useRef(initialValue);
 
   // Undo function to go back in the history
@@ -84,14 +82,11 @@ export default function useHistoryState<T>(
 
   // Add a new entry to the history
   const addEntry = useCallback(
-    (value: T, description: string) => {
+    (value: T, desc: string) => {
       // If the new value is the same as the last one in the history, return
       if (deepEqual(history[index], value)) return;
 
-      const newHistory = [
-        ...history.slice(0, index + 1),
-        { value: structuredClone(value), description },
-      ];
+      const newHistory = [...history.slice(0, index + 1), { value: structuredClone(value), desc }];
 
       if (newHistory.length > limit) {
         const startIndex = keepInitial && newHistory.length > 1 ? 1 : 0;
@@ -128,13 +123,13 @@ export default function useHistoryState<T>(
 
   // Set a new value or get it from the history. (used as setter for useState)
   const updateValue = useCallback(
-    (valueOrIndex: T | number, description?: string) => {
+    (valueOrIndex: T | number, desc?: string) => {
       // Updates the value or gets an entry from the history to update value.
       // If a number is passed, it gets the corresponding entry from the history.
       // If a non-number value and a description are passed, it adds a new entry to the history.
 
       setValue(typeof valueOrIndex === "number" ? getEntry(valueOrIndex) : valueOrIndex);
-      if (!!description && typeof valueOrIndex !== "number") addEntry(valueOrIndex, description);
+      if (!!desc && typeof valueOrIndex !== "number") addEntry(valueOrIndex, desc);
     },
     [addEntry, getEntry],
   );
@@ -145,7 +140,7 @@ export default function useHistoryState<T>(
   }, [history]);
 
   // Replace the entire history
-  const replaceHistory = useCallback((newHistory: Array<{ value: T; description: string }>) => {
+  const replaceHistory = useCallback((newHistory: Array<{ value: T; desc: string }>) => {
     const history = structuredClone(newHistory);
     setHistory(history);
     setIndex(history.length - 1);
@@ -176,7 +171,6 @@ export default function useHistoryState<T>(
       undo,
       redo,
       jumpTo,
-      setValue,
       addEntry,
       getEntry,
       removeEntry,
