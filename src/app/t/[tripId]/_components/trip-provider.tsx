@@ -10,6 +10,7 @@ import { createId, decodePermissions, generateItinerary } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { toastHandler } from "~/lib/trpc";
 import { constructTrip } from "~/lib/constructors";
+import type { EventSchema } from "~/lib/validations/event";
 
 type TripContext = {
   trip: TripSchema;
@@ -21,6 +22,7 @@ type TripContext = {
   permissions: MemberPermissions;
 
   createTrip: (name: string, startDate: string, endDate: string) => void;
+  deleteEvent: (event: EventSchema) => void;
 };
 export const TripContext = createContext<TripContext | null>(null);
 export const useTripContext = () => {
@@ -53,6 +55,7 @@ export const TripProvider = (props: {
   );
 
   const createTrip = api.trip.create.useMutation(toastHandler("Trip created"));
+  const deleteEvent = api.event.delete.useMutation(toastHandler("Event deleted"));
 
   console.log(trip);
 
@@ -75,6 +78,42 @@ export const TripProvider = (props: {
     [props.userId, createTrip, myMemberships, router],
   );
 
+  const handleEventDelete = useCallback(
+    (event: EventSchema) => {
+      if (
+        (event.createdBy === props.userId && !permissions.deleteOwnEvents) ||
+        (event.createdBy !== props.userId && !permissions.deleteEvents)
+      ) {
+        return;
+      }
+
+      const newItinerary = structuredClone(trip.itinerary);
+
+      const dayIndex = newItinerary.findIndex((day) => day.date === event.date);
+      if (dayIndex === -1) return;
+
+      if (!newItinerary[dayIndex]) return;
+      if (!newItinerary[dayIndex].events[event.position]) return;
+
+      newItinerary[dayIndex].events.splice(event.position, 1);
+      newItinerary[dayIndex].events.map((event, index) => (event.position = index));
+
+      setTrip({ ...trip, itinerary: newItinerary });
+
+      deleteEvent.mutate(
+        {
+          id: event.id,
+          tripId: trip.id,
+          date: event.date,
+          position: event.position,
+          createdBy: props.userId,
+        },
+        { onError: () => router.refresh() },
+      );
+    },
+    [props.userId, trip, setTrip, permissions, deleteEvent, router],
+  );
+
   const value = useMemo(
     () => ({
       trip,
@@ -86,8 +125,9 @@ export const TripProvider = (props: {
       permissions,
 
       createTrip: handleCreate,
+      deleteEvent: handleEventDelete,
     }),
-    [props.userId, trip, permissions, setTrip, myMemberships, handleCreate],
+    [props.userId, trip, permissions, setTrip, myMemberships, handleCreate, handleEventDelete],
   );
 
   return <TripContext.Provider value={value}>{props.children}</TripContext.Provider>;

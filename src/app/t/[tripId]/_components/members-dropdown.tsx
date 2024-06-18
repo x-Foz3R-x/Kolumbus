@@ -46,6 +46,12 @@ export default function MembersDropdown({ tripId, tripInviteCode, tripMembers }:
     }
   };
 
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(
+      !!invite ? `${env.NEXT_PUBLIC_APP_URL}/invite/${invite}` : "",
+    );
+  };
+
   return (
     <Floating
       placement="bottom-end"
@@ -76,6 +82,7 @@ export default function MembersDropdown({ tripId, tripInviteCode, tripMembers }:
         >
           <div>
             <Button
+              onClick={copyToClipboard}
               variant="appear"
               size="sm"
               className="absolute right-1.5 top-1.5 h-8 w-16 bg-kolumblue-500 text-white hover:bg-kolumblue-400"

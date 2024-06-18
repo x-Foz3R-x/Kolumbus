@@ -71,7 +71,7 @@ export default function ResetPasswordConfirmForm(props: {
           id="password"
           name="password"
           type="password"
-          insetLabel="Password"
+          label="Password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           autoComplete="new-password"
@@ -83,7 +83,7 @@ export default function ResetPasswordConfirmForm(props: {
           id="confirm-password"
           name="confirm-password"
           type="password"
-          insetLabel="Confirm Password"
+          label="Confirm Password"
           value={form.confirmPassword}
           onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
           autoComplete="new-password"

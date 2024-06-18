@@ -65,11 +65,13 @@ export function DatePicker(props: {
     setIsOpen(false);
 
     if (
-      props.startDate !== formatDate(dateRange.startDate) ||
-      props.endDate !== formatDate(dateRange.endDate)
+      formatDate(dateRange.startDate) === props.startDate &&
+      formatDate(dateRange.endDate) === props.endDate
     ) {
-      props.onApply(dateRange.startDate, dateRange.endDate);
+      return;
     }
+
+    props.onApply(dateRange.startDate, dateRange.endDate);
   };
 
   const handleCancel = () => {

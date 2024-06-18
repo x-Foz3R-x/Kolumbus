@@ -49,7 +49,7 @@ type InputDefaultProps = HTMLInputProps &
   VariantProps<typeof InputVariants> & {
     inputRef?: React.ForwardedRef<HTMLInputElement>;
     type?: TypeAttribute;
-    insetLabel?: string;
+    label?: string;
     onUpdate?: (e: React.FocusEvent<HTMLInputElement>) => void;
     preventEmpty?: boolean;
     dynamicWidth?: boolean;
@@ -79,7 +79,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
   const inputId = inputProps?.id ?? uniqueId;
   const {
     inputRef,
-    insetLabel,
+    label,
     value,
     defaultValue,
     autoComplete,
@@ -87,7 +87,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
     onKeyDown,
     dynamicWidth = false,
     preventEmpty = false,
-    variant = !!inputProps.insetLabel ? "insetLabel" : inputProps.variant,
+    variant = !!inputProps.label ? "insetLabel" : inputProps.variant,
     size,
     className,
     children,
@@ -115,7 +115,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
     <div
       className={cn(
         "focus-within:z-30",
-        (dynamicWidth || !!insetLabel || !!autoComplete || !!children) && "relative",
+        (dynamicWidth || !!label || !!autoComplete || !!children) && "relative",
         dynamicWidth && "w-fit",
         className?.container,
       )}
@@ -160,7 +160,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
         </div>
       )}
 
-      {!!insetLabel && (
+      {!!label && (
         <label
           htmlFor={inputId}
           className={cn(
@@ -171,7 +171,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(inp
             className?.label,
           )}
         >
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap">{insetLabel}</span>
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap">{label}</span>
         </label>
       )}
 

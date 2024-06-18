@@ -46,7 +46,7 @@ export const CreateTripModal = memo(function CreateTripModal({
         </ModalText>
 
         <div className="flex gap-3">
-          <Input value={name} insetLabel="Trip Name" onChange={(e) => setName(e.target.value)} />
+          <Input value={name} label="Trip Name" onChange={(e) => setName(e.target.value)} />
 
           <DatePicker
             startDate={formatDate(startDate)}

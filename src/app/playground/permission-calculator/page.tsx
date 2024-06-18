@@ -78,7 +78,7 @@ export default function PermissionCalculator() {
         <div className="select-none space-y-4 rounded-lg border border-gray-100 bg-gray-50 p-5">
           <Input
             type="number"
-            insetLabel="Permission"
+            label="Permission"
             value={decodedPermission}
             onChange={(e) => setDecodedPermission(Number(e.target.value))}
           />

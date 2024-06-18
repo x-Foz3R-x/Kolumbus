@@ -1,9 +1,9 @@
 import { isClerkAPIResponseError } from "@clerk/nextjs/errors";
+import { TRPCClientError } from "@trpc/client";
 import { toast } from "sonner";
 import * as z from "zod";
 
 import { unknownError } from "./constants";
-import { TRPCClientError } from "@trpc/client";
 
 export function getErrorMessage(error: unknown) {
   if (isClerkAPIResponseError(error)) {

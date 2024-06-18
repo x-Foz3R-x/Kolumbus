@@ -1,6 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
-import type { UserRole } from "~/types";
-
 /**
  * ROLE_BASED_LIMITS defines the limits and permissions for each user role.
  *
@@ -55,10 +52,4 @@ export const RoleBasedLimits = {
     daysLimit: 90,
     eventsLimit: 200,
   },
-};
-
-export const checkRole = (role: UserRole) => {
-  const { sessionClaims } = auth();
-
-  return sessionClaims?.metadata.role === role;
 };

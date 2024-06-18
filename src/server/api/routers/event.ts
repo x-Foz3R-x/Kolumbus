@@ -8,7 +8,7 @@ import { events } from "~/server/db/schema";
 import { deleteEventSchema } from "~/lib/validations/event";
 import { getMyMembershipDecodedPermissions } from "~/server/queries";
 
-export const tripRouter = createTRPCRouter({
+export const eventRouter = createTRPCRouter({
   delete: protectedProcedure.input(deleteEventSchema).mutation(async ({ ctx, input }) => {
     const { id: eventId, tripId, date, position, createdBy } = input;
 

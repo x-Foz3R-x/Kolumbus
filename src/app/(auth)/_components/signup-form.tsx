@@ -63,7 +63,7 @@ export default function SignUpForm(props: { nextStage: () => void; disabled: boo
             id="name"
             name="name"
             type="text"
-            insetLabel="Name *"
+            label="Name *"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             autoComplete="name"
@@ -76,7 +76,7 @@ export default function SignUpForm(props: { nextStage: () => void; disabled: boo
             id="email"
             name="email"
             type="email"
-            insetLabel="Email *"
+            label="Email *"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             autoComplete="email"
@@ -89,7 +89,7 @@ export default function SignUpForm(props: { nextStage: () => void; disabled: boo
             id="password"
             name="password"
             type="password"
-            insetLabel="Password *"
+            label="Password *"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             autoComplete="current-password"

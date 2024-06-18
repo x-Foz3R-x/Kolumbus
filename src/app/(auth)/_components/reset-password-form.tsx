@@ -54,7 +54,7 @@ export default function ResetPasswordForm(props: { nextStage: () => void; disabl
           id="email"
           name="email"
           type="email"
-          insetLabel="Email"
+          label="Email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           autoComplete="email"
