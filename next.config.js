@@ -3,6 +3,9 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  experimental: {
+    instrumentationHook: true,
+  },
   images: {
     remotePatterns: [
       { hostname: "utfs.io" },
