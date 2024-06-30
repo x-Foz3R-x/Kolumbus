@@ -1,23 +1,28 @@
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
 
-import type { TripContextSchema } from "~/lib/validations/trip";
 import { tripFallbackUrl } from "~/lib/constants";
+import type { MyMembershipSchema } from "~/lib/types";
 
-import { Icons } from "~/components/ui";
-import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
-import { useState } from "react";
-import { CreateTripModal } from "~/components/create-trip-modal";
+import TripImage from "~/components/trip-image";
 import { useTripContext } from "./trip-provider";
+import { CreateTripModal } from "~/components/create-trip-modal";
+import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
+import { Icons } from "~/components/ui";
 
-export default function SwitchTrip(props: { myMemberships: TripContextSchema["myMemberships"] }) {
+export default function SwitchTrip(props: { myMemberships: MyMembershipSchema[] }) {
   const { createTrip } = useTripContext();
 
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const myTripMemberships = props.myMemberships.filter((membership) => membership.trip.owner);
-  const sharedTripMemberships = props.myMemberships.filter((membership) => !membership.trip.owner);
+  const myTripMemberships = props.myMemberships.filter(
+    (membership) => membership.permissions === -1,
+  );
+  const sharedTripMemberships = props.myMemberships.filter(
+    (membership) => membership.permissions !== -1,
+  );
 
   return (
     <>
@@ -44,13 +49,7 @@ export default function SwitchTrip(props: { myMemberships: TripContextSchema["my
             className="relative h-12 min-w-64 text-left"
           >
             <div className="relative h-9 w-9 overflow-hidden rounded-md bg-gray-200">
-              <Image
-                src={membership.trip.image ? membership.trip.image : tripFallbackUrl}
-                alt="Trip photo"
-                sizes="224px"
-                priority
-                fill
-              />
+              <TripImage image={membership.trip.image} size="36px" />
             </div>
 
             <div className="flex flex-col font-light leading-tight">

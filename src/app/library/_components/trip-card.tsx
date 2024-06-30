@@ -1,12 +1,12 @@
 "use client";
 
 import { memo, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { format } from "date-fns";
 
 import { differenceInDays, cn } from "~/lib/utils";
 
+import TripImage from "~/components/trip-image";
 import { TripDeleteModal } from "~/components/trip-delete-modal";
 import { TripLeaveModal } from "~/components/trip-leave-modal";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
@@ -55,12 +55,7 @@ const TripCard = memo(function TripCard({
     >
       <Link href={`/t/${trip.id}`}>
         <div className="relative h-56 w-56 overflow-hidden rounded-b-sm bg-gray-200">
-          {trip.image.startsWith("/") || trip.image.startsWith("https://utfs.io") ? (
-            <Image src={trip.image} alt="Trip photo" sizes="224px" priority fill />
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={trip.image} alt="Trip photo" className="h-full w-full object-cover" />
-          )}
+          <TripImage image={trip.image} size="224px" />
         </div>
 
         <div
