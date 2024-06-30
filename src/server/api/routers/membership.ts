@@ -54,14 +54,7 @@ export const membershipRouter = createTRPCRouter({
 
         const eventCount = tripsEventCount[membership.tripId] ?? 0;
 
-        return {
-          ...membership,
-          trip: {
-            ...trip,
-            image,
-            eventCount,
-          },
-        };
+        return { ...membership, trip: { ...trip, image, eventCount } };
       });
     });
   }),
