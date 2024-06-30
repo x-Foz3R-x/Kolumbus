@@ -27,11 +27,10 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import deepEqual from "deep-equal";
+// import deepEqual from "deep-equal";
 
 import type { onEventCreated, onEventDeleted, onEventUpdated } from ".";
 import { DndItineraryContext, type DndItineraryContextProps } from "./dnd-context";
-import useHistoryState from "~/hooks/use-history-state";
 import { cn } from "~/lib/utils";
 
 import DndDragOverlay from "./dnd-drag-overlay";
@@ -63,6 +62,7 @@ type DndItineraryProps = {
   userId: string;
   tripId: string;
   itinerary: ItinerarySchema;
+  setItinerary: (itineraryOrIndex: ItinerarySchema | number, desc?: string) => void;
   eventLimit: number;
   onEventCreated?: onEventCreated;
   onEventUpdated?: onEventUpdated;
@@ -73,7 +73,8 @@ type DndItineraryProps = {
 export function DndItinerary({
   userId,
   tripId,
-  itinerary: tripItinerary,
+  itinerary,
+  setItinerary,
   eventLimit,
   onEventCreated,
   onEventUpdated,
@@ -81,10 +82,6 @@ export function DndItinerary({
   dndTrash,
   calendar,
 }: DndItineraryProps) {
-  const [itinerary, setItinerary, { changes }] = useHistoryState(tripItinerary, {
-    initialDescription: "Fetch",
-    limit: 10,
-  });
   const [activeItem, setActiveItem] = useState<DaySchema | EventSchema | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -202,8 +199,6 @@ export function DndItinerary({
     },
     [tripId, itinerary, setItinerary, onEventDeleted],
   );
-
-  console.log(changes);
 
   //#region Drag handlers
   // handleDragStart - handles setting active id and item and cache itinerary
@@ -494,10 +489,10 @@ export function DndItinerary({
     };
   }, [selectedIds]);
 
-  // Update itinerary when tripItinerary changes
-  useEffect(() => {
-    if (!deepEqual(itinerary, tripItinerary)) setItinerary(tripItinerary, "Fetch");
-  }, [tripItinerary]); // eslint-disable-line react-hooks/exhaustive-deps
+  // // Update itinerary when tripItinerary changes
+  // useEffect(() => {
+  //   if (!deepEqual(itinerary, tripItinerary)) setItinerary(tripItinerary, "Fetch");
+  // }, [tripItinerary]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const dndItineraryContext: DndItineraryContextProps = useMemo(
     () => ({

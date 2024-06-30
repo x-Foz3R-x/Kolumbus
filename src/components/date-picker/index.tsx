@@ -26,8 +26,8 @@ export function DatePicker(props: {
   maxDays: number;
   onApply: (startDate: Date, endDate: Date) => void;
   placement?: Placement;
-  includeDays?: boolean;
-  includeTooltip?: boolean;
+  showDaysPicker?: boolean;
+  showTooltip?: boolean;
   className?: string;
   buttonProps?: ButtonProps;
 }) {
@@ -115,7 +115,7 @@ export function DatePicker(props: {
                 variant: "unset",
                 size: "unset",
                 className: "relative h-10 fill-kolumblue-500 flex hover:brightness-110",
-                tooltip: props.includeTooltip
+                tooltip: props.showTooltip
                   ? {
                       placement: "bottom",
                       offset: 8,
@@ -163,7 +163,7 @@ export function DatePicker(props: {
               }
         }
       >
-        <div className={cn("space-y-2", props.includeDays ? "py-2 pl-2" : "p-2")}>
+        <div className={cn("space-y-2", props.showDaysPicker ? "py-2 pl-2" : "p-2")}>
           <DateRange
             ranges={[dateRange]}
             rangeColors={["hsl(210, 78%, 60%)"]}
@@ -205,7 +205,7 @@ export function DatePicker(props: {
           </div>
         </div>
 
-        {props.includeDays && (
+        {props.showDaysPicker && (
           <div className="relative flex h-[24.5rem] flex-col gap-2 overflow-hidden py-0.5">
             <SelectInline
               selectedIndex={dateRange.days - 1}
