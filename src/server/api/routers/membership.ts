@@ -4,6 +4,8 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { events } from "~/server/db/schema";
 import { getTripsEventCount } from "~/server/queries";
 
+import { tripFallbackUrl } from "~/lib/constants";
+
 export const membershipRouter = createTRPCRouter({
   getMy: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.transaction(async (tx) => {
@@ -12,7 +14,7 @@ export const membershipRouter = createTRPCRouter({
         orderBy: (memberships, { asc }) => asc(memberships.tripPosition),
         with: {
           trip: {
-            columns: { name: true, startDate: true, endDate: true, image: true },
+            columns: { id: true, name: true, startDate: true, endDate: true, image: true },
             with: {
               events: {
                 columns: {},
@@ -34,16 +36,31 @@ export const membershipRouter = createTRPCRouter({
           },
         },
       });
-
       if (memberships.length === 0) return [];
 
       const tripIds = memberships.map((membership) => membership.tripId);
       const tripsEventCount = await getTripsEventCount(tx, tripIds);
 
       return memberships.map((membership) => {
+        const { events, ...trip } = membership.trip;
+
+        const eventsImages = events.flatMap((event) => event.images?.[event.imageIndex ?? 0] ?? []);
+
+        const image =
+          trip.image ??
+          (eventsImages.length > 0
+            ? `/api/get-trip-image?imageRefs=${eventsImages.join(",")}`
+            : tripFallbackUrl);
+
+        const eventCount = tripsEventCount[membership.tripId] ?? 0;
+
         return {
           ...membership,
-          trip: { ...membership.trip, eventCount: tripsEventCount[membership.tripId] ?? 0 },
+          trip: {
+            ...trip,
+            image,
+            eventCount,
+          },
         };
       });
     });

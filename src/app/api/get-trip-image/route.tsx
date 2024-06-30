@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
+import { env } from "~/env";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const imageRefs = searchParams.get("imageRefs")?.split(",").splice(0, 3) ?? [];
 
   const getSrc = (imageRef: string) => {
-    return `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${imageRef}&maxheight=896&key=${process.env.GOOGLE_KEY}`;
+    return `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${imageRef}&maxheight=448&key=${env.GOOGLE_KEY}`;
   };
 
   if (imageRefs.length === 1) {

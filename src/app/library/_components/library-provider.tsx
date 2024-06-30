@@ -17,6 +17,7 @@ import { toastHandler } from "~/lib/trpc";
 import { constructMembership, constructTrip } from "~/lib/constructors";
 import type { MyMembershipSchema } from "~/lib/validations/membership";
 import type { UserTypeSchema } from "~/lib/validations/auth";
+import { tripFallbackUrl } from "~/lib/constants";
 
 type LibraryContext = {
   userType: UserTypeSchema;
@@ -55,15 +56,18 @@ export function LibraryProvider(props: {
   const deleteTrip = api.trip.delete.useMutation(toastHandler());
 
   const handleCreate = useCallback(
-    (name: string, startDate: string, endDate: string) => {
+    (name: string, startDate: string, endDate: string, image?: string) => {
       const position = memberships.length;
+
       const trip = constructTrip({
         id: createId(10),
         ownerId: props.userId,
         name,
         startDate,
         endDate,
+        image,
       });
+
       const membership: MyMembershipSchema = {
         ...constructMembership({
           userId: props.userId,
@@ -72,11 +76,11 @@ export function LibraryProvider(props: {
           permissions: -1,
         }),
         trip: {
+          id: trip.id,
           name: trip.name,
           startDate: trip.startDate,
           endDate: trip.endDate,
-          image: trip.image,
-          events: [],
+          image: trip.image ?? tripFallbackUrl,
           eventCount: 0,
         },
       };

@@ -24,6 +24,19 @@ export const tripSchema = trip.extend({
   itinerary: itinerarySchema,
 });
 
+const getTripSchema = trip.extend({
+  members: z.array(
+    z.object({
+      userId: z.string(),
+      name: z.string().nullable(),
+      image: z.string(),
+      permissions: z.number(),
+      createdAt: z.date(),
+    }),
+  ),
+  events: eventSchema.array(),
+});
+
 export const tripContextSchema = z.object({
   myMemberships: z.array(
     z.object({
@@ -75,6 +88,7 @@ export const updateInviteSchema = tripIdSchema.extend({ inviteCode: z.string().n
 
 export type Trip = z.infer<typeof trip>;
 export type TripSchema = z.infer<typeof tripSchema>;
+export type GetTripSchema = z.infer<typeof getTripSchema>;
+export type TripContextSchema = z.infer<typeof tripContextSchema>;
 export type ItinerarySchema = z.infer<typeof itinerarySchema>;
 export type DaySchema = z.infer<typeof daySchema>;
-export type TripContextSchema = z.infer<typeof tripContextSchema>;

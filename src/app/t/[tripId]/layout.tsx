@@ -1,11 +1,13 @@
 import { auth } from "@clerk/nextjs/server";
 import { api } from "~/trpc/server";
-import type { TripContextSchema } from "~/lib/validations/trip";
-import { TripProvider } from "./_components/trip-provider";
 
+import db from "~/server/db";
+import { generateItinerary } from "~/lib/utils";
+import { type EventSchema } from "~/lib/validations/event";
+
+import { TripProvider } from "./_components/trip-provider";
 import TopNav from "./_components/top-nav";
 import SidebarNav from "./_components/sidebar-nav";
-import db from "~/server/db";
 
 export async function generateMetadata({ params }: { params: { tripId: string } }) {
   const trip = await db.query.trips.findFirst({
@@ -21,13 +23,22 @@ export default async function Layout(props: {
   children: React.ReactNode;
 }) {
   const user = auth();
-  const tripContext = (await api.trip.getContext({ id: props.params.tripId })) as
-    | TripContextSchema
-    | undefined;
-  if (!tripContext || !user.userId) return props.children;
+  if (!user.userId) return props.children;
+
+  const { events, ...tripData } = await api.trip.get({ id: props.params.tripId });
+  const myMemberships = await api.membership.getMy();
+
+  const trip = {
+    ...tripData,
+    itinerary: generateItinerary(
+      tripData.startDate,
+      tripData.endDate,
+      events as unknown as EventSchema[],
+    ),
+  };
 
   return (
-    <TripProvider userId={user.userId} context={tripContext}>
+    <TripProvider userId={user.userId} trip={trip} myMemberships={myMemberships}>
       <TopNav />
       <SidebarNav tripId={props.params.tripId} />
       {props.children}

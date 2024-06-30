@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { format } from "date-fns";
 
-import { tripFallbackUrl } from "~/lib/constants";
 import { differenceInDays, cn } from "~/lib/utils";
 
 import { TripDeleteModal } from "~/components/trip-delete-modal";
@@ -19,23 +18,22 @@ type TripCardProps = {
     name: string;
     startDate: string;
     endDate: string;
-    image: string | null;
-    eventImagesRefs: string | null;
+    image: string;
     eventCount: number;
   };
   onDuplicate?: () => void;
   onDelete?: () => void;
   onLeave?: () => void;
-  shared?: boolean;
   loading?: boolean;
+  shared?: boolean;
 };
 const TripCard = memo(function TripCard({
   trip,
   onDuplicate: handleDuplicate,
   onLeave: handleLeave,
   onDelete: handleDelete,
-  shared,
   loading,
+  shared,
 }: TripCardProps) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isLeaveModalOpen, setLeaveModalOpen] = useState(false);
@@ -57,19 +55,12 @@ const TripCard = memo(function TripCard({
     >
       <Link href={`/t/${trip.id}`}>
         <div className="relative h-56 w-56 overflow-hidden rounded-b-sm bg-gray-200">
-          <Image
-            src={
-              trip.image
-                ? trip.image
-                : trip.eventImagesRefs
-                  ? `/api/get-trip-image?imageRefs=${trip.eventImagesRefs}`
-                  : tripFallbackUrl
-            }
-            alt="Trip photo"
-            sizes="224px"
-            priority
-            fill
-          />
+          {trip.image.startsWith("/") || trip.image.startsWith("https://utfs.io") ? (
+            <Image src={trip.image} alt="Trip photo" sizes="224px" priority fill />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={trip.image} alt="Trip photo" className="h-full w-full object-cover" />
+          )}
         </div>
 
         <div

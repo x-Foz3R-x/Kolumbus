@@ -10,13 +10,12 @@ export const myMembershipSchema = z.object({
   tripPosition: z.number(),
   createdAt: z.date(),
   updatedAt: z.date(),
-
   trip: z.object({
+    id: z.string(),
     name: z.string(),
     startDate: z.string(),
     endDate: z.string(),
-    image: z.string().nullable(),
-    events: z.array(z.object({ images: z.array(z.string()).nullable(), imageIndex: z.number() })),
+    image: z.string(),
     eventCount: z.number(),
   }),
 });

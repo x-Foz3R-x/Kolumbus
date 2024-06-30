@@ -3,12 +3,13 @@
 import { useState } from "react";
 import useLibraryContext from "./library-provider";
 
-import TripCards from "./trip-cards";
 import { CreateTripModal } from "~/components/create-trip-modal";
 import { Button, Icons } from "~/components/ui";
+import TripCard from "./trip-card";
 
 export default function MyTrips() {
-  const { memberships, userType, createTrip } = useLibraryContext();
+  const { memberships, userType, loadingTripId, createTrip, duplicateTrip, leaveTrip, deleteTrip } =
+    useLibraryContext();
 
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -17,7 +18,18 @@ export default function MyTrips() {
       <h2 className="text-xl font-semibold text-gray-400">Your Trips</h2>
 
       <ul className="grid w-full grid-cols-[repeat(auto-fill,minmax(14.25rem,_14.25rem))] justify-center gap-x-4 gap-y-8">
-        <TripCards memberships={memberships} />
+        {memberships.map((membership) => {
+          return (
+            <TripCard
+              key={membership.tripId}
+              trip={membership.trip}
+              onDuplicate={() => duplicateTrip(membership.tripId)}
+              onLeave={() => leaveTrip(membership.tripId)}
+              onDelete={() => deleteTrip(membership.tripId)}
+              loading={loadingTripId === membership.tripId}
+            />
+          );
+        })}
 
         {/* Create Trip Modal */}
         {memberships.length > userType.maxMemberships ? null : (

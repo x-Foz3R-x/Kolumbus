@@ -4,9 +4,13 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
 import { useRouter } from "next/navigation";
 
 import useHistoryState from "~/hooks/use-history-state";
-import type { TripSchema, TripContextSchema as TripContextType } from "~/lib/validations/trip";
-import { MemberPermissionFlags, type MemberPermissions } from "~/lib/validations/membership";
-import { createId, decodePermissions, generateItinerary } from "~/lib/utils";
+import type { ItinerarySchema, TripSchema } from "~/lib/validations/trip";
+import {
+  MemberPermissionFlags,
+  type MyMembershipSchema,
+  type MemberPermissions,
+} from "~/lib/validations/membership";
+import { createId, decodePermissions } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { toastHandler } from "~/lib/trpc";
 import { constructTrip } from "~/lib/constructors";
@@ -15,12 +19,13 @@ import type { EventSchema } from "~/lib/validations/event";
 type TripContext = {
   trip: TripSchema;
   setTrip: (tripOrIndex: TripSchema | number, description?: string) => void;
-  myMemberships: TripContextType["myMemberships"];
-  setMyMemberships: (myMemberships: TripContextType["myMemberships"]) => void;
+  myMemberships: MyMembershipSchema[];
+  setMyMemberships: (myMemberships: MyMembershipSchema[]) => void;
 
   userId: string;
   permissions: MemberPermissions;
 
+  updateItinerary: (itineraryOrIndex: ItinerarySchema | number, desc?: string) => void;
   createTrip: (name: string, startDate: string, endDate: string) => void;
   deleteEvent: (event: EventSchema) => void;
 };
@@ -34,16 +39,17 @@ export const useTripContext = () => {
 
 export const TripProvider = (props: {
   userId: string;
-  context: TripContextType;
+  trip: TripSchema;
+  myMemberships: MyMembershipSchema[];
   children: React.ReactNode;
 }) => {
   const router = useRouter();
 
-  const [trip, setTrip, {}] = useHistoryState<TripSchema>(convertTrip(props.context.trip), {
+  const [trip, setTrip, { changes }] = useHistoryState(props.trip, {
     initialDescription: "Fetch",
-    limit: 10,
+    limit: 15,
   });
-  const [myMemberships, setMyMemberships] = useState(props.context?.myMemberships);
+  const [myMemberships, setMyMemberships] = useState(props.myMemberships);
 
   const permissions = useMemo(
     () =>
@@ -56,8 +62,6 @@ export const TripProvider = (props: {
 
   const createTrip = api.trip.create.useMutation(toastHandler("Trip created"));
   const deleteEvent = api.event.delete.useMutation(toastHandler("Event deleted"));
-
-  console.log(trip);
 
   const handleCreate = useCallback(
     (name: string, startDate: string, endDate: string) => {
@@ -114,6 +118,20 @@ export const TripProvider = (props: {
     [props.userId, trip, setTrip, permissions, deleteEvent, router],
   );
 
+  const updateItinerary = useCallback(
+    (itineraryOrIndex: TripSchema["itinerary"] | number, desc?: string) => {
+      setTrip(
+        typeof itineraryOrIndex === "number"
+          ? itineraryOrIndex
+          : { ...trip, itinerary: itineraryOrIndex },
+        desc,
+      );
+    },
+    [trip, setTrip],
+  );
+
+  console.log(changes);
+
   const value = useMemo(
     () => ({
       trip,
@@ -124,16 +142,21 @@ export const TripProvider = (props: {
       userId: props.userId,
       permissions,
 
+      updateItinerary,
       createTrip: handleCreate,
       deleteEvent: handleEventDelete,
     }),
-    [props.userId, trip, permissions, setTrip, myMemberships, handleCreate, handleEventDelete],
+    [
+      props.userId,
+      trip,
+      permissions,
+      setTrip,
+      myMemberships,
+      updateItinerary,
+      handleCreate,
+      handleEventDelete,
+    ],
   );
 
   return <TripContext.Provider value={value}>{props.children}</TripContext.Provider>;
 };
-
-function convertTrip(trip: TripContextType["trip"]): TripSchema {
-  const { events, ...rest } = trip;
-  return { ...rest, itinerary: generateItinerary(trip.startDate, trip.endDate, events) };
-}

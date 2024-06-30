@@ -227,6 +227,38 @@ export const tripRouter = createTRPCRouter({
 
     return { trip: { ...rest, members }, myMemberships: tripContext.myMemberships };
   }),
+  get: protectedProcedure.input(tripIdSchema).query(async ({ ctx, input }) => {
+    const trip = await ctx.db.query.trips.findFirst({
+      where: eq(trips.id, input.id),
+      with: {
+        memberships: {
+          columns: { userId: true, permissions: true, createdAt: true },
+          orderBy: (memberships, { asc }) => asc(memberships.createdAt),
+        },
+        events: {
+          orderBy: (events, { asc }) => asc(events.position),
+          with: { activity: true, transportation: true, flight: true },
+        },
+      },
+    });
+
+    if (!trip) {
+      throw error.internalServerError("Failed to fetch the trip. Please try again later.");
+    }
+
+    const { memberships, ...tripData } = trip;
+
+    const members = memberships
+      ? await Promise.all(
+          memberships.map(async (membership) => {
+            const user = await clerkClient.users.getUser(membership.userId);
+            return { ...membership, name: user.fullName, image: user.imageUrl };
+          }),
+        )
+      : [];
+
+    return { ...tripData, members };
+  }),
   update: protectedProcedure.input(updateTripSchema).mutation(async ({ ctx, input }) => {
     const { id: tripId, ...trip } = input;
 
