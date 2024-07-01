@@ -39,13 +39,13 @@ export default function HeroFeature({ className }: { className?: string }) {
         id="activator"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="absolute z-10 h-screen w-full -translate-y-1/2"
+        className="absolute z-10 h-full w-full"
       />
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 0.9, rotate: -6, x: 30, y: -260 }}
-        animate={{ x: 0, y: -198 }}
+        initial={{ scale: 0.9, rotate: -6, x: 30, y: 0 }}
+        animate={{ x: 0, y: 62 }}
         bounce={0.2}
         damping={10}
         className="animate-[levitate_10s_ease_infinite]"
@@ -64,8 +64,8 @@ export default function HeroFeature({ className }: { className?: string }) {
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 1.1, rotate: 12, x: 390, y: -90 }}
-        animate={{ x: 0, y: -66 }}
+        initial={{ scale: 1.1, rotate: 12, x: 390, y: 170 }}
+        animate={{ x: 0, y: 194 }}
         bounce={0.8}
         damping={13}
         className="animate-[levitate_12s_ease_infinite_reverse]"
@@ -86,8 +86,8 @@ export default function HeroFeature({ className }: { className?: string }) {
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 1.05, rotate: 3, x: 130, y: 180 }}
-        animate={{ x: 0, y: 66 }}
+        initial={{ scale: 1.05, rotate: 3, x: 130, y: 440 }}
+        animate={{ x: 0, y: 326 }}
         bounce={0.5}
         damping={11}
         className="animate-[levitate_13s_ease_infinite]"
@@ -108,8 +108,8 @@ export default function HeroFeature({ className }: { className?: string }) {
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ rotate: -27, x: 300, y: 240 }}
-        animate={{ x: 0, y: 198 }}
+        initial={{ rotate: -27, x: 300, y: 500 }}
+        animate={{ x: 0, y: 458 }}
         bounce={0.6}
         damping={13}
         className="animate-[levitate_13s_ease_infinite]"
@@ -126,8 +126,8 @@ export default function HeroFeature({ className }: { className?: string }) {
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 0.94, rotate: 15, x: 280, y: 50 }}
-        animate={{ x: 148, y: -46 }}
+        initial={{ scale: 0.94, rotate: 15, x: 280, y: 310 }}
+        animate={{ x: 148, y: 214 }}
         bounce={0.6}
         damping={13}
         className="animate-[levitate_12s_ease_infinite_reverse]"
@@ -136,8 +136,8 @@ export default function HeroFeature({ className }: { className?: string }) {
       </Spring>
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 1.1, rotate: -22, x: 15, y: 50 }}
-        animate={{ x: 148, y: -178 }}
+        initial={{ scale: 1.1, rotate: -22, x: 15, y: 310 }}
+        animate={{ x: 148, y: 82 }}
         bounce={0.6}
         damping={12}
         className="animate-[levitate_10s_ease_infinite]"
@@ -146,8 +146,8 @@ export default function HeroFeature({ className }: { className?: string }) {
       </Spring>
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 1.03, rotate: 23, x: 208, y: -176 }}
-        animate={{ x: 148, y: 86 }}
+        initial={{ scale: 1.03, rotate: 23, x: 208, y: 84 }}
+        animate={{ x: 148, y: 346 }}
         bounce={0.3}
         damping={10}
         className="animate-[levitate_13s_ease_infinite]"
