@@ -3,12 +3,14 @@ import { AlertIcons } from "./alertIcons";
 import { ArrowIcons } from "./arrows";
 import { EditingIcons } from "./editing";
 import { KolumbusIcons } from "./kolumbus";
+import { MacosIcons } from "./macos";
 
 export const Icons = {
   ...AlertIcons,
   ...ArrowIcons,
   ...EditingIcons,
   ...KolumbusIcons,
+  ...MacosIcons,
   appearance: ({ ...props }: SvgProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" {...props}>
       <path d="m13.6595,2.3405C10.5389-.7802,5.4611-.7802,2.3405,2.3405s-3.1206,8.1984,0,11.3191c3.1206,3.1206,8.1985,3.1206,11.3191,0,3.1206-3.1207,3.1206-8.1985,0-11.3191Zm-1.0065,10.3125c-2.5655,2.5661-6.7401,2.5662-9.3063.0003l2.7221-2.7221c-1.0593-1.0593-1.0593-2.8024,0-3.8617,1.0592-1.0593,2.8024-1.0593,3.8617,0v-.0007l2.7224-2.7224h0c2.5662,2.5656,2.5662,6.7404,0,9.3066Zm-2.7225-6.5841c1.0593,1.0593,1.0593,2.8025,0,3.8617-1.0593,1.0593-2.8025,1.0593-3.8617,0,0,0,3.8617-3.8617,3.8617-3.8617Z" />

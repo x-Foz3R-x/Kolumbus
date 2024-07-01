@@ -5,7 +5,7 @@ export default function TopNav(props: { name: string }) {
   return (
     <nav className="fixed left-0 right-0 top-0 z-40 flex h-14 items-center justify-center bg-white shadow-xs">
       <Link href="/" title="Homepage" aria-label="Homepage" className="absolute left-5">
-        <Icons.logo className="h-6" />
+        <Icons.logoLegacy className="h-6" />
       </Link>
 
       <h1 className="text-lg font-medium">{props.name}</h1>

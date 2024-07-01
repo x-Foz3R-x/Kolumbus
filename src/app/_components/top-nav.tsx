@@ -38,7 +38,7 @@ export default function TopNav() {
         {/* logo when sm */}
         <div className="h-16 flex-shrink-0 px-2 py-5 sm:hidden">
           <Link href="/" title="Homepage" aria-label="Homepage">
-            <Icons.logo className="m-auto h-6 fill-gray-800" />
+            <Icons.logoLegacy className="m-auto h-6 fill-gray-800" />
           </Link>
         </div>
 
