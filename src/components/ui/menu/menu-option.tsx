@@ -11,7 +11,7 @@ type MenuOptionProps = VariantProps<typeof OptionVariants> & {
   label: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
-  activeClassName?: string;
+  classNames?: { button?: string; active?: string };
   disabled?: boolean;
   children?: React.ReactNode;
 };
@@ -21,7 +21,7 @@ export const MenuOption = memo(function MenuOption({
   variant,
   size,
   className,
-  activeClassName,
+  classNames,
   disabled,
   children,
 }: MenuOptionProps) {
@@ -40,6 +40,7 @@ export const MenuOption = memo(function MenuOption({
       className={cn(
         OptionVariants({ variant, size }),
         "disabled:pointer-events-none disabled:opacity-40 disabled:grayscale-[0.4]",
+        classNames?.button,
       )}
       {...menu?.getItemProps({
         onClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -52,7 +53,7 @@ export const MenuOption = memo(function MenuOption({
         className={cn(
           "pointer-events-none flex h-[34px] w-full cursor-default select-none items-center gap-4 px-3 duration-200 ease-kolumb-overflow group-focus:translate-x-1.5",
           className,
-          isActive && activeClassName,
+          isActive && classNames?.active,
         )}
       >
         {children ?? label}

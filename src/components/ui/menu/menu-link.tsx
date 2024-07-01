@@ -14,7 +14,7 @@ type MenuLinkProps = VariantProps<typeof OptionVariants> & {
   target?: HTMLAttributeAnchorTarget;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
-  activeClassName?: string;
+  classNames?: { button?: string; active?: string };
   children?: React.ReactNode;
 };
 export const MenuLink = memo(function MenuLink({
@@ -25,7 +25,7 @@ export const MenuLink = memo(function MenuLink({
   variant,
   size,
   className,
-  activeClassName,
+  classNames,
   children,
 }: MenuLinkProps) {
   const disabled = href ? false : true;
@@ -45,7 +45,7 @@ export const MenuLink = memo(function MenuLink({
       href={href ?? ""}
       target={target}
       tabIndex={isActive ? 0 : -1}
-      className={cn(OptionVariants({ variant, size }))}
+      className={cn(OptionVariants({ variant, size }), classNames?.button)}
       {...menu?.getItemProps({
         onClick(e: React.MouseEvent<HTMLButtonElement>) {
           onClick?.(e);
@@ -57,7 +57,7 @@ export const MenuLink = memo(function MenuLink({
         className={cn(
           "pointer-events-none flex h-[34px] w-full cursor-default select-none items-center gap-4 px-3 duration-200 ease-kolumb-overflow group-focus:translate-x-1.5",
           className,
-          isActive && activeClassName,
+          isActive && classNames?.active,
         )}
       >
         {children ?? label}
