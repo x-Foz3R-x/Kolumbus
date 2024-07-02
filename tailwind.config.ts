@@ -144,6 +144,9 @@ export default {
           "bg-stripe-60": (value) => ({
             backgroundImage: `repeating-linear-gradient(60deg, ${value}, ${value} 1px, transparent 1px, transparent 5px)`,
           }),
+          "bg-stripe-bold-60": (value) => ({
+            backgroundImage: `repeating-linear-gradient(60deg, ${value}, ${value} 2px, transparent 2px, transparent 6px)`,
+          }),
           "bg-stripe-90": (value) => ({
             backgroundImage: `repeating-linear-gradient(90deg, ${value}, ${value} 1px, transparent 1px, transparent 5px)`,
           }),
