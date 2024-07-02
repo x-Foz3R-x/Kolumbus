@@ -138,6 +138,7 @@ export const EventComposer = memo(function EventComposer({
     }
 
     setIsOpen(false);
+    setInputValue("");
     setSessionToken(createId());
   };
 
