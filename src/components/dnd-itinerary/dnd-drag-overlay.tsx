@@ -41,10 +41,13 @@ export default function DndDragOverlay({
 }
 
 function Overlay({ activeItem, selectedIds, enableEventComposer }: OverlayProps) {
-  if (!activeItem) return null;
+  if (!activeItem) {
+    return null;
+  }
 
-  if ("events" in activeItem)
+  if ("events" in activeItem) {
     return <DayOverlay day={activeItem} enableEventComposer={enableEventComposer} />;
+  }
 
   return (
     <ActivityOverlay

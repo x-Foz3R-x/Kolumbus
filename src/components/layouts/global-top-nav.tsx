@@ -27,7 +27,7 @@ export default function GlobalTopNav() {
 
         {/* logo when sm */}
         <Link href="/" title="Homepage" aria-label="Homepage" className="sm:hidden">
-          <Icons.logo className="m-auto h-6 fill-gray-800" />
+          <Icons.logoLegacy className="m-auto h-6 fill-gray-800" />
         </Link>
 
         <section className="flex flex-1 items-center justify-end gap-4">
