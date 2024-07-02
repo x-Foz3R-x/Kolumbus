@@ -132,19 +132,19 @@ export default {
           "bg-dot": (value) => ({
             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='16' height='16' fill='none'%3e%3ccircle cx='10' cy='10' r='1.62574' fill='${value}'/%3e%3c/svg%3e")`,
           }),
-          "bg-stripes": (value) => ({
+          "bg-stripe": (value) => ({
             backgroundImage: `repeating-linear-gradient(0deg, ${value}, ${value} 1px, transparent 1px, transparent 5px)`,
           }),
-          "bg-stripes-30": (value) => ({
+          "bg-stripe-30": (value) => ({
             backgroundImage: `repeating-linear-gradient(30deg, ${value}, ${value} 1px, transparent 1px, transparent 5px)`,
           }),
-          "bg-stripes-45": (value) => ({
+          "bg-stripe-45": (value) => ({
             backgroundImage: `repeating-linear-gradient(45deg, ${value}, ${value} 1px, transparent 1px, transparent 5px)`,
           }),
-          "bg-stripes-60": (value) => ({
+          "bg-stripe-60": (value) => ({
             backgroundImage: `repeating-linear-gradient(60deg, ${value}, ${value} 1px, transparent 1px, transparent 5px)`,
           }),
-          "bg-stripes-90": (value) => ({
+          "bg-stripe-90": (value) => ({
             backgroundImage: `repeating-linear-gradient(90deg, ${value}, ${value} 1px, transparent 1px, transparent 5px)`,
           }),
         },
