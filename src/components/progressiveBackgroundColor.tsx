@@ -10,28 +10,29 @@ import {
 } from "framer-motion";
 
 type SupportedRangeUnit = "px" | "vw" | "vh" | "%";
-type RangeUnit = `${number}${SupportedRangeUnit}`;
-type NamedRanges = "start" | "end" | "center";
-type Range = NamedRanges | RangeUnit;
+type EdgeUnit = `${number}${SupportedRangeUnit}`;
+type NamedEdges = "start" | "end" | "center";
+type Edge = NamedEdges | EdgeUnit;
+type Intersection = `${Edge} ${Edge}`;
+type scrollOffset = Array<Edge | Intersection>;
 
 type ProgressiveBackgroundColorProps = {
   /** Array of RGB color values to transition between */
   colors: [number, number, number][];
-  /** Range of scroll values to transition over, defaults to "end" */
-  scrollRange?: Range;
+  scrollOffset?: scrollOffset;
   style?: MotionStyle;
   className?: string;
   children?: React.ReactNode;
 };
 export default function ProgressiveBackgroundColor({
   colors,
-  scrollRange = "end",
+  scrollOffset = ["start start", "end end"],
   style,
   className,
   children,
 }: ProgressiveBackgroundColorProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: [0, scrollRange] });
+  const { scrollYProgress } = useScroll({ target: ref, offset: scrollOffset });
 
   const division = Array.from({ length: colors.length }, (_, i) => (1 / colors.length) * i);
 
