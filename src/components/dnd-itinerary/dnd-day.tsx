@@ -7,7 +7,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useDndItineraryContext } from "./dnd-context";
 
 import { EventComposer } from "./event-composer";
-import { ItineraryCalendar } from "../itinerary-calendar";
+import { DayCalendar } from "../day-calendar";
 import { cn } from "~/lib/utils";
 import type { DaySchema, ItinerarySchema } from "~/lib/validations/trip";
 
@@ -47,7 +47,7 @@ const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
     >
       {!isDragging && (
         <>
-          <ItineraryCalendar
+          <DayCalendar
             date={day.date}
             className={cn("sticky left-20 z-40", calendar)}
             header={

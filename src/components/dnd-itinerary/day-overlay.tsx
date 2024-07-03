@@ -3,7 +3,7 @@ import { memo } from "react";
 import type { DaySchema } from "~/lib/validations/trip";
 import type { ActivityEventSchema } from "~/lib/validations/event";
 
-import { ItineraryCalendar } from "../itinerary-calendar";
+import { DayCalendar } from "../day-calendar";
 import { ActivityOverlay } from "./events";
 import { Button, Icons } from "../ui";
 
@@ -13,7 +13,7 @@ const DayOverlay = memo(function DayOverlay(props: {
 }) {
   return (
     <div className="flex w-full cursor-grabbing gap-5">
-      <ItineraryCalendar
+      <DayCalendar
         date={props.day.date}
         header="Dragging"
         className={{ header: "cursor-grabbing rounded-t-xl", body: "cursor-grabbing rounded-b-xl" }}
