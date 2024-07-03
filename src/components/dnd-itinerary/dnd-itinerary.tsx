@@ -559,7 +559,7 @@ export function DndItinerary({
         <div className="flex">
           <div
             className={cn(
-              "sticky left-20 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl",
+              "sticky left-20 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 font-inter text-xs font-medium text-kolumblue-200 shadow-xl",
               calendar,
             )}
           >
