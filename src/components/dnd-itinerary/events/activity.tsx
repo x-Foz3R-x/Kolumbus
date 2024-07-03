@@ -16,6 +16,7 @@ import { Button, Icons, ScrollIndicator } from "../../ui";
 import { ActivityUIOverlay } from "./activity-ui-overlay";
 import { ActivityDetails } from "./activity-details";
 import { getActivityImageUrl } from ".";
+import { eventFallbackUrl } from "~/lib/constants";
 
 // todo - Context Menu (like in floating ui react examples)
 
@@ -138,15 +139,25 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
           />
 
           {/* Image */}
-          <div className="relative h-[82px] flex-shrink-0">
-            <Image
-              src={getActivityImageUrl(event)}
-              alt="Event Image"
-              className="select-none object-cover object-center"
-              sizes="156px"
-              priority
-              fill
-            />
+          <div className="relative h-[82px] flex-shrink-0 overflow-hidden">
+            {getActivityImageUrl(event).startsWith("/") ||
+            getActivityImageUrl(event).startsWith(eventFallbackUrl) ? (
+              <Image
+                src={getActivityImageUrl(event)}
+                alt="Event Image"
+                className="select-none object-cover object-center"
+                sizes="156px"
+                priority
+                fill
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={getActivityImageUrl(event)}
+                alt="Event Image"
+                className="select-none object-cover object-center"
+              />
+            )}
           </div>
 
           {/* Name */}

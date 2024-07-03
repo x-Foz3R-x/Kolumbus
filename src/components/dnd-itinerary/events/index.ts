@@ -10,6 +10,8 @@ export function getActivityImageUrl(event: ActivityEventSchema) {
 
   if (!images || images.length < 1) return eventFallbackUrl;
 
+  if (images[imageIndex]?.startsWith("http")) return images[imageIndex];
+
   return !!images[imageIndex]
     ? `/api/get-google-image?imageRef=${images[imageIndex]}&width=156&height=82`
     : eventFallbackUrl;
