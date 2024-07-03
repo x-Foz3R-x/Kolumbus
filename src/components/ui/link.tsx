@@ -26,17 +26,4 @@ export const Link = {
       </NextLink>
     );
   },
-  macos: (props: LinkProps) => {
-    return (
-      <NextLink
-        {...props}
-        className={cn(
-          "group relative flex h-6 items-center px-2.5 font-inter text-[13px] font-medium tracking-[-0.2px] text-black before:absolute before:inset-y-0 before:-left-1 before:-right-1 before:rounded before:hover:bg-black/10",
-          props.className,
-        )}
-      >
-        {props.children}
-      </NextLink>
-    );
-  },
 };
