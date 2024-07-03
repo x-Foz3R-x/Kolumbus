@@ -10,6 +10,7 @@ import { cn, os } from "~/lib/utils";
 import { Button, Icons, Input, ScrollIndicator, TextArea } from "~/components/ui";
 import type { ActivityEventSchema } from "~/lib/validations/event";
 import { getActivityImageUrl } from ".";
+import { eventFallbackUrl } from "~/lib/constants";
 
 // todo - Decouple logic from floating component so only when it is open state will be created
 
@@ -85,7 +86,7 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
       {/* Image */}
       <motion.div
         className={cn(
-          "relative h-[82px] flex-shrink-0",
+          "relative h-[82px] flex-shrink-0 overflow-hidden",
           isOpen ? "cursor-default" : "cursor-pointer",
         )}
         initial={{ height: "82px" }}
@@ -93,14 +94,24 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
         exit={{ height: "82px" }}
         transition={{ ease: EASING.anticipate, duration: 0.6 }}
       >
-        <Image
-          src={getActivityImageUrl(event)}
-          alt="Event Image"
-          className="select-none object-cover object-center"
-          sizes="156px"
-          priority
-          fill
-        />
+        {getActivityImageUrl(event).startsWith("/") ||
+        getActivityImageUrl(event).startsWith(eventFallbackUrl) ? (
+          <Image
+            src={getActivityImageUrl(event)}
+            alt="Event Image"
+            className="select-none object-cover object-center"
+            sizes="156px"
+            priority
+            fill
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={getActivityImageUrl(event)}
+            alt="Event Image"
+            className="select-none object-cover object-center"
+          />
+        )}
       </motion.div>
 
       {/* Name */}
