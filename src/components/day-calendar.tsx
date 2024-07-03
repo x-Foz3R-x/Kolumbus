@@ -7,11 +7,7 @@ type Props = {
   header: string | React.ReactNode;
   className?: string | { container?: string; header?: string; body?: string };
 };
-export const ItineraryCalendar = memo(function ItineraryCalendar({
-  date,
-  header,
-  className,
-}: Props) {
+export const DayCalendar = memo(function ItineraryCalendar({ date, header, className }: Props) {
   const d = useMemo(() => new Date(date), [date]);
   const isDateToday = useMemo(() => isToday(d), [d]);
 

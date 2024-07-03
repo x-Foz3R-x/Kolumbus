@@ -6,7 +6,7 @@ import { add } from "date-fns";
 
 import { cn } from "~/lib/utils";
 
-import { ItineraryCalendar } from "../../components/itinerary-calendar";
+import { DayCalendar } from "../../components/day-calendar";
 import Event, { type Event as EventType } from "./event";
 
 const HERO_EVENTS: EventType[] = [
@@ -28,20 +28,20 @@ const HERO_EVENTS: EventType[] = [
 ] as const;
 
 export default function HeroFeature({ className }: { className?: string }) {
-  const [isWithinArea, setIsWithinArea] = useState(false);
+  const [isWithinArea, setIsWithinArea] = useState(true);
 
   const handleMouseEnter = useCallback(() => setIsWithinArea(true), []);
   const handleMouseLeave = useCallback(() => setIsWithinArea(false), []);
 
   return (
-    <div className={cn("relative w-[500px] font-inter", className)}>
-      <div
-        id="activator"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        className="absolute z-10 h-full w-full"
-      />
-
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={cn(
+        "group/area relative size-[38rem] font-inter outline outline-2 outline-gray-800",
+        className,
+      )}
+    >
       <Spring
         isHovered={isWithinArea}
         initial={{ scale: 0.9, rotate: -6, x: 30, y: 0 }}
@@ -50,14 +50,12 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={10}
         className="animate-[levitate_10s_ease_infinite]"
       >
-        <ItineraryCalendar
-          date={add(new Date(), { days: -1 })}
-          header="Yesterday"
+        <DayCalendar
+          date={add(new Date(), { days: 1 })}
+          header="Day 1"
           className={{
             header: "rounded-t-xl",
-            body: isWithinArea
-              ? "rounded-none duration-500 ease-kolumb-flow"
-              : "rounded-b-xl duration-500 ease-kolumb-flow",
+            body: "rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
           }}
         />
       </Spring>
@@ -70,16 +68,12 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={13}
         className="animate-[levitate_12s_ease_infinite_reverse]"
       >
-        <ItineraryCalendar
-          date={new Date()}
-          header="Today"
+        <DayCalendar
+          date={add(new Date(), { days: 2 })}
+          header="Day 2"
           className={{
-            header: isWithinArea
-              ? "duration-500 ease-kolumb-flow"
-              : "rounded-t-xl duration-500 ease-kolumb-flow",
-            body: isWithinArea
-              ? "duration-500 ease-kolumb-flow"
-              : "rounded-b-xl duration-500 ease-kolumb-flow",
+            header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
+            body: "rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
           }}
         />
       </Spring>
@@ -92,16 +86,12 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={11}
         className="animate-[levitate_13s_ease_infinite]"
       >
-        <ItineraryCalendar
-          date={add(new Date(), { days: 1 })}
-          header="Tomorrow"
+        <DayCalendar
+          date={add(new Date(), { days: 3 })}
+          header="Day 3"
           className={{
-            header: isWithinArea
-              ? "duration-500 ease-kolumb-flow"
-              : "rounded-t-xl duration-500 ease-kolumb-flow",
-            body: isWithinArea
-              ? "duration-500 ease-kolumb-flow"
-              : "rounded-b-xl duration-500 ease-kolumb-flow",
+            header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
+            body: "rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
           }}
         />
       </Spring>
@@ -114,12 +104,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={13}
         className="animate-[levitate_13s_ease_infinite]"
       >
-        <div
-          className={cn(
-            "flex h-5 w-32 items-center justify-center rounded-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl duration-500 ease-kolumb-flow",
-            isWithinArea && "rounded-t-none",
-          )}
-        >
+        <div className="flex h-5 w-32 items-center justify-center rounded-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-t-none">
           End of Trip
         </div>
       </Spring>
