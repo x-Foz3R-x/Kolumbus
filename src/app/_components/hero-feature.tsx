@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { add } from "date-fns";
 
@@ -28,78 +28,73 @@ const HERO_EVENTS: EventType[] = [
 ] as const;
 
 export default function HeroFeature({ className }: { className?: string }) {
-  const [isWithinArea, setIsWithinArea] = useState(true);
-
-  const handleMouseEnter = useCallback(() => setIsWithinArea(true), []);
-  const handleMouseLeave = useCallback(() => setIsWithinArea(false), []);
+  const [isWithinArea, setIsWithinArea] = useState(false);
 
   return (
     <div
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className={cn(
-        "group/area relative size-[38rem] font-inter outline outline-2 outline-gray-800",
-        className,
-      )}
+      onMouseEnter={() => setIsWithinArea(true)}
+      onMouseLeave={() => setIsWithinArea(false)}
+      className={cn("group/area relative size-[38rem] py-24 font-inter", className)}
     >
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 0.9, rotate: -6, x: 30, y: 0 }}
-        animate={{ x: 0, y: 62 }}
+        initial={{ scale: 0.9, rotate: -6, x: 30, y: -62 }}
+        animate={{ x: 0, y: 0 }}
         bounce={0.2}
         damping={10}
         className="animate-[levitate_10s_ease_infinite]"
       >
         <DayCalendar
-          date={add(new Date(), { days: 1 })}
           header="Day 1"
+          date={add(new Date(), { days: 1 })}
           className={{
             header: "rounded-t-xl",
-            body: "rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
+            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
           }}
         />
       </Spring>
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 1.1, rotate: 12, x: 390, y: 170 }}
-        animate={{ x: 0, y: 194 }}
+        initial={{ scale: 1.1, rotate: 12, x: 395, y: 80 }}
+        animate={{ x: 0, y: 132 }}
         bounce={0.8}
         damping={13}
         className="animate-[levitate_12s_ease_infinite_reverse]"
       >
         <DayCalendar
-          date={add(new Date(), { days: 2 })}
           header="Day 2"
+          date={add(new Date(), { days: 2 })}
           className={{
             header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
-            body: "rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
+            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
           }}
         />
       </Spring>
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 1.05, rotate: 3, x: 130, y: 440 }}
-        animate={{ x: 0, y: 326 }}
+        initial={{ scale: 1.05, rotate: 3, x: 130, y: 350 }}
+        animate={{ x: 0, y: 264 }}
         bounce={0.5}
         damping={11}
         className="animate-[levitate_13s_ease_infinite]"
       >
         <DayCalendar
-          date={add(new Date(), { days: 3 })}
           header="Day 3"
+          date={add(new Date(), { days: 3 })}
           className={{
+            container: "rounded-xl",
             header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
-            body: "rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
+            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
           }}
         />
       </Spring>
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ rotate: -27, x: 300, y: 500 }}
-        animate={{ x: 0, y: 458 }}
+        initial={{ rotate: -27, x: 350, y: 420 }}
+        animate={{ x: 0, y: 396 }}
         bounce={0.6}
         damping={13}
         className="animate-[levitate_13s_ease_infinite]"
@@ -111,8 +106,8 @@ export default function HeroFeature({ className }: { className?: string }) {
 
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 0.94, rotate: 15, x: 280, y: 310 }}
-        animate={{ x: 148, y: 214 }}
+        initial={{ scale: 0.94, rotate: 15, x: 280, y: 210 }}
+        animate={{ x: 148, y: 152 }}
         bounce={0.6}
         damping={13}
         className="animate-[levitate_12s_ease_infinite_reverse]"
@@ -121,8 +116,8 @@ export default function HeroFeature({ className }: { className?: string }) {
       </Spring>
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 1.1, rotate: -22, x: 15, y: 310 }}
-        animate={{ x: 148, y: 82 }}
+        initial={{ scale: 1.1, rotate: -22, x: 15, y: 220 }}
+        animate={{ x: 148, y: 20 }}
         bounce={0.6}
         damping={12}
         className="animate-[levitate_10s_ease_infinite]"
@@ -131,8 +126,8 @@ export default function HeroFeature({ className }: { className?: string }) {
       </Spring>
       <Spring
         isHovered={isWithinArea}
-        initial={{ scale: 1.03, rotate: 23, x: 208, y: 84 }}
-        animate={{ x: 148, y: 346 }}
+        initial={{ scale: 1.03, rotate: 23, x: 208, y: 0 }}
+        animate={{ x: 148, y: 284 }}
         bounce={0.3}
         damping={10}
         className="animate-[levitate_13s_ease_infinite]"
