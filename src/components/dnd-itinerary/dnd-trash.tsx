@@ -19,13 +19,15 @@ export default function DndTrash(props: { variant: "default" | "inset"; classNam
         <FloatingPortal id="trash-container">
           <div ref={setNodeRef}>
             <motion.div
+              ref={setNodeRef}
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
               transition={{ ease: EASING.anticipate, duration: 0.4 }}
               className={cn(
                 "flex cursor-pointer items-center justify-center border border-red-200 bg-red-100 fill-red-500 duration-400 ease-kolumb-flow",
-                props.variant === "default" ? "mt-px h-9 w-16 rounded-md" : "h-full w-full",
+                props.variant === "default" && "mt-px h-9 w-16 rounded-md",
+                props.variant === "inset" && "h-full w-full",
                 props.className,
                 isOver && "border-red-500 bg-red-500 fill-white shadow-md",
               )}

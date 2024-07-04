@@ -5,11 +5,9 @@ import { useEffect, useRef, useState } from "react";
 export default function PortalWindow(props: {
   id?: string;
   title: string;
-  state: { isOpen: boolean; isMinimized: boolean };
   onClose?: () => void;
-  onMinimize?: () => void;
-  onMaximize?: () => void;
   className?: string;
+  classNames?: { body?: string };
 }) {
   const [hasContent, setHasContent] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -34,14 +32,11 @@ export default function PortalWindow(props: {
     return () => observer.disconnect();
   }, []);
 
-  if (!props.state.isOpen) return null;
-
   return (
     <div
       className={cn(
         "z-10 h-fit w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
-        props.state.isMinimized && "scale-0",
-        !hasContent && "hidden",
+        !hasContent && "opacity-0",
         props.className,
       )}
     >
@@ -66,7 +61,11 @@ export default function PortalWindow(props: {
       </div>
 
       {/* Body */}
-      <div ref={bodyRef} id={props.id} className="w-fit min-w-full bg-white"></div>
+      <div
+        ref={bodyRef}
+        id={props.id}
+        className={cn("w-fit min-w-full bg-white", props.classNames?.body)}
+      />
     </div>
   );
 }

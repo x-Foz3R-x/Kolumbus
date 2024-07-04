@@ -68,7 +68,7 @@ export default function Desktop() {
             itinerary={itinerary}
             setItinerary={setItinerary}
             eventLimit={5}
-            dndTrash={{ variant: "inset", className: "h-28 border-none bg-white" }}
+            dndTrash={{ variant: "inset", className: "border-none h-32 bg-white" }}
             calendar="left-0 mb-0"
           />
         </Window>
@@ -85,10 +85,8 @@ export default function Desktop() {
         <PortalWindow
           id="trash-container"
           title="Trash"
-          state={windows.calendar}
-          onClose={() => closeWindow("calendar")}
-          onMinimize={() => minimizeWindow("calendar")}
-          className="absolute right-7 top-20"
+          className="absolute right-7 top-20 z-50"
+          classNames={{ body: "h-32 relative" }}
         />
 
         <div>

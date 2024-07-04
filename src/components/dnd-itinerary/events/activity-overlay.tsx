@@ -6,6 +6,7 @@ import { cn } from "~/lib/utils";
 
 import { Badge, ScrollIndicator } from "../../ui";
 import { getActivityImageUrl } from ".";
+import { eventFallbackUrl } from "~/lib/constants";
 
 type EventOverlayProps = {
   event: ActivityEventSchema;
@@ -30,14 +31,24 @@ export const ActivityOverlay = memo(function ActivityOverlay({
       >
         {/* Image */}
         <div className="relative h-[82px] flex-shrink-0">
-          <Image
-            src={getActivityImageUrl(event)}
-            alt="Event Image"
-            className="object-cover object-center"
-            sizes="156px"
-            priority
-            fill
-          />
+          {getActivityImageUrl(event).startsWith("/") ||
+          getActivityImageUrl(event).startsWith(eventFallbackUrl) ? (
+            <Image
+              src={getActivityImageUrl(event)}
+              alt="Event Image"
+              className="select-none object-cover object-center"
+              sizes="156px"
+              priority
+              fill
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={getActivityImageUrl(event)}
+              alt="Event Image"
+              className="select-none object-cover object-center"
+            />
+          )}
         </div>
 
         {/* Name */}
