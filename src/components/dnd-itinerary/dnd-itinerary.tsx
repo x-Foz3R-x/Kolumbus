@@ -27,7 +27,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-// import deepEqual from "deep-equal";
 
 import type { onEventCreated, onEventDeleted, onEventUpdated } from ".";
 import { DndItineraryContext, type DndItineraryContextProps } from "./dnd-context";
@@ -45,7 +44,7 @@ import type {
 } from "~/lib/validations/event";
 import { KEYS } from "~/types";
 
-// * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity
+// * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity (notion dnd style)
 
 // todo - optimize the performance when dragging events
 // todo - Multi select events from different days
@@ -67,7 +66,7 @@ type DndItineraryProps = {
   onEventCreated?: onEventCreated;
   onEventUpdated?: onEventUpdated;
   onEventDeleted?: onEventDeleted;
-  dndTrash?: boolean;
+  dndTrash?: { variant: "default" | "inset"; className?: string } | true;
   calendar?: string;
 };
 export function DndItinerary({
@@ -144,7 +143,7 @@ export function DndItinerary({
 
       setItinerary(
         newItinerary,
-        `Add event ${(event as ActivityType).activity.name} to day ${targetDayIndex + 1}`,
+        `Add ${event.type.toLocaleLowerCase()} to day ${targetDayIndex + 1}`,
       );
       onEventCreated?.(event);
     },
@@ -174,7 +173,7 @@ export function DndItinerary({
       setItinerary(
         newItinerary,
         !preventEntry
-          ? entryDescription ?? `Update event ${(event as ActivityType).activity.name}`
+          ? entryDescription ?? `Update ${event.type.toLocaleLowerCase()} in day ${targetDayIndex}`
           : undefined,
       );
       onEventUpdated?.(event.id, tripId, updateData);
@@ -490,11 +489,6 @@ export function DndItinerary({
     };
   }, [selectedIds]);
 
-  // // Update itinerary when tripItinerary changes
-  // useEffect(() => {
-  //   if (!deepEqual(itinerary, tripItinerary)) setItinerary(tripItinerary, "Fetch");
-  // }, [tripItinerary]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const dndItineraryContext: DndItineraryContextProps = useMemo(
     () => ({
       userId,
@@ -557,18 +551,25 @@ export function DndItinerary({
         </SortableContext>
 
         {/* Calendar End */}
-        <div className="flex">
-          <div
-            className={cn(
-              "sticky left-20 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 font-inter text-xs font-medium text-kolumblue-200 shadow-xl",
-              calendar,
-            )}
-          >
-            End of Trip
+        {itinerary.length > 0 && (
+          <div className="flex">
+            <div
+              className={cn(
+                "sticky left-20 mb-4 flex h-5 w-32 cursor-default items-center justify-center rounded-b-xl bg-kolumblue-500 font-inter text-xs font-medium text-kolumblue-200 shadow-xl",
+                calendar,
+              )}
+            >
+              End of Trip
+            </div>
           </div>
-        </div>
+        )}
 
-        {dndTrash && <DndTrash />}
+        {dndTrash && (
+          <DndTrash
+            variant={typeof dndTrash === "object" ? dndTrash.variant : "default"}
+            className={typeof dndTrash === "object" ? dndTrash.className : undefined}
+          />
+        )}
         <DndDragOverlay
           activeItem={activeItem}
           selectedIds={selectedIds}
