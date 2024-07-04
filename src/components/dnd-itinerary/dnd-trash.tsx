@@ -7,7 +7,7 @@ import { cn } from "~/lib/utils";
 
 import { Icons } from "../ui";
 
-export default function DndTrash() {
+export default function DndTrash(props: { variant: "default" | "inset"; className?: string }) {
   const { active, isOver, setNodeRef } = useDroppable({
     id: "trash",
     data: { type: "trash", dayIndex: -1 },
@@ -24,8 +24,10 @@ export default function DndTrash() {
               exit={{ scale: 0, opacity: 0 }}
               transition={{ ease: EASING.anticipate, duration: 0.4 }}
               className={cn(
-                "mt-px flex h-9 w-16 cursor-pointer items-center justify-center rounded-md border border-red-200 bg-red-100 fill-red-500 duration-400 ease-kolumb-flow",
+                props.variant === "default" ? "mt-px h-9 w-16 rounded-md" : "h-full w-full",
+                "flex cursor-pointer items-center justify-center border border-red-200 bg-red-100 fill-red-500 duration-400 ease-kolumb-flow",
                 isOver && "border-red-500 bg-red-500 fill-white shadow-md",
+                props.className,
               )}
             >
               <Icons.trash className="h-3.5 flex-shrink-0" />
