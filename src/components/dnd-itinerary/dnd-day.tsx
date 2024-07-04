@@ -67,7 +67,12 @@ const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
             {children}
 
             {eventCount < eventLimit && (
-              <EventComposer day={day} dayIndex={dayIndex} dragging={!!active?.id} />
+              <>
+                <EventComposer day={day} dayIndex={dayIndex} dragging={!!active?.id} />
+
+                {/* Placeholder for event composer animation (occupies its space) */}
+                {!!active?.id && <span className="ml-2 h-28 w-8 opacity-0 [&:nth-child(2)]:ml-0" />}
+              </>
             )}
           </ul>
         </>
