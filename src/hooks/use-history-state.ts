@@ -84,7 +84,7 @@ export default function useHistoryState<T>(
   const addEntry = useCallback(
     (value: T, desc: string) => {
       // If the new value is the same as the last one in the history, return
-      if (deepEqual(history[index], value)) return;
+      if (deepEqual(history[index]?.value, value)) return;
 
       const newHistory = [...history.slice(0, index + 1), { value: structuredClone(value), desc }];
 
