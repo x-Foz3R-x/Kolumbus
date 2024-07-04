@@ -101,6 +101,7 @@ export default {
         md: "0 0 5px rgba(0,0,0,0.05), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02), 0 8px 8px rgba(0,0,0,0.02), 0 12px 12px rgba(0,0,0,0.01)",
         lg: "0 0 5px rgba(0,0,0,0.05), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02), 0 8px 8px rgba(0,0,0,0.02), 0 12px 12px rgba(0,0,0,0.01)",
         xl: "0 0 5px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.02), 0 4px 4px rgba(0,0,0,0.02), 0 8px 8px rgba(0,0,0,0.02), 0 16px 16px rgba(0,0,0,0.02)",
+        xxl: "0 0 5px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.05), 0 0px 32px rgba(0,0,0,0.1)",
 
         borderXS:
           "0 0 0 1px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.02), 0 2px 2px rgba(0,0,0,0.01), 0 2px 3px rgba(0,0,0,0.01)",
@@ -109,13 +110,6 @@ export default {
 
         borderSplashXl:
           "0 0 0 1px hsla(232, 9%, 90%, 0.4), 0 0 5px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 8px 8px rgba(0,0,0,0.03), 0 16px 16px rgba(0,0,0,0.03), 0 24px 24px rgba(0,0,0,0.02), 4px 0 4px rgba(0,0,0,0.02), 8px 0 8px rgba(0,0,0,0.02), -4px 0 4px rgba(0,0,0,0.02), -8px 0 8px rgba(0,0,0,0.02)",
-
-        kolumblueInset:
-          "inset 0 0px 5px rgba(0,0,0,.02), inset 0 1px 1px hsla(210, 78%, 75%, 0.1), inset 0 1px 2px rgba(0,0,0,.02), inset 0 2px 4px rgba(0,0,0,.02), inset 0 3px 6px rgba(0,0,0,.02), inset 0 4px 8px hsla(210, 78%, 90%, 0.1)",
-        kolumblueSelected:
-          "0px 0px 0px 1px hsla(210, 78%, 84%, 0.3), 0px 2px 4px rgba(0,0,0,.06), 0px 5px 10px rgba(0,0,0,.03)",
-        kolumblueHover:
-          "0px 0px 0px 1px hsla(210, 78%, 90%, 0.3), 0px 2px 4px rgba(0,0,0,.06), 0px 5px 10px rgba(0,0,0,.03)",
       },
     },
   },
