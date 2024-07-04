@@ -10,11 +10,13 @@ import Window from "./window";
 import { DndItinerary } from "../dnd-itinerary";
 import itineraries from "./itineraries.json";
 import { Button } from "../ui";
+import PortalWindow from "./portal-window";
 
 export default function Desktop() {
-  const [itinerary, setItinerary, { changes }] = useHistoryState<ItinerarySchema>([], {
-    limit: 15,
-  });
+  const [itinerary, setItinerary, { changes, replaceHistory }] = useHistoryState<ItinerarySchema>(
+    [],
+    { limit: 15 },
+  );
   const [windows, setWindows] = useState({
     itinerary: { isOpen: true, isMinimized: false },
     calendar: { isOpen: true, isMinimized: false },
@@ -24,7 +26,9 @@ export default function Desktop() {
 
   // Randomise the itinerary on mount
   useEffect(() => {
-    setItinerary(randomItinerary());
+    const itinerary = randomItinerary();
+    setItinerary(itinerary);
+    replaceHistory([{ value: itinerary, desc: "Open" }]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -64,6 +68,7 @@ export default function Desktop() {
             itinerary={itinerary}
             setItinerary={setItinerary}
             eventLimit={5}
+            dndTrash={{ variant: "inset", className: "h-28 border-none bg-white" }}
             calendar="left-0 mb-0"
           />
         </Window>
@@ -76,6 +81,15 @@ export default function Desktop() {
         >
           Calendar
         </Window>
+
+        <PortalWindow
+          id="trash-container"
+          title="Trash"
+          state={windows.calendar}
+          onClose={() => closeWindow("calendar")}
+          onMinimize={() => minimizeWindow("calendar")}
+          className="absolute right-7 top-20"
+        />
 
         <div>
           <Window
@@ -130,12 +144,14 @@ function randomItinerary(restrictToTripleDays = false) {
   // Randomly select events for each day in the itinerary
   return itinerary.map((day) => {
     const eventsToPick = chosenDays.has(day.id) ? 2 : 1;
-    const events = new Set<EventSchema>();
+    const events: EventSchema[] = [];
 
     // Randomly select unique events for the day
-    while (events.size < eventsToPick) {
+    while (events.length < eventsToPick) {
       const randomEventIndex = Math.floor(Math.random() * day.events.length);
-      events.add(day.events[randomEventIndex]!);
+      const event = { ...day.events[randomEventIndex]!, position: events.length };
+
+      if (!events.some((e) => e.id === event.id)) events.push(event);
     }
 
     return { ...day, events: Array.from(events) };

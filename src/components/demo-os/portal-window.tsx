@@ -9,6 +9,7 @@ export default function PortalWindow(props: {
   onClose?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
+  className?: string;
 }) {
   const [hasContent, setHasContent] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -38,9 +39,10 @@ export default function PortalWindow(props: {
   return (
     <div
       className={cn(
-        "h-fit w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
+        "z-10 h-fit w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
         props.state.isMinimized && "scale-0",
         !hasContent && "hidden",
+        props.className,
       )}
     >
       {/* Frame */}
