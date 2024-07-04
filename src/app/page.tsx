@@ -14,7 +14,7 @@ export default async function HomePage() {
       <TopNav />
 
       <main className="apply-custom-cursor flex min-h-screen flex-col items-center justify-center overflow-x-clip pt-16 font-belanosima">
-        <div className="w-full bg-stripe-bold-60-kolumblue-500/0">
+        <div className="w-full pb-24">
           <div className="relative mx-auto flex h-fit w-full max-w-screen-2xl justify-around gap-8 px-6">
             <div className="relative flex flex-shrink-0 flex-col items-center justify-center gap-4 text-center md:items-start md:text-left lg:gap-6">
               <div className="whitespace-nowrap font-semibold">

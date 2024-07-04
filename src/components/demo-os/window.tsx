@@ -14,7 +14,7 @@ export default function Window(props: {
   return (
     <div
       className={cn(
-        "w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
+        "h-fit w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
         props.state.isMinimized && "scale-0",
       )}
     >
