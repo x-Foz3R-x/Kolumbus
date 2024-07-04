@@ -191,7 +191,8 @@ export function DndItinerary({
         }
       });
 
-      const actionDescription = eventIds.length > 1 ? "Delete selected events" : "Delete event";
+      const actionDescription =
+        eventIds.length > 1 ? `Delete ${eventIds.length} events` : "Delete event";
       setItinerary(newItinerary, actionDescription);
 
       const ids = eventIds.length > 1 ? eventIds : eventIds[0]!;
@@ -330,11 +331,11 @@ export function DndItinerary({
 
     // Skip if dragging is not within the same day or if the drag type is a day. Both cases are handled in `DragOver`.
     if (activeDayIndex !== overDayIndex || activeType === "day" || overType === "day") {
-      if (activeType === "day") setItinerary(itinerary, "Change day position");
+      if (activeType === "day") setItinerary(itinerary, "Move day");
       else {
         setItinerary(
           itinerary,
-          selectedIds.length > 1 ? "Change selected events position" : "Change event position",
+          selectedIds.length > 1 ? `Move ${selectedIds.length} events` : "Move event",
         );
       }
 
@@ -362,7 +363,7 @@ export function DndItinerary({
     newItinerary[activeDayIndex]!.events = updateEventData(rearrangedEvents);
     setItinerary(
       newItinerary,
-      selectedIds.length > 1 ? "Change selected events position" : "Change event position",
+      selectedIds.length > 1 ? `Move ${selectedIds.length} events` : "Move event",
     );
     setActiveItem(null);
     // syncEvents([activeDay.id]);
