@@ -45,10 +45,7 @@ export const TripProvider = (props: {
 }) => {
   const router = useRouter();
 
-  const [trip, setTrip, { changes }] = useHistoryState(props.trip, {
-    initialDescription: "Fetch",
-    limit: 15,
-  });
+  const [trip, setTrip, { changes }] = useHistoryState(props.trip, { initialDescription: "Fetch" });
   const [myMemberships, setMyMemberships] = useState(props.myMemberships);
 
   const permissions = useMemo(
