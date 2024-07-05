@@ -55,8 +55,7 @@ export default function MenuBar() {
         <Link href="/" className={Variants({ variant: "tlCorner" })}>
           <Icons.logo className="h-[15px]" />
         </Link>
-        <Link href="/signin" className={Variants({ variant: "app" })}>
-          {/* Try it yourself */}
+        <Link href="/signup" className={Variants({ variant: "app" })}>
           Start Your Adventure
         </Link>
         <Link href="/contact" className={Variants()}>
