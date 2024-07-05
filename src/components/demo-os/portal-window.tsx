@@ -41,7 +41,7 @@ export default function PortalWindow(props: {
       )}
     >
       {/* Frame */}
-      <div className="relative flex h-10 rounded-t-[10px] bg-stone-200/90 backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
+      <div className="relative z-50 flex h-10 rounded-t-[10px] bg-stone-200/90 backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
         {/* Controls */}
         <div className="flex h-full items-center gap-2 px-5">
           <Button
