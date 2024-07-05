@@ -26,7 +26,8 @@ export function DatePicker(props: {
   maxDays: number;
   onApply: (startDate: Date, endDate: Date) => void;
   placement?: Placement;
-  showDaysPicker?: boolean;
+  inline?: boolean;
+  daysPicker?: boolean;
   showTooltip?: boolean;
   className?: string;
   buttonProps?: ButtonProps;
@@ -35,7 +36,7 @@ export function DatePicker(props: {
   const [focusedRange, setFocusedRange] = useState<RangeFocus>([0, 0]);
   const [preview, setPreview] = useState<Preview>(undefined);
 
-  const [dateRange, setDateRange, { minDate, maxDate }] = useDateRange({
+  const [dateRange, setDateRange, { maxDate, minDate }] = useDateRange({
     startDate: props.startDate,
     endDate: props.endDate,
     maxDays: props.maxDays,
@@ -79,9 +80,9 @@ export function DatePicker(props: {
     setDateRange({ startDate: new Date(props.startDate), endDate: new Date(props.endDate) });
   };
 
-  const onOpenChange = (open: boolean) => {
-    setIsOpen(open);
-    if (!open) {
+  const onOpenChange = (isOpen: boolean) => {
+    setIsOpen(isOpen);
+    if (!isOpen) {
       setDateRange({ startDate: new Date(props.startDate), endDate: new Date(props.endDate) });
     }
   };
@@ -91,6 +92,89 @@ export function DatePicker(props: {
     setDateRange({ startDate: new Date(props.startDate), endDate: new Date(props.endDate) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.startDate, props.endDate]);
+
+  const renderDatePicker = () => (
+    <>
+      <div className={cn("space-y-2", props.daysPicker ? "py-2 pl-2" : "p-2")}>
+        <DateRange
+          ranges={[dateRange]}
+          rangeColors={["hsl(210, 78%, 60%)"]}
+          onChange={handleChange}
+          focusedRange={focusedRange}
+          onRangeFocusChange={(focusRange) => setFocusedRange(focusRange)}
+          {...((!!preview || focusedRange[1] === 1) && { preview: preview })}
+          {...((!!preview || focusedRange[1] === 1) && {
+            onPreviewChange: handlePreviewChange,
+          })}
+          dateDisplayFormat="d MMM yyyy"
+          weekdayDisplayFormat="EEEEE"
+          minDate={minDate}
+          maxDate={maxDate}
+          weekStartsOn={1}
+          preventSnapRefocus
+          scroll={{ enabled: true, monthHeight: 212, longMonthHeight: 244, calendarHeight: 228 }}
+          navigatorRenderer={(shownDate, changeShownDate) =>
+            datePickerNavigation(shownDate, changeShownDate, maxDate, minDate)
+          }
+        />
+
+        {/* Controls */}
+        <div className="relative z-50 flex w-full gap-2">
+          <Button
+            onClick={handleCancel}
+            animatePress
+            variant="scale"
+            className="w-full rounded-md bg-gray-50 text-xs font-medium text-gray-600 before:rounded-md before:bg-gray-100"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleApply}
+            animatePress
+            variant="scale"
+            className="w-full rounded-md bg-gray-50 text-xs font-medium text-gray-600 before:rounded-md before:bg-gray-100"
+          >
+            Apply
+          </Button>
+        </div>
+      </div>
+
+      {props.daysPicker && (
+        <div className="relative flex h-[24.5rem] flex-col gap-2 overflow-hidden py-0.5">
+          <SelectInline
+            selectedIndex={dateRange.days - 1}
+            setSelectedIndex={(index) => {
+              if (index === null) return;
+              setDateRange({
+                endDate: add(dateRange.startDate, { days: index }),
+                days: index + 1,
+              });
+            }}
+            scrollItemIntoView={{ behavior: "smooth", block: "center" }}
+            className="px-2"
+          >
+            {Array.from({ length: props.maxDays }).map((_, i) => (
+              <DayOption
+                key={i}
+                index={i}
+                startDate={dateRange.startDate}
+                onClick={(date) => handleChange({ selection: { endDate: date } })}
+                onHover={(preview) => setPreview(preview)}
+              />
+            ))}
+          </SelectInline>
+        </div>
+      )}
+    </>
+  );
+
+  if (props.inline) {
+    return (
+      <div id="date-picker" className="flex">
+        {renderDatePicker()}
+      </div>
+    );
+  }
 
   return (
     <div id="date-picker" className="flex">
@@ -163,75 +247,105 @@ export function DatePicker(props: {
               }
         }
       >
-        <div className={cn("space-y-2", props.showDaysPicker ? "py-2 pl-2" : "p-2")}>
-          <DateRange
-            ranges={[dateRange]}
-            rangeColors={["hsl(210, 78%, 60%)"]}
-            onChange={handleChange}
-            focusedRange={focusedRange}
-            onRangeFocusChange={(focusRange) => setFocusedRange(focusRange)}
-            {...((!!preview || focusedRange[1] === 1) && { preview })}
-            {...((!!preview || focusedRange[1] === 1) && { onPreviewChange: handlePreviewChange })}
-            dateDisplayFormat="d MMM yyyy"
-            weekdayDisplayFormat="EEEEE"
-            minDate={minDate}
-            maxDate={maxDate}
-            weekStartsOn={1}
-            preventSnapRefocus
-            scroll={{ enabled: true, monthHeight: 212, longMonthHeight: 244, calendarHeight: 228 }}
-            navigatorRenderer={(shownDate, changeShownDate) =>
-              datePickerNavigation(shownDate, changeShownDate, minDate, maxDate)
-            }
-          />
-
-          {/* Controls */}
-          <div className="relative z-50 flex w-full gap-2">
-            <Button
-              onClick={handleCancel}
-              animatePress
-              variant="scale"
-              className="w-full rounded-md bg-gray-50 text-xs font-medium text-gray-600 before:rounded-md before:bg-gray-100"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleApply}
-              animatePress
-              variant="scale"
-              className="w-full rounded-md bg-gray-50 text-xs font-medium text-gray-600 before:rounded-md before:bg-gray-100"
-            >
-              Apply
-            </Button>
-          </div>
-        </div>
-
-        {props.showDaysPicker && (
-          <div className="relative flex h-[24.5rem] flex-col gap-2 overflow-hidden py-0.5">
-            <SelectInline
-              selectedIndex={dateRange.days - 1}
-              setSelectedIndex={(index) => {
-                if (index === null) return;
-                setDateRange({
-                  endDate: add(dateRange.startDate, { days: index }),
-                  days: index + 1,
-                });
-              }}
-              scrollItemIntoView={{ behavior: "smooth", block: "center" }}
-              className="px-2"
-            >
-              {Array.from({ length: props.maxDays }).map((_, i) => (
-                <DayOption
-                  key={i}
-                  index={i}
-                  startDate={dateRange.startDate}
-                  onClick={(date) => handleChange({ selection: { endDate: date } })}
-                  onHover={(preview) => setPreview(preview)}
-                />
-              ))}
-            </SelectInline>
-          </div>
-        )}
+        {renderDatePicker()}
       </Floating>
     </div>
   );
 }
+
+// function DateComp(props: {
+//   daysPicker: boolean;
+//   maxDate: Date;
+//   minDate: Date;
+
+//   preview: Preview;
+//   setPreview: React.Dispatch<React.SetStateAction<Preview>>;
+//   dateRange: {
+//     startDate: Date;
+//     endDate: Date;
+//     days: number;
+//     key: string;
+//   };
+//   setDateRange: any;
+//   focusedRange: RangeFocus;
+//   setFocusedRange: React.Dispatch<React.SetStateAction<RangeFocus>>;
+//   handleChange: any;
+//   handlePreviewChange: any;
+//   handleCancel: any;
+//   handleApply: any;
+// }) {
+//   return (
+//     <>
+//       <div className={cn("space-y-2", props.daysPicker ? "py-2 pl-2" : "p-2")}>
+//         <DateRange
+//           ranges={[props.dateRange]}
+//           rangeColors={["hsl(210, 78%, 60%)"]}
+//           onChange={props.handleChange}
+//           focusedRange={props.focusedRange}
+//           onRangeFocusChange={(focusRange) => props.setFocusedRange(focusRange)}
+//           {...((!!props.preview || props.focusedRange[1] === 1) && { preview: props.preview })}
+//           {...((!!props.preview || props.focusedRange[1] === 1) && {
+//             onPreviewChange: props.handlePreviewChange,
+//           })}
+//           dateDisplayFormat="d MMM yyyy"
+//           weekdayDisplayFormat="EEEEE"
+//           minDate={props.minDate}
+//           maxDate={props.maxDate}
+//           weekStartsOn={1}
+//           preventSnapRefocus
+//           scroll={{ enabled: true, monthHeight: 212, longMonthHeight: 244, calendarHeight: 228 }}
+//           navigatorRenderer={(shownDate, changeShownDate) =>
+//             datePickerNavigation(shownDate, changeShownDate, props.minDate, props.maxDate)
+//           }
+//         />
+
+//         {/* Controls */}
+//         <div className="relative z-50 flex w-full gap-2">
+//           <Button
+//             onClick={props.handleCancel}
+//             animatePress
+//             variant="scale"
+//             className="w-full rounded-md bg-gray-50 text-xs font-medium text-gray-600 before:rounded-md before:bg-gray-100"
+//           >
+//             Cancel
+//           </Button>
+//           <Button
+//             onClick={props.handleApply}
+//             animatePress
+//             variant="scale"
+//             className="w-full rounded-md bg-gray-50 text-xs font-medium text-gray-600 before:rounded-md before:bg-gray-100"
+//           >
+//             Apply
+//           </Button>
+//         </div>
+//       </div>
+//       {props.daysPicker && (
+//         <div className="relative flex h-[24.5rem] flex-col gap-2 overflow-hidden py-0.5">
+//           <SelectInline
+//             selectedIndex={props.dateRange.days - 1}
+//             setSelectedIndex={(index) => {
+//               if (index === null) return;
+//               props.setDateRange({
+//                 endDate: add(props.dateRange.startDate, { days: index }),
+//                 days: index + 1,
+//               });
+//             }}
+//             scrollItemIntoView={{ behavior: "smooth", block: "center" }}
+//             className="px-2"
+//           >
+//             {Array.from({ length: props.maxDays }).map((_, i) => (
+//               <DayOption
+//                 key={i}
+//                 index={i}
+//                 startDate={props.dateRange.startDate}
+//                 onClick={(date) => props.handleChange({ selection: { endDate: date } })}
+//                 onHover={(preview) => props.setPreview(preview)}
+//               />
+//             ))}
+//           </SelectInline>
+//         </div>
+//       )}
+//       )
+//     </>
+//   );
+// }

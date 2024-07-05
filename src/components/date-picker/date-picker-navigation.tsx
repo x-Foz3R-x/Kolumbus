@@ -15,8 +15,8 @@ type ChangeShownDate = (
 export function datePickerNavigation(
   shownDate: Date,
   changeShownDate: ChangeShownDate,
-  minDate: Date,
   maxDate: Date,
+  minDate: Date,
 ) {
   const currentMonth = format(shownDate, "MMMM");
   const currentYear = format(shownDate, "yyyy");

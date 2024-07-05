@@ -53,5 +53,5 @@ export default function useDateRange(props: {
     });
   };
 
-  return [dateRange, handleChange, { minDate, maxDate }] as const;
+  return [dateRange, handleChange, { maxDate, minDate }] as const;
 }
