@@ -7,6 +7,8 @@ type HistoryProps<T> = {
   initialValue: T;
   /** An array of descriptive changes made in history. */
   changes: string[];
+  /** The current position in the history. */
+  position: number;
   /** Whether an undo operation can be performed. */
   canUndo: boolean;
   /** Whether a redo operation can be performed. */
@@ -166,6 +168,7 @@ export default function useHistoryState<T>(
     {
       initialValue: initialValueRef.current,
       changes,
+      position: index,
       canUndo: index > 0,
       canRedo: index < history.length - 1,
       undo,
