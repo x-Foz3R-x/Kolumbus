@@ -29,7 +29,6 @@ export function DatePicker(props: {
   inline?: boolean;
   daysPicker?: boolean;
   showTooltip?: boolean;
-  className?: string;
   buttonProps?: ButtonProps;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -119,7 +118,7 @@ export function DatePicker(props: {
         />
 
         {/* Controls */}
-        <div className="relative z-50 flex w-full gap-2">
+        <div className="flex w-full gap-2">
           <Button
             onClick={handleCancel}
             animatePress

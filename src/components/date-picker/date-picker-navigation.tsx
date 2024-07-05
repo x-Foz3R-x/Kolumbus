@@ -38,6 +38,7 @@ export function datePickerNavigation(
         <Select
           placement="bottom"
           selectedIndex={shownDate.getMonth()}
+          zIndex={50}
           buttonProps={{
             variant: "scale",
             className: "h-8 w-24 before:bg-gray-100 text-xs",
@@ -56,6 +57,7 @@ export function datePickerNavigation(
         <Select
           placement="bottom"
           selectedIndex={shownDate.getFullYear() - minDate.getFullYear()}
+          zIndex={50}
           buttonProps={{
             variant: "scale",
             className: "h-8 before:bg-gray-100 text-xs",
