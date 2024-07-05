@@ -1,14 +1,10 @@
 [
   [
     {
-      "id": "d0",
-      "date": "2024-06-24",
       "events": [
         {
           "id": "UnMbvcbDeYx4t6VV",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -46,8 +42,6 @@
         {
           "id": "XuPLIrDgDB62hFAE",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -77,8 +71,6 @@
         {
           "id": "iqQeyVmcTfGyAkZA",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 2,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -116,14 +108,10 @@
       ]
     },
     {
-      "id": "d1",
-      "date": "2024-06-25",
       "events": [
         {
           "id": "iqAHVHx2umtnW4hd",
           "tripId": "vbnbmdOWgq",
-          "date": "d1",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -153,14 +141,10 @@
       ]
     },
     {
-      "id": "d2",
-      "date": "2024-06-26",
       "events": [
         {
           "id": "U6bTOe8cOyGtoDOh",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-26",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -200,14 +184,10 @@
   ],
   [
     {
-      "id": "d0",
-      "date": "2024-06-24",
       "events": [
         {
           "id": "ourC7joJFKenbn4t",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -237,8 +217,6 @@
         {
           "id": "1vL06HEfkEYl5loz",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -273,8 +251,6 @@
         {
           "id": "RkzAtJnZxS65srM4",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 2,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -304,14 +280,10 @@
       ]
     },
     {
-      "id": "d1",
-      "date": "2024-06-25",
       "events": [
         {
           "id": "JogMOopuBJ5EaGgu",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-25",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -349,14 +321,10 @@
       ]
     },
     {
-      "id": "d2",
-      "date": "2024-06-26",
       "events": [
         {
           "id": "zVWmkEpxgEOaxLdL",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-25",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -394,8 +362,6 @@
         {
           "id": "JEc6wXmJ9700c88H",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-26",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -434,14 +400,10 @@
   ],
   [
     {
-      "id": "d0",
-      "date": "2024-06-24",
       "events": [
         {
           "id": "C5luePhEFjyRoR2k",
           "tripId": "vbnbmdOWgq",
-          "date": "d0",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -480,8 +442,6 @@
         {
           "id": "9ODe0GDXjieQH81A",
           "tripId": "vbnbmdOWgq",
-          "date": "d0",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -520,8 +480,6 @@
         {
           "id": "RDc4nPlthFkTvWBR",
           "tripId": "vbnbmdOWgq",
-          "date": "d0",
-          "position": 2,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -568,8 +526,6 @@
         {
           "id": "0K5BUZ4cCqAYRx0g",
           "tripId": "vbnbmdOWgq",
-          "date": "d0",
-          "position": 3,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -616,14 +572,10 @@
       ]
     },
     {
-      "id": "d2",
-      "date": "2024-06-25",
       "events": [
         {
           "id": "7UBUZcwNMp62lZ1E",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-25",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -662,8 +614,6 @@
         {
           "id": "Rt1iqGlGkzzw95XM",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-25",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -702,14 +652,10 @@
       ]
     },
     {
-      "id": "d1",
-      "date": "2024-06-26",
       "events": [
         {
           "id": "7oFEblPoxvyrvOgE",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-26",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -750,14 +696,10 @@
   ],
   [
     {
-      "id": "d0",
-      "date": "2024-06-24",
       "events": [
         {
           "id": "6g6UHpmSQnkitcLB",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -796,8 +738,6 @@
         {
           "id": "2VQVqqki3a2Alqwo",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -836,8 +776,6 @@
         {
           "id": "ZpglHrs1WXgAjz5U",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 2,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -876,14 +814,10 @@
       ]
     },
     {
-      "id": "d1",
-      "date": "2024-06-25",
       "events": [
         {
           "id": "vGgLNJNLpK94IIMj",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-25",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -929,14 +863,10 @@
       ]
     },
     {
-      "id": "d2",
-      "date": "2024-06-26",
       "events": [
         {
           "id": "MSvjSHjEwxSGzB5I",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-26",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -983,8 +913,6 @@
         {
           "id": "1pMdc8dEwIPaEQ3D",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-26",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1033,14 +961,10 @@
   ],
   [
     {
-      "id": "d0",
-      "date": "2024-06-24",
       "events": [
         {
           "id": "saEnjiCNR2kXthdQ",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1079,8 +1003,6 @@
         {
           "id": "XH1QqgJoSOsw9WTA",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1119,8 +1041,6 @@
         {
           "id": "xhNeDtszG7UxgDVB",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 2,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1167,14 +1087,10 @@
       ]
     },
     {
-      "id": "d1",
-      "date": "2024-06-25",
       "events": [
         {
           "id": "QJdpB3PJWX86lKkx",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-25",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1213,8 +1129,6 @@
         {
           "id": "dZu7ynEfpPDnB2Jc",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-25",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1253,14 +1167,10 @@
       ]
     },
     {
-      "id": "d2",
-      "date": "2024-06-26",
       "events": [
         {
           "id": "DFC95QVB3KB1mxtM",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-26",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1306,8 +1216,6 @@
         {
           "id": "fmZaFJvlYJ6IBnFd",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-26",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1348,14 +1256,10 @@
   ],
   [
     {
-      "id": "d0",
-      "date": "2024-06-24",
       "events": [
         {
           "id": "tnavGjdLsISz5w2u",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1394,8 +1298,6 @@
         {
           "id": "Ybu1DBpCGJrySzqi",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 1,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1441,8 +1343,6 @@
         {
           "id": "cIsqf9vRUjC4cTte",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-24",
-          "position": 2,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
@@ -1481,14 +1381,10 @@
       ]
     },
     {
-      "id": "d1",
-      "date": "2024-06-25",
       "events": [
         {
           "id": "bACDCy84TZ7QSHWd",
           "tripId": "vbnbmdOWgq",
-          "date": "2024-06-25",
-          "position": 0,
           "type": "ACTIVITY",
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
