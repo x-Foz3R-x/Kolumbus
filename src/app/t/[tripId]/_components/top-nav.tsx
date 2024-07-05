@@ -131,7 +131,7 @@ export default function TopNav() {
             endDate={trip.endDate}
             maxDays={14}
             onApply={applyDateRange}
-            showDaysPicker
+            daysPicker
           />
           <MembersDropdown
             tripId={trip.id}
