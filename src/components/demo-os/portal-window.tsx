@@ -36,7 +36,7 @@ export default function PortalWindow(props: {
     <div
       className={cn(
         "z-10 h-fit w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
-        !hasContent && "opacity-0",
+        !hasContent && "pointer-events-none opacity-0",
         props.className,
       )}
     >
