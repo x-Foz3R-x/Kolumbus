@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { add } from "date-fns";
 
@@ -29,12 +29,28 @@ const HERO_EVENTS: EventType[] = [
 
 export default function HeroFeature({ className }: { className?: string }) {
   const [isWithinArea, setIsWithinArea] = useState(false);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScale(Math.max(1, window.innerWidth / 1800));
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div
       onMouseEnter={() => setIsWithinArea(true)}
       onMouseLeave={() => setIsWithinArea(false)}
-      className={cn("group/area relative size-[38rem] py-24 font-inter", className)}
+      style={{
+        width: "max(38rem, 35vw)",
+        height: "max(38rem, 35vw)",
+        scale,
+      }}
+      className={cn("group/area relative size-[38rem] origin-top pt-24 font-inter", className)}
     >
       <Spring
         isHovered={isWithinArea}
