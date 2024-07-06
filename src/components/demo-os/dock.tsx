@@ -10,13 +10,13 @@ export default function Dock(props: {
     calendar: { isOpen: boolean; isMinimized: boolean };
     history: { isOpen: boolean; isMinimized: boolean };
   };
-  resetWindow: (windowName: keyof typeof props.windows) => void;
+  openWindow: (windowName: keyof typeof props.windows) => void;
 }) {
   return (
     <div className="w-full">
       <div className="relative z-10 mx-auto flex w-fit items-center justify-center gap-2 rounded-2xl bg-white/60 fill-gray-800 p-2 pb-3 shadow-xl backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
         <Button
-          onClick={() => props.resetWindow("itinerary")}
+          onClick={() => props.openWindow("itinerary")}
           variant="unset"
           size="unset"
           className={cn(
@@ -36,7 +36,7 @@ export default function Dock(props: {
         </Button>
 
         <Button
-          onClick={() => props.resetWindow("calendar")}
+          onClick={() => props.openWindow("calendar")}
           variant="unset"
           size="unset"
           className={cn(
@@ -56,7 +56,7 @@ export default function Dock(props: {
         </Button>
 
         <Button
-          onClick={() => props.resetWindow("history")}
+          onClick={() => props.openWindow("history")}
           variant="unset"
           size="unset"
           className={cn(
@@ -76,7 +76,7 @@ export default function Dock(props: {
         </Button>
 
         <Button
-          onClick={() => props.resetWindow("devTools")}
+          onClick={() => props.openWindow("devTools")}
           variant="unset"
           size="unset"
           className={cn(
