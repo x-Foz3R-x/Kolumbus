@@ -5,7 +5,7 @@ import { Icons } from "~/components/ui";
 
 export default function Hero() {
   return (
-    <div className="relative flex h-fit min-h-fit w-full justify-around gap-8 px-6 pb-24">
+    <div className="relative flex h-fit min-h-fit w-full justify-around gap-8 px-6 pb-14">
       <div
         style={{ gap: "min(max(2.15rem, 2.5vw), 3.1rem)" }}
         className="relative flex flex-shrink-0 flex-col items-center justify-center text-center md:items-start md:text-left"
