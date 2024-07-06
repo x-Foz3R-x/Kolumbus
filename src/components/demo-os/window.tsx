@@ -8,6 +8,8 @@ export default function Window(props: {
   onClose?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
+  style?: React.CSSProperties;
+  className?: string;
   children: React.ReactNode;
 }) {
   if (!props.state.isOpen) return null;
@@ -15,7 +17,7 @@ export default function Window(props: {
   return (
     <div
       className={cn(
-        "h-fit w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
+        "flex h-fit w-fit max-w-full flex-col overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500",
         props.state.isMinimized && "scale-0",
       )}
     >
@@ -44,7 +46,7 @@ export default function Window(props: {
         </div>
 
         {/* Title */}
-        <div className="flex h-full w-full items-center justify-center px-5 text-[15px] font-semibold mix-blend-color-burn">
+        <div className="flex h-full w-full items-center justify-center whitespace-nowrap px-5 text-[15px] font-semibold mix-blend-color-burn">
           {props.title}
         </div>
 
@@ -52,7 +54,14 @@ export default function Window(props: {
       </div>
 
       {/* Body */}
-      <div id={props.id} className="w-fit min-w-full bg-white p-2.5">
+      <div
+        id={props.id}
+        style={props.style}
+        className={cn(
+          "w-fit min-w-full overflow-visible bg-white p-2.5 duration-500 ease-kolumb-flow",
+          props.className,
+        )}
+      >
         {props.children}
       </div>
     </div>
