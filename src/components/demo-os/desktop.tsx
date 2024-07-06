@@ -5,7 +5,7 @@ import useHistoryState from "~/hooks/use-history-state";
 
 import type { EventSchema, ItinerarySchema } from "~/lib/types";
 
-import Dock from "./dock";
+// import Dock from "./dock";
 import Window from "./window";
 import { DndItinerary } from "../dnd-itinerary";
 import itineraries from "./itineraries.json";
@@ -22,13 +22,23 @@ export default function Desktop() {
     endDate: formatDate(new Date()),
     itinerary: [],
   });
+
+  const [itineraryWidth, setItineraryWidth] = useState(0);
   const [windows, setWindows] = useState({
     itinerary: { isOpen: true, isMinimized: false },
     calendar: { isOpen: true, isMinimized: false },
     history: { isOpen: false, isMinimized: false },
-    devTools: { isOpen: false, isMinimized: false },
+    tasks: { isOpen: true, isMinimized: false },
+    devTools: { isOpen: true, isMinimized: false },
   });
-  const [itineraryWidth, setItineraryWidth] = useState(0);
+
+  const [tasks, setTasks] = useState({
+    moveEvent: false,
+    moveMultipleEvents: false,
+    moveDay: false,
+    deleteEvent: false,
+    changeDate: false,
+  });
 
   const updateItinerary = (itineraryOrIndex: ItinerarySchema | number, desc?: string) => {
     setTrip(
@@ -73,20 +83,33 @@ export default function Desktop() {
         : [],
     }));
 
-    setTrip({
-      startDate: formatDate(startDate),
-      endDate: formatDate(endDate),
-      itinerary,
-    });
+    setTrip(
+      {
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+        itinerary,
+      },
+      "Change date",
+    );
   };
 
-  // Auto open history window when there are more than one changes
   const autoOpenHistory = useRef(true);
+
   useEffect(() => {
+    // Auto open history window when there are more than one changes
     if (autoOpenHistory.current && changes.length > 1) {
       autoOpenHistory.current = false;
       openWindow("history");
     }
+
+    // Update tasks based on changes
+    setTasks({
+      moveEvent: changes.includes("Move event"),
+      moveMultipleEvents: changes.some((change) => /Move \d+ events/.test(change)),
+      moveDay: changes.includes("Move day"),
+      deleteEvent: changes.includes("Delete event"),
+      changeDate: changes.includes("Change date"),
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changes.length]);
@@ -115,13 +138,11 @@ export default function Desktop() {
   }, [trip]);
 
   const listRef = useRef<HTMLUListElement>(null);
-
   useEffect(() => {
-    // Step 2: Scroll to Bottom on New Item
     if (listRef.current) {
       listRef.current.scrollTop = listRef.current.scrollHeight;
     }
-  }, [changes.length]); // Depend on `changes.length` to detect new additions
+  }, [changes.length]);
 
   // Randomise the itinerary on mount
   useEffect(() => {
@@ -133,8 +154,8 @@ export default function Desktop() {
   }, []);
 
   return (
-    <div className="flex w-full flex-1 flex-col justify-between p-3">
-      <div className="flex justify-between gap-2 pb-1">
+    <div className="flex w-full flex-1 flex-col justify-between gap-4 p-3">
+      <div className="flex justify-center gap-4">
         <Window
           title="Itinerary"
           state={windows.itinerary}
@@ -174,7 +195,7 @@ export default function Desktop() {
         <PortalWindow
           id="trash-container"
           title="Trash"
-          className="absolute right-4 top-12 z-50"
+          className="absolute right-4 top-24 z-50"
           classNames={{ body: "h-32 relative" }}
         />
 
@@ -202,32 +223,57 @@ export default function Desktop() {
           </Window>
 
           <Window
+            title="Tasks"
+            state={windows.tasks}
+            onClose={() => closeWindow("tasks")}
+            onMinimize={() => minimizeWindow("tasks")}
+          >
+            <ul className="list-inside list-disc text-[13px]">
+              <li className={cn(tasks.moveEvent && "line-through")}>Move at least 1 Event</li>
+              <li className={cn(tasks.moveMultipleEvents && "line-through")}>
+                Move multiple Events at the same time
+              </li>
+              <li className={cn(tasks.moveDay && "line-through")}>Move whole Day</li>
+              <li className={cn(tasks.deleteEvent && "line-through")}>Put any event in trash</li>
+              <li className={cn(tasks.changeDate && "line-through")}>Pick new Date</li>
+            </ul>
+          </Window>
+
+          <Window
             title="Dev Tools"
             state={windows.devTools}
             onClose={() => closeWindow("devTools")}
             onMinimize={() => minimizeWindow("devTools")}
+            className="flex h-16 justify-center gap-4"
           >
             <Button
               onClick={() => setTrip(randomTrip({ startDate: trip.startDate }), "Random trip")}
+              variant="button"
+              className="border-kolumblue-600 bg-kolumblue-500 font-medium text-white"
             >
               Random Trip
             </Button>
 
-            <Button>Complete tasks</Button>
-          </Window>
-
-          <Window
-            title="Tasks"
-            state={windows.devTools}
-            onClose={() => closeWindow("devTools")}
-            onMinimize={() => minimizeWindow("devTools")}
-          >
-            tips
+            <Button
+              onClick={() => {
+                setTasks({
+                  moveEvent: true,
+                  moveMultipleEvents: true,
+                  moveDay: true,
+                  deleteEvent: true,
+                  changeDate: true,
+                });
+              }}
+              variant="button"
+              className="border-kolumblue-600 bg-kolumblue-500 font-medium text-white"
+            >
+              Complete tasks
+            </Button>
           </Window>
         </div>
       </div>
 
-      <Dock windows={windows} openWindow={openWindow} />
+      {/* <Dock windows={windows} openWindow={openWindow} /> */}
     </div>
   );
 }
