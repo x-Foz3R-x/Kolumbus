@@ -7,7 +7,7 @@ import ProfileButton from "~/components/profile-button";
 
 export default function TopNav() {
   return (
-    <nav className="apply-custom-cursor flex h-16 w-screen justify-center font-belanosima">
+    <nav className="apply-custom-cursor mx-4 flex h-16 w-[calc(100vw-2rem)] justify-center font-belanosima bg-dot-black/20">
       <div className="relative z-50 flex h-16 w-full max-w-screen-2xl items-center justify-between px-8">
         <div className="z-50 hidden flex-1 items-center gap-4 sm:flex">
           <NextLink
@@ -20,12 +20,7 @@ export default function TopNav() {
             <span className="mt-1">KOLUMBUS</span>
           </NextLink>
 
-          <Link.Arrow
-            href="/contact"
-            // className={cn(ButtonVariants({ variant: "scale", size: "lg" }), "before:bg-gray-100")}
-          >
-            Contact
-          </Link.Arrow>
+          <Link.Arrow href="/contact">Contact</Link.Arrow>
           <p className="rounded bg-red-100 px-1 py-0.5 text-xs font-normal text-gray-400">
             Beta v0.3.0
           </p>

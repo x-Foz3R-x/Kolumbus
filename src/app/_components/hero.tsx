@@ -3,8 +3,8 @@ import { Link } from "~/components/ui";
 
 export default function Hero() {
   return (
-    <div className="relative z-10 flex h-fit min-h-fit w-full justify-around gap-8 pb-24 bg-dot-black/25">
-      <div className="flex flex-col items-center justify-center gap-5 pb-24 text-center text-gray-600 selection:bg-kolumblue-200 sm:gap-[min(max(2.15rem,2.5vw),3.1rem)] md:items-start md:text-left">
+    <div className="relative flex h-[calc(100vh-4rem)] w-full items-center justify-around gap-8 pb-40 bg-dot-black/20">
+      <div className="flex flex-col items-center justify-center gap-5 pb-40 pt-16 text-center text-gray-600 selection:bg-kolumblue-200 sm:gap-[min(max(2.15rem,2.5vw),3.1rem)] md:items-start md:text-left">
         <div className="whitespace-nowrap font-bold">
           <h1 className="text-scale-lg sm:text-scale-2xl">Travel Planning</h1>
           <h2 className="text-scale-md sm:text-scale-lg">
@@ -26,7 +26,7 @@ export default function Hero() {
           </p>
         </div>
 
-        <Link.Arrow href="/signup" theme="default" size="xl" className="sm:flex">
+        <Link.Arrow href="/signup" size="xl" className="hidden sm:flex">
           Start Your Adventure
         </Link.Arrow>
         <Link.Arrow href="/signup" className="font-bold sm:hidden">
@@ -35,6 +35,20 @@ export default function Hero() {
       </div>
 
       <HeroFeature className="hidden md:flex" />
+
+      {/* Top part of next section */}
+      <div className="absolute inset-x-0 bottom-0">
+        <div className="relative h-28 w-1/2 rounded-t-[3rem] bg-gray-800">
+          <p className="absolute bottom-0 w-full translate-y-1/2 text-balance px-[10%] text-center font-belanosima text-scale-md font-bold text-white">
+            Discover the <span className="text-yellow-300"> Power </span> of Kolumbus
+          </p>
+
+          <span className="absolute -right-12 bottom-0 -z-10 size-12 bg-gray-800" />
+          <span className="absolute -right-12 bottom-0 -z-10 size-12 rounded-bl-full bg-white" />
+        </div>
+
+        <div className="h-12 w-full rounded-tr-[3rem] bg-gray-800" />
+      </div>
     </div>
   );
 }
