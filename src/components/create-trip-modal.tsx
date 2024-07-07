@@ -8,6 +8,8 @@ import { DatePicker } from "./date-picker";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
 import { Button, Icons, Input } from "~/components/ui";
 
+// TODO: add trip preview like in trello create board modal
+
 type Props = {
   isOpen: boolean;
   setOpen: (open: boolean) => void;
@@ -57,7 +59,6 @@ export const CreateTripModal = memo(function CreateTripModal({
               setEndDate(endDate);
             }}
             placement="right"
-            className="scale-110"
           />
         </div>
       </ModalBody.iconDesign>
