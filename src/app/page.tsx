@@ -10,7 +10,7 @@ export default async function HomePage() {
     <>
       <TopNav />
 
-      <main className="apply-custom-cursor flex min-h-screen flex-col items-center justify-center overflow-x-clip px-4 pt-16 font-belanosima">
+      <main className="apply-custom-cursor flex min-h-screen flex-col items-center justify-center overflow-x-clip px-4 font-belanosima">
         <Hero />
         <DemoOs />
 
