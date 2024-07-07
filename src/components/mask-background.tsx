@@ -1,10 +1,10 @@
 import { cn } from "~/lib/utils";
 
-type DotBackgroundProps = {
+type Props = {
   className?: { background?: string; mask?: string };
   children: React.ReactNode;
 };
-export default function DotBackground({ className, children }: DotBackgroundProps) {
+export default function MaskBackground({ className, children }: Props) {
   return (
     <div className={className?.background}>
       <span
