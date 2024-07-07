@@ -9,11 +9,11 @@ export default function Hero() {
           <h1 className="text-scale-lg sm:text-scale-2xl">Travel Planning</h1>
           <h2 className="text-scale-md sm:text-scale-lg">
             Made
-            <span className="mx-2 rounded bg-emerald-400 px-2 text-white selection:bg-emerald-200 selection:text-emerald-600">
+            <span className="mx-2 inline-block rotate-3 rounded bg-emerald-400 p-2 text-white selection:bg-emerald-200 selection:text-emerald-600">
               Simple
             </span>
             and
-            <span className="mx-2 rounded bg-amber-400 px-2 text-white selection:bg-orange-200 selection:text-orange-600">
+            <span className="mx-2 inline-block -rotate-6 rounded bg-yellow-400 p-2 text-white selection:bg-yellow-200 selection:text-yellow-600">
               Fun
             </span>
           </h2>
@@ -40,7 +40,11 @@ export default function Hero() {
       <div className="absolute inset-x-0 bottom-0">
         <div className="relative h-28 w-1/2 rounded-t-[3rem] bg-gray-800">
           <p className="absolute bottom-0 w-full translate-y-1/2 text-balance px-[10%] text-center font-belanosima text-scale-md font-bold text-white">
-            Discover the <span className="text-yellow-300"> Power </span> of Kolumbus
+            Discover the
+            <span className="mx-2 inline-block -rotate-3 rounded bg-yellow-300 p-2 text-gray-800 selection:bg-yellow-200 selection:text-yellow-600">
+              Power
+            </span>
+            of Kolumbus
           </p>
 
           <span className="absolute -right-12 bottom-0 -z-10 size-12 bg-gray-800" />
