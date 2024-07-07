@@ -133,7 +133,7 @@ export default {
             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='8' height='8' fill='none' stroke='${value}'%3e%3cpath d='M0 .5h31.5V32'/%3e%3c/svg%3e")`,
           }),
           "bg-dot": (value) => ({
-            backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='16' height='16' fill='none'%3e%3ccircle cx='10' cy='10' r='1.62574' fill='${value}'/%3e%3c/svg%3e")`,
+            backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='16' height='16' fill='none'%3e%3ccircle cx='10' cy='10' r='1.62574' fill='${value.startsWith("rgb") ? value : `%23${value.slice(1)}`}'/%3e%3c/svg%3e")`,
           }),
           "bg-stripe": (value) => ({
             backgroundImage: `repeating-linear-gradient(0deg, ${value}, ${value} 1px, transparent 1px, transparent 5px)`,

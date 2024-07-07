@@ -6,9 +6,7 @@ type DotBackgroundProps = {
 };
 export default function DotBackground({ className, children }: DotBackgroundProps) {
   return (
-    <div
-      className={cn("relative flex flex-col items-center justify-center", className?.background)}
-    >
+    <div className={className?.background}>
       <span
         role="presentation"
         className={cn(
