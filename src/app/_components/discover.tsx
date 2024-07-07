@@ -7,16 +7,15 @@ import useHistoryState from "~/hooks/use-history-state";
 import { cn, differenceInDays, formatDate } from "~/lib/utils";
 import type { EventSchema, ItinerarySchema } from "~/lib/types";
 
-// import Dock from "./dock";
-import Window from "./window";
-import PortalWindow from "./portal-window";
-import { DatePicker } from "../date-picker";
-import { DndItinerary } from "../dnd-itinerary";
-import { Button } from "../ui";
+import Window from "~/components/window";
+import PortalWindow from "~/components/portal-window";
+import { DatePicker } from "~/components/date-picker";
+import { DndItinerary } from "~/components/dnd-itinerary";
+import { Button } from "~/components/ui";
 
 import itineraries from "~/config/itineraries.json";
 
-export default function Desktop() {
+export default function Discover() {
   type Trip = { startDate: string; endDate: string; itinerary: ItinerarySchema };
   const [trip, setTrip, { changes, position, jumpTo, replaceHistory }] = useHistoryState<Trip>({
     startDate: formatDate(new Date()),
@@ -145,7 +144,7 @@ export default function Desktop() {
   }, []);
 
   return (
-    <div className="flex w-full flex-1 flex-col justify-between gap-4 p-3">
+    <div className="relative flex h-fit w-full flex-col justify-between gap-4 rounded-b-[3rem] bg-gray-800 px-4 pb-24 pt-16 font-inter">
       <div className="flex justify-center gap-4">
         <Window
           title="Itinerary"
@@ -184,7 +183,7 @@ export default function Desktop() {
         <PortalWindow
           id="trash-container"
           title="Trash"
-          className="absolute right-4 top-24 z-50"
+          className="right-4 top-24"
           classNames={{ body: "h-32 relative" }}
         />
 

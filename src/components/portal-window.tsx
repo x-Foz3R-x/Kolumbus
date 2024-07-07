@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { Button } from "../ui";
+import { Button } from "./ui";
 import { useEffect, useRef, useState } from "react";
 
 export default function PortalWindow(props: {
@@ -35,7 +35,7 @@ export default function PortalWindow(props: {
   return (
     <div
       className={cn(
-        "z-10 h-fit w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
+        "absolute z-10 h-fit w-fit overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500 ease-kolumb-flow",
         !hasContent && "pointer-events-none opacity-0",
         props.className,
       )}

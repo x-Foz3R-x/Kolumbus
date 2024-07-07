@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { Button } from "../ui";
+import { Button } from "./ui";
 
 export default function Window(props: {
   id?: string;

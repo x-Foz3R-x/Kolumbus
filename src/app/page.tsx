@@ -2,7 +2,7 @@ import "~/styles/custom-cursor.css";
 
 import TopNav from "./_components/top-nav";
 import Hero from "./_components/hero";
-import DemoOs from "~/components/demo-os";
+import Discover from "./_components/discover";
 import ProgressiveBackgroundColor from "~/components/progressiveBackgroundColor";
 
 export default async function HomePage() {
@@ -12,7 +12,7 @@ export default async function HomePage() {
 
       <main className="apply-custom-cursor flex min-h-screen flex-col items-center justify-center overflow-x-clip px-4 font-belanosima">
         <Hero />
-        <DemoOs />
+        <Discover />
 
         <ProgressiveBackgroundColor
           colors={[
