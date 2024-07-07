@@ -3,6 +3,8 @@ export { Icons } from "./icons";
 export { Button, ButtonVariants } from "./button";
 export type { ButtonProps } from "./button";
 
+export { Link } from "./link";
+
 export { Input } from "./input";
 export type { InputProps } from "./input";
 
