@@ -2,7 +2,6 @@ import { useRef } from "react";
 import Image from "next/image";
 
 import { cn } from "~/lib/utils";
-import { eventFallbackUrl } from "~/lib/constants";
 import { ScrollIndicator } from "~/components/ui";
 
 export type Event = { name: string; image: string };
@@ -19,7 +18,7 @@ export default function Event({ event, className }: { event: Event; className?: 
       {/* Image */}
       <div className="relative h-[82px] flex-shrink-0">
         <Image
-          src={`${event?.image ? `/api/get-google-image?imageRef=${event.image}&width=156&height=82` : eventFallbackUrl}`}
+          src={`/api/get-google-image?imageRef=${event.image}&width=156&height=82`}
           alt="Event Image"
           className="object-cover object-center"
           sizes="312px"

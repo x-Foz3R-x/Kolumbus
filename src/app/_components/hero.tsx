@@ -1,3 +1,4 @@
+import ColorBlock from "./color-block";
 import HeroFeature from "./hero-feature";
 import { Link } from "~/components/ui";
 
@@ -9,13 +10,13 @@ export default function Hero() {
           <h1 className="text-scale-lg sm:text-scale-2xl">Travel Planning</h1>
           <h2 className="text-scale-md sm:text-scale-lg">
             Made
-            <span className="mx-2 inline-block rotate-3 rounded bg-emerald-400 p-2 text-white selection:bg-emerald-200 selection:text-emerald-600">
+            <ColorBlock className="rotate-3 bg-emerald-400 text-white selection:bg-emerald-100 selection:text-emerald-600 hover:-rotate-6">
               Simple
-            </span>
+            </ColorBlock>
             and
-            <span className="mx-2 inline-block -rotate-6 rounded bg-yellow-400 p-2 text-white selection:bg-yellow-200 selection:text-yellow-600">
+            <ColorBlock className="-rotate-6 bg-yellow-400 text-white selection:bg-yellow-100 selection:text-yellow-600 hover:rotate-6">
               Fun
-            </span>
+            </ColorBlock>
           </h2>
         </div>
 
@@ -36,14 +37,14 @@ export default function Hero() {
 
       <HeroFeature className="hidden md:flex" />
 
-      {/* Top part of next section */}
+      {/* Top part of discover section */}
       <div className="absolute inset-x-0 bottom-0">
         <div className="relative h-28 w-1/2 rounded-t-[3rem] bg-gray-800">
           <p className="absolute bottom-0 w-full translate-y-1/2 text-balance px-[10%] text-center font-belanosima text-scale-md font-bold text-white">
             Discover the
-            <span className="mx-2 inline-block -rotate-3 rounded bg-yellow-300 p-2 text-gray-800 selection:bg-yellow-200 selection:text-yellow-600">
+            <ColorBlock className="-rotate-3 bg-yellow-300 text-gray-800 selection:bg-yellow-100 selection:text-yellow-600 hover:rotate-6">
               Power
-            </span>
+            </ColorBlock>
             of Kolumbus
           </p>
 
