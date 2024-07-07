@@ -1,8 +1,8 @@
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import Link from "next/link";
+import NextLink from "next/link";
 import { cn } from "~/lib/utils";
 
-import { ButtonVariants, Icons } from "~/components/ui";
+import { ButtonVariants, Link, Icons } from "~/components/ui";
 import ProfileButton from "~/components/profile-button";
 
 export default function TopNav() {
@@ -10,7 +10,7 @@ export default function TopNav() {
     <nav className="apply-custom-cursor flex h-16 w-screen justify-center font-belanosima">
       <div className="relative z-50 flex h-16 w-full max-w-screen-2xl items-center justify-between px-8">
         <div className="z-50 hidden flex-1 items-center gap-4 sm:flex">
-          <Link
+          <NextLink
             href="/"
             title="Homepage"
             aria-label="Homepage"
@@ -18,14 +18,14 @@ export default function TopNav() {
           >
             <Icons.logo className="m-auto h-8 fill-kolumblue-500" />
             <span className="mt-1">KOLUMBUS</span>
-          </Link>
+          </NextLink>
 
-          <Link
+          <Link.Arrow
             href="/contact"
-            className={cn(ButtonVariants({ variant: "scale", size: "lg" }), "before:bg-gray-100")}
+            // className={cn(ButtonVariants({ variant: "scale", size: "lg" }), "before:bg-gray-100")}
           >
             Contact
-          </Link>
+          </Link.Arrow>
           <p className="rounded bg-red-100 px-1 py-0.5 text-xs font-normal text-gray-400">
             Beta v0.3.0
           </p>
@@ -33,16 +33,16 @@ export default function TopNav() {
 
         <div className="flex flex-1 items-center justify-end gap-4">
           <SignedIn>
-            <Link
+            <NextLink
               href="/library"
               className={cn(ButtonVariants({ variant: "scale", size: "lg" }), "before:bg-gray-100")}
             >
               Library
-            </Link>
+            </NextLink>
             <ProfileButton />
           </SignedIn>
           <SignedOut>
-            <Link
+            <NextLink
               href="/signin"
               className={cn(
                 ButtonVariants({ variant: "scale", size: "lg" }),
@@ -50,13 +50,13 @@ export default function TopNav() {
               )}
             >
               Sign in
-            </Link>
-            <Link
+            </NextLink>
+            <NextLink
               href="/signup"
               className="block w-fit select-none text-nowrap rounded-xl bg-kolumblue-500 px-4 py-2 font-belanosima font-semibold text-white shadow-lg"
             >
               Start Your Adventure
-            </Link>
+            </NextLink>
           </SignedOut>
         </div>
       </div>

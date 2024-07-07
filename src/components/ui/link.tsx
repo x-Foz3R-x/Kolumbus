@@ -4,7 +4,7 @@ import { Icons } from ".";
 import { cva, type VariantProps } from "class-variance-authority";
 
 export const ArrowVariants = cva(
-  "group relative flex w-fit items-center duration-500 ease-kolumb-flow leading-[0.8] hover:rounded transition-[border-radius,transform] active:translate-y-[min(max(0.2625rem,0.3vw),0.375rem)]",
+  "group relative flex w-fit items-center duration-500 ease-kolumb-flow hover:rounded transition-[border-radius,transform]",
   {
     variants: {
       theme: {
@@ -13,7 +13,7 @@ export const ArrowVariants = cva(
       },
       size: {
         default: "px-4 py-1 text-[15px] rounded-lg",
-        xl: "rounded-[min(max(0.7rem,0.8vw),1rem)] px-[min(max(1.75rem,2vw),2.5rem)] py-[min(max(1.05rem,1.2vw),1.5rem)] text-scale-sm font-bold active:translate-y-[min(max(0.2625rem,0.3vw),0.375rem)]",
+        xl: "rounded-[min(max(0.7rem,0.8vw),1rem)] leading-[2.25] px-[min(max(1.75rem,2vw),2.5rem)] text-scale-sm font-bold active:translate-y-[min(max(0.2625rem,0.3vw),0.375rem)]",
         unset: null,
       },
     },
