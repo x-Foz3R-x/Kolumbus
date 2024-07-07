@@ -4,7 +4,7 @@ import { Button } from "../ui";
 export default function Window(props: {
   id?: string;
   title: string;
-  state: { isOpen: boolean; isMinimized: boolean };
+  isOpen: boolean;
   onClose?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
@@ -12,15 +12,10 @@ export default function Window(props: {
   className?: string;
   children: React.ReactNode;
 }) {
-  if (!props.state.isOpen) return null;
+  if (!props.isOpen) return null;
 
   return (
-    <div
-      className={cn(
-        "flex h-fit w-fit max-w-full flex-col overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500",
-        props.state.isMinimized && "scale-0",
-      )}
-    >
+    <div className="flex h-fit w-fit max-w-full flex-col overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500">
       {/* Frame */}
       <div className="relative flex h-10 rounded-t-[10px] bg-stone-200/90 backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
         {/* Controls */}
