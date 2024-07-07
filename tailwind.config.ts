@@ -112,8 +112,6 @@ export default {
           "0 0 0 1px hsla(232, 9%, 90%, 0.4), 0 0 5px rgba(0,0,0,0.03), 0 4px 4px rgba(0,0,0,0.03), 0 8px 8px rgba(0,0,0,0.03), 0 16px 16px rgba(0,0,0,0.03), 0 24px 24px rgba(0,0,0,0.02), 4px 0 4px rgba(0,0,0,0.02), 8px 0 8px rgba(0,0,0,0.02), -4px 0 4px rgba(0,0,0,0.02), -8px 0 8px rgba(0,0,0,0.02)",
       },
       fontSize: {
-        "scale-3xl": ["min(max(3rem, 4vw), 6rem)", "0.8"],
-        "scale-2xl": ["min(max(4.5rem, 5.5vw), 5.5rem)", "0.8"],
         "scale-xl": ["min(max(3.5rem, 4vw), 5rem)", "0.8"],
         "scale-lg": ["min(max(2.62rem, 3vw), 3.75rem)", "0.8"],
         "scale-md": ["min(max(2.15rem, 2.5vw), 3.1rem)", "0.8"],
