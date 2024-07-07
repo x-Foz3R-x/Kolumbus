@@ -1,35 +1,40 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { add } from "date-fns";
 import useHistoryState from "~/hooks/use-history-state";
 
+import { cn, differenceInDays, formatDate } from "~/lib/utils";
 import type { EventSchema, ItinerarySchema } from "~/lib/types";
 
 // import Dock from "./dock";
 import Window from "./window";
-import { DndItinerary } from "../dnd-itinerary";
-import itineraries from "./itineraries.json";
-import { Button } from "../ui";
 import PortalWindow from "./portal-window";
 import { DatePicker } from "../date-picker";
-import { add } from "date-fns";
-import { cn, differenceInDays, formatDate } from "~/lib/utils";
+import { DndItinerary } from "../dnd-itinerary";
+import { Button } from "../ui";
+
+import itineraries from "~/config/itineraries.json";
 
 export default function Desktop() {
   type Trip = { startDate: string; endDate: string; itinerary: ItinerarySchema };
   const [trip, setTrip, { changes, position, jumpTo, replaceHistory }] = useHistoryState<Trip>({
     startDate: formatDate(new Date()),
     endDate: formatDate(new Date()),
-    itinerary: [],
+    itinerary: [
+      { id: "d0", date: "2004-03-08", events: [] },
+      { id: "d1", date: "2004-03-09", events: [] },
+      { id: "d2", date: "2004-03-10", events: [] },
+    ],
   });
 
   const [itineraryWidth, setItineraryWidth] = useState(0);
   const [windows, setWindows] = useState({
-    itinerary: { isOpen: true, isMinimized: false },
-    calendar: { isOpen: true, isMinimized: false },
-    history: { isOpen: false, isMinimized: false },
-    tasks: { isOpen: true, isMinimized: false },
-    devTools: { isOpen: true, isMinimized: false },
+    itinerary: true,
+    calendar: true,
+    history: false,
+    tasks: true,
+    devTools: true,
   });
 
   const [tasks, setTasks] = useState({
@@ -50,24 +55,11 @@ export default function Desktop() {
   };
 
   const openWindow = (windowName: keyof typeof windows) => {
-    setWindows({
-      ...windows,
-      [windowName]: { ...windows[windowName], isOpen: true, isMinimized: false },
-    });
+    setWindows({ ...windows, [windowName]: true });
   };
 
   const closeWindow = (windowName: keyof typeof windows) => {
-    setWindows({
-      ...windows,
-      [windowName]: { ...windows[windowName], isOpen: !windows[windowName].isOpen },
-    });
-  };
-
-  const minimizeWindow = (windowName: keyof typeof windows) => {
-    setWindows({
-      ...windows,
-      [windowName]: { ...windows[windowName], isMinimized: !windows[windowName].isMinimized },
-    });
+    setWindows({ ...windows, [windowName]: false });
   };
 
   const handleDateSelection = (startDate: Date, endDate: Date) => {
@@ -94,7 +86,7 @@ export default function Desktop() {
   };
 
   const autoOpenHistory = useRef(true);
-
+  // Update tasks based on changes and auto open history window
   useEffect(() => {
     // Auto open history window when there are more than one changes
     if (autoOpenHistory.current && changes.length > 1) {
@@ -114,30 +106,29 @@ export default function Desktop() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changes.length]);
 
+  // Calculate the width of the itinerary window based on the number of events
   useLayoutEffect(() => {
-    const totalPadding = 20;
-    const dayCalendarWidth = 128;
-    const gap = 20;
+    // const totalPadding = 20;
+    // const dayCalendarWidth = 128;
+    // const calendarGap = 20;
+    // const composerGap = 16;
+    // const composerWidth = 32 || 312;
+    // 20 + 128 + 20 + 16 + 32 = 216
+    const preComputedStaticWidth = 216;
+
     const activityWidth = 160;
     const eventGap = 8;
-    const composerGap = 16;
-    const composerWidth = 32;
 
     const highestEventCount = Math.max(...trip.itinerary.map((day) => day.events.length));
 
     setItineraryWidth(
-      totalPadding +
-        dayCalendarWidth +
-        gap * highestEventCount +
-        activityWidth * highestEventCount +
-        eventGap +
-        composerGap +
-        composerWidth,
+      preComputedStaticWidth + activityWidth * highestEventCount + eventGap * highestEventCount,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trip]);
 
   const listRef = useRef<HTMLUListElement>(null);
+  // Scroll to the bottom of the history list when there are new changes
   useEffect(() => {
     if (listRef.current) {
       listRef.current.scrollTop = listRef.current.scrollHeight;
@@ -158,18 +149,17 @@ export default function Desktop() {
       <div className="flex justify-center gap-4">
         <Window
           title="Itinerary"
-          state={windows.itinerary}
+          isOpen={windows.itinerary}
           onClose={() => closeWindow("itinerary")}
-          onMinimize={() => minimizeWindow("itinerary")}
           style={{ width: itineraryWidth + "px" }}
         >
           <DndItinerary
-            tripId="demo"
+            tripId="discover"
             userId="guest"
             itinerary={trip.itinerary}
             setItinerary={updateItinerary}
             eventLimit={5}
-            dndTrash={{ variant: "inset", className: "border-none h-32 bg-white" }}
+            dndTrash={{ variant: "inset", className: "h-32" }}
             calendar="left-0 mb-0"
           />
         </Window>
@@ -177,9 +167,8 @@ export default function Desktop() {
         <div className="flex-shrink-0">
           <Window
             title="Calendar"
-            state={windows.calendar}
+            isOpen={windows.calendar}
             onClose={() => closeWindow("calendar")}
-            onMinimize={() => minimizeWindow("calendar")}
             className="py-0"
           >
             <DatePicker
@@ -200,12 +189,7 @@ export default function Desktop() {
         />
 
         <div className="flex flex-col gap-4">
-          <Window
-            title="History"
-            state={windows.history}
-            onClose={() => closeWindow("history")}
-            onMinimize={() => minimizeWindow("history")}
-          >
+          <Window title="History" isOpen={windows.history} onClose={() => closeWindow("history")}>
             <ul ref={listRef} className="flex max-h-48 flex-col overflow-scroll">
               {changes.map((change, index) => (
                 <li
@@ -222,12 +206,7 @@ export default function Desktop() {
             </ul>
           </Window>
 
-          <Window
-            title="Tasks"
-            state={windows.tasks}
-            onClose={() => closeWindow("tasks")}
-            onMinimize={() => minimizeWindow("tasks")}
-          >
+          <Window title="Tasks" isOpen={windows.tasks} onClose={() => closeWindow("tasks")}>
             <ul className="list-inside list-disc text-[13px]">
               <li className={cn(tasks.moveEvent && "line-through")}>Move at least 1 Event</li>
               <li className={cn(tasks.moveMultipleEvents && "line-through")}>
@@ -241,9 +220,8 @@ export default function Desktop() {
 
           <Window
             title="Dev Tools"
-            state={windows.devTools}
+            isOpen={windows.devTools}
             onClose={() => closeWindow("devTools")}
-            onMinimize={() => minimizeWindow("devTools")}
             className="flex h-16 justify-center gap-4"
           >
             <Button
@@ -278,14 +256,12 @@ export default function Desktop() {
   );
 }
 
-function randomTrip(props?: { startDate: string; restrictToTripleDays?: boolean }) {
-  const availableItineraries = props?.restrictToTripleDays
-    ? itineraries.filter((itinerary) => itinerary.length === 3)
-    : itineraries;
+function randomTrip(props?: { itineraries?: ItinerarySchema; startDate: string }) {
+  const chosenItineraries = props?.itineraries ?? (itineraries as unknown as ItinerarySchema);
 
   // Randomly select an itinerary
-  const randomIndex = Math.floor(Math.random() * availableItineraries.length);
-  const itinerary = availableItineraries[randomIndex] as unknown as ItinerarySchema;
+  const randomIndex = Math.floor(Math.random() * chosenItineraries.length);
+  const itinerary = chosenItineraries[randomIndex] as unknown as ItinerarySchema;
 
   // Randomly select start date for the trip if not provided
   const randomStartDateIndex = Math.floor(Math.random() * 13) + 1;
@@ -293,7 +269,7 @@ function randomTrip(props?: { startDate: string; restrictToTripleDays?: boolean 
   const endDate = formatDate(add(new Date(startDate), { days: itinerary.length - 1 }));
 
   //#region Randomise the events for each day
-  const targetEvents = props?.restrictToTripleDays ? itinerary.length : itinerary.length + 1;
+  const targetEvents = itinerary.length + 1;
   const multiEventDays = itinerary.filter((day) => day.events.length > 1);
   const requiredDoubleEventDays = targetEvents - itinerary.length;
 
