@@ -50,7 +50,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         height: "max(38rem, 35vw)",
         scale,
       }}
-      className={cn("group/area relative size-[38rem] origin-top pt-24 font-inter", className)}
+      className={cn("group/area relative size-[38rem] origin-top pt-16 font-inter", className)}
     >
       <Spring
         isHovered={isWithinArea}

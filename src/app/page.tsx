@@ -15,7 +15,11 @@ export default async function HomePage() {
         <DemoOs />
 
         <ProgressiveBackgroundColor
-          colors={[[255, 255, 255]]}
+          colors={[
+            [255, 255, 255],
+            [235, 215, 245],
+          ]}
+          scrollOffset={["start end", "end start"]}
           className="flex min-h-screen w-screen flex-col items-center justify-center"
         >
           <div className="h-96 w-full rounded-3xl bg-rose-500/25 px-4 shadow-2xl lg:w-[90%]">
