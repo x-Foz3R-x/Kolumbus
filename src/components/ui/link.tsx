@@ -8,11 +8,14 @@ export const ArrowVariants = cva(
   {
     variants: {
       theme: {
-        default: "bg-kolumblue-500 outline-kolumblue-500 text-white fill-white",
+        default:
+          "border-[0.75px] border-gray-600 bg-white/0 outline-gray-600 text-gray-600 fill-gray-600",
+        primary: "bg-kolumblue-500 outline-kolumblue-500 text-white fill-white",
         unset: null,
       },
       size: {
-        default: "px-4 py-1 text-[15px] rounded-lg outline-[0.75px] outline-offset-1 outline",
+        default:
+          "px-4 py-1.5 text-base rounded-lg outline-[0.75px] outline-offset-1 outline font-semibold",
         xl: "rounded-[min(max(0.7rem,0.8vw),1rem)] outline-2 outline-offset-1 outline-double leading-[2.25] px-[min(max(1.75rem,2vw),2.5rem)] text-scale-sm font-bold",
         unset: null,
       },

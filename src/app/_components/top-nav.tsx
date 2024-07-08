@@ -1,8 +1,7 @@
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import NextLink from "next/link";
-import { cn } from "~/lib/utils";
 
-import { ButtonVariants, Link, Icons } from "~/components/ui";
+import { Link, Icons } from "~/components/ui";
 import ProfileButton from "~/components/profile-button";
 
 export default function TopNav() {
@@ -12,46 +11,25 @@ export default function TopNav() {
         <div className="z-50 hidden flex-1 items-center gap-4 sm:flex">
           <NextLink
             href="/"
-            title="Homepage"
-            aria-label="Homepage"
-            className="flex items-center gap-2 text-2xl font-bold leading-[0] text-kolumblue-500"
+            className="flex items-center gap-2 fill-kolumblue-500 text-2xl font-bold leading-[0] text-gray-600"
           >
-            <Icons.logo className="m-auto h-8 fill-kolumblue-500" />
+            <Icons.logo className="m-auto h-[min(max(2.62rem,3vw),3.75rem)] bg-white" />
             <span className="mt-1">KOLUMBUS</span>
           </NextLink>
 
           <Link.Arrow href="/contact">Contact</Link.Arrow>
-          <p className="rounded bg-red-100 px-1 py-0.5 text-xs font-normal text-gray-400">
-            Beta v0.3.0
-          </p>
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
           <SignedIn>
-            <NextLink
-              href="/library"
-              className={cn(ButtonVariants({ variant: "scale", size: "lg" }), "before:bg-gray-100")}
-            >
-              Library
-            </NextLink>
+            <Link.Arrow href="/library">Library</Link.Arrow>
             <ProfileButton />
           </SignedIn>
           <SignedOut>
-            <NextLink
-              href="/signin"
-              className={cn(
-                ButtonVariants({ variant: "scale", size: "lg" }),
-                "flex items-center gap-2 before:bg-gray-100",
-              )}
-            >
-              Sign in
-            </NextLink>
-            <NextLink
-              href="/signup"
-              className="block w-fit select-none text-nowrap rounded-xl bg-kolumblue-500 px-4 py-2 font-belanosima font-semibold text-white shadow-lg"
-            >
+            <Link.Arrow href="/signin">Sign in</Link.Arrow>
+            <Link.Arrow href="/signup" theme="primary">
               Start Your Adventure
-            </NextLink>
+            </Link.Arrow>
           </SignedOut>
         </div>
       </div>
