@@ -5,10 +5,10 @@ import { Button, Icons } from "~/components/ui";
 
 export default function Dock(props: {
   windows: {
-    itinerary: { isOpen: boolean; isMinimized: boolean };
-    devTools: { isOpen: boolean; isMinimized: boolean };
-    calendar: { isOpen: boolean; isMinimized: boolean };
-    history: { isOpen: boolean; isMinimized: boolean };
+    itinerary: boolean;
+    devTools: boolean;
+    calendar: boolean;
+    history: boolean;
   };
   openWindow: (windowName: keyof typeof props.windows) => void;
 }) {
@@ -21,7 +21,7 @@ export default function Dock(props: {
           size="unset"
           className={cn(
             "flex size-10 items-center justify-center rounded-lg bg-white fill-kolumblue-500 shadow-sm",
-            props.windows.itinerary.isOpen &&
+            props.windows.itinerary &&
               "after:absolute after:bottom-0.5 after:size-1 after:rounded-full after:bg-black/50",
           )}
           tooltip={{
@@ -41,7 +41,7 @@ export default function Dock(props: {
           size="unset"
           className={cn(
             "flex size-10 items-center justify-center rounded-lg bg-gradient-to-b from-blue-500 to-sky-300 fill-white shadow-sm",
-            props.windows.calendar.isOpen &&
+            props.windows.calendar &&
               "after:absolute after:bottom-0.5 after:size-1 after:rounded-full after:bg-black/50",
           )}
           tooltip={{
@@ -61,7 +61,7 @@ export default function Dock(props: {
           size="unset"
           className={cn(
             "flex size-10 items-center justify-center rounded-full bg-green-400 fill-black shadow-sm",
-            props.windows.history.isOpen &&
+            props.windows.history &&
               "after:absolute after:bottom-0.5 after:size-1 after:rounded-full after:bg-black/50",
           )}
           tooltip={{
@@ -81,7 +81,7 @@ export default function Dock(props: {
           size="unset"
           className={cn(
             "flex size-10 items-center justify-center rounded-lg bg-gradient-to-b from-gray-700 to-gray-800 text-sm font-semibold tracking-tighter text-white shadow-sm",
-            props.windows.devTools.isOpen &&
+            props.windows.devTools &&
               "after:absolute after:bottom-0.5 after:size-1 after:rounded-full after:bg-black/50",
           )}
           tooltip={{

@@ -11,6 +11,7 @@ import PortalWindow from "~/components/portal-window";
 import { DatePicker } from "~/components/date-picker";
 import { DndItinerary } from "~/components/dnd-itinerary";
 import { Button } from "~/components/ui";
+import Dock from "./dock";
 
 export default function Discover() {
   const { trip, setTrip, updateItinerary, changes, position, jumpTo, randomise } =
@@ -115,113 +116,121 @@ export default function Discover() {
   }, [changes.length]);
 
   return (
-    <div className="relative flex h-fit w-full flex-col justify-between gap-4 rounded-b-[3rem] bg-gray-800 px-4 pb-24 pt-16 font-inter">
-      <div className="flex justify-center gap-4">
-        <Window
-          title="Itinerary"
-          isOpen={windows.itinerary}
-          onClose={() => closeWindow("itinerary")}
-          style={{ width: itineraryWidth + "px" }}
-        >
-          <DndItinerary
-            tripId="discover"
-            userId="guest"
-            itinerary={trip.itinerary}
-            setItinerary={updateItinerary}
-            eventLimit={5}
-            dndTrash={{ variant: "inset", className: "h-32" }}
-            calendar="left-0 mb-0"
-          />
-        </Window>
-
-        <div className="flex-shrink-0">
+    <div className="relative font-inter">
+      <div className="h-fit w-full rounded-bl-[3rem] bg-gray-800 px-4 pb-16 pt-16">
+        <div className="flex justify-center gap-4">
           <Window
-            title="Calendar"
-            isOpen={windows.calendar}
-            onClose={() => closeWindow("calendar")}
-            className="py-0"
+            title="Itinerary"
+            isOpen={windows.itinerary}
+            onClose={() => closeWindow("itinerary")}
+            style={{ width: itineraryWidth + "px" }}
           >
-            <DatePicker
-              startDate={trip.startDate}
-              endDate={trip.endDate}
-              maxDays={3}
-              onApply={handleDateSelection}
-              inline
+            <DndItinerary
+              tripId="discover"
+              userId="guest"
+              itinerary={trip.itinerary}
+              setItinerary={updateItinerary}
+              eventLimit={5}
+              dndTrash={{ variant: "inset", className: "h-32" }}
+              calendar="left-0 mb-0"
             />
           </Window>
-        </div>
 
-        <PortalWindow
-          id="trash-container"
-          title="Trash"
-          className="right-4 top-24"
-          classNames={{ body: "h-32 relative" }}
-        />
-
-        <div className="flex flex-col gap-4">
-          <Window
-            title="Dev Tools"
-            isOpen={windows.devTools}
-            onClose={() => closeWindow("devTools")}
-            className="flex h-16 justify-center gap-4"
-          >
-            <Button
-              onClick={randomise}
-              variant="button"
-              className="border-kolumblue-600 bg-kolumblue-500 font-medium text-white"
+          <div className="flex-shrink-0">
+            <Window
+              title="Calendar"
+              isOpen={windows.calendar}
+              onClose={() => closeWindow("calendar")}
+              className="py-0"
             >
-              Random Trip
-            </Button>
+              <DatePicker
+                startDate={trip.startDate}
+                endDate={trip.endDate}
+                maxDays={3}
+                onApply={handleDateSelection}
+                inline
+              />
+            </Window>
+          </div>
 
-            <Button
-              onClick={() => {
-                setTasks({
-                  moveEvent: true,
-                  moveMultipleEvents: true,
-                  moveDay: true,
-                  deleteEvent: true,
-                  changeDate: true,
-                });
-              }}
-              variant="button"
-              className="border-kolumblue-600 bg-kolumblue-500 font-medium text-white"
+          <PortalWindow
+            id="trash-container"
+            title="Trash"
+            className="right-4 top-24"
+            classNames={{ body: "h-32 relative" }}
+          />
+
+          <div className="flex flex-col gap-4">
+            <Window
+              title="Dev Tools"
+              isOpen={windows.devTools}
+              onClose={() => closeWindow("devTools")}
+              className="flex h-16 justify-center gap-4"
             >
-              Complete tasks
-            </Button>
-          </Window>
+              <Button
+                onClick={randomise}
+                variant="button"
+                className="border-kolumblue-600 bg-kolumblue-500 font-medium text-white"
+              >
+                Random Trip
+              </Button>
 
-          <Window title="History" isOpen={windows.history} onClose={() => closeWindow("history")}>
-            <ul ref={listRef} className="flex max-h-48 flex-col overflow-scroll">
-              {changes.map((change, index) => (
-                <li
-                  key={index}
-                  onClick={() => jumpTo(index)}
-                  className={cn(
-                    "w-full cursor-pointer rounded px-2 py-1 text-[13px] font-medium even:bg-gray-50 hover:underline",
-                    position === index && "bg-kolumblue-500 text-white even:bg-blue-500",
-                  )}
-                >
-                  {change}
+              <Button
+                onClick={() => {
+                  setTasks({
+                    moveEvent: true,
+                    moveMultipleEvents: true,
+                    moveDay: true,
+                    deleteEvent: true,
+                    changeDate: true,
+                  });
+                }}
+                variant="button"
+                className="border-kolumblue-600 bg-kolumblue-500 font-medium text-white"
+              >
+                Complete tasks
+              </Button>
+            </Window>
+
+            <Window title="History" isOpen={windows.history} onClose={() => closeWindow("history")}>
+              <ul ref={listRef} className="flex max-h-48 flex-col overflow-scroll">
+                {changes.map((change, index) => (
+                  <li
+                    key={index}
+                    onClick={() => jumpTo(index)}
+                    className={cn(
+                      "w-full cursor-pointer rounded px-2 py-1 text-[13px] font-medium even:bg-gray-50 hover:underline",
+                      position === index && "bg-kolumblue-500 text-white even:bg-blue-500",
+                    )}
+                  >
+                    {change}
+                  </li>
+                ))}
+              </ul>
+            </Window>
+
+            <Window title="Tasks" isOpen={windows.tasks} onClose={() => closeWindow("tasks")}>
+              <ul className="list-inside list-disc text-[13px]">
+                <li className={cn(tasks.moveEvent && "line-through")}>Move at least 1 Event</li>
+                <li className={cn(tasks.moveMultipleEvents && "line-through")}>
+                  Move multiple Events at the same time
                 </li>
-              ))}
-            </ul>
-          </Window>
-
-          <Window title="Tasks" isOpen={windows.tasks} onClose={() => closeWindow("tasks")}>
-            <ul className="list-inside list-disc text-[13px]">
-              <li className={cn(tasks.moveEvent && "line-through")}>Move at least 1 Event</li>
-              <li className={cn(tasks.moveMultipleEvents && "line-through")}>
-                Move multiple Events at the same time
-              </li>
-              <li className={cn(tasks.moveDay && "line-through")}>Move whole Day</li>
-              <li className={cn(tasks.deleteEvent && "line-through")}>Put any event in trash</li>
-              <li className={cn(tasks.changeDate && "line-through")}>Pick new Date</li>
-            </ul>
-          </Window>
+                <li className={cn(tasks.moveDay && "line-through")}>Move whole Day</li>
+                <li className={cn(tasks.deleteEvent && "line-through")}>Put any event in trash</li>
+                <li className={cn(tasks.changeDate && "line-through")}>Pick new Date</li>
+              </ul>
+            </Window>
+          </div>
         </div>
       </div>
 
-      {/* <Dock windows={windows} openWindow={openWindow} /> */}
+      <div className="flex justify-end">
+        <span className="relative -z-10 size-12 bg-gray-800 before:absolute before:inset-0 before:rounded-tr-full before:bg-white" />
+
+        <div className="h-28 w-fit rounded-b-[3rem] bg-gray-800 px-4 pt-6">
+          <Dock windows={windows} openWindow={openWindow} />
+        </div>
+      </div>
     </div>
   );
 }

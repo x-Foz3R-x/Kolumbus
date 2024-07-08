@@ -35,7 +35,7 @@ export default function Hero() {
       {/* Top part of discover section */}
       <div className="absolute inset-x-0 bottom-0">
         <div className="relative h-28 w-1/2 rounded-t-[3rem] bg-gray-800">
-          <p className="absolute bottom-0 w-full translate-y-1/2 text-balance px-[10%] text-center font-belanosima text-scale-md font-bold text-white">
+          <p className="absolute bottom-0 z-10 w-full translate-y-1/2 text-balance px-[10%] text-center font-belanosima text-scale-md font-bold text-white">
             Discover the
             <ColorBlock className="-rotate-3 bg-yellow-300 text-gray-800 selection:bg-yellow-100 selection:text-yellow-600 hover:rotate-6">
               Power
@@ -43,8 +43,7 @@ export default function Hero() {
             of Kolumbus
           </p>
 
-          <span className="absolute -right-12 bottom-0 -z-10 size-12 bg-gray-800" />
-          <span className="absolute -right-12 bottom-0 -z-10 size-12 rounded-bl-full bg-white" />
+          <span className="absolute -right-12 bottom-0 -z-10 size-12 bg-gray-800 before:absolute before:inset-0 before:rounded-bl-full before:bg-white" />
         </div>
 
         <div className="h-12 w-full rounded-tr-[3rem] bg-gray-800" />
