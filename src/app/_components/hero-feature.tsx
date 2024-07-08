@@ -1,25 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { add } from "date-fns";
 
 import useRandomTrip from "~/hooks/use-random-trip";
 import { cn } from "~/lib/utils";
-import type { ActivityEventSchema, EventSchema } from "~/lib/types";
+import type { ActivityEventSchema } from "~/lib/types";
 
 import Event from "./event";
 import Spring from "./spring";
 import { DayCalendar } from "../../components/day-calendar";
 
 export default function HeroFeature({ className }: { className?: string }) {
-  const { trip } = useRandomTrip();
-  const [heroEvents, setHeroEvents] = useState<EventSchema[]>([]);
-
-  // Update hero events when random trip is complete
-  useEffect(() => {
-    if (trip.itinerary[0]?.events.length === 0) return;
-    setHeroEvents(trip.itinerary.map((day) => day.events[0]!));
-  }, [trip.itinerary]);
+  const { trip } = useRandomTrip("by-day");
+  const todayEvents = useMemo(() => trip.itinerary.map((day) => day.events[0]!), [trip.itinerary]);
 
   const [isWithinArea, setIsWithinArea] = useState(false);
   const [scale, setScale] = useState(1);
@@ -121,7 +115,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={13}
         className="animate-[levitate_12s_ease_infinite_reverse]"
       >
-        <Event event={heroEvents[0] as ActivityEventSchema} />
+        <Event event={todayEvents[0] as ActivityEventSchema} />
       </Spring>
       <Spring
         isHovered={isWithinArea}
@@ -131,7 +125,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={12}
         className="animate-[levitate_10s_ease_infinite]"
       >
-        <Event event={heroEvents[1] as ActivityEventSchema} />
+        <Event event={todayEvents[1] as ActivityEventSchema} />
       </Spring>
       <Spring
         isHovered={isWithinArea}
@@ -141,7 +135,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={10}
         className="animate-[levitate_13s_ease_infinite]"
       >
-        <Event event={heroEvents[2] as ActivityEventSchema} />
+        <Event event={todayEvents[2] as ActivityEventSchema} />
       </Spring>
     </div>
   );

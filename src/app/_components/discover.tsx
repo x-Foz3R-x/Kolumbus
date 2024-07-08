@@ -13,7 +13,8 @@ import { DndItinerary } from "~/components/dnd-itinerary";
 import { Button } from "~/components/ui";
 
 export default function Discover() {
-  const { trip, setTrip, updateItinerary, changes, position, jumpTo, randomise } = useRandomTrip();
+  const { trip, setTrip, updateItinerary, changes, position, jumpTo, randomise } =
+    useRandomTrip("random");
 
   const [itineraryWidth, setItineraryWidth] = useState(0);
   const [windows, setWindows] = useState({
