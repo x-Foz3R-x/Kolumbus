@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { add } from "date-fns";
 
-import { cn } from "~/lib/utils";
-
-import { DayCalendar } from "../../components/day-calendar";
-import Event from "./event";
 import useRandomTrip from "~/hooks/use-random-trip";
+import { cn } from "~/lib/utils";
 import type { ActivityEventSchema, EventSchema } from "~/lib/types";
+
+import Event from "./event";
+import Spring from "./spring";
+import { DayCalendar } from "../../components/day-calendar";
 
 export default function HeroFeature({ className }: { className?: string }) {
   const { trip } = useRandomTrip();
   const [heroEvents, setHeroEvents] = useState<EventSchema[]>([]);
+
+  // Update hero events when random trip is complete
+  useEffect(() => {
+    if (trip.itinerary[0]?.events.length === 0) return;
+    setHeroEvents(trip.itinerary.map((day) => day.events[0]!));
+  }, [trip.itinerary]);
 
   const [isWithinArea, setIsWithinArea] = useState(false);
   const [scale, setScale] = useState(1);
@@ -28,12 +34,6 @@ export default function HeroFeature({ className }: { className?: string }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  // Update hero events when random trip is complete
-  useEffect(() => {
-    if (trip.itinerary[0]?.events.length === 0) return;
-    setHeroEvents(trip.itinerary.map((day) => day.events[0]!));
-  }, [trip.itinerary]);
 
   return (
     <div
@@ -144,35 +144,5 @@ export default function HeroFeature({ className }: { className?: string }) {
         <Event event={heroEvents[2] as ActivityEventSchema} />
       </Spring>
     </div>
-  );
-}
-
-type SpringProps = {
-  isHovered: boolean;
-  initial: { scale?: number; rotate?: number; x: number; y: number };
-  animate: { x: number; y: number };
-  bounce: number;
-  damping: number;
-  className?: string;
-  children: React.ReactNode;
-};
-function Spring({
-  isHovered,
-  initial,
-  animate,
-  bounce,
-  damping,
-  className,
-  children,
-}: SpringProps) {
-  return (
-    <motion.div
-      initial={initial}
-      animate={isHovered ? { scale: 1, rotate: 0, ...animate } : initial}
-      transition={{ type: "spring", bounce, damping }}
-      className={cn("pointer-events-none absolute", className, isHovered && "animate-none")}
-    >
-      {children}
-    </motion.div>
   );
 }
