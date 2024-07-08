@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "~/lib/utils";
-import { Button, Icons } from "../ui";
+import { Button, Icons } from "~/components/ui";
 
 export default function Dock(props: {
   windows: {
