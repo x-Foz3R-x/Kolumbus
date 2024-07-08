@@ -57,7 +57,7 @@ export default function ProgressiveBackgroundColor({
   const progress = useMotionTemplate`rgb(${r}, ${g}, ${b})`;
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className="relative">
       <motion.div style={{ backgroundColor: progress, ...style }} className={className}>
         {children}
       </motion.div>

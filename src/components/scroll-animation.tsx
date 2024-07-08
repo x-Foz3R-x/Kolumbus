@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform, type MotionStyle } from "framer-motion";
+import { cn } from "~/lib/utils";
 
 type SupportedRangeUnit = "px" | "vw" | "vh" | "%";
 type RangeUnit = `${number}${SupportedRangeUnit}`;
@@ -36,7 +37,11 @@ export default function ScrollAnimation({
   const progress = useTransform(() => scrollYProgress.get() * multiplier + offset);
 
   return (
-    <motion.div ref={thisRef} style={{ [propertyName]: progress, ...style }} className={className}>
+    <motion.div
+      ref={thisRef}
+      style={{ [propertyName]: progress, ...style }}
+      className={cn("relative", className)}
+    >
       {children}
     </motion.div>
   );
