@@ -10,7 +10,7 @@ export default async function HomePage() {
     <>
       <TopNav />
 
-      <main className="apply-custom-cursor flex min-h-screen flex-col items-center justify-center overflow-x-clip px-4 font-belanosima">
+      <main className="apply-custom-cursor min-h-screen w-screen px-4 font-belanosima">
         <Hero />
         <Discover />
 
@@ -20,7 +20,7 @@ export default async function HomePage() {
             [235, 215, 245],
           ]}
           scrollOffset={["start end", "end start"]}
-          className="flex min-h-screen w-screen flex-col items-center justify-center"
+          className="flex min-h-screen w-full flex-col items-center justify-center"
         >
           <div className="h-96 w-full rounded-3xl bg-rose-500/25 px-4 shadow-2xl lg:w-[90%]">
             test

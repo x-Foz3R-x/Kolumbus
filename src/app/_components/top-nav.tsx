@@ -7,7 +7,7 @@ import ProfileButton from "~/components/profile-button";
 
 export default function TopNav() {
   return (
-    <nav className="apply-custom-cursor mx-4 flex h-16 w-[calc(100vw-2rem)] justify-center font-belanosima bg-dot-black/20">
+    <nav className="apply-custom-cursor absolute inset-x-0 top-0 z-50 flex h-16 justify-center font-belanosima">
       <div className="relative z-50 flex h-16 w-full max-w-screen-2xl items-center justify-between px-8">
         <div className="z-50 hidden flex-1 items-center gap-4 sm:flex">
           <NextLink

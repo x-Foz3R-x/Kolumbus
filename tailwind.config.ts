@@ -117,7 +117,7 @@ export default {
         "scale-lg": ["min(max(2.15rem, 2.5vw), 3.1rem)", "0.8"],
         "scale-md": ["min(max(1.75rem, 2vw), 2.5rem)", "1"],
         "scale-sm": ["min(max(1.4rem, 1.6vw), 2rem)", "1.25"],
-        "scale-xs": ["min(max(1.05rem, 1.2vw), 1.5rem)", "1.5"],
+        "scale-xs": ["min(max(1.05rem, 1.2vw), 1.5rem)", "1.25"],
         "scale-2xs": ["min(max(0.7rem, 0.8vw), 1rem)", "1.5"],
       },
     },
