@@ -4,11 +4,11 @@ import { Link } from "~/components/ui";
 
 export default function Hero() {
   return (
-    <div className="relative flex h-[calc(100vh-4rem)] w-full items-center justify-around gap-8 pb-40 bg-dot-black/20">
-      <div className="flex flex-col items-center justify-center gap-5 pb-40 pt-16 text-center text-gray-600 selection:bg-kolumblue-200 sm:gap-[min(max(2.15rem,2.5vw),3.1rem)] md:items-start md:text-left">
+    <div className="relative flex h-fit min-h-screen w-full items-center justify-around gap-8 px-4 pb-40 pt-16 bg-dot-gray-800/25">
+      <div className="flex flex-col items-center justify-center gap-[min(max(2.15rem,2.5vw),3.1rem)] pb-28 text-center text-gray-600 selection:bg-kolumblue-200 md:items-start md:text-left">
         <div className="whitespace-nowrap font-bold">
-          <h1 className="text-scale-lg sm:text-scale-2xl">Travel Planning</h1>
-          <h2 className="text-scale-md sm:text-scale-lg">
+          <h1 className="text-scale-2xl">Travel Planning</h1>
+          <h2 className="text-scale-lg">
             Made
             <ColorBlock className="rotate-3 bg-emerald-400 text-white selection:bg-emerald-100 selection:text-emerald-600 hover:-rotate-6">
               Simple
@@ -20,17 +20,12 @@ export default function Hero() {
           </h2>
         </div>
 
-        <div>
-          <p className="text-pretty text-sm sm:text-scale-xs sm:leading-tight">
-            Plan, explore, and create unforgettable travel experiences <br /> as Kolumbus turns the
-            crafting of your itinerary into <br /> an easy task.
-          </p>
-        </div>
+        <p className="text-scale-xs">
+          Plan, explore, and create unforgettable travel experiences <br /> as Kolumbus turns the
+          crafting of your itinerary into <br /> an easy task.
+        </p>
 
-        <Link.Arrow href="/signup" size="xl" className="hidden sm:flex">
-          Start Your Adventure
-        </Link.Arrow>
-        <Link.Arrow href="/signup" className="font-bold sm:hidden">
+        <Link.Arrow href="/signup" size="xl" className="">
           Start Your Adventure
         </Link.Arrow>
       </div>

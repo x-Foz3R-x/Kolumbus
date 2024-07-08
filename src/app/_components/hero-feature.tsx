@@ -31,6 +31,7 @@ export default function HeroFeature({ className }: { className?: string }) {
   const [isWithinArea, setIsWithinArea] = useState(false);
   const [scale, setScale] = useState(1);
 
+  // Calculate scale based on window width
   useEffect(() => {
     const handleResize = () => {
       setScale(Math.max(1, window.innerWidth / 1800));
@@ -45,12 +46,11 @@ export default function HeroFeature({ className }: { className?: string }) {
     <div
       onMouseEnter={() => setIsWithinArea(true)}
       onMouseLeave={() => setIsWithinArea(false)}
-      style={{
-        width: "max(38rem, 35vw)",
-        height: "max(38rem, 35vw)",
-        scale,
-      }}
-      className={cn("group/area relative size-[38rem] origin-top-left pt-16 font-inter", className)}
+      style={{ scale }}
+      className={cn(
+        "group relative size-[38rem] origin-left pt-12 font-inter duration-250 ease-kolumb-flow",
+        className,
+      )}
     >
       <Spring
         isHovered={isWithinArea}
@@ -65,7 +65,7 @@ export default function HeroFeature({ className }: { className?: string }) {
           date={add(new Date(), { days: 1 })}
           className={{
             header: "rounded-t-xl",
-            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
+            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
           }}
         />
       </Spring>
@@ -82,8 +82,8 @@ export default function HeroFeature({ className }: { className?: string }) {
           header="Day 2"
           date={add(new Date(), { days: 2 })}
           className={{
-            header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
-            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
+            header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
+            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
           }}
         />
       </Spring>
@@ -101,8 +101,8 @@ export default function HeroFeature({ className }: { className?: string }) {
           date={add(new Date(), { days: 3 })}
           className={{
             container: "rounded-xl",
-            header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
-            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-none",
+            header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
+            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
           }}
         />
       </Spring>
@@ -115,7 +115,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={13}
         className="animate-[levitate_13s_ease_infinite]"
       >
-        <div className="flex h-5 w-32 items-center justify-center rounded-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl duration-1000 ease-kolumb-flow group-hover/area:rounded-t-none">
+        <div className="flex h-5 w-32 items-center justify-center rounded-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl duration-1000 ease-kolumb-flow group-hover:rounded-t-none">
           End of Trip
         </div>
       </Spring>
@@ -177,7 +177,7 @@ function Spring({
       initial={initial}
       animate={isHovered ? { scale: 1, rotate: 0, ...animate } : initial}
       transition={{ type: "spring", bounce, damping }}
-      className={cn("absolute", className, isHovered && "animate-none")}
+      className={cn("pointer-events-none absolute", className, isHovered && "animate-none")}
     >
       {children}
     </motion.div>
