@@ -1,7 +1,6 @@
 "use client";
 
 import { type MouseEvent, memo, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { defaultAnimateLayoutChanges, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -15,8 +14,7 @@ import { cn, createId } from "~/lib/utils";
 import { Button, Icons, ScrollIndicator } from "../../ui";
 import { ActivityUIOverlay } from "./activity-ui-overlay";
 import { ActivityDetails } from "./activity-details";
-import { getActivityImageUrl } from ".";
-import { eventFallbackUrl } from "~/lib/constants";
+import ActivityImage from "./activity-image";
 
 // todo - Context Menu (like in floating ui react examples)
 
@@ -140,24 +138,7 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
 
           {/* Image */}
           <div className="relative h-[82px] flex-shrink-0 overflow-hidden">
-            {getActivityImageUrl(event).startsWith("/") ||
-            getActivityImageUrl(event).startsWith(eventFallbackUrl) ? (
-              <Image
-                src={getActivityImageUrl(event)}
-                alt="Event Image"
-                className="select-none object-cover object-center"
-                sizes="156px"
-                priority
-                fill
-              />
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={getActivityImageUrl(event)}
-                alt="Event Image"
-                className="select-none object-cover object-center"
-              />
-            )}
+            <ActivityImage event={event} size={82} />
           </div>
 
           {/* Name */}

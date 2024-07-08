@@ -1,12 +1,10 @@
 import { memo, useRef } from "react";
-import Image from "next/image";
 
 import type { ActivityEventSchema } from "~/lib/validations/event";
 import { cn } from "~/lib/utils";
 
 import { Badge, ScrollIndicator } from "../../ui";
-import { getActivityImageUrl } from ".";
-import { eventFallbackUrl } from "~/lib/constants";
+import ActivityImage from "./activity-image";
 
 type EventOverlayProps = {
   event: ActivityEventSchema;
@@ -31,24 +29,7 @@ export const ActivityOverlay = memo(function ActivityOverlay({
       >
         {/* Image */}
         <div className="relative h-[82px] flex-shrink-0">
-          {getActivityImageUrl(event).startsWith("/") ||
-          getActivityImageUrl(event).startsWith(eventFallbackUrl) ? (
-            <Image
-              src={getActivityImageUrl(event)}
-              alt="Event Image"
-              className="select-none object-cover object-center"
-              sizes="156px"
-              priority
-              fill
-            />
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={getActivityImageUrl(event)}
-              alt="Event Image"
-              className="select-none object-cover object-center"
-            />
-          )}
+          <ActivityImage event={event} size={82} />
         </div>
 
         {/* Name */}

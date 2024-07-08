@@ -1,5 +1,4 @@
 import { memo, useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -9,22 +8,17 @@ import { cn, os } from "~/lib/utils";
 
 import { Button, Icons, Input, ScrollIndicator, TextArea } from "~/components/ui";
 import type { ActivityEventSchema } from "~/lib/validations/event";
-import { getActivityImageUrl } from ".";
-import { eventFallbackUrl } from "~/lib/constants";
-
-// todo - Decouple logic from floating component so only when it is open state will be created
+import ActivityImage from "./activity-image";
 
 // * test/proposal - render activity as the trigger in triggerProps instead of a span
-// todo - Add map with marker for the activity
 
+// todo - Embedded Map with marker at address
 // todo - Opening hours in tooltip
 // todo - Editable Opening hours
 // todo - Add Start and End time
 // todo - Cost currency dropdown
-// todo - Icons with tooltip for controls or instead of text (not 100% sure about this)
 // todo - Tooltip info icon with created at and updated at dates
-// todo - upload photo/link to change activity photo
-// todo - way to remove/choose photo
+// todo - way to upload photo/link to change/remove activity photo and change image index in array
 
 type ActivityDetailsProps = {
   event: ActivityEventSchema;
@@ -94,24 +88,7 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
         exit={{ height: "82px" }}
         transition={{ ease: EASING.anticipate, duration: 0.6 }}
       >
-        {getActivityImageUrl(event).startsWith("/") ||
-        getActivityImageUrl(event).startsWith(eventFallbackUrl) ? (
-          <Image
-            src={getActivityImageUrl(event)}
-            alt="Event Image"
-            className="select-none object-cover object-center"
-            sizes="156px"
-            priority
-            fill
-          />
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={getActivityImageUrl(event)}
-            alt="Event Image"
-            className="select-none object-cover object-center"
-          />
-        )}
+        <ActivityImage event={event} size={82} />
       </motion.div>
 
       {/* Name */}

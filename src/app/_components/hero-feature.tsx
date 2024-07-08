@@ -7,27 +7,14 @@ import { add } from "date-fns";
 import { cn } from "~/lib/utils";
 
 import { DayCalendar } from "../../components/day-calendar";
-import Event, { type Event as EventType } from "./event";
-
-const HERO_EVENTS: EventType[] = [
-  {
-    name: "Warsaw",
-    image:
-      "AWU5eFgaD6KV7jk0Opv1E3hcyFqVq1MstecRDcie0v6oifKWR7ShZgY0AdQTxy5-JnFYzot9HmlLenXcF8oNo6JVDb5fjE2FFvm6MxVz-xV7_PPejY_tH3hxMWnMD4ngBvIGaa1WW64y2pZEOQtjPXIaSX1EE0DWtwdck7_QdOOHmS1iBiNa",
-  },
-  {
-    name: "Helsinki",
-    image:
-      "ATplDJamwMaLHGiaMZgk3BOlZxrAwlvPNmbqVOUUCmQQowUK5jlcNP5EETn7hz7fJ67oRFlXQIw_6Rb8IVbZKR-sk5oh6KtxNtvKk4RaQKeRyONqYslwPUpT_aWXcC63EE8GxwL_mLx-dJmG0cT9o2__2k6XmahdI4WAES-eNLHWmIKSupEz",
-  },
-  {
-    name: "Berlin",
-    image:
-      "ATplDJZ4E6FfheiwWrQ67ALBiDv5fRZ9NF5IvI6zWShOPC3dFZjW2_X10l_Vj9QbyKGzLRnfNoYCM3rfgHJo89kpYMXJQWX_VvQ6Fbme3a0xOJU6pomepRgNvTnZupCkqgyZYoGb0ApJ51AWR-vOBd9MABjhftVnJ5h2n_EcwHJabNPFN2VK",
-  },
-] as const;
+import Event from "./event";
+import useRandomTrip from "~/hooks/use-random-trip";
+import type { ActivityEventSchema, EventSchema } from "~/lib/types";
 
 export default function HeroFeature({ className }: { className?: string }) {
+  const { trip } = useRandomTrip();
+  const [heroEvents, setHeroEvents] = useState<EventSchema[]>([]);
+
   const [isWithinArea, setIsWithinArea] = useState(false);
   const [scale, setScale] = useState(1);
 
@@ -41,6 +28,12 @@ export default function HeroFeature({ className }: { className?: string }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Update hero events when random trip is complete
+  useEffect(() => {
+    if (trip.itinerary[0]?.events.length === 0) return;
+    setHeroEvents(trip.itinerary.map((day) => day.events[0]!));
+  }, [trip.itinerary]);
 
   return (
     <div
@@ -128,7 +121,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={13}
         className="animate-[levitate_12s_ease_infinite_reverse]"
       >
-        <Event event={HERO_EVENTS[0]!} />
+        <Event event={heroEvents[0] as ActivityEventSchema} />
       </Spring>
       <Spring
         isHovered={isWithinArea}
@@ -138,7 +131,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={12}
         className="animate-[levitate_10s_ease_infinite]"
       >
-        <Event event={HERO_EVENTS[1]!} />
+        <Event event={heroEvents[1] as ActivityEventSchema} />
       </Spring>
       <Spring
         isHovered={isWithinArea}
@@ -148,7 +141,7 @@ export default function HeroFeature({ className }: { className?: string }) {
         damping={10}
         className="animate-[levitate_13s_ease_infinite]"
       >
-        <Event event={HERO_EVENTS[2]!} />
+        <Event event={heroEvents[2] as ActivityEventSchema} />
       </Spring>
     </div>
   );
