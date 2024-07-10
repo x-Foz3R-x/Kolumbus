@@ -1,3 +1,4 @@
+import type { Variants } from "framer-motion";
 import type {
   FlipOptions,
   OffsetOptions,
@@ -19,6 +20,7 @@ export type MenuProps = {
   scrollItemIntoView?: ScrollIntoViewOptions;
   loop?: boolean;
   animation?: keyof typeof TRANSITION | null;
+  customAnimation?: Variants;
   zIndex?: number;
   className?: string;
   rootSelector?: string;

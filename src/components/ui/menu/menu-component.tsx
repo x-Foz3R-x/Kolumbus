@@ -61,6 +61,7 @@ export function MenuComponent({
   scrollItemIntoView = { behavior: "smooth", block: "nearest", inline: "nearest" },
   loop,
   animation,
+  customAnimation,
   zIndex,
   className,
   rootSelector,
@@ -189,13 +190,14 @@ export function MenuComponent({
     return transformOrigin;
   }, [context.placement]);
   const variants = useMemo(() => {
+    if (customAnimation) return customAnimation;
     if (animation === null) return undefined;
     if (animation === "fadeToPosition")
       return TRANSITION.fadeToPosition[placement.split("-")[0] as Side];
     if (animation) return TRANSITION[animation];
 
     return TRANSITION.fadeInScale;
-  }, [animation, placement]);
+  }, [animation, customAnimation, placement]);
   const tooltipProps = useMemo(() => {
     return isOpen
       ? undefined
