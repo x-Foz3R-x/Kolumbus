@@ -4,14 +4,14 @@ import { Icons } from ".";
 import { cva, type VariantProps } from "class-variance-authority";
 
 export const ArrowVariants = cva(
-  "group relative flex w-fit select-none items-center duration-500 ease-kolumb-flow hover:rounded transition-[border-radius,transform] focus:rounded",
+  "group relative flex w-fit select-none items-center duration-400 ease-kolumb-flow hover:rounded transition-[border-radius,transform] focus:rounded",
   {
     variants: {
       theme: {
-        outline:
-          "border-[1.5px] border-gray-600 backdrop-blur-lg backdrop-filter backdrop-saturate-[180%] text-gray-600 fill-gray-600",
         primary:
           "bg-kolumblue-500 outline outline-kolumblue-500 focus:outline-kolumblue-500 text-white fill-white outline-1 outline-offset-1 focus:outline focus:outline-1",
+        outline:
+          "border-[1.5px] border-gray-600 backdrop-blur-lg backdrop-filter backdrop-saturate-[180%] text-gray-600 fill-gray-600",
         unset: null,
       },
       size: {
@@ -25,12 +25,13 @@ export const ArrowVariants = cva(
   },
 );
 
-type ArrowProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
-  VariantProps<typeof ArrowVariants> & {
-    href: string;
-    className?: string;
-    children?: React.ReactNode;
-  };
+type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  href: string;
+  className?: string;
+  children?: React.ReactNode;
+};
+
+type ArrowProps = VariantProps<typeof ArrowVariants> & LinkProps;
 
 export const Link = {
   Arrow(props: ArrowProps) {
@@ -45,7 +46,7 @@ export const Link = {
       >
         <Icons.arrowRight
           className={cn(
-            "absolute opacity-0 duration-500 ease-kolumb-flow group-hover:opacity-100 group-focus:opacity-100",
+            "absolute opacity-0 duration-400 ease-kolumb-flow group-hover:opacity-100 group-focus:opacity-100",
             size === "sm" && "left-px w-3 group-hover:left-[7px] group-focus:left-[7px]",
             size === "md" && "left-px w-4 group-hover:left-[9px] group-focus:left-[9px]",
             size === "xl" &&
@@ -56,7 +57,7 @@ export const Link = {
 
         <div
           className={cn(
-            "w-fit transition-transform duration-500 ease-kolumb-flow",
+            "w-fit transition-transform duration-400 ease-kolumb-flow",
             size === "sm" && "group-hover:translate-x-2 group-focus:translate-x-2",
             size === "md" && "group-hover:translate-x-2.5 group-focus:translate-x-2.5",
             size === "xl" &&
@@ -65,6 +66,22 @@ export const Link = {
         >
           {props.children}
         </div>
+      </NextLink>
+    );
+  },
+  UnderLine(props: LinkProps) {
+    const { href, className, ...otherProps } = props;
+
+    return (
+      <NextLink
+        href={href}
+        className={cn(
+          "group relative px-5 text-lg text-gray-600 before:pointer-events-none before:absolute before:inset-x-5 before:-bottom-0.5 before:h-[1.5px] before:bg-current before:opacity-0 before:duration-400 before:ease-kolumb-flow before:hover:bottom-0.5 before:hover:opacity-100",
+          className,
+        )}
+        {...otherProps}
+      >
+        {props.children}
       </NextLink>
     );
   },

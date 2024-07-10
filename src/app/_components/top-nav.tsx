@@ -18,15 +18,20 @@ export default function TopNav() {
         className="relative flex h-16 w-full items-center justify-end gap-6 pl-[224px]"
       >
         <div className="flex items-center gap-4">
-          <Link.Arrow href="/contact" size="sm" className="fill-gray-600 text-gray-600">
-            Contact
-          </Link.Arrow>
-          <Link.Arrow href="/contact" size="sm" className="fill-gray-600 text-gray-600">
-            About
-          </Link.Arrow>
-          <Link.Arrow href="/contact" size="sm" className="fill-gray-600 text-gray-600">
-            Pricing
-          </Link.Arrow>
+          <div className="flex">
+            <Link.UnderLine href="/about-me" className="fill-gray-600 text-gray-600">
+              About me
+            </Link.UnderLine>
+            <Link.UnderLine href="/contact" className="fill-gray-600 text-gray-600">
+              Contact
+            </Link.UnderLine>
+            <Link.UnderLine href="/playground" className="fill-gray-600 text-gray-600">
+              Playground
+            </Link.UnderLine>
+            {/* <Link.UnderLine href="/pricing" className="fill-gray-600 text-gray-600">
+              Pricing
+            </Link.UnderLine> */}
+          </div>
 
           <SignedIn>
             <Link.Arrow href="/library" theme="outline" size="md">
