@@ -28,9 +28,6 @@ export default function TopNav() {
             <Link.UnderLine href="/playground" className="fill-gray-600 text-gray-600">
               Playground
             </Link.UnderLine>
-            {/* <Link.UnderLine href="/pricing" className="fill-gray-600 text-gray-600">
-              Pricing
-            </Link.UnderLine> */}
           </div>
 
           <SignedIn>

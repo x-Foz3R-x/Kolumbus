@@ -7,7 +7,6 @@ import { SignedIn, SignedOut, useClerk } from "@clerk/nextjs";
 
 import { accountUrl } from "~/lib/constants";
 import { EASING } from "~/lib/motion";
-import { cn } from "~/lib/utils";
 
 import SlideAnimation from "./slide-animation";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
@@ -33,18 +32,23 @@ export default function TopNavMenu() {
           placement="bottom-end"
           rootSelector="nav"
           offset={({ rects }) => ({ mainAxis: -rects.reference.height })}
-          className={cn(
-            "whitespace-nowrap rounded bg-kolumblue-500 p-0 font-belanosima outline outline-1 outline-offset-1 outline-kolumblue-500 duration-400 ease-kolumb-flow",
-          )}
+          className="whitespace-nowrap rounded bg-kolumblue-500 p-0 font-belanosima outline outline-1 outline-offset-1 outline-kolumblue-500 duration-400 ease-kolumb-flow"
           customAnimation={{
-            initial: { width: "80px", height: "36px", borderRadius: "4px" },
+            initial: {
+              backgroundColor: "#4999e9",
+              width: "80px",
+              height: "36px",
+              borderRadius: "4px",
+            },
             animate: {
+              backgroundColor: "white",
               width: "150px",
-              height: "158px",
+              height: "176px",
               borderRadius: "12px",
               transition: { ease: EASING.kolumbFlow, duration: 0.6 },
             },
             exit: {
+              backgroundColor: "#4999e9",
               width: "80px",
               height: "36px",
               borderRadius: "16px",
@@ -63,12 +67,13 @@ export default function TopNavMenu() {
         >
           <button
             onClick={() => setMenuOpen(!isMenuOpen)}
-            className="ml-auto h-8 w-20 flex-shrink-0 overflow-hidden py-1 text-lg text-white"
+            className="ml-auto h-8 w-20 flex-shrink-0 overflow-hidden py-1 text-lg"
           >
             <motion.div
               animate={{ translateY: -28 }}
               exit={{ translateY: 0 }}
               transition={{ delay: 0.1 }}
+              className="text-white"
             >
               Menu
             </motion.div>
@@ -76,6 +81,7 @@ export default function TopNavMenu() {
               animate={{ translateY: -28 }}
               exit={{ translateY: 0 }}
               transition={{ delay: 0.1 }}
+              className="text-gray-600"
             >
               Close
             </motion.div>
@@ -83,32 +89,21 @@ export default function TopNavMenu() {
 
           <div className="px-1.5">
             <SignedIn>
-              <MenuLink
-                href="/library"
-                label="library"
-                className="h-10 fill-white pr-8 text-base text-white"
-                classNames={{ button: "before:bg-kolumblue-400/50" }}
-              >
+              <MenuLink href="/library" label="library" className="text-base text-gray-600">
                 <Icons.library className="ml-2 h-4 w-4" />
                 Library
               </MenuLink>
 
               <Divider className="my-2 bg-kolumblue-400" />
 
-              <MenuLink
-                label="my account"
-                href={accountUrl}
-                className="h-10 fill-white pr-8 text-base text-white"
-                classNames={{ button: "before:bg-kolumblue-400/50" }}
-              >
+              <MenuLink label="my account" href={accountUrl} className="text-base text-gray-600">
                 <Icons.userSettings className="ml-2 h-4 w-4" />
                 My account
               </MenuLink>
               <MenuOption
                 label="sign out"
                 onClick={handleSignOut}
-                className="h-10 fill-white pr-8 text-base text-white"
-                classNames={{ button: "before:bg-kolumblue-400/50" }}
+                className="text-base text-gray-600"
               >
                 <Icons.signOut className="ml-2 h-4 w-4" />
                 Sign out
@@ -116,28 +111,16 @@ export default function TopNavMenu() {
             </SignedIn>
 
             <SignedOut>
-              <MenuLink
-                href="/contact"
-                label="sign in"
-                className="h-10 pr-8 text-base text-white"
-                classNames={{ button: "before:bg-kolumblue-400/50" }}
-              >
+              <MenuLink href="/about-me" label="about me" className="text-base text-gray-600">
+                About me
+              </MenuLink>
+              <MenuLink href="/contact" label="contact" className="text-base text-gray-600">
                 Contact
               </MenuLink>
-              <MenuLink
-                href="/signin"
-                label="sign in"
-                className="h-10 pr-8 text-base text-white"
-                classNames={{ button: "before:bg-kolumblue-400/50" }}
-              >
+              <MenuLink href="/signin" label="sign in" className="text-base text-gray-600">
                 Sign in
               </MenuLink>
-              <MenuLink
-                href="/signup"
-                label="sign up"
-                className="h-10 pr-8 text-base text-white"
-                classNames={{ button: "before:bg-kolumblue-400/50" }}
-              >
+              <MenuLink href="/signup" label="sign up" className="text-base text-gray-600">
                 Sign up
               </MenuLink>
             </SignedOut>

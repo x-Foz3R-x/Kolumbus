@@ -28,8 +28,9 @@ export default async function HomePage() {
           <div className="h-96 w-full rounded-3xl bg-rose-500/50 px-4 lg:w-[90%]">test</div>
         </ProgressiveBackgroundColor>
 
-        {/* Feature */}
+        {/* Features */}
         {/* About project */}
+        {/* FAQ */}
         {/* Call to action */}
         {/* Footer */}
       </main>
