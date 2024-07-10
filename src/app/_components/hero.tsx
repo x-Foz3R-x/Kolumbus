@@ -4,7 +4,7 @@ import { Link } from "~/components/ui";
 
 export default function Hero() {
   return (
-    <div className="relative flex h-fit min-h-screen w-full items-center justify-around gap-8 px-4 pb-40 pt-16 bg-dot-gray-800/20">
+    <div className="relative flex h-fit min-h-screen w-full items-center justify-around gap-8 px-4 pb-40 pt-16 bg-dot-gray-800/15">
       <div className="flex flex-col items-center justify-center gap-[min(max(2.15rem,2.5vw),3.1rem)] pb-28 text-center text-gray-600 selection:bg-kolumblue-200 md:items-start md:text-left">
         <div className="whitespace-nowrap font-bold">
           <h1 className="text-scale-2xl">Travel Planning</h1>
