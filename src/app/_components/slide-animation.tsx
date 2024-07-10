@@ -32,16 +32,13 @@ export default function SlideAnimation(props: {
       {display && (
         <motion.div
           initial={mounted ? "hidden" : "initial"}
-          animate={{ translateY: 0, opacity: 1 }}
+          animate={{ translateY: 0 }}
           exit="hidden"
           variants={{
-            initial: {
-              translateY: props.direction === "in" ? 64 : 0,
-              opacity: props.direction === "in" ? 0 : 1,
-            },
-            hidden: { translateY: props.direction === "in" ? 64 : -64, opacity: 0 },
+            initial: { translateY: props.direction === "in" ? 64 : 0 },
+            hidden: { translateY: props.direction === "in" ? 64 : -64 },
           }}
-          transition={{ ease: EASING.kolumbFlow, duration: 0.5 }}
+          transition={{ ease: EASING.kolumbFlow, duration: 0.4 }}
           className={props.className}
         >
           {props.children}
