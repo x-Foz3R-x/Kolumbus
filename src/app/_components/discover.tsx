@@ -23,7 +23,7 @@ export default function Discover() {
     calendar: true,
     history: false,
     tasks: true,
-    devTools: true,
+    devTools: false,
   });
 
   const [tasks, setTasks] = useState({
@@ -153,13 +153,6 @@ export default function Discover() {
             </Window>
           </div>
 
-          <PortalWindow
-            id="trash-container"
-            title="Trash"
-            className="right-4 top-24"
-            classNames={{ body: "h-32 relative" }}
-          />
-
           <div className="flex flex-col gap-4">
             <Window
               title="Dev Tools"
@@ -221,6 +214,13 @@ export default function Discover() {
               </ul>
             </Window>
           </div>
+
+          <PortalWindow
+            id="trash-container"
+            title="Trash"
+            className="right-4 top-4"
+            classNames={{ body: "h-32 relative" }}
+          />
         </div>
       </div>
 
