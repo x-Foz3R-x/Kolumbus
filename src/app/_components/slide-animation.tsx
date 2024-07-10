@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { EASING } from "~/lib/motion";
@@ -15,7 +15,7 @@ export default function SlideAnimation(props: {
   const [mounted, setMounted] = useState(false);
 
   // Toggle animation state based on scroll position and direction
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       const isBeyondThreshold = window.scrollY > props.threshold;
       setDisplay(props.direction === "in" ? isBeyondThreshold : !isBeyondThreshold);
@@ -41,7 +41,7 @@ export default function SlideAnimation(props: {
             },
             hidden: { translateY: props.direction === "in" ? 64 : -64, opacity: 0 },
           }}
-          transition={{ ease: EASING.kolumbOut, duration: 0.3 }}
+          transition={{ ease: EASING.kolumbFlow, duration: 0.5 }}
           className={props.className}
         >
           {props.children}
