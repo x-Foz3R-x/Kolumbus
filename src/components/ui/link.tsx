@@ -4,23 +4,24 @@ import { Icons } from ".";
 import { cva, type VariantProps } from "class-variance-authority";
 
 export const ArrowVariants = cva(
-  "group relative flex w-fit select-none items-center duration-500 ease-kolumb-flow hover:rounded transition-[border-radius,transform]",
+  "group relative flex w-fit select-none items-center duration-500 ease-kolumb-flow hover:rounded transition-[border-radius,transform] focus:rounded",
   {
     variants: {
       theme: {
-        default:
-          "border-[0.75px] border-gray-600 bg-white/0 outline-gray-600 text-gray-600 fill-gray-600",
-        primary: "bg-kolumblue-500 outline-kolumblue-500 text-white fill-white",
+        outline:
+          "border-[1.5px] border-gray-600 backdrop-blur-lg backdrop-filter backdrop-saturate-[180%] text-gray-600 fill-gray-600",
+        primary:
+          "bg-kolumblue-500 outline outline-kolumblue-500 focus:outline-kolumblue-500 text-white fill-white outline-1 outline-offset-1 focus:outline focus:outline-1",
         unset: null,
       },
       size: {
-        default:
-          "px-4 py-1.5 text-base rounded-lg outline-[0.75px] outline-offset-1 outline font-semibold",
-        xl: "rounded-[min(max(0.7rem,0.8vw),1rem)] outline-2 outline-offset-1 outline-double leading-[2.25] px-[min(max(1.75rem,2vw),2.5rem)] text-scale-sm font-bold",
+        sm: "px-4 py-1 text-base rounded-xl",
+        md: "px-5 py-1 text-lg rounded-[10px]",
+        xl: "rounded-[min(max(0.7rem,0.8vw),1rem)] leading-[2.25] px-[min(max(1.75rem,2vw),2.5rem)] text-scale-sm font-bold",
         unset: null,
       },
     },
-    defaultVariants: { theme: "default", size: "default" },
+    defaultVariants: { theme: "unset", size: "unset" },
   },
 );
 
@@ -42,36 +43,25 @@ export const Link = {
         className={ArrowVariants({ theme, size, className })}
         {...otherProps}
       >
-        {/* <Icons.arrowRight
-          className={cn(
-            "pointer-events-none absolute bg-kolumblue-500 opacity-100 duration-500 ease-kolumb-flow group-hover:opacity-100",
-            (size === "default" || size === undefined) && "left-px w-3 group-hover:left-[7px]",
-            size === "xl" &&
-              "-left-[calc(min(max(1.25rem,1.4vw),1.75rem)+0.75rem)] h-1/2 w-[calc(min(max(1.25rem,1.4vw),1.75rem)+0.5rem)] skew-y-[30deg] rounded px-1 group-hover:left-[calc(min(max(1.25rem,1.4vw),1.75rem)-8px)] group-hover:skew-y-0",
-            target === "_blank" && "mb-0.5 -rotate-[39deg]",
-          )}
-          // "left-px w-4 group-hover:left-2 lg:left-1 lg:w-5 lg:group-hover:left-4",
-        /> */}
-
         <Icons.arrowRight
           className={cn(
-            "absolute opacity-0 duration-500 ease-kolumb-flow group-hover:opacity-100",
-            (size === "default" || size === undefined) && "left-px w-3 group-hover:left-[7px]",
+            "absolute opacity-0 duration-500 ease-kolumb-flow group-hover:opacity-100 group-focus:opacity-100",
+            size === "sm" && "left-px w-3 group-hover:left-[7px] group-focus:left-[7px]",
+            size === "md" && "left-px w-4 group-hover:left-[9px] group-focus:left-[9px]",
             size === "xl" &&
-              "left-0.5 w-[min(max(1.25rem,1.4vw),1.75rem)] group-hover:left-[calc(min(max(1.25rem,1.4vw),1.75rem)-8px)]",
+              "left-0.5 w-[min(max(1.25rem,1.4vw),1.75rem)] group-hover:left-[calc(min(max(1.25rem,1.4vw),1.75rem)-8px)] group-focus:left-[calc(min(max(1.25rem,1.4vw),1.75rem)-8px)]",
             target === "_blank" && "mb-0.5 -rotate-[39deg]",
           )}
-          // "left-px w-4 group-hover:left-2 lg:left-1 lg:w-5 lg:group-hover:left-4",
         />
 
         <div
           className={cn(
             "w-fit transition-transform duration-500 ease-kolumb-flow",
-            (size === "default" || size === undefined) && "group-hover:translate-x-2",
+            size === "sm" && "group-hover:translate-x-2 group-focus:translate-x-2",
+            size === "md" && "group-hover:translate-x-2.5 group-focus:translate-x-2.5",
             size === "xl" &&
-              "mt-1 group-hover:translate-x-[calc(min(max(1.25rem,1.4vw),1.75rem)-4px)]",
+              "mt-1 group-hover:translate-x-[calc(min(max(1.25rem,1.4vw),1.75rem)-4px)] group-focus:translate-x-[calc(min(max(1.25rem,1.4vw),1.75rem)-4px)]",
           )}
-          // "group-hover:translate-x-2.5 lg:group-hover:translate-x-4",
         >
           {props.children}
         </div>
