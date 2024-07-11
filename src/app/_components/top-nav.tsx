@@ -8,14 +8,14 @@ import { Link } from "~/components/ui";
 
 export default function TopNav() {
   return (
-    <nav className="apply-custom-cursor fixed inset-x-0 top-0 z-50 flex h-16 items-center whitespace-nowrap px-8 font-belanosima">
+    <nav className="apply-custom-cursor fixed inset-x-0 top-0 z-50 flex h-16 items-center whitespace-nowrap font-belanosima">
       <Logo />
 
       {/* Unraveled menu */}
       <SlideAnimation
         direction="out"
         threshold={100}
-        className="relative flex h-16 w-full items-center justify-end gap-6 pl-[224px]"
+        className="relative hidden h-16 w-full items-center justify-end gap-6 border-b bg-white px-8 pl-[224px] md:flex"
       >
         <div className="flex items-center gap-4">
           <div className="flex">
@@ -24,9 +24,6 @@ export default function TopNav() {
             </Link.UnderLine>
             <Link.UnderLine href="/contact" className="fill-gray-600 text-gray-600">
               Contact
-            </Link.UnderLine>
-            <Link.UnderLine href="/playground" className="fill-gray-600 text-gray-600">
-              Playground
             </Link.UnderLine>
           </div>
 

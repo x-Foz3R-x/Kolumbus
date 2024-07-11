@@ -45,21 +45,21 @@ export default function TopNavMenu() {
               width: "150px",
               height: "176px",
               borderRadius: "12px",
-              transition: { ease: EASING.kolumbFlow, duration: 0.6 },
+              transition: { ease: EASING.kolumbFlow, duration: 0.4 },
             },
             exit: {
               backgroundColor: "#4999e9",
               width: "80px",
               height: "36px",
               borderRadius: "16px",
-              transition: { ease: EASING.kolumbFlow, duration: 0.6 },
+              transition: { ease: EASING.kolumbFlow, duration: 0.4 },
             },
           }}
           buttonProps={{
             variant: "unset",
             size: "unset",
             animate: { opacity: isMenuOpen ? 0 : 1 },
-            transition: { duration: 0, delay: isMenuOpen ? 0 : 0.6 },
+            transition: { duration: 0, delay: isMenuOpen ? 0 : 0.4 },
             className:
               "text-lg w-20 py-1 rounded-2xl bg-kolumblue-500 text-white outline outline-1 hover:rounded focus:rounded ease-kolumb-flow duration-400 outline-offset-1 outline-kolumblue-500 focus:outline-kolumblue-500 focus:outline focus:outline-1",
             children: "Menu",
