@@ -8,7 +8,7 @@ import { Link } from "~/components/ui";
 
 export default function TopNav() {
   return (
-    <nav className="apply-custom-cursor fixed inset-x-0 top-0 z-50 flex h-16 items-center px-8 font-belanosima">
+    <nav className="apply-custom-cursor fixed inset-x-0 top-0 z-50 flex h-16 items-center whitespace-nowrap px-8 font-belanosima">
       <Logo />
 
       {/* Unraveled menu */}

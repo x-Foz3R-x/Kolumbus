@@ -10,14 +10,13 @@ export const ArrowVariants = cva(
       theme: {
         primary:
           "bg-kolumblue-500 outline outline-kolumblue-500 focus:outline-kolumblue-500 text-white fill-white outline-1 outline-offset-1 focus:outline focus:outline-1",
-        outline:
-          "border-[1.5px] border-gray-600 backdrop-blur-lg backdrop-filter backdrop-saturate-[180%] text-gray-600 fill-gray-600",
+        outline: "border-[1.5px] border-gray-600 text-gray-600 fill-gray-600 bg-white",
         unset: null,
       },
       size: {
         sm: "px-4 py-1 text-base rounded-xl",
         md: "px-5 py-1 text-lg rounded-[10px]",
-        xl: "rounded-[min(max(0.7rem,0.8vw),1rem)] leading-[2.25] px-[min(max(1.75rem,2vw),2.5rem)] text-scale-sm font-bold",
+        xl: "rounded-[min(max(0.7rem,0.8vw),1rem)] leading-[2.25] px-[min(max(1.75rem,2vw),2.5rem)] text-d-2xl font-bold",
         unset: null,
       },
     },
