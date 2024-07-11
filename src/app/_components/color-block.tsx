@@ -14,7 +14,10 @@ import { cn } from "~/lib/utils";
 export default function ColorBlock(props: { className?: string; children?: React.ReactNode }) {
   return (
     <span
-      className={cn("mx-2 inline-block rounded p-2 duration-150 ease-kolumb-flow", props.className)}
+      className={cn(
+        "mx-2 my-1 inline-block rounded p-2 leading-[0.8] duration-150 ease-kolumb-flow",
+        props.className,
+      )}
     >
       {props.children}
     </span>
