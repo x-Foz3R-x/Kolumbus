@@ -1,19 +1,56 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { add } from "date-fns";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 import useRandomTrip from "~/hooks/use-random-trip";
 import { cn } from "~/lib/utils";
 import type { ActivityEventSchema } from "~/lib/types";
 
 import Event from "./event";
-import Spring from "./spring";
-import { DayCalendar } from "../../components/day-calendar";
+import { DayCalendar } from "~/components/day-calendar";
 
-export default function HeroFeature({ className }: { className?: string }) {
+const PRESETS = [
+  {
+    day: {
+      displacement: { x: 20, y: -30, scale: 0.9, rotate: -6 },
+      transitionValues: [0.2, 10] as [number, number],
+      className: "animate-[levitate_10s_ease_infinite]",
+    },
+    event: {
+      displacement: { x: -133, y: 200, scale: 1.1, rotate: -22 },
+      transitionValues: [0.6, 12] as [number, number],
+      className: "animate-[levitate_10s_ease_infinite]",
+    },
+  },
+  {
+    day: {
+      displacement: { x: 395, y: -52, scale: 1.1, rotate: 12 },
+      transitionValues: [0.8, 13] as [number, number],
+      className: "animate-[levitate_12s_ease_infinite_reverse]",
+    },
+    event: {
+      displacement: { x: 132, y: 75, scale: 0.94, rotate: 15 },
+      transitionValues: [0.6, 13] as [number, number],
+      className: "animate-[levitate_12s_ease_infinite_reverse]",
+    },
+  },
+  {
+    day: {
+      displacement: { x: 130, y: 86, scale: 1.05, rotate: 3 },
+      transitionValues: [0.5, 11] as [number, number],
+      className: "animate-[levitate_13s_ease_infinite]",
+    },
+    event: {
+      displacement: { x: 60, y: -284, scale: 1.03, rotate: 23 },
+      transitionValues: [0.3, 10] as [number, number],
+      className: "animate-[levitate_13s_ease_infinite]",
+    },
+  },
+] as const;
+
+export default function HeroFeature(props: { disableAnimation?: boolean }) {
   const { trip } = useRandomTrip("by-day");
-  const todayEvents = useMemo(() => trip.itinerary.map((day) => day.events[0]!), [trip.itinerary]);
 
   const [isWithinArea, setIsWithinArea] = useState(false);
   const [scale, setScale] = useState(1);
@@ -21,7 +58,7 @@ export default function HeroFeature({ className }: { className?: string }) {
   // Calculate scale based on window width
   useEffect(() => {
     const handleResize = () => {
-      setScale(Math.max(1, window.innerWidth / 1800));
+      setScale(Math.min(Math.max(1, window.innerWidth / 1600), 1.25));
     };
 
     handleResize();
@@ -33,110 +70,106 @@ export default function HeroFeature({ className }: { className?: string }) {
     <div
       onMouseEnter={() => setIsWithinArea(true)}
       onMouseLeave={() => setIsWithinArea(false)}
-      style={{ scale }}
+      className="group hidden font-inter md:block"
+    >
+      <ul
+        style={{ width: 530 * scale, height: 416 * scale, scale }}
+        className="flex origin-top-left flex-col"
+      >
+        {trip.itinerary.map((day, index) => (
+          <motion.li key={day.id} className="flex gap-5">
+            {/* Day Calendar */}
+            <Displacement
+              isHovered={isWithinArea}
+              displacement={PRESETS[index]!.day.displacement}
+              transitionValues={PRESETS[index]!.day.transitionValues}
+              className={cn(
+                PRESETS[index]!.day.className,
+                props.disableAnimation && "animate-none",
+              )}
+            >
+              <DayCalendar
+                date={day.date}
+                className={{
+                  header: cn(
+                    "rounded-t-xl",
+                    index > 0 && "group-hover:rounded-none",
+                    !props.disableAnimation && "duration-1000 ease-kolumb-flow",
+                  ),
+                  body: cn(
+                    "overflow-clip rounded-b-xl group-hover:rounded-none",
+                    !props.disableAnimation && "duration-1000 ease-kolumb-flow",
+                  ),
+                }}
+                header={`Day ${index + 1}`}
+              />
+            </Displacement>
+
+            {/* Event */}
+            <Displacement
+              isHovered={isWithinArea}
+              displacement={PRESETS[index]!.event.displacement}
+              transitionValues={PRESETS[index]!.event.transitionValues}
+              className={cn(
+                "z-10 mt-5 w-40",
+                PRESETS[index]!.event.className,
+                props.disableAnimation && "animate-none",
+              )}
+            >
+              <Event event={day.events[0] as ActivityEventSchema} />
+            </Displacement>
+          </motion.li>
+        ))}
+
+        {/* End of Trip */}
+        <Displacement
+          isHovered={isWithinArea}
+          displacement={{ x: 350, y: 24, rotate: -27 }}
+          transitionValues={[0.6, 13]}
+          className={cn(
+            "w-32 animate-[levitate_13s_ease_infinite]",
+            props.disableAnimation && "animate-none",
+          )}
+        >
+          <div
+            className={cn(
+              "flex h-5 w-32 items-center justify-center rounded-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl group-hover:rounded-t-none",
+              !props.disableAnimation && "duration-1000 ease-kolumb-flow",
+            )}
+          >
+            End of Trip
+          </div>
+        </Displacement>
+      </ul>
+    </div>
+  );
+}
+
+function Displacement(props: {
+  isHovered: boolean;
+  displacement: { scale?: number; rotate?: number; x: number; y: number };
+  transitionValues: [number, number];
+  style?: React.CSSProperties;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.div
+      initial={props.displacement}
+      animate={props.isHovered ? { x: 0, y: 0, scale: 1, rotate: 0 } : props.displacement}
+      transition={{
+        type: "spring",
+        bounce: props.transitionValues[0],
+        damping: props.transitionValues[1],
+      }}
+      style={props.style}
       className={cn(
-        "group relative size-[38rem] origin-left pt-12 font-inter duration-250 ease-kolumb-flow",
-        className,
+        "pointer-events-none origin-top-left",
+        props.className,
+        props.isHovered && "animate-none",
       )}
     >
-      <Spring
-        isHovered={isWithinArea}
-        initial={{ scale: 0.9, rotate: -6, x: 30, y: -62 }}
-        animate={{ x: 0, y: 0 }}
-        bounce={0.2}
-        damping={10}
-        className="animate-[levitate_10s_ease_infinite]"
-      >
-        <DayCalendar
-          header="Day 1"
-          date={add(new Date(), { days: 1 })}
-          className={{
-            header: "rounded-t-xl",
-            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
-          }}
-        />
-      </Spring>
-
-      <Spring
-        isHovered={isWithinArea}
-        initial={{ scale: 1.1, rotate: 12, x: 395, y: 80 }}
-        animate={{ x: 0, y: 132 }}
-        bounce={0.8}
-        damping={13}
-        className="animate-[levitate_12s_ease_infinite_reverse]"
-      >
-        <DayCalendar
-          header="Day 2"
-          date={add(new Date(), { days: 2 })}
-          className={{
-            header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
-            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
-          }}
-        />
-      </Spring>
-
-      <Spring
-        isHovered={isWithinArea}
-        initial={{ scale: 1.05, rotate: 3, x: 130, y: 350 }}
-        animate={{ x: 0, y: 264 }}
-        bounce={0.5}
-        damping={11}
-        className="animate-[levitate_13s_ease_infinite]"
-      >
-        <DayCalendar
-          header="Day 3"
-          date={add(new Date(), { days: 3 })}
-          className={{
-            container: "rounded-xl",
-            header: "rounded-t-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
-            body: "overflow-clip rounded-b-xl duration-1000 ease-kolumb-flow group-hover:rounded-none",
-          }}
-        />
-      </Spring>
-
-      <Spring
-        isHovered={isWithinArea}
-        initial={{ rotate: -27, x: 350, y: 420 }}
-        animate={{ x: 0, y: 396 }}
-        bounce={0.6}
-        damping={13}
-        className="animate-[levitate_13s_ease_infinite]"
-      >
-        <div className="flex h-5 w-32 items-center justify-center rounded-xl bg-kolumblue-500 text-xs font-medium text-kolumblue-200 shadow-xl duration-1000 ease-kolumb-flow group-hover:rounded-t-none">
-          End of Trip
-        </div>
-      </Spring>
-
-      <Spring
-        isHovered={isWithinArea}
-        initial={{ scale: 0.94, rotate: 15, x: 280, y: 210 }}
-        animate={{ x: 148, y: 152 }}
-        bounce={0.6}
-        damping={13}
-        className="animate-[levitate_12s_ease_infinite_reverse]"
-      >
-        <Event event={todayEvents[0] as ActivityEventSchema} />
-      </Spring>
-      <Spring
-        isHovered={isWithinArea}
-        initial={{ scale: 1.1, rotate: -22, x: 15, y: 220 }}
-        animate={{ x: 148, y: 20 }}
-        bounce={0.6}
-        damping={12}
-        className="animate-[levitate_10s_ease_infinite]"
-      >
-        <Event event={todayEvents[1] as ActivityEventSchema} />
-      </Spring>
-      <Spring
-        isHovered={isWithinArea}
-        initial={{ scale: 1.03, rotate: 23, x: 208, y: 0 }}
-        animate={{ x: 148, y: 284 }}
-        bounce={0.3}
-        damping={10}
-        className="animate-[levitate_13s_ease_infinite]"
-      >
-        <Event event={todayEvents[2] as ActivityEventSchema} />
-      </Spring>
-    </div>
+      {props.children}
+    </motion.div>
   );
 }
