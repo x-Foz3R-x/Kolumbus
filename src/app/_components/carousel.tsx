@@ -13,7 +13,9 @@ export default function Carousel(props: {
   const animateX = props.reverse ? "0" : "-100%";
 
   return (
-    <div className={cn("absolute left-0 flex gap-4", props.className)}>
+    <div
+      className={cn("pointer-events-none absolute left-0 flex select-none gap-6", props.className)}
+    >
       <motion.div
         initial={{ x: initialX }}
         animate={{ x: animateX }}

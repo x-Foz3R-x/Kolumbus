@@ -1,11 +1,11 @@
-import { Divider, Icons, Link } from "~/components/ui";
+import { Divider, Link } from "~/components/ui";
 
 export default function Footer() {
   return (
     <footer className="flex w-full flex-col justify-center whitespace-nowrap bg-kolumblue-500 fill-white pt-24 text-white">
       <div className="flex justify-evenly">
         <ul>
-          <h3 className="text-d-2xl">General</h3>
+          <h3 className="text-d-2xl">Links</h3>
           <Link.Arrow href="" size="dxl" className="fill-white">
             Home
           </Link.Arrow>

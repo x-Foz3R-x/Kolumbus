@@ -14,22 +14,22 @@ export const ArrowVariants = cva("", {
     size: {
       sm: "px-4 py-1 text-base rounded-xl",
       md: "px-5 py-1 text-lg rounded-[10px]",
-      dxl: "rounded-[clamp(0.9rem,1vw,1.25rem)] leading-[2.25] px-[clamp(1.8rem,2vw,2.5rem)] font-bold",
-      d2xl: "rounded-[clamp(1.35rem,1.5vw,1.875rem)] leading-[2.25] px-[clamp(2.7rem,3vw,3.75rem)] font-bold",
+      dxl: "rounded-[clamp(0.9rem,1vw,1.25rem)] leading-[2.25] px-d8 font-bold",
+      d2xl: "rounded-[clamp(1.35rem,1.5vw,1.875rem)] leading-[2.25] px-d10 font-bold",
       unset: null,
     },
     arrowSize: {
       sm: "left-px w-3 group-hover:left-[7px] group-focus:left-[7px]",
       md: "left-px w-4 group-hover:left-[9px] group-focus:left-[9px]",
       dxl: "left-0.5 w-d6 group-hover:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.9)] group-focus:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.9)]",
-      d2xl: "left-0.5 w-d9 group-hover:translate-x-[calc(clamp(2.025rem,2.25vw,2.8125rem)/1.9)] group-focus:translate-x-[calc(clamp(2.025rem,2.25vw,2.8125rem)/1.9)]",
+      d2xl: "left-0.5 w-d7 group-hover:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.9)] group-focus:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.9)]",
       unset: null,
     },
     shift: {
       sm: "group-hover:translate-x-2 group-focus:translate-x-2",
       md: "group-hover:translate-x-2.5 group-focus:translate-x-2.5",
       dxl: "mt-1 group-hover:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.4)] group-focus:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.4)]",
-      d2xl: "mt-1.5 group-hover:translate-x-[calc(clamp(2.025rem,2.25vw,2.8125rem)/1.4)] group-focus:translate-x-[calc(clamp(2.025rem,2.25vw,2.8125rem)/1.4)]",
+      d2xl: "mt-1.5 group-hover:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.4)] group-focus:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.4)]",
       unset: null,
     },
   },
@@ -54,10 +54,10 @@ export const Link = {
         target={target}
         className={
           cn(
-            "group relative flex w-fit select-none items-center transition-[border-radius,transform] duration-400 ease-kolumb-flow hover:rounded focus:rounded",
+            "group relative flex w-fit select-none items-center whitespace-nowrap transition-[border-radius,transform] duration-400 ease-kolumb-flow hover:rounded focus:rounded",
             ArrowVariants({ variant, size, className }),
           ) +
-          `${size === "dxl" ? " text-d-2xl" : ""}` +
+          `${size === "dxl" ? " text-d-3xl" : ""}` +
           `${size === "d2xl" ? " text-d-4xl" : ""}`
         }
         {...otherProps}
