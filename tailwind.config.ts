@@ -125,6 +125,7 @@ export default {
         d8: "clamp(1.8rem,2vw,2.5rem)",
         d7: "clamp(1.575rem,1.75vw,2.1875rem)",
         d6: "clamp(1.35rem,1.5vw,1.875rem)",
+        d5: "clamp(1.125rem,1.25vw,1.5625rem)",
         d4: "clamp(0.9rem,1vw,1.25rem)",
         d3: "clamp(0.675rem,0.75vw,0.9375rem)",
       },

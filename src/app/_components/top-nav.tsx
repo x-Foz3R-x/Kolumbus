@@ -19,26 +19,32 @@ export default function TopNav() {
       >
         <div className="flex items-center gap-4">
           <div className="flex">
-            <Link.UnderLine href="/about-me" className="fill-gray-600 text-gray-600">
-              About me
+            <Link.UnderLine
+              href="/about"
+              className="fill-gray-600 px-5 text-[17px] text-gray-600 before:inset-x-5"
+            >
+              About
             </Link.UnderLine>
-            <Link.UnderLine href="/contact" className="fill-gray-600 text-gray-600">
+            <Link.UnderLine
+              href="/contact"
+              className="fill-gray-600 px-5 text-[17px] text-gray-600 before:inset-x-5"
+            >
               Contact
             </Link.UnderLine>
           </div>
 
           <SignedIn>
-            <Link.Arrow href="/library" variant="outline" size="md">
+            <Link.Arrow href="/library" variant="outline" size="lg">
               Library
             </Link.Arrow>
             <ProfileButton />
           </SignedIn>
 
           <SignedOut>
-            <Link.Arrow href="/signin" variant="outline" size="md">
+            <Link.Arrow href="/signin" variant="outline" size="lg">
               Sign in
             </Link.Arrow>
-            <Link.Arrow href="/signup" variant="primary" size="md" className="font-semibold">
+            <Link.Arrow href="/signup" variant="primary" size="lg" className="font-semibold">
               Start Your Adventure
             </Link.Arrow>
           </SignedOut>

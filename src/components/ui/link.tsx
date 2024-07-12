@@ -12,24 +12,24 @@ export const ArrowVariants = cva("", {
       unset: null,
     },
     size: {
-      sm: "px-4 py-1 text-base rounded-xl",
-      md: "px-5 py-1 text-lg rounded-[10px]",
-      dxl: "rounded-[clamp(0.9rem,1vw,1.25rem)] leading-[2.25] px-d8 font-bold",
-      d2xl: "rounded-[clamp(1.35rem,1.5vw,1.875rem)] leading-[2.25] px-d10 font-bold",
+      base: "px-4 py-1 text-base rounded-xl",
+      lg: "px-5 py-1 text-lg rounded-[10px]",
+      d3xl: "rounded-[clamp(0.9rem,1vw,1.25rem)] leading-[2.25] px-d8 font-bold",
+      d4xl: "rounded-[clamp(1.35rem,1.5vw,1.875rem)] leading-[2.25] px-d10 font-bold",
       unset: null,
     },
     arrowSize: {
-      sm: "left-px w-3 group-hover:left-[7px] group-focus:left-[7px]",
-      md: "left-px w-4 group-hover:left-[9px] group-focus:left-[9px]",
-      dxl: "left-0.5 w-d6 group-hover:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.9)] group-focus:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.9)]",
-      d2xl: "left-0.5 w-d7 group-hover:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.9)] group-focus:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.9)]",
+      base: "left-px w-3 group-hover:left-[7px] group-focus:left-[7px]",
+      lg: "left-px w-4 group-hover:left-[9px] group-focus:left-[9px]",
+      d3xl: "left-0.5 w-d6 group-hover:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.9)] group-focus:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.9)]",
+      d4xl: "left-0.5 w-d7 group-hover:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.9)] group-focus:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.9)]",
       unset: null,
     },
     shift: {
-      sm: "group-hover:translate-x-2 group-focus:translate-x-2",
-      md: "group-hover:translate-x-2.5 group-focus:translate-x-2.5",
-      dxl: "mt-1 group-hover:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.4)] group-focus:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.4)]",
-      d2xl: "mt-1.5 group-hover:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.4)] group-focus:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.4)]",
+      base: "group-hover:translate-x-2 group-focus:translate-x-2",
+      lg: "group-hover:translate-x-2.5 group-focus:translate-x-2.5",
+      d3xl: "mt-1 group-hover:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.4)] group-focus:translate-x-[calc(clamp(1.35rem,1.5vw,1.875rem)/1.4)]",
+      d4xl: "mt-1.5 group-hover:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.4)] group-focus:translate-x-[calc(clamp(1.575rem,1.75vw,2.1875rem)/1.4)]",
       unset: null,
     },
   },
@@ -57,8 +57,8 @@ export const Link = {
             "group relative flex w-fit select-none items-center whitespace-nowrap transition-[border-radius,transform] duration-400 ease-kolumb-flow hover:rounded focus:rounded",
             ArrowVariants({ variant, size, className }),
           ) +
-          `${size === "dxl" ? " text-d-3xl" : ""}` +
-          `${size === "d2xl" ? " text-d-4xl" : ""}`
+          `${size === "d3xl" ? " text-d-3xl" : ""}` +
+          `${size === "d4xl" ? " text-d-4xl" : ""}`
         }
         {...otherProps}
       >
@@ -88,7 +88,7 @@ export const Link = {
       <NextLink
         href={href}
         className={cn(
-          "group relative px-5 text-[17px] text-gray-600 before:pointer-events-none before:absolute before:inset-x-5 before:-bottom-0.5 before:h-[1.5px] before:bg-current before:opacity-0 before:duration-400 before:ease-kolumb-flow before:hover:bottom-0.5 before:hover:opacity-100",
+          "group relative block w-fit text-gray-600 before:pointer-events-none before:absolute before:inset-x-0 before:-bottom-0.5 before:h-[1.5px] before:bg-current before:opacity-0 before:duration-400 before:ease-kolumb-flow before:hover:bottom-0.5 before:hover:opacity-100",
           className,
         )}
         {...otherProps}

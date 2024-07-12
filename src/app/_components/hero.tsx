@@ -25,7 +25,7 @@ export default function Hero() {
           crafting of your itinerary into <br /> an easy task.
         </p>
 
-        <Link.Arrow href="/signup" variant="primary" size="dxl">
+        <Link.Arrow href="/signup" variant="primary" size="d3xl">
           Start Your Adventure
         </Link.Arrow>
       </div>

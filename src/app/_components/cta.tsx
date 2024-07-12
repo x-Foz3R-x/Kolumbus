@@ -43,7 +43,7 @@ export default function CTA() {
         <Link.Arrow
           href="/signup"
           variant="primary"
-          size="d2xl"
+          size="d4xl"
           className="bg-gray-800 outline-gray-800"
         >
           Start Your Adventure
