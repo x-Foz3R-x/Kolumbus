@@ -47,6 +47,7 @@
     "react": "18.3.1",
     "react-date-range": "2.0.1",
     "react-dom": "18.3.1",
+    "react-use-measure": "^2.1.1",
     "server-only": "^0.0.1",
     "sonner": "^1.5.0",
     "superjson": "^2.2.1",
@@ -79,5 +80,5 @@
   "ct3aMetadata": {
     "initVersion": "7.30.2"
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "pnpm@9.5.0"
 }
