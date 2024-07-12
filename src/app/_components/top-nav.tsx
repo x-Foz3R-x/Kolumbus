@@ -15,7 +15,7 @@ export default function TopNav() {
       <SlideAnimation
         direction="out"
         threshold={100}
-        className="relative hidden h-16 w-full items-center justify-end gap-6 border-b bg-white px-8 pl-[224px] md:flex"
+        className="relative hidden h-16 w-full items-center justify-end gap-6 bg-gradient-to-b from-white via-white to-gray-100/0 px-8 pl-[224px] md:flex"
       >
         <div className="flex items-center gap-4">
           <div className="flex">
@@ -28,17 +28,17 @@ export default function TopNav() {
           </div>
 
           <SignedIn>
-            <Link.Arrow href="/library" theme="outline" size="md">
+            <Link.Arrow href="/library" variant="outline" size="md">
               Library
             </Link.Arrow>
             <ProfileButton />
           </SignedIn>
 
           <SignedOut>
-            <Link.Arrow href="/signin" theme="outline" size="md">
+            <Link.Arrow href="/signin" variant="outline" size="md">
               Sign in
             </Link.Arrow>
-            <Link.Arrow href="/signup" theme="primary" size="md" className="font-semibold">
+            <Link.Arrow href="/signup" variant="primary" size="md" className="font-semibold">
               Start Your Adventure
             </Link.Arrow>
           </SignedOut>
