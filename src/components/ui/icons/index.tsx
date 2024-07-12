@@ -6,6 +6,11 @@ import { KolumbusIcons } from "./kolumbus";
 import { MacosIcons } from "./macos";
 
 export const Icons = {
+  insetRadius: ({ ...props }: SvgProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" {...props}>
+      <path d="M0 0v16C0 7.163 7.163 0 16 0H0Z" />
+    </svg>
+  ),
   ...AlertIcons,
   ...ArrowIcons,
   ...EditingIcons,
