@@ -3,7 +3,7 @@ import "~/styles/custom-cursor.css";
 import TopNav from "./_components/top-nav";
 import Hero from "./_components/hero";
 import Discover from "./_components/discover";
-import CallToAction from "./_components/call-to-action";
+import CTA from "./_components/cta";
 import Footer from "./_components/footer";
 import ProgressiveBackgroundColor from "~/components/progressiveBackgroundColor";
 
@@ -33,7 +33,7 @@ export default async function HomePage() {
         {/* About project */}
         {/* FAQ */}
         {/* Call to action */}
-        <CallToAction />
+        <CTA />
         {/* Footer */}
         <Footer />
       </main>
