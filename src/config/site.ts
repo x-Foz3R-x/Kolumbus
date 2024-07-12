@@ -31,6 +31,11 @@ export const siteConfig = {
           external: false,
         },
         {
+          title: "Invalid Invite",
+          href: "/invite/invalid",
+          external: false,
+        },
+        {
           title: "Terms",
           href: "/terms",
           external: false,

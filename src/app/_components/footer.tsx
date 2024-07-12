@@ -1,63 +1,46 @@
-import { Divider, Link } from "~/components/ui";
+import Image from "next/image";
+import { Link } from "~/components/ui";
+import { siteConfig } from "~/config/site";
 
 export default function Footer() {
   return (
-    <footer className="flex w-full flex-col justify-center whitespace-nowrap bg-kolumblue-500 fill-white pt-24 text-white">
-      <div className="flex justify-evenly">
-        <ul>
-          <h3 className="text-d-2xl">Links</h3>
-          <Link.Arrow href="" size="dxl" className="fill-white">
-            Home
-          </Link.Arrow>
-          <Link.Arrow href="" size="dxl" className="fill-white">
-            About
-          </Link.Arrow>
-          <Link.Arrow href="" size="dxl" className="fill-white">
-            Contact
-          </Link.Arrow>
-          <Link.Arrow href="" size="dxl" className="fill-white">
-            Invalid Invite
-          </Link.Arrow>
-        </ul>
-
-        <ul>
-          <h3 className="text-d-2xl">Social</h3>
-          <Link.Arrow href="" size="dxl" className="fill-white">
-            Youtube
-          </Link.Arrow>
-          <Link.Arrow href="" size="dxl" className="fill-white">
-            Instagram
-          </Link.Arrow>
-          <Link.Arrow href="" size="dxl" className="fill-white">
-            X
-          </Link.Arrow>
-        </ul>
-      </div>
-
-      <div className="flex justify-between px-4 py-2 text-sm text-kolumblue-300">
-        <div className="flex gap-1">
-          <p className="whitespace-nowrap">Copyright &copy; 2024 Kolumbus. All rights reserved.</p>
-
-          <div className="flex">
-            <Link.UnderLine href="/privacy-policy" className="text-sm text-kolumblue-300">
-              Privacy
-            </Link.UnderLine>
-
-            <Divider orientation="vertical" className="my-auto h-4 bg-kolumblue-400" />
-
-            <Link.UnderLine href="/terms-of-service" className="text-sm text-kolumblue-300">
-              Terms
-            </Link.UnderLine>
-
-            <Divider orientation="vertical" className="my-auto h-4 bg-kolumblue-400" />
-
-            <Link.UnderLine href="/faq" className="text-sm text-kolumblue-300">
-              FAQ
-            </Link.UnderLine>
-          </div>
+    <footer className="flex w-full justify-evenly whitespace-nowrap bg-kolumblue-500 fill-white py-24 text-white">
+      <div className="flex flex-col items-center gap-2">
+        {/* Avatar */}
+        <div className="relative size-d32 rounded-full bg-kolumblue-300">
+          <Image
+            src="https://utfs.io/f/280ffed7-2ffb-4b3d-aef2-5efe88252553-n1k92z.png"
+            alt="Foz3R Avatar"
+            fill
+          />
         </div>
 
-        <div>Site by Foz3R</div>
+        <p className="text-2xl font-bold">Made by Foz3R</p>
+        <p className="whitespace-nowrap pt-2 text-center text-kolumblue-300">
+          Copyright &copy; 2024 Kolumbus. All rights reserved.
+        </p>
+      </div>
+
+      <div className="flex w-3/5 justify-around">
+        {siteConfig.footerNav.map((item) => (
+          <div key={item.title}>
+            <h3 className="pb-4 text-lg font-semibold capitalize text-kolumblue-300">
+              {item.title}
+            </h3>
+            <ul className="flex flex-col gap-3 text-lg leading-none">
+              {item.items.map((item) => (
+                <Link.UnderLine
+                  key={item.title}
+                  href={item.href}
+                  target={item.external ? "_blank" : "_self"}
+                  className="text-white before:inset-x-0 before:hover:bottom-0"
+                >
+                  {item.title}
+                </Link.UnderLine>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </footer>
   );
