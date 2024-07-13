@@ -13,15 +13,19 @@ export default async function HomePage() {
 
       <main className="apply-custom-cursor min-h-screen w-screen px-4 font-belanosima">
         <Hero />
+
+        {/* Key Features */}
+
         <Discover />
 
-        {/* Features */}
-        {/* About project */}
+        {/* Benefits */}
+        {/* <Introduction /> */}
+
         {/* FAQ */}
-        {/* Call to action */}
+
         <CTA />
-        {/* Footer */}
-        <Footer />
+
+        <Footer className="rounded-none bg-kolumblue-500" />
       </main>
     </>
   );
