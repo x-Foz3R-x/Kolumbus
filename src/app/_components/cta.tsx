@@ -5,29 +5,29 @@ export default function CTA() {
   return (
     <div className="relative h-[clamp(19.98rem,22.2vw,27.75rem)] overflow-hidden rounded-tr-[3rem] bg-kolumblue-400">
       <Carousel duration={20}>
-        <div className="text-d-10xl bg-kolumblue-400 font-bold leading-[0.6]">
-          <div className="flex fill-kolumblue-100 text-kolumblue-100">
+        <div className="text-d-10xl font-bold leading-[0.6]">
+          <div className="flex fill-kolumblue-100/75 text-kolumblue-100/75">
             <span className="pt-d3">K</span>
-            <Icons.logo className="h-d22 inline-block animate-[spin_10s_linear_infinite_reverse]" />
+            <Icons.logo className="inline-block h-d22 animate-[spin_10s_linear_infinite_reverse]" />
             <span className="pt-d3">LUMBUS</span>
           </div>
-          <div className="flex -scale-y-100 fill-kolumblue-300 text-kolumblue-300">
+          <div className="flex -scale-y-100 fill-kolumblue-300/50 text-kolumblue-300/50">
             <span className="pt-d3">K</span>
-            <Icons.logo className="h-d22 inline-block animate-[spin_10s_linear_infinite]" />
+            <Icons.logo className="inline-block h-d22 animate-[spin_10s_linear_infinite]" />
             <span className="pt-d3">LUMBUS</span>
           </div>
         </div>
       </Carousel>
       <Carousel duration={20} reverse>
-        <div className="text-d-10xl bg-kolumblue-400 font-bold leading-[0.6]">
-          <div className="flex fill-kolumblue-100 text-kolumblue-100">
+        <div className="text-d-10xl font-bold leading-[0.6]">
+          <div className="flex fill-kolumblue-100/75 text-kolumblue-100/75">
             <span className="pt-d3">K</span>
-            <Icons.logo className="h-d22 inline-block animate-[spin_10s_linear_infinite]" />
+            <Icons.logo className="inline-block h-d22 animate-[spin_10s_linear_infinite]" />
             <span className="pt-d3">LUMBUS</span>
           </div>
-          <div className="flex -scale-y-100 fill-kolumblue-300 text-kolumblue-300">
+          <div className="flex -scale-y-100 fill-kolumblue-300/50 text-kolumblue-300/50">
             <span className="pt-d3">K</span>
-            <Icons.logo className="h-d22 inline-block animate-[spin_10s_linear_infinite_reverse]" />
+            <Icons.logo className="inline-block h-d22 animate-[spin_10s_linear_infinite_reverse]" />
             <span className="pt-d3">LUMBUS</span>
           </div>
         </div>
