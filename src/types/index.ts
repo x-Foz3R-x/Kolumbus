@@ -1,5 +1,4 @@
 export type FooterItem = {
-  title: string;
   items: {
     title: string;
     href: string;
