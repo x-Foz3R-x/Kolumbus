@@ -45,6 +45,15 @@ type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
 type ArrowProps = VariantProps<typeof ArrowVariants> & LinkProps;
 
 export const Link = {
+  Default(props: LinkProps) {
+    const { href, className, ...otherProps } = props;
+
+    return (
+      <NextLink href={href} className={cn("group block", className)} {...otherProps}>
+        {props.children}
+      </NextLink>
+    );
+  },
   Arrow(props: ArrowProps) {
     const { href, target, variant, size, arrowSize, shift, className, ...otherProps } = props;
 
