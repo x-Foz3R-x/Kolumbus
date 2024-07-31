@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { add } from "date-fns";
 
 import useRandomTrip from "~/hooks/use-random-trip";
 import { cn, differenceInDays, formatDate } from "~/lib/utils";
@@ -47,11 +46,10 @@ export default function Demo() {
     const days = differenceInDays(new Date(endDate), new Date(startDate));
     const itinerary = Array.from({ length: days }, (_, index) => ({
       id: `d${index + 1}`,
-      date: formatDate(add(new Date(startDate), { days: index })),
-      events: !!trip.itinerary[index]
-        ? trip.itinerary[index].events.map((event) => ({
-            ...event,
-            date: formatDate(add(new Date(startDate), { days: index })),
+      places: !!trip.itinerary[index]
+        ? trip.itinerary[index].places.map((place) => ({
+            ...place,
+            dayIndex: index,
           }))
         : [],
     }));
@@ -103,7 +101,7 @@ export default function Demo() {
     const activityWidth = 160;
     const eventGap = 8;
 
-    const highestEventCount = Math.max(...trip.itinerary.map((day) => day.events.length));
+    const highestEventCount = Math.max(...trip.itinerary.map((day) => day.places.length));
 
     setItineraryWidth(
       preComputedStaticWidth + activityWidth * highestEventCount + eventGap * highestEventCount,
@@ -133,7 +131,8 @@ export default function Demo() {
             userId="guest"
             itinerary={trip.itinerary}
             setItinerary={updateItinerary}
-            eventLimit={5}
+            startDate={trip.startDate}
+            placeLimit={5}
             dndTrash={{ variant: "inset", className: "h-32" }}
             calendar="left-0 mb-0"
           />

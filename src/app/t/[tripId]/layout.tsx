@@ -3,7 +3,7 @@ import { api } from "~/trpc/server";
 
 import db from "~/server/db";
 import { generateItinerary } from "~/lib/utils";
-import { type EventSchema } from "~/lib/validations/event";
+import { type PlaceSchema } from "~/lib/validations/place";
 
 import { TripProvider } from "./_components/trip-provider";
 import TopNav from "./_components/top-nav";
@@ -33,7 +33,7 @@ export default async function Layout(props: {
     itinerary: generateItinerary(
       tripData.startDate,
       tripData.endDate,
-      events as unknown as EventSchema[],
+      events as unknown as PlaceSchema[],
     ),
   };
 

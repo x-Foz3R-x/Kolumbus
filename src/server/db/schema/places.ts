@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { index, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
+import { decimal, index, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { createId } from "~/lib/utils";
@@ -21,11 +21,14 @@ export const places = pgTable(
     address: text("address"),
     startTime: text("start_time"),
     endTime: text("end_time"),
+    phoneNumber: text("phone_number"),
+    cost: decimal("cost", { precision: 10, scale: 2 }).default("0").notNull(), // to be replaced with its own table
+    website: text("website"),
     note: text("note"),
     imageUrl: text("image_url"),
-    attachmentUrl: text("attachment_url"),
 
-    position: smallint("position").notNull(),
+    dayIndex: smallint("day").notNull(),
+    sortIndex: smallint("sort_order").notNull(),
     createdBy: text("created_by").notNull(),
     updatedBy: text("updated_by").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

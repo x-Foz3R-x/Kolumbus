@@ -1,17 +1,17 @@
 import { createContext, useContext } from "react";
-import type { EventSchema, UpdateEventSchema } from "~/lib/validations/event";
+import type { PlaceSchema, UpdatePlaceSchema } from "~/lib/validations/place";
 
 export type DndItineraryContextProps = {
   userId: string;
   tripId: string;
-  eventCount: number;
-  eventLimit: number;
+  placeCount: number;
+  placeLimit: number;
 
   selectEvent: (eventId: string) => void;
-  createEvent: (event: EventSchema, dayIndex?: number, index?: number) => void;
+  createEvent: (event: PlaceSchema, dayIndex?: number, index?: number) => void;
   updateEvent: (
-    event: EventSchema,
-    updateData: UpdateEventSchema["data"],
+    event: PlaceSchema,
+    updateData: UpdatePlaceSchema["data"],
     {
       dayIndex,
       entryDescription,

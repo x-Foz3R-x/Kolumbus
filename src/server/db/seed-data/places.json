@@ -1,0 +1,139 @@
+[
+  {
+    "id": "BjyHFtRZx8FqrTdd",
+    "tripId": "YJGg3KxTd0",
+
+    "name": "Warsaw",
+    "address": "Warsaw, Poland",
+    "imageUrl": "ref:AWU5eFgaD6KV7jk0Opv1E3hcyFqVq1MstecRDcie0v6oifKWR7ShZgY0AdQTxy5-JnFYzot9HmlLenXcF8oNo6JVDb5fjE2FFvm6MxVz-xV7_PPejY_tH3hxMWnMD4ngBvIGaa1WW64y2pZEOQtjPXIaSX1EE0DWtwdck7_QdOOHmS1iBiNa",
+
+    "dayIndex": 0,
+    "sortIndex": 0,
+    "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz"
+  },
+  {
+    "id": "pZB7WdF2vsRe1XYL",
+    "tripId": "YJGg3KxTd0",
+
+    "name": "Helsinki",
+    "address": "Helsinki, Finland",
+    "imageUrl": "ref:ATplDJamwMaLHGiaMZgk3BOlZxrAwlvPNmbqVOUUCmQQowUK5jlcNP5EETn7hz7fJ67oRFlXQIw_6Rb8IVbZKR-sk5oh6KtxNtvKk4RaQKeRyONqYslwPUpT_aWXcC63EE8GxwL_mLx-dJmG0cT9o2__2k6XmahdI4WAES-eNLHWmIKSupEz",
+
+    "dayIndex": 0,
+    "sortIndex": 1,
+    "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz"
+  },
+  {
+    "id": "1QUy0TlLnXZNoQry",
+    "tripId": "YJGg3KxTd0",
+
+    "name": "Berlin",
+    "address": "Berlin, Germany",
+    "imageUrl": "ref:ATplDJZ4E6FfheiwWrQ67ALBiDv5fRZ9NF5IvI6zWShOPC3dFZjW2_X10l_Vj9QbyKGzLRnfNoYCM3rfgHJo89kpYMXJQWX_VvQ6Fbme3a0xOJU6pomepRgNvTnZupCkqgyZYoGb0ApJ51AWR-vOBd9MABjhftVnJ5h2n_EcwHJabNPFN2VK",
+
+    "dayIndex": 0,
+    "sortIndex": 2,
+    "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz"
+  },
+  {
+    "id": "FTy3HUsT1BBuDfFr",
+    "tripId": "YJGg3KxTd0",
+
+    "name": "eum volva",
+    "address": "64113 Abbott Grove",
+    "startTime": "1200",
+    "endTime": "1800",
+    "phoneNumber": "877 603 8915",
+    "cost": "17",
+
+    "dayIndex": 1,
+    "sortIndex": 0,
+    "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz"
+  },
+  {
+    "id": "Ld0CrXwfEM42FDuM",
+    "tripId": "YJGg3KxTd0",
+
+    "name": "arceo dado",
+    "address": "78194 West Key",
+    "startTime": "1100",
+    "endTime": "2040",
+    "phoneNumber": "(496) 592-7936",
+    "cost": "77",
+
+    "dayIndex": 2,
+    "sortIndex": 0,
+    "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz"
+  },
+  {
+    "id": "dlyEa3CSV7aCWGdo",
+    "tripId": "YJGg3KxTd0",
+
+    "name": "pecs nihil",
+    "address": "267 Marvin Drive",
+    "startTime": "1730",
+    "endTime": "2300",
+    "phoneNumber": "305 456 3497",
+    "cost": "230",
+
+    "dayIndex": 4,
+    "sortIndex": 0,
+    "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz"
+  },
+
+  {
+    "id": "N1UIwBgN5B9npBir",
+    "tripId": "jBCJuVK7ki",
+
+    "name": "Royal Baths Park",
+    "address": "Warsaw, Poland",
+    "startTime": "0800",
+    "endTime": "1500",
+    "phoneNumber": "+48 504 243 783",
+    "website": "https://www.lazienki-krolewskie.pl/",
+    "imageUrl": "ref:ATplDJb7g0HVir04gfSE8khV1pr0WGupZQxlEPld0gqwTIv__5DA7HfO0lWEhabw1C30J-DPYbU1azR8mR1detgn_May2mfVH8MKUi7heJ4cNziM-SV8fqcV86PgX0NbKDq_QUW4g0QBZ49Qbabja15uWGEd0Ad2jPE-WR_LK_acFsoxJcS2",
+
+    "dayIndex": 0,
+    "sortIndex": 0,
+    "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz"
+  },
+  {
+    "id": "XPVaYU2lOdKIJQrr",
+    "tripId": "jBCJuVK7ki",
+
+    "name": "Pizzeria Dworska",
+    "address": "Warsaw, Poland",
+    "startTime": "1600",
+    "endTime": "1820",
+    "phoneNumber": "+48 22 826 62 62",
+    "cost": "32",
+    "website": "http://www.pizzeriadworska.pl/",
+    "imageUrl": "ref:ATplDJZeNdOF3Z9tEpibHKLhJRcn5MUVF_3P90_XDlXaI9tD-ZwiXtufEXOg3Jyd_7RcBg2i6AojvgC9mDY0ZTJGRx7m_WF4eAvzBEld8r2QH-3JN35wPWtoMGiB7lwTwJ0Vv4NGs1jnDo4iohWzTi-IAPnS5tmzUIKE70Zx_7OO5X6-wq5Q",
+
+    "dayIndex": 0,
+    "sortIndex": 1,
+    "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz"
+  },
+
+  {
+    "id": "0IVKDosPvyCS3hmk",
+    "tripId": "BCEwB8Yx14",
+
+    "name": "Warsaw",
+    "address": "Warsaw, Poland",
+    "imageUrl": "ref:AWU5eFgaD6KV7jk0Opv1E3hcyFqVq1MstecRDcie0v6oifKWR7ShZgY0AdQTxy5-JnFYzot9HmlLenXcF8oNo6JVDb5fjE2FFvm6MxVz-xV7_PPejY_tH3hxMWnMD4ngBvIGaa1WW64y2pZEOQtjPXIaSX1EE0DWtwdck7_QdOOHmS1iBiNa",
+
+    "dayIndex": 0,
+    "sortIndex": 0,
+    "createdBy": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB",
+    "updatedBy": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB"
+  }
+]

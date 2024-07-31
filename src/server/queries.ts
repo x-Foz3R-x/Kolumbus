@@ -18,7 +18,7 @@ import ratelimit from "./ratelimit";
 import { error } from "~/lib/trpc";
 
 import type * as schema from "~/server/db/schema";
-import { events, memberships } from "./db/schema";
+import { places, memberships } from "./db/schema";
 import { decodePermissions } from "~/lib/utils";
 import { MemberPermissionFlags } from "~/lib/validations/membership";
 import type { UserTypeSchema } from "~/lib/validations/auth";
@@ -95,10 +95,10 @@ export async function getTripMemberCount(tx: Transaction, tripId: string) {
 
 export async function getTripsEventCount(tx: Transaction, tripIds: string[]) {
   const result = await tx
-    .select({ tripId: events.tripId, eventCount: count() })
-    .from(events)
-    .where(inArray(events.tripId, tripIds))
-    .groupBy(events.tripId);
+    .select({ tripId: places.tripId, eventCount: count() })
+    .from(places)
+    .where(inArray(places.tripId, tripIds))
+    .groupBy(places.tripId);
 
   return result.reduce(
     (acc, item) => {

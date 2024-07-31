@@ -1,11 +1,11 @@
-import { addDays, differenceInCalendarDays, format } from "date-fns";
+import { add, differenceInCalendarDays, format } from "date-fns";
 import clsx, { type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { customAlphabet } from "nanoid";
 import { env } from "~/env";
 
-import type { EventSchema } from "./validations/event";
-import type { DaySchema, ItinerarySchema } from "./validations/trip";
+import type { Place } from "./validations/place";
+import type { ItinerarySchema } from "./validations/trip";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -100,27 +100,26 @@ export function decodePermissions<T extends Record<string, boolean>>(
  * Generates an itinerary based on the provided start and end dates, and events.
  * @param startDate - The start date of the itinerary. Can be a string or a Date object.
  * @param endDate - The end date of the itinerary. Can be a string or a Date object.
- * @param events - An array of events to include in the itinerary.
+ * @param places - An array of events to include in the itinerary.
  * @returns The generated itinerary is an array of Day objects.
  */
 export function generateItinerary(
   startDate: string | Date,
   endDate: string | Date,
-  events: EventSchema[],
+  places: Place[],
 ): ItinerarySchema {
-  const totalDays = differenceInDays(startDate, endDate);
-  const beginningDate = new Date(startDate);
+  const totalDays = differenceInCalendarDays(new Date(endDate), new Date(startDate)) + 1;
   const itinerary: ItinerarySchema = [];
+  const firstDate = new Date(startDate);
 
   for (let i = 0; i < totalDays; i++) {
-    const date = formatDate(addDays(beginningDate, i));
-    const day: DaySchema = {
+    const date = formatDate(add(firstDate, { days: i }));
+
+    itinerary.push({
       id: `d${i}`,
       date,
-      events: events.filter((event) => event.date === date),
-    };
-
-    itinerary.push(day);
+      places: places.filter((place) => place.dayIndex === i),
+    });
   }
 
   return itinerary;

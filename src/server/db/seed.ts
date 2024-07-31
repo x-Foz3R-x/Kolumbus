@@ -6,8 +6,7 @@ import * as schema from "./schema";
 
 import trips from "./seed-data/trips.json";
 import memberships from "./seed-data/memberships.json";
-import events from "./seed-data/events.json";
-import activities from "./seed-data/activities.json";
+import places from "./seed-data/places.json";
 
 const connection = postgres(
   "postgres://postgres.azkhztdwoqyqaqayrdph:lnYoQ6Cum70t5xBy@aws-0-eu-central-1.pooler.supabase.com:6543/postgres",
@@ -23,8 +22,7 @@ const main = async () => {
 
     await seedTrips();
     await seedMemberships();
-    await seedEvents();
-    await seedActivities();
+    await seedPlaces();
 
     const end = Date.now();
 
@@ -50,14 +48,8 @@ export async function seedMemberships() {
   await db.insert(schema.memberships).values(memberships);
 }
 
-export async function seedEvents() {
-  await db.delete(schema.events);
-  console.log(`📝 Inserting ${events.length} events`);
-  await db.insert(schema.events).values(events as schema.NewEvent[]);
-}
-
-export async function seedActivities() {
-  await db.delete(schema.activities);
-  console.log(`📝 Inserting ${activities.length} activities`);
-  await db.insert(schema.activities).values(activities);
+export async function seedPlaces() {
+  await db.delete(schema.places);
+  console.log(`📝 Inserting ${places.length} events`);
+  await db.insert(schema.places).values(places);
 }

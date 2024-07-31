@@ -4,33 +4,34 @@ import { error } from "~/lib/trpc";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import analyticsServerClient from "~/server/analytics";
 
-import { events } from "~/server/db/schema";
-import { deleteEventSchema } from "~/lib/validations/event";
+import { places } from "~/server/db/schema";
+import { deletePlaceSchema } from "~/lib/validations/place";
 import { getMyMembershipDecodedPermissions } from "~/server/queries";
 
 export const eventRouter = createTRPCRouter({
-  delete: protectedProcedure.input(deleteEventSchema).mutation(async ({ ctx, input }) => {
-    const { id: eventId, tripId, date, position, createdBy } = input;
+  delete: protectedProcedure.input(deletePlaceSchema).mutation(async ({ ctx, input }) => {
+    const { id: eventId, tripId, dayIndex, sortIndex } = input;
 
     await ctx.db.transaction(async (tx) => {
       const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
 
-      if (
-        (createdBy === ctx.user.id && !permissions.deleteOwnEvents) ||
-        (createdBy !== ctx.user.id && !permissions.deleteEvents)
-      ) {
+      if (!permissions.deleteEvents) {
         throw error.unauthorized(
           "You do not have permission to delete this event. Please contact the trip organizer to request delete permissions.",
         );
       }
 
       await tx
-        .update(events)
-        .set({ position: sql`"position" - 1` })
+        .update(places)
+        .set({ sortIndex: sql`"position" - 1` })
         .where(
-          and(eq(events.tripId, tripId), eq(events.date, date), gt(events.position, position)),
+          and(
+            eq(places.tripId, tripId),
+            eq(places.dayIndex, dayIndex),
+            gt(places.sortIndex, sortIndex),
+          ),
         );
-      await tx.delete(events).where(and(eq(events.id, eventId), eq(events.tripId, tripId)));
+      await tx.delete(places).where(and(eq(places.id, eventId), eq(places.tripId, tripId)));
     });
 
     analyticsServerClient.capture({

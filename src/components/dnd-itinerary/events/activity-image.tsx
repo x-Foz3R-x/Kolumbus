@@ -1,9 +1,9 @@
 import Image from "next/image";
 
 import { eventFallbackUrl } from "~/lib/constants";
-import type { ActivityEventSchema } from "~/lib/types";
+import type { PlaceSchema } from "~/lib/types";
 
-export default function ActivityImage(props: { event: ActivityEventSchema; size?: number }) {
+export default function ActivityImage(props: { event: PlaceSchema; size?: number }) {
   const imageUrl = getActivityImageUrl(props.event);
 
   if (imageUrl.startsWith("/") || imageUrl.startsWith(eventFallbackUrl)) {
@@ -25,15 +25,15 @@ export default function ActivityImage(props: { event: ActivityEventSchema; size?
   );
 }
 
-function getActivityImageUrl(event: ActivityEventSchema) {
-  const images = event?.activity?.images;
-  const imageIndex = event?.activity?.imageIndex;
+function getActivityImageUrl(event: PlaceSchema) {
+  const imageUrl = event?.imageUrl;
 
-  if (!images || images.length < 1) return eventFallbackUrl;
+  if (!imageUrl) return eventFallbackUrl;
+  if (imageUrl?.startsWith("http")) return imageUrl;
 
-  if (images[imageIndex]?.startsWith("http")) return images[imageIndex];
+  if (imageUrl.startsWith("ref:")) {
+    return `/api/get-google-image?imageRef=${imageUrl.split("ref:")[1]}&width=156&height=82`;
+  }
 
-  return !!images[imageIndex]
-    ? `/api/get-google-image?imageRef=${images[imageIndex]}&width=156&height=82`
-    : eventFallbackUrl;
+  return eventFallbackUrl;
 }

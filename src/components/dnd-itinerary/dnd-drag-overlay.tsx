@@ -2,7 +2,7 @@ import { DragOverlay } from "@dnd-kit/core";
 import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 
 import type { DaySchema } from "~/lib/validations/trip";
-import type { ActivityEventSchema, EventSchema } from "~/lib/validations/event";
+import type { PlaceSchema } from "~/lib/validations/place";
 
 import DayOverlay from "./day-overlay";
 import { ActivityOverlay } from "./events";
@@ -10,7 +10,7 @@ import { ActivityOverlay } from "./events";
 const ACTIVITY_WIDTH = 160;
 
 type OverlayProps = {
-  activeItem: DaySchema | EventSchema | null;
+  activeItem: DaySchema | PlaceSchema | null;
   selectedIds: string[];
   enableEventComposer: boolean;
 };
@@ -25,7 +25,7 @@ export default function DndDragOverlay({
     activeItem && selectedIds.length > 1 ? selectedIds.indexOf(activeItem.id) * ACTIVITY_WIDTH : 0;
 
   const modifiers =
-    activeItem && "events" in activeItem
+    activeItem && "places" in activeItem
       ? [restrictToVerticalAxis, restrictToParentElement]
       : undefined;
 
@@ -45,13 +45,13 @@ function Overlay({ activeItem, selectedIds, enableEventComposer }: OverlayProps)
     return null;
   }
 
-  if ("events" in activeItem) {
+  if ("places" in activeItem) {
     return <DayOverlay day={activeItem} enableEventComposer={enableEventComposer} />;
   }
 
   return (
     <ActivityOverlay
-      event={activeItem as ActivityEventSchema}
+      event={activeItem}
       selectCount={selectedIds.length ? selectedIds.length : 0}
       hoverShadow
     />

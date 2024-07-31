@@ -17,6 +17,12 @@
     "permissions": -1,
     "tripPosition": 2
   },
+  {
+    "userId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
+    "tripId": "BCEwB8Yx14",
+    "permissions": 999,
+    "tripPosition": 3
+  },
 
   {
     "userId": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB",

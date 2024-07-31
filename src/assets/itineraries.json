@@ -2,185 +2,116 @@
   [
     {
       "id": "d0",
-      "events": [
+      "places": [
         {
           "id": "UnMbvcbDeYx4t6VV",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJ9Rk2BW1bFkcRmKV_1sTfuaw",
+
+          "name": "Wawel Royal Castle-State Art Collection",
+          "address": "Wawel 5, 31-001 Kraków, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 12 422 51 55",
+          "cost": "0",
+          "website": "https://wawel.krakow.pl/",
+          "imageUrl": "ref:AUc7tXU9N89HfGRi1Hk_HgkLVKRVt9H404u-aoXgEIJYQ2M2peGQTi3Je4W8U9gLYENlcHJAlpX_DewJWPXrC8JNTaI9dw0OS2uBeoxbCfMSh99NgFj9JqeOUkRX1kHIzIYYeeYnf0VW0uJ27D0E39CYIKNScQghQzlK2QKYFnJOJF-tzrQ",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-01T14:43:02.603Z",
-          "updatedAt": "2024-07-01T14:43:02.603Z",
-          "activity": {
-            "id": "xXLOeUD0ZtWZ2sPA",
-            "eventId": "UnMbvcbDeYx4t6VV",
-            "placeId": "ChIJ9Rk2BW1bFkcRmKV_1sTfuaw",
-            "name": "Wawel Royal Castle-State Art Collection",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "0900", "close": "1800" },
-              { "day": 1, "open": "1000", "close": "1600" },
-              { "day": 2, "open": "0900", "close": "1800" },
-              { "day": 3, "open": "0900", "close": "1800" },
-              { "day": 4, "open": "0900", "close": "1800" },
-              { "day": 5, "open": "0900", "close": "1800" },
-              { "day": 6, "open": "0900", "close": "1800" }
-            ],
-            "address": "Wawel 5, 31-001 Kraków, Poland",
-            "phoneNumber": "+48 12 422 51 55",
-            "website": "https://wawel.krakow.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXU9N89HfGRi1Hk_HgkLVKRVt9H404u-aoXgEIJYQ2M2peGQTi3Je4W8U9gLYENlcHJAlpX_DewJWPXrC8JNTaI9dw0OS2uBeoxbCfMSh99NgFj9JqeOUkRX1kHIzIYYeeYnf0VW0uJ27D0E39CYIKNScQghQzlK2QKYFnJOJF-tzrQ"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=12446225081720350104"
-          }
+          "updatedAt": "2024-07-01T14:43:02.603Z"
         },
         {
           "id": "XuPLIrDgDB62hFAE",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJZ9pVBBJbFkcRMw11Gwf1x8M",
+
+          "name": "Rynek Główny",
+          "address": "Rynek Główny, 31-422 Kraków, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": "https://www.krakow.pl/11195,inst,4846,0,instcbi.html",
+          "imageUrl": "ref:AUc7tXXV0bs3wfG3Zm8CLC4yliFnup-lB-AN9WcReSRtEb1yaDkHeKdcLAGU9OYSZ1PQi2VDhGoBVARtg4SvTlnjJT0g4ZKrJyP2Aigg8kNnUQsZAtBrJ-enhQT8jCN3x6eHPScz83Muf5-WQrTcz2XD3jzVz7A4Ql1ojBGU1xzlygpwutgJ",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-01T14:43:50.570Z",
-          "updatedAt": "2024-07-01T14:43:50.570Z",
-          "activity": {
-            "id": "gZxCLPkhzO1GU5u1",
-            "eventId": "XuPLIrDgDB62hFAE",
-            "placeId": "ChIJZ9pVBBJbFkcRMw11Gwf1x8M",
-            "name": "Rynek Główny",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Rynek Główny, 31-422 Kraków, Poland",
-            "phoneNumber": null,
-            "website": "https://www.krakow.pl/11195,inst,4846,0,instcbi.html",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXXV0bs3wfG3Zm8CLC4yliFnup-lB-AN9WcReSRtEb1yaDkHeKdcLAGU9OYSZ1PQi2VDhGoBVARtg4SvTlnjJT0g4ZKrJyP2Aigg8kNnUQsZAtBrJ-enhQT8jCN3x6eHPScz83Muf5-WQrTcz2XD3jzVz7A4Ql1ojBGU1xzlygpwutgJ"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=14107513768635600179"
-          }
+          "updatedAt": "2024-07-01T14:43:50.570Z"
         },
         {
           "id": "iqQeyVmcTfGyAkZA",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJd1A69RFbFkcRMr_ccTAeN90",
+
+          "name": "St. Mary's Basilica",
+          "address": "plac Mariacki 5, 31-042 Kraków, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 12 422 05 21",
+          "cost": "0",
+          "website": "http://www.mariacki.com/",
+          "imageUrl": "ref:AUc7tXVJLw2hViLff-__poBvZgZ9Y932PXLQMg8c6WZTwcR3xXe06YhqO9dDVNBgh0NqvqgmOK7eMehTNc_6k0xdZuluKSFwM-qw7hbfT9Me-Q-JkAsO2z9yFfBfkZyRzjmnyGg5jyN-2Z2Xc_cFRO385LK9DaRyuELcrSuaIkrMbV3zwUQ9",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-01T14:44:08.384Z",
-          "updatedAt": "2024-07-01T14:44:08.384Z",
-          "activity": {
-            "id": "jIdpzGa71IzulbgT",
-            "eventId": "iqQeyVmcTfGyAkZA",
-            "placeId": "ChIJd1A69RFbFkcRMr_ccTAeN90",
-            "name": "St. Mary's Basilica",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1400", "close": "1800" },
-              { "day": 1, "open": "1130", "close": "1800" },
-              { "day": 2, "open": "1130", "close": "1800" },
-              { "day": 3, "open": "1130", "close": "1800" },
-              { "day": 4, "open": "1130", "close": "1800" },
-              { "day": 5, "open": "1130", "close": "1800" },
-              { "day": 6, "open": "1400", "close": "1800" }
-            ],
-            "address": "plac Mariacki 5, 31-042 Kraków, Poland",
-            "phoneNumber": "+48 12 422 05 21",
-            "website": "http://www.mariacki.com/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXVJLw2hViLff-__poBvZgZ9Y932PXLQMg8c6WZTwcR3xXe06YhqO9dDVNBgh0NqvqgmOK7eMehTNc_6k0xdZuluKSFwM-qw7hbfT9Me-Q-JkAsO2z9yFfBfkZyRzjmnyGg5jyN-2Z2Xc_cFRO385LK9DaRyuELcrSuaIkrMbV3zwUQ9"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=15940242599518715698"
-          }
+          "updatedAt": "2024-07-01T14:44:08.384Z"
         }
       ]
     },
     {
       "id": "d1",
-      "events": [
+      "places": [
         {
           "id": "iqAHVHx2umtnW4hd",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJbUElEhJbFkcRXzAqMneGkjk",
+
+          "name": "Planty",
+          "address": "31-041 Kraków, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 12 201 02 40",
+          "cost": "0",
+          "website": "http://www.krakow.pl/instcbi/36721,inst,6362,362,instcbi.html",
+          "imageUrl": "ref:AUc7tXUetVDzuGSl8_3gt3HpqiMT_rpBqPlP11Hn4lpB5o2dlGq8lRdtLDduMDPGrO7i8wnsYnd9zTQX-kLnJa-isSpXbL7fScfcE7wvPp9BgalgKZZz1RWfeB-znJVpXrG5JTiLIdtqz_B6bYygRg-WhFo8D1pgEzjJp6Z8AoNYgYJa30Hv",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-01T14:46:16.377Z",
-          "updatedAt": "2024-07-01T14:46:16.377Z",
-          "activity": {
-            "id": "ca0DMcJjij2Zci94",
-            "eventId": "iqAHVHx2umtnW4hd",
-            "placeId": "ChIJbUElEhJbFkcRXzAqMneGkjk",
-            "name": "Planty",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [{ "day": 0, "open": "0000" }],
-            "address": "31-041 Kraków, Poland",
-            "phoneNumber": "+48 12 201 02 40",
-            "website": "http://www.krakow.pl/instcbi/36721,inst,6362,362,instcbi.html",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUetVDzuGSl8_3gt3HpqiMT_rpBqPlP11Hn4lpB5o2dlGq8lRdtLDduMDPGrO7i8wnsYnd9zTQX-kLnJa-isSpXbL7fScfcE7wvPp9BgalgKZZz1RWfeB-znJVpXrG5JTiLIdtqz_B6bYygRg-WhFo8D1pgEzjJp6Z8AoNYgYJa30Hv"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=4148526053262504031"
-          }
+          "updatedAt": "2024-07-01T14:46:16.377Z"
         }
       ]
     },
     {
       "id": "d2",
-      "events": [
+      "places": [
         {
           "id": "U6bTOe8cOyGtoDOh",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJS46BBdhDFkcRFbST_a5JJZc",
+
+          "name": "Wieliczka Salt Mine",
+          "address": "Daniłowicza 10, 32-020 Wieliczka, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 12 278 73 02",
+          "cost": "0",
+          "website": "https://www.kopalnia.pl/",
+          "imageUrl": "ref:AUc7tXXqFvad9NwNsWFqUaD7un9BypdjDuVnBGH0ebUuNXPViICPlsfMl9qW9l0v2_H0plCpr8ZDDDt_SqEvIWvIa6bMwAkJeTeFkZIjLJcXHc53xMGgwgvybEv9xP7eg1xaaaIxxKjbIcVUMXcnQsNjsMua1yFJOacr6ZP-PtDTmJoiQgeT",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-01T14:46:07.762Z",
-          "updatedAt": "2024-07-01T14:46:07.762Z",
-          "activity": {
-            "id": "XrVNtRtJZTz5KrDe",
-            "eventId": "U6bTOe8cOyGtoDOh",
-            "placeId": "ChIJS46BBdhDFkcRFbST_a5JJZc",
-            "name": "Wieliczka Salt Mine",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "0730", "close": "1930" },
-              { "day": 1, "open": "0730", "close": "1930" },
-              { "day": 2, "open": "0730", "close": "1930" },
-              { "day": 3, "open": "0730", "close": "1930" },
-              { "day": 4, "open": "0730", "close": "1930" },
-              { "day": 5, "open": "0730", "close": "1930" },
-              { "day": 6, "open": "0730", "close": "1930" }
-            ],
-            "address": "Daniłowicza 10, 32-020 Wieliczka, Poland",
-            "phoneNumber": "+48 12 278 73 02",
-            "website": "https://www.kopalnia.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXXqFvad9NwNsWFqUaD7un9BypdjDuVnBGH0ebUuNXPViICPlsfMl9qW9l0v2_H0plCpr8ZDDDt_SqEvIWvIa6bMwAkJeTeFkZIjLJcXHc53xMGgwgvybEv9xP7eg1xaaaIxxKjbIcVUMXcnQsNjsMua1yFJOacr6ZP-PtDTmJoiQgeT"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=10891192289792865301"
-          }
+          "updatedAt": "2024-07-01T14:46:07.762Z"
         }
       ]
     }
@@ -188,218 +119,136 @@
   [
     {
       "id": "d0",
-      "events": [
+      "places": [
         {
           "id": "ourC7joJFKenbn4t",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "",
+
+          "name": "Old Town Market Square",
+          "address": "Rynek Starego Miasta, 00-272 Warszawa, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXVfaw69j-PPzV1V-iwJWlQblTniGfQSo2pyKbjat5DoQx-IN_bt3U0wCO2l8gn3OIA4AKa7VqAKPfBajIrIFLR66BbSsWlMYAgmIZ004nxZgtNXioMKq87I_Zxar_w0UYEf6zP3zSmy1pCIeujAfxPiDX2H3Kff1LqLecYNfbK9CKtI",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T11:38:07.322Z",
-          "updatedAt": "2024-07-03T11:38:07.322Z",
-          "activity": {
-            "id": "tAFxKWs7lKwzuIlF",
-            "eventId": "ourC7joJFKenbn4t",
-            "placeId": "EiRSeW5layBTdGFyZWdvIE1pYXN0YSwgV2Fyc2F3LCBQb2xhbmQiLiosChQKEgl7VwNrb8weRxGba2J9L11rKxIUChIJAZ-GmmbMHkcR_NPqiCq-8HI",
-            "name": "Old Town Market Square",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Rynek Starego Miasta, 00-272 Warszawa, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXVfaw69j-PPzV1V-iwJWlQblTniGfQSo2pyKbjat5DoQx-IN_bt3U0wCO2l8gn3OIA4AKa7VqAKPfBajIrIFLR66BbSsWlMYAgmIZ004nxZgtNXioMKq87I_Zxar_w0UYEf6zP3zSmy1pCIeujAfxPiDX2H3Kff1LqLecYNfbK9CKtI"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Rynek+Starego+Miasta,+00-272+Warszawa,+Poland&ftid=0x471ecc6f6b03577b:0x2b6b5d2f7d626b9b"
-          }
+          "updatedAt": "2024-07-03T11:38:07.322Z"
         },
         {
           "id": "1vL06HEfkEYl5loz",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJB1RFG2bMHkcRvslJ-0ahGSA",
+
+          "name": "The Royal Castle in Warsaw",
+          "address": "plac Zamkowy 4, 00-277 Warszawa, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 22 355 51 70",
+          "cost": "0",
+          "website": "https://www.zamek-krolewski.pl/",
+          "imageUrl": "https://www.gov.pl/photo/34548a39-cb58-4e83-93a1-58dc33397c42",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T11:38:28.912Z",
-          "updatedAt": "2024-07-03T11:38:28.912Z",
-          "activity": {
-            "id": "zAWBkL7xnhgdDFqi",
-            "eventId": "1vL06HEfkEYl5loz",
-            "placeId": "ChIJB1RFG2bMHkcRvslJ-0ahGSA",
-            "name": "The Royal Castle in Warsaw",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1000", "close": "1800" },
-              { "day": 2, "open": "1000", "close": "1800" },
-              { "day": 3, "open": "1000", "close": "1800" },
-              { "day": 4, "open": "1000", "close": "1800" },
-              { "day": 5, "open": "1000", "close": "1800" },
-              { "day": 6, "open": "1000", "close": "1800" }
-            ],
-            "address": "plac Zamkowy 4, 00-277 Warszawa, Poland",
-            "phoneNumber": "+48 22 355 51 70",
-            "website": "https://www.zamek-krolewski.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": ["https://www.gov.pl/photo/34548a39-cb58-4e83-93a1-58dc33397c42"],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=2313057209867159998"
-          }
+          "updatedAt": "2024-07-03T11:38:28.912Z"
         },
         {
           "id": "RkzAtJnZxS65srM4",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJl0PPDmbMHkcRqKNALL1qbmA",
+
+          "name": "Sigismund's Column",
+          "address": "plac Zamkowy, 00-001 Warszawa, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXXDKLyYhH8sXyxWB-83k3WzNZNGMUO3469je6o33Si1H1m3kr8YNygVQ_f95TAUk_FIrrow6m_qh4VX3gM0mfz_APUyyxf8E4xs89LTy_Ux9gWHy-JWSYoK9s0DP9PIpfF8sCx90_PdBBCLOYvhZMblGletdagRhMrt9_LijeQ_2pct",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T11:39:36.066Z",
-          "updatedAt": "2024-07-03T11:39:36.066Z",
-          "activity": {
-            "id": "AvzvOe5ZrF4v9Rda",
-            "eventId": "RkzAtJnZxS65srM4",
-            "placeId": "ChIJl0PPDmbMHkcRqKNALL1qbmA",
-            "name": "Sigismund's Column",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [{ "day": 0, "open": "0000" }],
-            "address": "plac Zamkowy, 00-001 Warszawa, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXXDKLyYhH8sXyxWB-83k3WzNZNGMUO3469je6o33Si1H1m3kr8YNygVQ_f95TAUk_FIrrow6m_qh4VX3gM0mfz_APUyyxf8E4xs89LTy_Ux9gWHy-JWSYoK9s0DP9PIpfF8sCx90_PdBBCLOYvhZMblGletdagRhMrt9_LijeQ_2pct"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=6948608635803050920"
-          }
+          "updatedAt": "2024-07-03T11:39:36.066Z"
         }
       ]
     },
     {
       "id": "d1",
-      "events": [
+      "places": [
         {
           "id": "JogMOopuBJ5EaGgu",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJSS5pkozMHkcRwi0fMeV66cI",
+
+          "name": "Palace of Culture and Science",
+          "address": "plac Defilad 1, 00-901 Warszawa, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 22 656 76 00",
+          "cost": "0",
+          "website": "http://www.pkin.pl/",
+          "imageUrl": "https://polskazachwyca.pl/wp-content/uploads/2017/08/shutterstock_190990370-1-e1516185680833.jpg",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T11:40:14.944Z",
-          "updatedAt": "2024-07-03T11:40:14.944Z",
-          "activity": {
-            "id": "BDAMZViywBAPITR1",
-            "eventId": "JogMOopuBJ5EaGgu",
-            "placeId": "ChIJSS5pkozMHkcRwi0fMeV66cI",
-            "name": "Palace of Culture and Science",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1000", "close": "2000" },
-              { "day": 1, "open": "1000", "close": "2000" },
-              { "day": 2, "open": "1000", "close": "2000" },
-              { "day": 3, "open": "1000", "close": "2000" },
-              { "day": 4, "open": "1000", "close": "2000" },
-              { "day": 5, "open": "1000", "close": "2000" },
-              { "day": 6, "open": "1000", "close": "2000" }
-            ],
-            "address": "plac Defilad 1, 00-901 Warszawa, Poland",
-            "phoneNumber": "+48 22 656 76 00",
-            "website": "http://www.pkin.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "https://polskazachwyca.pl/wp-content/uploads/2017/08/shutterstock_190990370-1-e1516185680833.jpg"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=14044892037721828802"
-          }
+          "updatedAt": "2024-07-03T11:40:14.944Z"
         }
       ]
     },
     {
       "id": "d2",
-      "events": [
+      "places": [
         {
           "id": "zVWmkEpxgEOaxLdL",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJ435ebh7NHkcRcaqhXGG2Vow",
+
+          "name": "Royal Baths",
+          "address": "Agrykola 1, 00-460 Warszawa, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 504 243 783",
+          "cost": "0",
+          "website": "https://www.lazienki-krolewskie.pl/pl",
+          "imageUrl": "ref:AUc7tXUpU28ndg-RZIft3YUZqUpJYBDWhwpFRKjl0cVo_RqgamC2OHoOG3Tz-dZr09QNKGwlbCdG3YeZwm_t358p7wO-K9ImJKLp9pH_cE6RwqgJo3nSHiradyierrmt_CqWe0iPHFuIzv7w5ws6jPQO9o80Kvrlb1w07z7cNFBenx39q4NK",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T11:40:01.018Z",
-          "updatedAt": "2024-07-03T11:40:01.018Z",
-          "activity": {
-            "id": "MQi4mu0E1bV1Oh6C",
-            "eventId": "zVWmkEpxgEOaxLdL",
-            "placeId": "ChIJ435ebh7NHkcRcaqhXGG2Vow",
-            "name": "Royal Baths",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "0600", "close": "2200" },
-              { "day": 1, "open": "0600", "close": "2200" },
-              { "day": 2, "open": "0600", "close": "2200" },
-              { "day": 3, "open": "0600", "close": "2200" },
-              { "day": 4, "open": "0600", "close": "2200" },
-              { "day": 5, "open": "0600", "close": "2200" },
-              { "day": 6, "open": "0600", "close": "2200" }
-            ],
-            "address": "Agrykola 1, 00-460 Warszawa, Poland",
-            "phoneNumber": "+48 504 243 783",
-            "website": "https://www.lazienki-krolewskie.pl/pl",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUpU28ndg-RZIft3YUZqUpJYBDWhwpFRKjl0cVo_RqgamC2OHoOG3Tz-dZr09QNKGwlbCdG3YeZwm_t358p7wO-K9ImJKLp9pH_cE6RwqgJo3nSHiradyierrmt_CqWe0iPHFuIzv7w5ws6jPQO9o80Kvrlb1w07z7cNFBenx39q4NK"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=10112470542589209201"
-          }
+          "updatedAt": "2024-07-03T11:40:01.018Z"
         },
         {
           "id": "JEc6wXmJ9700c88H",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJiaL1OYPMHkcRJcZiOrY2hqk",
+
+          "name": "The Warsaw Rising Museum",
+          "address": "Grzybowska 79, 00-844 Warszawa, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 22 539 79 05",
+          "cost": "0",
+          "website": "http://1944.pl/",
+          "imageUrl": "ref:AUc7tXUrv-68TZFmO-YMqqR-Q9N4fcPfVjPYJCTGR7iE1bVUZmkgRdaNNqPFjnGmWVqNDGT9egemGccZzvfD7vcXAnlakTYLzbB8po90u9GB2TeE7ZG7JohzPtPU9dvOX0UMCiSFfvvZUJhcMbZEa5p9T4Hj2u6258OpmfcqTJoVqBR0dyyj",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T11:40:53.562Z",
-          "updatedAt": "2024-07-03T11:40:53.562Z",
-          "activity": {
-            "id": "Tk8oLm4xvDfHrHU1",
-            "eventId": "JEc6wXmJ9700c88H",
-            "placeId": "ChIJiaL1OYPMHkcRJcZiOrY2hqk",
-            "name": "The Warsaw Rising Museum",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1000", "close": "1800" },
-              { "day": 1, "open": "1000", "close": "1800" },
-              { "day": 3, "open": "1000", "close": "1800" },
-              { "day": 4, "open": "1000", "close": "1800" },
-              { "day": 5, "open": "1000", "close": "1800" },
-              { "day": 6, "open": "1000", "close": "1800" }
-            ],
-            "address": "Grzybowska 79, 00-844 Warszawa, Poland",
-            "phoneNumber": "+48 22 539 79 05",
-            "website": "http://1944.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUrv-68TZFmO-YMqqR-Q9N4fcPfVjPYJCTGR7iE1bVUZmkgRdaNNqPFjnGmWVqNDGT9egemGccZzvfD7vcXAnlakTYLzbB8po90u9GB2TeE7ZG7JohzPtPU9dvOX0UMCiSFfvvZUJhcMbZEa5p9T4Hj2u6258OpmfcqTJoVqBR0dyyj"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=12215511195580548645"
-          }
+          "updatedAt": "2024-07-03T11:40:53.562Z"
         }
       ]
     }
@@ -407,298 +256,156 @@
   [
     {
       "id": "d0",
-      "events": [
+      "places": [
         {
           "id": "C5luePhEFjyRoR2k",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJ3QfeyqFz_UYRmM4_5-QrrP8",
+
+          "name": "Long Market",
+          "address": "Długi Targ, Gdańsk, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXUwhJlsfa2cHQil3m5x-lY3dJUYxZTD4-SE2MpIP39ZjwRAhg2OEOjs1Hd19PilCotVgCuq3TzoqwLDalBoMdPPqR7MPA-LY2tsrxZF_TlXeDz6FTelnuEoOV_p2nGUzIEjP1uNsh4qYihrowdf3wAEVEJm7q9m57znzKx5pYY307cn",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:17:51.630Z",
-          "updatedAt": "2024-07-03T14:17:51.630Z",
-          "activity": {
-            "id": "bvkTjEa9IMgWBA83",
-            "eventId": "C5luePhEFjyRoR2k",
-            "placeId": "ChIJ3QfeyqFz_UYRmM4_5-QrrP8",
-            "name": "Long Market",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Długi Targ, Gdańsk, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUwhJlsfa2cHQil3m5x-lY3dJUYxZTD4-SE2MpIP39ZjwRAhg2OEOjs1Hd19PilCotVgCuq3TzoqwLDalBoMdPPqR7MPA-LY2tsrxZF_TlXeDz6FTelnuEoOV_p2nGUzIEjP1uNsh4qYihrowdf3wAEVEJm7q9m57znzKx5pYY307cn",
-              "AUc7tXWIFUe7nHmEWJO5LFidYZWfXxyXD95Wzo_nXFdaKlC6YpW0m13mzdk3JsagRE_nb37OSZ0cUmxqJ3E8KYOIsjdD7aqWkjQilavvxe2jC2Q2QAyM_I9yxtTyRr_PgDe6cG7gq2UagFiY1DQ_9zTdjKp-smtri6Wx6_Mto2IckKWNxcam",
-              "AUc7tXUThbmwVjTb1v8FQlJNrESo7uxCoun6rvbm987nRg6aXGABBvSj7nbBQzdjKW0ywwSp-btF3VUAen4VJb0tvtIx_GcPfPP2pXYzyoV_LJrlmh8cSKZXbps3fMJ72wUk2y07Lpf5SW0gmzJ3emivq3Ry1BnoWSTCpRBoBSSDINhDw9oG",
-              "AUc7tXV8M0A8TNb7Z6jzmmF8mcU-y2jaJtmhwEilOt6-OtupXu1gtdNkY3xZTLZ_aCxn0dGdWb_eZwIppNTbri8Il_xWl9M0lNudROwhICXOe2TYQVKzk7RDNgM7rsSJ1bns90PKvCV-81eGFbiYINHcqPQCtSOgRI_0y5hcSRuCdvCHQzH4",
-              "AUc7tXVgy_-rmLZEBev6uFdGp2bM9lQuZ0k8ME6h-IrydvwDMyiEpXp5SemvdL_oLnew4p5XffJc0oDxjpuRvjACtUK9XOFAZ2q5zAJ1eig_LbsEDaun6Yb6ht5Ig3pl_yRSd9YUHWVKMapQGuBMxxEnF0ZInQK18vhifYz4yVVB7j9PQQ98",
-              "AUc7tXWSasHZoA0C2hLbICeAIRSOfFE34QtOCN33-qkD02tJF61OstDCnyGCQ8ot8WzJMhi0iZhHRsw5ttUJlIAt8ipKPXcNvPAawDcdMFB3v-YO41lRqz-aZ9EmyqaKT0Hh0oTUoiQu3fDKvbd11dFl_IzwLI3b3ame3WZ3AYA3dtAdF17f",
-              "AUc7tXXw17BvwVNeVK-rzZcYrVAMrIqPeCWLefhAS-srvSRB5sJPXP1APpVdh05K73IO8bY84zS52vil-TYcLh0qyrYgdvRk1aqcaHJXTPAdT4c3XrX4O2tUOWkGrxtok7JvBuWybbFTxotQ7eRWDRbGKPCtO4xowmz_urQkwStDsc-CDTMA",
-              "AUc7tXXj4luYWLiKNsXSlSeU1DnqR-VNW6nZ7yn7n-P2pynqjMGB-SeYj0IrP9qRyu_KXJ3_Rq5N-8rb26gVduyFVENAEsQ18RF2ChK5yu9nHu1ERN9vZnwfnyOAFpgwaIedznag9PblARfuyZ8hjxFZBPILPobNzuOv5avuCe2CCGuC8dwc",
-              "AUc7tXV4Bx3y4yk3GB4YeRKMOxdhF7wlTrvGe0iOYzjtgsrOSYrslLk6sjLy4QZ8cHf5CDPA3R0ZUEZG_dANipgcAaZBvSsoN_vgPySf77RLgRpyhkhTfQGrk1ywoZxy0vN-_wVYux8RE0e2IYMUECX29UwQOL1x-0QxQq78YFNdYvKTCncI",
-              "AUc7tXWdHDiag7kj09b_dlYTwXGETP22ayiI5BlFtL9J8QN3RG4CxLLLb1RpCoYZS8_dSUBQx2LFkzQQydRYs36XppHFoM6R231k2bS7gX-mKjk8pRlSbZOweC-00IL8uEKn-q8DdkqvlN3vCpOxDQI9AOw-NWBAAPxe8a_xxrKq_yvIHbBL"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Long+Market&ftid=0x46fd73a1cade07dd:0xffac2be4e73fce98"
-          }
+          "updatedAt": "2024-07-03T14:17:51.630Z"
         },
         {
           "id": "9ODe0GDXjieQH81A",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJcTDQ0qFz_UYRMdczCkqH3oA",
+
+          "name": "Neptune's Fountain",
+          "address": "Długi Targ, 80-833 Gdańsk, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": "http://www.gdmel.pl/fontanny/historia-gdanskich-fontann",
+          "imageUrl": "ref:AUc7tXUWvnF9X67xqt1P2MHDRC0UjECj4GwOpP1Vqb9YRVYwE1Ngu9MFwAqvhv5bbrBTNy1HhbIu-7LWD-gHzo7B4whqphLrlwDnEqiqNDBmd96O-_SSM92BF8L5v9TiPz6iAkRVHKDrKLw6xy3ZhBImq3OlJI5cWYbVVfBOnYJp2gBTWqGJ",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:18:14.658Z",
-          "updatedAt": "2024-07-03T14:18:14.658Z",
-          "activity": {
-            "id": "ZYUBm6wiF1o2RVjf",
-            "eventId": "9ODe0GDXjieQH81A",
-            "placeId": "ChIJcTDQ0qFz_UYRMdczCkqH3oA",
-            "name": "Neptune's Fountain",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [{ "day": 0, "open": "0000" }],
-            "address": "Długi Targ, 80-833 Gdańsk, Poland",
-            "phoneNumber": null,
-            "website": "http://www.gdmel.pl/fontanny/historia-gdanskich-fontann",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUWvnF9X67xqt1P2MHDRC0UjECj4GwOpP1Vqb9YRVYwE1Ngu9MFwAqvhv5bbrBTNy1HhbIu-7LWD-gHzo7B4whqphLrlwDnEqiqNDBmd96O-_SSM92BF8L5v9TiPz6iAkRVHKDrKLw6xy3ZhBImq3OlJI5cWYbVVfBOnYJp2gBTWqGJ",
-              "AUc7tXXILWebmLRr0reWEWWsosDlfQv9gIaWu0oQ4F4qS77i8sGtr5sMhUIcjQw5mCxb7tcs8B9XsegR_HlEgyBRtYADwjmzxxTg_wPuDSR79T3TNs79SN0ltJ3qDB4tkkaWDYJBvQ3fkQ5p9bMJzt5CiRvPA2-sNkSbSIox1KYouTt_th20",
-              "AUc7tXU0Krw1WjR311B-a1O8juOIcTXDn2GqFvZehBHI04-082uBSxciiQOavMqlVPRy8NT22lntTQgKRg8AQ0dy_oMcCySWR57W7FtFn-t87onW4TnDM44jHtiUS_PKpfvmipijSv1sd2BkXHYqSqyeBxZ-du7jJDxrVh9Tcy0BDpJeMt2S",
-              "AUc7tXUG-O3l35MagAcYSgDTjCOfIFfR6vIz-ktoCSR_ipQMl5SPlCugSLr90JrKspnwPGeBCyvQCT1E-iIYuJQNCqVoNBb0QBkVm5qhiMFMgSyDAfgTLUHM1_ZY9682sYkfHyx6WRgupw_AttS29PX5fGxc9GiwfDQ2duPCivuM9mh84kR2",
-              "AUc7tXW6uCSiN1h7icTUnAvayp87NvjLv5yajX6Au5SiHfsP1YP-g6k3xyvQalkdqkIUEBK3kuOA-qpsUFCsfFsr9Y3zSjrjBmAql5O81TNWuJPb3W8gGkb3nqEKFF6TCmhWE27OFWcW1MiE-SIFEwuKlSYlHYq3Z2FKr3BzrhQgp6scZ9rx",
-              "AUc7tXW7Q8IWcuIdteF7oNuzgr1gg3-GVCp-EH1f6lcQA5wRaTtrP0f86yPfHO17R9Yo0OgVaxi9PAhfpIIjg-CXq0C0AA3CEUlzHfnDCOCYmMew0oCaXRoO5Llwcas_jVJuYCBvtxOHs8pDNZvhV88xdV2ON51CR1PquIxFRPLAONa6guOh",
-              "AUc7tXW7eAwjK-4B2SFT0UPra47VHGtnbTKmXFOzLspOAzWZwDXG9pVQ8W_zVOjFZu6KiNKQoenx0pzHemk6nD1OPr1O0DEtY7D_Ib9sqb17b4yZ_-HRTcdP4b7Fv3GTp-EvcAba2rJ-gCrr3oAHZKnBY8aGDW_UyrnoWcPmiFz44hNe1PLI",
-              "AUc7tXUQlbbEcOBUa2UQgJqqAFCWUnhgkhViEXwzubqqEN8d0NQXv6w5aVHgjw6w0WVjzPt-10nIl8h4DhrZ84UvZLZbuHj2asqsiDA8cnRlCsmalROE_I0xR3pWzIv72_OegRUaBW2yFSTnqrTuOpuIYR8WjB9RKMgtdMPOS5bEQRDPetu-",
-              "AUc7tXXhuhmhtXUKAb7Hs8jTntmw23Drb1ZjJUoXx1nifZqMP7BmC5jz_IhM7eeTGAhqFe6L2CjHU7IQ1GrViyjEECltA9sTG1sLXY1jwNMnWMNZYuW9THE_unZ0N9-x_zUv0nOJGCKEdLGaxblwwxBWf_Gx7nNQGg2lU4VkgzMGIHk0mTE",
-              "AUc7tXWQoXpT5k1N9fPLjKLhRIU8o5jo5hIRef60ayOyLPnnIhoSWQ2pJ0JMv7tWfdpD4EL96ReoMvn_smoz1InK9YuR6KhU8LD1udpyvcNF7JB55rEE9BbVZgy052OXMALqUedUhYDgNIBl7Dpbi1VDmlUNIlWer2DsGgyFGBk7JAnJutYJ"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=9286008233753040689"
-          }
+          "updatedAt": "2024-07-03T14:18:14.658Z"
         },
         {
           "id": "RDc4nPlthFkTvWBR",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJ5ymnjZ9z_UYRDRWYS9R5hvo",
+
+          "name": "St. Mary's Church",
+          "address": "Podkramarska 5, 80-834 Gdańsk, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 58 301 39 82",
+          "cost": "0",
+          "website": "https://bazylikamariacka.gdansk.pl/",
+          "imageUrl": "ref:AUc7tXUkdYblPdm8W4BRa4LhCl3fJuocL-XXPwLQiUFw7CsYBkD5EASPhM2ovqU3nn9AlLeFrIrKnAMVvaFmI1xjv3jwr5Y6H27JLsr2S2A47CrG1LFmq8oo6n8SqAOlfbgAWtodrEAh4PaP_SEgd6gvXVxYIKgkYClNYFabXWPIxHPxT7tf",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:18:30.616Z",
-          "updatedAt": "2024-07-03T14:18:30.616Z",
-          "activity": {
-            "id": "KU3sUHnXbWt0zbsX",
-            "eventId": "RDc4nPlthFkTvWBR",
-            "placeId": "ChIJ5ymnjZ9z_UYRDRWYS9R5hvo",
-            "name": "St. Mary's Church",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1300", "close": "1800" },
-              { "day": 1, "open": "0900", "close": "1800" },
-              { "day": 2, "open": "0900", "close": "1800" },
-              { "day": 3, "open": "0900", "close": "1800" },
-              { "day": 4, "open": "0900", "close": "1800" },
-              { "day": 5, "open": "0900", "close": "1800" },
-              { "day": 6, "open": "0900", "close": "1800" }
-            ],
-            "address": "Podkramarska 5, 80-834 Gdańsk, Poland",
-            "phoneNumber": "+48 58 301 39 82",
-            "website": "https://bazylikamariacka.gdansk.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUkdYblPdm8W4BRa4LhCl3fJuocL-XXPwLQiUFw7CsYBkD5EASPhM2ovqU3nn9AlLeFrIrKnAMVvaFmI1xjv3jwr5Y6H27JLsr2S2A47CrG1LFmq8oo6n8SqAOlfbgAWtodrEAh4PaP_SEgd6gvXVxYIKgkYClNYFabXWPIxHPxT7tf",
-              "AUc7tXWz5uqCIdjIk5lsbZrnnjc3_q5k3PKEWNrgYOujh1Q6LbqcrADOm98Pz2yWiOCvgxUvI0PLtzoQYCJrCj3gGlwSJYXj3rrRkPv9gO6_nNmEBT5g5EhYtbjAV5NpjFx_HFDEgH8FReztRbbLb_aWxWnZPgYIcnnFbG-0nOLUdG_mLRs5",
-              "AUc7tXUBV4UCYE-D7w-iPZK_t_G0UA_s-30nWkozBEdLPKtRUR4emNB5RqJ8wbe2yUQ77T-JeOm8WG6gU8WRS93byqK6baXyMW6zUJRtqEty3gpROAYoXHTwfVbTcyq5spKdrLBU5sQ4uOhFww0e6P8u9u3eptJKDjoZKULQA8haYoHYwR2J",
-              "AUc7tXXFBH4qbGAiMKHohY3PrY55_rTfl7J4r9DHXyHV800SHQW7W50RXO_BxdsXRjvxmRLk05mrbl2wVIEF4BKDJjsAauLtQdmU9C2vL9BKiyKk2orh8eqxnmd0L40Zz3yeitJ9vxDFUmfTnfEobK4WL8m0uFHNiqHC37R9kBWO-WjpEhOP",
-              "AUc7tXUjuT-_r5IBBSuoF7kBqnRqEhg4WCF8wpKkqOVTf7hvkg9XvFvj9eNT1kBS8ecYILbwTSgSFTMciF6cfOEBMpzcLAft7A_87dQm728PnXkqNrYATXlkgwUoTlVOnCsdWHQTp4xUUTakIfvHMGEiq8MPiBV_rgSJ2T1I_OvCoQaA-jOh",
-              "AUc7tXXtUsQHmJvq0icuD6mn0mfG8JmD2Mc58OKQ1n9Sj9WSTU_UaDbKPk_42iyos_cdz54EUfsHcjyg1octcfqI9YfbsYPNGYKYq5EsyZMpNJhlREtD1mI5GLHvRFjIDZlTggt0MEv6nvAS4MfFEliRvredjWu5QAU3pMLiDJ_rn0swzX7D",
-              "AUc7tXXoBpQ9uI0VNHNovhRhVa0aao06idREOT1Zr6zpNIpjauWF3G_dWc7fbOAbB5phAOBY4hKEbKZ0bWFJcu925PbXDnQvUiLfCU3lDXO8i7Rfii3PKPocwYCm4HPcabItC_PJLqLrz97Rb2noxcVoeipwh77Pv5QtzXAtMP3yeQLjIQCC",
-              "AUc7tXXhucXwxsk3d7eB-hK7V3USjb-YE4AkY4e2LXQcvbktGC7AHpJ9zC0JZ6zQXOYiJbxMh6P8Kmby_0nV0dhxzR9LqlGMQup5sD_K6g1scDmnTp2aLPU0ojjSSqdswYbRZdRUpaFA5dgD5ZvRKh3zyooDEsOSMwGXo-hdPPfnBTwtk51A",
-              "AUc7tXUxxY4VASpE3tVv6S3GLKjaEIJJ1tLQ23k8NL87l4jv6kwl7tEpEv1rkk4Ei1zZHbMNIvZlBvKEFsKhad4q-Z0MPXJF8jS9gZE9WXR7r_UkCtch-qAK6WRJMg3ofPxxaFtm3ogOzpBBjLN7jel3MHUo3e8I-8364XoIWt2XY4sjyMkv",
-              "AUc7tXWxcJZb1iP07FL4gWG85xFpSAgLsHDwMjJkODLLr_4BY-DfWSpvjRGRtfXSc-9yOokaOqncU0bS8xKcvMpk4CzLjYyozlvPNMyPeDlcGjs8bByWUOWCT3kCwmSD2LIspKMEa44mZF7iehebT8NDYeh9OOtaakfbADIrWjENLDJkOiYy"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=18052250109069497613"
-          }
+          "updatedAt": "2024-07-03T14:18:30.616Z"
         },
         {
           "id": "0K5BUZ4cCqAYRx0g",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJX8kleaBz_UYRi4DdubDjn6k",
+
+          "name": "Crane. Branch of the National Martime Museum",
+          "address": "Szeroka 67/68, 80-835 Gdańsk, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 58 301 69 38",
+          "cost": "0",
+          "website": "https://www.nmm.pl/zuraw",
+          "imageUrl": "ref:AUc7tXX7C-TKjPuXMvp7KzMFP7KgSayFQt56xj3qTW9JClCqdGRidouNLqVk5hSlMafAFAe-OhGcS984LeL8XsbGFjNrK0Btcz6Lgvzk2S5jtDCva-8Yzndmjc3DTUR7uHkWWmf4MeSayND-8WyqkdMd9Jr4ndchPRhazwn47ap-R6fqfb_a",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:19:35.002Z",
-          "updatedAt": "2024-07-03T14:19:35.002Z",
-          "activity": {
-            "id": "ZKFl2sj5QK2dEViz",
-            "eventId": "0K5BUZ4cCqAYRx0g",
-            "placeId": "ChIJX8kleaBz_UYRi4DdubDjn6k",
-            "name": "Crane. Branch of the National Martime Museum",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1000", "close": "1800" },
-              { "day": 1, "open": "1000", "close": "1800" },
-              { "day": 2, "open": "1000", "close": "1800" },
-              { "day": 3, "open": "1300", "close": "1800" },
-              { "day": 4, "open": "1000", "close": "1800" },
-              { "day": 5, "open": "1000", "close": "1800" },
-              { "day": 6, "open": "1000", "close": "1800" }
-            ],
-            "address": "Szeroka 67/68, 80-835 Gdańsk, Poland",
-            "phoneNumber": "+48 58 301 69 38",
-            "website": "https://www.nmm.pl/zuraw",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXX7C-TKjPuXMvp7KzMFP7KgSayFQt56xj3qTW9JClCqdGRidouNLqVk5hSlMafAFAe-OhGcS984LeL8XsbGFjNrK0Btcz6Lgvzk2S5jtDCva-8Yzndmjc3DTUR7uHkWWmf4MeSayND-8WyqkdMd9Jr4ndchPRhazwn47ap-R6fqfb_a",
-              "AUc7tXWlGj9UJhIJMqvvipTDPBp7mp7Q0mrgie-MtlG5tSyTBWGpHCXBJmx5n_F9RNSpMmkj9TaXXkj8XI0cvMl8C3IqZGL16vMc0Rm0eWkdUn_vHpFuh2Ig7xDbI50gzwhOHMRqZpciYEiln4RTxO_hHOnuLrMhb72dJgUG34i5dkzniN9x",
-              "AUc7tXU5Zn10jzRgpc5YPTyO7uGvRH1fC5V_e2yumm2iiO9AeMfnYgTXRUq_aeozoLEVnwwv_qJKd2lhnOjgbJhhZVm-xnf6C9cE4fQ29sr3xYXDAudkJawWqTfqX00XwqKtjmGVogSB5EOiTkbnisPKAthgKsR-is2MVpg40MXIUOIBzwTF",
-              "AUc7tXWkPy8O7ex0ycDEfBpN63G779AXmlFZRcDqzeDarUxjJ4eDgHSvHuA-aNKyaKnX8OlWX1lDpPGHiW4qjQ4-n58Z2VmzXjRQe9DNw59JpwjEkhgVI0yJDJ2lz6lZ68exrlFTSIOB5kTtURbskcWmVNlTeQbj9Rx7yWxCOAAeDwPslmj2",
-              "AUc7tXWSyiWLtg_RZ0IvxNP_SBMInljVJkoZ1ulEjhKsBaOPq_7acB3crCqODap9Ukira7ZWUWrqlZ7lTe6v_E6DTXqwiOmffCB2gH8wQhii9zXnwxDItCNajWH6ah3dtpQX6A3K9tiLuAZkQAzlA9qvYEdhneLCGndwFPC0NiZeE3Ws3V8j",
-              "AUc7tXXa4imHuwiCsHQ-UsIqmwDroUh9EIGoXAQFsr5no1BDeQKAKszt-vA9nIwfLPwXHVPOM_ahcrEeE5mJD1-CZMBWf8sOh73lgpqtgcpNPv65kVlgKMLueBYIqQFuQZQ55r3LgzTzg6BO2e7xMaJblPhToghsfIPMLjalZNdgREJR7QYg",
-              "AUc7tXVKkMpxIJxUBdQdW9oOb3NZbikVWxWAuArZr7GzMVEPXGOliFnH35zspJW3-c0Pv3_U0q8_gn7A-DgTw0zHbiRBYG5PHXH0RNdX0eJlt00x0lHPMaPrQb80IAcsj_WglMpqqdvtDFKm2Bs6bS1Gwmlb6lEsFFIcq5gRXgGqNtKFFpWG",
-              "AUc7tXU7i4t5dPgkCTBsUmM4ggTMOq2lVvcFgqDBN9Y_CMoS9NvYtYiS3yr094IqfKUOUbUNItp45Q9bKOVtDXmkRj-P_uy-zosVUL5DtaQ4tNTBqQKSgCvYfNX6QGAEUviC6oGTMuDHRrQkFvFLTlziqX1cn0nCloHDRTv-zO_IVEO1Ukoe",
-              "AUc7tXUtgb-2VEzXccgRgM76INCUiXjD6emflY2vlfDMg5CorRs-n206Ph3jcdC6opxkvtIbDZgHk8WnN9VMhR6LV9NqgIVMIMNGQn2lcgz2yunUxBtjJvqAVmDclLRpDcNnvALMxjwhxFP_bd9Wxy5I_sB9nmOjpW2pFSR5kdLIhXgesyZ1",
-              "AUc7tXX87QVjmou40P1vtfY3P42LOEpuMN3mAnYDJMoU3mIEJXNZIPF9NgNQX07b-IOOkUo6VI8C2GvQ2AMDTff--4-iMvDM-v48ye7gyiiAxIeaO_dapvoAFFX6BpppQCxMO02sePJtEoCefy91PYGLVy4v2IsoKfjVfohZzcAfQ-DAzME0"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=12222738261878866059"
-          }
+          "updatedAt": "2024-07-03T14:19:35.002Z"
         }
       ]
     },
     {
       "id": "d1",
-      "events": [
+      "places": [
         {
           "id": "7UBUZcwNMp62lZ1E",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJ1yazczN1_UYRorW0dRJlp2k",
+
+          "name": "Westerplatte",
+          "address": "80-001 Gdańsk, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXViNilirMbeYyPqZHXcoOa58VBCi4nCQs06Z1QXKgHgnev10_fBLAwhJT0aUud_CIQClyzoN5ftCwp4G1TSoDjk2KFLhID5laI5s4PiC1Ke49O9ir_O2APp2hgdkx0X2mPRF0YWBJv8aqUeBEa23cKVfL49-taX0vL6V-qbrG0DLUmn",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:20:08.711Z",
-          "updatedAt": "2024-07-03T14:20:08.711Z",
-          "activity": {
-            "id": "DKyxrRj7I8YIG4D3",
-            "eventId": "7UBUZcwNMp62lZ1E",
-            "placeId": "ChIJ1yazczN1_UYRorW0dRJlp2k",
-            "name": "Westerplatte",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [{ "day": 0, "open": "0000" }],
-            "address": "80-001 Gdańsk, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXViNilirMbeYyPqZHXcoOa58VBCi4nCQs06Z1QXKgHgnev10_fBLAwhJT0aUud_CIQClyzoN5ftCwp4G1TSoDjk2KFLhID5laI5s4PiC1Ke49O9ir_O2APp2hgdkx0X2mPRF0YWBJv8aqUeBEa23cKVfL49-taX0vL6V-qbrG0DLUmn",
-              "AUc7tXXfJ6CAc9fEwutjiuIzwUek8j9cPD8SGq_DIlC1_uHIZrC6xHpbD91IlTwnazB2Ru07DDrtxGQ1o_d-J6q8GpPwNIN7n40RDuPVNChwlTfKG_XZMlMLhDK5g1dZVM2EIxWhw3r52ntFce_uCkjwmR7YsL4OfDQUFs8ukGLXuHPtkHev",
-              "AUc7tXW2zpzQygTgqYozOjnx14-WkglcA6n4DE5Jo04wIKsyxqQIzaBze7KZow_USEB130gpTqcUlE7yxP80sKv5hKDmoHqLc5-yi2arpysNhbLGFCM37ddSVZWzOXv-LS5sYbjksH-LLdnrWixwMAPZatTirsDiX6kEnyO8cXJXcmPbP-iZ",
-              "AUc7tXUR9c2aZEZ6K0us8rwhbPb4igySJnS4qFuOEN3tzMo-oALLE-24-yp88R3qenbCYEGISWva1qISFHbgHRFCCuFkJJa1HLI9dTDc2Ms_GT-UGEyTo1K2aje-StN2oMXXs9cRCA02OdDmPdlL3_tZUnLd9B7cg52kAyh5j7cM4B_gDnJG",
-              "AUc7tXXGjnEPT1mcnZvE8Pyqlsycc5PNGP0CH4-i8e6tZ5vUuDFbZ6w1a4zwvQBqpZ9Kl6pHfmJTt-BYuifBGtW-Xfa8O2X-zD4xsiGmUJttPaSiP2PupJicv7qnyjI9xCrmAbf0EDIvFsyiVDGlBu_33LapzakWWGDOzZjUwCheIXwIvf44",
-              "AUc7tXVH-ewulHeJAd-o8GfAZMXpiCwpjeDMVmJWh2EXesTW06jdQM-l4RKCLefDI6j-CaBEU250lDz4xTW_r7FxiCOiagzMBNEzOpTysjCgdR8y2IruYXzQa_gZzO1gaXWRO-ggho5YGgryA37AfHGDQBMTRdEZLj_73HkK59AW0yAb9iMv",
-              "AUc7tXU12ZaXlCpQwVheT0xflT91ioabLW5I1rCeolOholgzCk-bgwsQeuLYT_YJhrj3azNYvWQm4vAVUBDm-HISDTHNXdMT01kxI6DkVWrSKvYmvU3CbMpivj9Hr-LFE_CNTB446aevGJd4LaqJ27u2alYqQvne-gF_hfNcrSt4cf82Aqgo",
-              "AUc7tXVKPw32ByfxhojnDO1XrxIiy3KoMi_ttjrXx-VuyA63jusyKXGp_OTu_wOMEmskWK3b4EXruMAeXDuaeXYl6_TvmIEABrf1F6cqzxRL570ns7A2dyqBR2Z397P2W0OsKbrAdKCMUg8Q_f1PJvLvoBNggZWQckAvQswGO-4DwIdBbpY3",
-              "AUc7tXU21ZkExG3VcgtrtRovjziP02JPjvJW0QFkKNOvULHacyIavnU8s5ifPkzQ0obbpCkO2sKzeFfhF2RkIsKbyM72YS-Qc9S2BiuNSG3nSUg5IpMLMUXAggAv61d0UXFfuUOsFwkD3fgWtu3s5LntLjN9u5Ny5lcQXxTPdJB9jyjG0K6X",
-              "AUc7tXUuZEiDwKqplAS-Om_J_oaPriPYzeIJ_8Y8OlXcBWvYxrihNLDudRJwIUuzrqLIOQDNFCm2aLFp08V-M3XXYB5769FiJrLfowDqq_zX-yKZ1PZk-LMNn5nKxOWJBJc43PYWjmo_XdO8sPMkXEdDknE2c6srAHgAazxImHNspFslgR4K"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=7613164825051706786"
-          }
+          "updatedAt": "2024-07-03T14:20:08.711Z"
         },
         {
           "id": "Rt1iqGlGkzzw95XM",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJyz1rxjV1_UYRsExUblWGqLY",
+
+          "name": "Oliwa",
+          "address": "Oliwa, Gdańsk, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXUiE4g2jSJ5iq-_VFfJImTC9UaS3Px5j0jtbaQMHQl2XeSVKwkYXrxevqukx3ZYf7iJijeUoju8SQqAm69MsCQcsBKZbaLHlqFi3nu2TFG_OfHJO-wfivEAWmw0OEub-NtWVoayHA-Co1Ozs4XIwDqS4xrgkVPHPPYNHn0BvVPEW9XK",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:20:15.421Z",
-          "updatedAt": "2024-07-03T14:20:15.421Z",
-          "activity": {
-            "id": "ppFoqaipkwmweTCG",
-            "eventId": "Rt1iqGlGkzzw95XM",
-            "placeId": "ChIJyz1rxjV1_UYRsExUblWGqLY",
-            "name": "Oliwa",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Oliwa, Gdańsk, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUiE4g2jSJ5iq-_VFfJImTC9UaS3Px5j0jtbaQMHQl2XeSVKwkYXrxevqukx3ZYf7iJijeUoju8SQqAm69MsCQcsBKZbaLHlqFi3nu2TFG_OfHJO-wfivEAWmw0OEub-NtWVoayHA-Co1Ozs4XIwDqS4xrgkVPHPPYNHn0BvVPEW9XK",
-              "AUc7tXXx4rt45bfDlXKQCcTOFV-PGjkCR7fjWxcZxf4SOSndGJ6onwa8rarACSrR0HlyLym6VKNt1lmnC4-4l_6orViXcfEfxbR0s93fv4Fsl-pOJb5jsnQmeMv909yGxt7jnlwE3OOUVVfGRKmnCifBmKTjEzhaW3eckZO8TUQWL1qupbjD",
-              "AUc7tXXBV6zLeep_bsyPKfxtFYZkXjmCObuOKXsRzBe64k1-LrUTKzCMCQsJf3nEg_uq1NqJm2naeFOF2xdSImU-dxtGCbSCPwWpAVidX4BEQdCb0oktZ7TTzmtr-_1FQZ6NUT8FKmgQivgX32Whpj70ZeDV_iqWhESe1SDFg7S4F02iMT1l",
-              "AUc7tXVBZtwxsjtc69eb4JeV99tKeQhMHbl3zpJtfAg2UPQj9vfnxV3TmKA4lOxMhwa5wFF9XeqGqQUadya0e5tXmPWbJHJpwHzygOu5L79dctHMZDhilUz0TGBB3wJBIdi6h4lc1vRSDSUnvjIi8EtUo7ma0yaIrtFGVvIPubHopirhd1fZ",
-              "AUc7tXVd11t6Ft0puLj6MtXAUsdQj814l3R7L4ry7V--vDHRnUi7qySC4MH7YErdDxpWoPBwxO3xeiBMydkCMBs1ZXDutY2e9iX3BaY1Hdd18mKc4eh6U_t0LXSXWyI60cvpCh16ai2GvG0YpHLYUz-R48omCo-bE-PgBMiAXNOSwC1AoPDO",
-              "AUc7tXX1b30rbs6EHgQx--YoZEJT_OfKfsdrnI3o2W932fWf9qTLpqs306adWNiv5aeH91-CdnAaYiadaCTnpaH5taPga9iMDVsdcIyuEkiuGIw06VuAu3wQ9IRtcj_eB6ogc6IlklUlvJ8rGXyEChPwQJ-cIkm57WER76hKaD_22bXfVBAF",
-              "AUc7tXW7XT8ARMyplAHVvl-R0V_tJyfW3AKriCxcVtesgqAdoS87Epfn4xVQlE2HD68vUbdqjNoEhUIGrrvk_U4dyYLIkHdK1K-doqdcrYYbqKblUa2i-3BMPvPR4N5DgVzOwUiAwpWUwwBrYlB5b6c4tMg1eXXMz8ggrlzu1SlOuF1oLxdP",
-              "AUc7tXWwmCEL85PseF0XTNiSVVdJw9s-sZeNoUFAtqAdvnJqYQ5RAjRzVKM9LyM850DHsybpiksZIpBihfUWLI54sTuyPp4pIoK2WFMYARMoqYcqixQhX5H1iaYm-ch3Jpu4R5ta9Bsjd7Mcw8mNqROYMEpUzwMomR1vGtb2e8W93Cu76QUG",
-              "AUc7tXXVQc8XNhaibqVlPFIyml8OkY3l4Do9-pH827j-SOePD7znn4tsxr5aaXimtUt22jvLxOrRO38judxiVIGZW9KdgdTbFGLzyVNV_JbT2MO51wb7hGQV-AvXOx2gRVE87MlV7n1Xn-Nk6QgFAtTDFwwS7YQ0kpyu4QgmAUBUyGjapfNG",
-              "AUc7tXUR8WGGuvZw_psuhOQpWNqAb_9IElwp0A44XlLMAazp2Z6UT5OwxPob523ofiDK5xn1w_XOSZ2AA_VHSdicOlFbMEhrfIfR1IDi1N1kvieqzTSfsIGTjvvRPO-eRyHcfCc4LlY5VO_kQ8p3HWRDd2TlWb3uLtANQTOJimWOuZSSfVPK"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Oliwa,+Gda%C5%84sk,+Poland&ftid=0x46fd7535c66b3dcb:0xb6a886556e544cb0"
-          }
+          "updatedAt": "2024-07-03T14:20:15.421Z"
         }
       ]
     },
     {
       "id": "d2",
-      "events": [
+      "places": [
         {
           "id": "7oFEblPoxvyrvOgE",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJM7U7XucK_UYRrzHm93yv06M",
+
+          "name": "Jelitkowo Beach",
+          "address": "Jelitkowo, 81-861, Gdańsk, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXUVC07uyQrCppQYIo7i71XooeyZ87t6D9gU55HxXFRUEiFv2eWOjMkSc3GTFvkOO3UnYBmR-Ti9Rs6PdqGt4yu5wExUwH7gSduGQ5L0jLgEUbOv5zz9qbAsmLFq3-uoExzbWi0xAzx3-jmd6E4fRwrocYWhkyX4HB5z9837leFSnuA",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:22:28.739Z",
-          "updatedAt": "2024-07-03T14:22:28.739Z",
-          "activity": {
-            "id": "eiIbL5x4iBxkLAJE",
-            "eventId": "7oFEblPoxvyrvOgE",
-            "placeId": "ChIJM7U7XucK_UYRrzHm93yv06M",
-            "name": "Jelitkowo Beach",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [{ "day": 0, "open": "0000" }],
-            "address": "Jelitkowo, 81-861, Gdańsk, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUVC07uyQrCppQYIo7i71XooeyZ87t6D9gU55HxXFRUEiFv2eWOjMkSc3GTFvkOO3UnYBmR-Ti9Rs6PdqGt4yu5wExUwH7gSduGQ5L0jLgEUbOv5zz9qbAsmLFq3-uoExzbWi0xAzx3-jmd6E4fRwrocYWhkyX4HB5z9837leFSnuA",
-              "AUc7tXXQMOl56ZETcfuitNudkXDFzzOaHMH9CVhVfWr_T6HWb46Lgz51Idb5dFPcDozXnmUL96nXcwdIeKNqsakOGq6Xmz_uHqjaPDMQlGcGlVDzmrV6nVhSumBT0XR0dIH9UIJxT7CBa-zar_KqdywYsKlf0Ai2KdnrRKWjcPfdLjtvBkaq",
-              "AUc7tXWcwcY5H7q1fQB3RjsBQkfrkhTRqRHCfc2Ys-ylXMet2u-HU_8lX4djLBWliKTOPFriCMp0tdEFIivDzYYMV1jZ_tJyFasTRQiytcuLVzXl0T4mzor2T8kbu_1BXzd6TpObonC0YXtU0hm4TDEkyz2IRndCYrooEBz7A5oWQXhe5Re9",
-              "AUc7tXWr0vavT0KEdbnA9HrOVy-XsHp7i1jSODAle0S7Zphmc-EPJ2WOKmiZkQCu4rDMW2WxBzUvsqsUThW97cKhFZ7PsekKKSUOfT8ryDZp7p28_tENkfhNmwYERX93btOOkfyIoIn5biLPoY4zH7wvXxwoL2L840M2ShwDJoGUs3y4ZxHZ",
-              "AUc7tXXFodJkrCVW_ZBhhy0Tf2KHoP7g-hXFNe58g-WhwRx3hdBpPksZSC5xiJn41gMc9V0VHh66RkxeTUJn3b6demwxze1i14weigoIHTaoqyBa4wuO_sWWhf20CdoSeKXxBYtLTKfhCuXbxUF64ukrTeleI6i4TfyCGrFMFmCbhU0M1A89",
-              "AUc7tXVkbPb6xpMYSZkOwLCRLl9V0WlBm-YbxHD11xL1sKV5TptWSBPdPfe3N-8gbDDSqDvqDbIko7pyYhE4ijaVBDEi28vtDWfZ_RVn28yVjvc8GpmBZyGOMBLQnY8WSDiO2Gjwz359PCUy48pKwtb4Xixv_HXCPumSCxLbJPwedEHo5pB_",
-              "AUc7tXU_2Vmr6BSdAL4vj2eVMh7udEGZYELA2l355adVzHuZnUpakWlTwXhDQVhhp3D5YvKAj0R9QzjrT8P8HappURhQ3DDNgPbxC5Z_LqDWG3L5__t3xvir5HDueQgKd2cU636u4_4MP-8ncuaXmslChRFGqH8eUN_sz7UMAdWs0NY28_n7",
-              "AUc7tXXFKkxFx4Fzty9KdPu9FKD-qECjVUUesDTydy_LVaUHIlkZjcrVTGiWSvx6YNFYdgTpIhtICHxsDg1P37Hwc6_J8fOVm6PMZ-1VxOc6QjxIF2LXRtilWK2iWip6rNao8jsM_w1pyUVenAb5fxqXrMcGltywD5CWkCrmMpc04mla6sJg",
-              "AUc7tXW7f8OEzBxBvowp_B71LRe4N-7e0Q4J8TRz9pknm-B2F7fFQZ6XalyawKURfyRyPOKqyqWuN5h1rW0I7yGxFVxSvQqvYlINKhHGEXLOHx_CX6ZAD27LdELLWJZR5jT7y1dR5sPCPOT7Nk01s2B9KIB4L8ZAW8TWrwF_OlC1xEIycKM6",
-              "AUc7tXVzcjM7VKoIpDuU5RMozf4ho9HZgqGz300VV8wjkf0n6R5waoqyUHnvOoq-s9wdMdwdblQmtHERS193kIzxip9sX7_X5Cadm2ZcCHjGP2jckEdvwDM-z7_NLdtKccZdhlIBpQX4aLUSZl-hRGEOYLyM_k56xnlL_Rl7WM-8OwEQ1eJ4"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=11804971999538065839"
-          }
+          "updatedAt": "2024-07-03T14:22:28.739Z"
         }
       ]
     }
@@ -706,267 +413,136 @@
   [
     {
       "id": "d0",
-      "events": [
+      "places": [
         {
           "id": "6g6UHpmSQnkitcLB",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJp6ampXXCD0cRzmLAY158xEU",
+
+          "name": "Market Square",
+          "address": "Rynek we Wrocławiu, 50-438 Wrocław, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXUAKYwWW4I1Jeb9_KXCp-BlT3eRiAAKxvj-8hJLMT4En6gIpO94U2xCMLNRrsqUfcZMyWkdENijpw-Ofz2-DPvnFeUgnvSjlkgei2FYX8Aw_c90UP2jw3pz0bSksH_ZefB8fQhCRiaSryPF1DbyuqQOTzDAeTWFDE2kjNxkj1nZjK4t",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:25:01.756Z",
-          "updatedAt": "2024-07-03T14:25:01.756Z",
-          "activity": {
-            "id": "Q4ngoopVXPa2nElu",
-            "eventId": "6g6UHpmSQnkitcLB",
-            "placeId": "ChIJp6ampXXCD0cRzmLAY158xEU",
-            "name": "Market Square",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Rynek we Wrocławiu, 50-438 Wrocław, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUAKYwWW4I1Jeb9_KXCp-BlT3eRiAAKxvj-8hJLMT4En6gIpO94U2xCMLNRrsqUfcZMyWkdENijpw-Ofz2-DPvnFeUgnvSjlkgei2FYX8Aw_c90UP2jw3pz0bSksH_ZefB8fQhCRiaSryPF1DbyuqQOTzDAeTWFDE2kjNxkj1nZjK4t",
-              "AUc7tXV4qtKi7OwOR2JRJDUCuDV_XQx_QQzMk5GlY9mC5XGYj-XFFJ_dGbitN4Wwfu5xafYG9EkE1gheLDPm94LdwpsP67eKvHXnF7awjLjK4uUfHt2PVcT1ZToz_2SMpz6Uc7h9Xo9Tqu3AV3pTSKb_9ci4qPUsjIWUu4qXnTV84NTNZ0gL",
-              "AUc7tXV5zBUgBOELDVjH0WeNIQpMKJST8O-hnFqRHY6IEnG4brc5Ala-Qpt3f2YpB0LOP18ht4zSoT8GNg-IGs7Dgou0TC2D9yoibpMIPZgbqagiJDV9H94EqCqwEs3F-AnTSF5QUpMhvwL-WIiYfb1xmTIlYvYOrsopTviSwbVcqMEmlnuN",
-              "AUc7tXU16YxQo4pcHECy_XCwdm3Q2gixZEGzLxi96WYy3M-AgB1wBEZawtIUSK_01aVfQ-1kcgf74Ya4nNt95eVOAjFxRWFX_QE4PttkAMceWAgUXK-x4_F12U6EBllcQVGQclWW7houYMR6BXn6dJwqdaE4fCTYIuWY-L8alz2jtsEfD9lr",
-              "AUc7tXWDz4ti-mZadzNm9YNtMm0llzgexGSPVFCAuEW_DqlzZXU7_GzCQOZ9B_otPwDnGLAicmZ8QbYtfvt5K-O5rWBVbhWiGI146IZaXqsj14OMWa6j7FjRQu5gpyuicyzZCXmzllMQ9Ad6bZFuHHD2_Ep9OJxKQZB2KZe5ujnjUXctq9Y",
-              "AUc7tXW5NZsc8FxXefBXi3qzV6lQs2m7t2WBfcOBOftTP3FgB338670WmcEdxko2UdIrM4DpInCbNrHvJx6Q2vK-gV51lDNkRw8HM6AIG8hBRXXcrNxREjO8dTzoYLXB9bZRNwpkhvcnWVBIm38B185g5Ds-6T7g_wFRRiJ0jz8GC4nxtjMp",
-              "AUc7tXXSgTr70RV77_TWPiM5XnHoAYLZLmQDFHTTpQpGJof3CJIW6LUQkJ3lPW0cSYd4oCfEZ8jVN8lklnHjSKZdjvxYF7n6jwEytUjK7RsjZLAeZwkvhipugyBmlxooMn2VmOMT82pXwm74B3dWW2MwVYMJd6AIVw5YlhxmHOwWRqThjIww",
-              "AUc7tXUwe3SLgZgqQ4pq23zImKniZ0vDwfgLWcsw7GvkTEDKAndUMX1wX9v43k_4UGPKOVvRBcsjTBTOfuv-ofzof2JXDYUZX92cfXcTkOLi4Qd1j5XWQXqSbcBWEjzwmbP-O_Khxu-w3eGmYkbuAWKCxJsTSehxFLIacz50vax0mGB83_bj",
-              "AUc7tXXZcXqo6YQXyZrdFOGpB5IGG4mp1oHJp7CqEWP9Q46JHcc0eUnIuS8Uqrkqsa4EAEIz0SntAHupTOiCN2IrfBJdK0frcRKlOXmGzzoQiLAJNYoUGXnfLLkl6eBGDE5u6hM3g7LSy_OE_SIuMJsySi8QRE-AYjNDrP1Jfn_jqk65UH3S",
-              "AUc7tXVVn3MWjGBRqvzJp_4O5Seni54V2j_1s7FT71vC3KSVCxSIb3eqo7DDd9S9MUCI_uzdDHwy7BXFQlpqajfxBKgCrn3fDAwSn9bJVIvhepp4pfzqeFENsoGWaaF6c8cY13O1nN8pmCxgqragOO0vOEqoTeUO4Dewd-9AZ9KOvOH0-jU7"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Market+Square&ftid=0x470fc275a5a6a6a7:0x45c47c5e63c062ce"
-          }
+          "updatedAt": "2024-07-03T14:25:01.756Z"
         },
         {
           "id": "2VQVqqki3a2Alqwo",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJKalvsXXCD0cRNChs1yMH7yk",
+
+          "name": "Wrocław Town Hall",
+          "address": "Ratusz we Wrocławiu, 50-438 Wrocław, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXVJtwoXrEpsyc-qhv2y2nQ4_78GSMeWRbp7uweF4bB3v900q-3S2pfu8tRIY243jpBn9AymqyY6KRY4jjQNYqb7L36SxD6GKCB4YJGt2_rtMbNuQk15M6uZQ9DObbztHd-TbtzBgsU90BL1pe137MzdphUrTYea8LAFamgSGGQkcZGH",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:25:13.124Z",
-          "updatedAt": "2024-07-03T14:25:13.124Z",
-          "activity": {
-            "id": "xw8sgwGeBxlMmgdL",
-            "eventId": "2VQVqqki3a2Alqwo",
-            "placeId": "ChIJKalvsXXCD0cRNChs1yMH7yk",
-            "name": "Wrocław Town Hall",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Ratusz we Wrocławiu, 50-438 Wrocław, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXVJtwoXrEpsyc-qhv2y2nQ4_78GSMeWRbp7uweF4bB3v900q-3S2pfu8tRIY243jpBn9AymqyY6KRY4jjQNYqb7L36SxD6GKCB4YJGt2_rtMbNuQk15M6uZQ9DObbztHd-TbtzBgsU90BL1pe137MzdphUrTYea8LAFamgSGGQkcZGH",
-              "AUc7tXX2kK-Q8bGvZeHnnsjjDE_coOwC-gtTV-KncyyVX0XaDXhFzW4_XgA05R4z6CyugIrcl2JPDzr3yH_QhpgVfzkFnKF1k6N5uSIftk7eIq_f_eRN7OdkLLWxo_UBfDJ3Bd4JUufiSWL9gnnsUjgsN98dRDHfBulr5NE86cSXyBCS40IV",
-              "AUc7tXWEO4nCndMWEqjbnwxSnPhY-PuNZ_ldFtlhEAce6Szxcz3DsW-mjrI3VuJUlwOTtRJVluVYkbMa3nIwD_M7ZgztflGITE-a_PYRfU6tlCK0_GZD52XlG2Gp3AoocHR7SMZaF_YfRfBTfC8g0vOVGnDOgzeg-wsa4tTdDshmXu3GDfG0",
-              "AUc7tXXLg0VDTc7tFWLECmz2QzCiYCiNSRWVs-cNjbDf6vX1vcw44Epk18fHTV12HnzFy-gKkzZz6dhVsRwF4BfkWUOzgmyiN5B-WBnUGLDQOKElsZia4M1_oNnT0Ypv0HfmycLdq0kQ4HHgGEfahbuxXOu13CFtcbNl3R0jJtEMBszXH0Pq",
-              "AUc7tXX94to5iGI3JFfYVTTC0SeA0mTkDaIjYqJhoSadCj2WtnvQBQdZQEiXPGpmoHW_2cIpH3tkyTYsduTgDjRCINPKMRKZwDaogpqNjYOoKdMQLkc3WIAQAwporp5-x4H4BQOxe88rbMRnHtfzFAH_gfy44zX2MrYyT02l8bSCPAdmdgGr",
-              "AUc7tXWxM-gmLmrMlzKp3qyc0r2nadgQXYWwbI9IZ6OmeCTG8lbi57tqpcHBLjhHkVJvrN55JE6MyaBRiCI0keGtUWPdMBH3kpN7iCLq8bhjbneovGMbS-5ycmJZVfwQccqXU0xgC4noylwceceCr_cseUue_KH4cLya0kePMjpoq-xbFcbi",
-              "AUc7tXXvCJ10XjIANegsExgv6sk4Rfe1UFyedpEFPLCs0jo4Q6UBfooODKbtzFd5-r7H1_YBdADiiqt05BQZTRJ_17ZLUqF0fgl48dlel59bbWpGLzOaKIFO8kkA91eR_jJoBb-zqhL9wsuMp6qIMe9L3OU00wTzj0Pw5O8rQeq3VcyQ0S3c",
-              "AUc7tXULae2vY99XMSFDjZ82oEhomLTYdb4JxLYD45oyZMXsslt1svFMry9Mur4wyD9DA0U1zl8_35kvCGxjdv9lXX6SPFojmeGVDXGqkBmHB7tZNS02JJ21GqWibne4yIlczRwsL9SKvyWETbDkzXApxOm_3cd2RyTdDiWOYPiGQvi_VRMX",
-              "AUc7tXXPpclhO1XR2_wxBG0SwGGVva3K_bH8EPXIeh8FuvA96eiM54dhsVK_r2d4wMAYOgJFqBeLXVvoqHUO5JChdUTOcsKggmL8l6Q8uyq3zPU_-BlzahoDDYiOvDWmdVlQzvmkRKKDwbto18jVyEFslbKYmm7LoBgts5AmBQFlonIYkNQA",
-              "AUc7tXUSH-bvaxv39KfRoF0Y0zvtWsEJFjM0gcbNP5NJ1s7H10LeCzj1H8SH74C_DkUVCpmmB1BxUKJIrAVrX50avFwIyQavXFvkdSrWnyn_RWFyD3SKClVcUSL_m_F9P4A8j44FTBH_8Aoi3jTSgxIjZ4jxqvb4UkzjIevhkOgbjfCGsmhe"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Wroc%C5%82aw+Town+Hall&ftid=0x470fc275b16fa929:0x29ef0723d76c2834"
-          }
+          "updatedAt": "2024-07-03T14:25:13.124Z"
         },
         {
           "id": "ZpglHrs1WXgAjz5U",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJPR-KVNfpD0cRzPpSxg5jHzU",
+
+          "name": "Ostrów Tumski, Wrocław",
+          "address": "Ostrów Tumski, Wrocław, Wrocław, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXUTEzczn0e76koIesi6iWSBqi8IigYKJrLyflprtDJ6RlUc2CfSndlwktxgPMXm-MVFxb9Tb6gZaccU8_A0tnVpiLcR35k6wejpZSS4QrTyZfohJVK9Rpzw_ldh3qzJgs4Q0v47q7F2M3ssq8025TDCqZoEhtFO36x4SvDiadMQYAjV",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:25:25.796Z",
-          "updatedAt": "2024-07-03T14:25:25.796Z",
-          "activity": {
-            "id": "wgfZA7VJrSUf5U19",
-            "eventId": "ZpglHrs1WXgAjz5U",
-            "placeId": "ChIJPR-KVNfpD0cRzPpSxg5jHzU",
-            "name": "Ostrów Tumski, Wrocław",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Ostrów Tumski, Wrocław, Wrocław, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUTEzczn0e76koIesi6iWSBqi8IigYKJrLyflprtDJ6RlUc2CfSndlwktxgPMXm-MVFxb9Tb6gZaccU8_A0tnVpiLcR35k6wejpZSS4QrTyZfohJVK9Rpzw_ldh3qzJgs4Q0v47q7F2M3ssq8025TDCqZoEhtFO36x4SvDiadMQYAjV",
-              "AUc7tXXLH_C1JLOEEOagayPdZIwtkbKiYgmY9qDvez7CoLxsqAq7Z9wXn6yYGaldO5PSC4ydfCK1NJgyFgaJ7HZaMCTIqEy5TOKvxFWzkgB2RhHmGxLwTwFE25hWuz-wRWrwzuM9W1SgDdCpD_G51eHCZudyZsIe9BMDdIFRYNyVL8Z661jA",
-              "AUc7tXUOFjkEXBthwZLC4BHvokMA-1v7UrdQhi0dpQOiAJPZH0ojXOT0T7p47YrmTb_WsVOZYUmrqtDl3s2RioBNNQS_KdziyYC1V64_QJA_gFCv5uT0nXsVcPWgnM5ZSzbIm-BrSYchK-ODA1f5tXIlF0htuMMIL7FrojTVHlh3gh4N2do5",
-              "AUc7tXUbpxlRVgW-VuDWaOGt8F8q3DqNu77W5IPUKqY4oQSmL4whnYwzBtY-5npZFYcyA2ARioW-EXQhi3Y3XPqxhG9p5Sq6JMLcHIFjjMZL51xeLmSkAXIVedeG4tajpYWQ0UbJrVCGkbLP87anpcPlE_skLjeOR1C2E9ucXKh9F-ZguTrj",
-              "AUc7tXUNaPWiWqFZvVou8rFi0D0YjbP8I-HpLq8Dd6ejszufecimgHreJqhLAdTN8KWKQwrWb5t557w0Tbvb4jLkPkLnVvyQkBg7HbgCxzk5i6UqdL76kZDdh73xyRhrYDuVK4kxymBxtuJtmZc6YcO4zQ_sVqulK_6bDRsd8sRn0bG31FG0",
-              "AUc7tXVWu0Ao_JW5b5nJzQrmSP_f0I2-bfLKBv7AcUACTsmV27S6kJDaC1gzEMJ3HvGpwvTEjxcKZJxRQHluB1rXBfZksBE_umpVgcdEmkyf9-A_XENEF-t7RJqkVzVxGWnq9yukLkKtiI2zVM2QGQwiIso_aDE8ZU5a3uouFhlXgnJNwAfE",
-              "AUc7tXU7oLvHR1eyAM9WHvZlm1HnAjIASTpV3zsXmpUAiztQyYtaRDnBT1pHXduZwjTb4Tw-XiGYSftoSwygFakD7BxKIQG2VP81Qb4uO-T3tcV7wDtqnNv1ko6ToEyjbaAi--N5lqwWXaRpxC-3olpxahlfp93k2p1FLS6a38Ef1GNNiIAP",
-              "AUc7tXXpZLuQI22HVTYOro24EDFAH78FiYk_0ylvOGpSfGYV3LcfI8nZ_stufHXnBkQz3WMyfSL608XWgrvQ4WgcUPdKX10GgONEjiNMsg5Q05x31QBTXc98gmvZWi3nBSm1h0uWnN2G9OZiSRwf6MkRrfnIqFbNHivdiJfoM7wxc2161oj-",
-              "AUc7tXU_VfN-qxqiq8lP3Nk2Sr06Z9FXJvbLKHlOpSZ10tfJNKpdM2Oqj0JQ7uIqpqz72DRg5_8um5AZoxQYrnuXBOM7K40AEvt7bUJtr1cNs1hhVpML2_tbSOMuP3nTFgMMGGEdJD09_f6FhqQ8MNoDYZZwj9O5RSAwUpq2KrOqUUGwO6wJ",
-              "AUc7tXVLGsbXTc9JtKgxQoTnS5G65HJfDLgkZp24C1K-kEKJdpSC_XGdolJVtqi0Moz-L-WGLL9Qmgnp6h_7cjqIIeAWJJ5TNR7v0RvYrjfDwqDtzcp3Bu8II6zJ3T-BHeTLxXZsNuOYgD2MslWH3IxiYTlyTmnbEYN1D2zMPTdcUqgyB9cq"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Ostr%C3%B3w+Tumski,+Wroc%C5%82aw&ftid=0x470fe9d7548a1f3d:0x351f630ec652facc"
-          }
+          "updatedAt": "2024-07-03T14:25:25.796Z"
         }
       ]
     },
     {
       "id": "d1",
-      "events": [
+      "places": [
         {
           "id": "vGgLNJNLpK94IIMj",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJaT7HDCfoD0cRlyH-4MIQYJU",
+
+          "name": "Centennial Hall",
+          "address": "Wystawowa 1, 51-618 Wrocław, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 71 347 51 50",
+          "cost": "0",
+          "website": "http://www.halastulecia.pl/",
+          "imageUrl": "ref:AUc7tXWDAEYuDHeGeXtko7vIv63hpkP8zeA3Xf393ZUSW7OcdcAc7EWqmg56Wc8hrvHmqm_MPimS15sbqcFMs2EPMe88xC-CfRM15Po86Jl42lRw8xL5_rx0LXTm1aLZ2uD_htWD4v6XeMPqNbIWo2PYIecMYCvwKlwQtbZWrDSeoZOjw84t",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:26:29.146Z",
-          "updatedAt": "2024-07-03T14:26:29.146Z",
-          "activity": {
-            "id": "Sit2ZAKXPu1vr6iL",
-            "eventId": "vGgLNJNLpK94IIMj",
-            "placeId": "ChIJaT7HDCfoD0cRlyH-4MIQYJU",
-            "name": "Centennial Hall",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1000", "close": "1800" },
-              { "day": 2, "open": "1000", "close": "1800" },
-              { "day": 3, "open": "1000", "close": "1800" },
-              { "day": 4, "open": "1000", "close": "1800" },
-              { "day": 5, "open": "1000", "close": "1800" },
-              { "day": 6, "open": "1000", "close": "1800" }
-            ],
-            "address": "Wystawowa 1, 51-618 Wrocław, Poland",
-            "phoneNumber": "+48 71 347 51 50",
-            "website": "http://www.halastulecia.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXWDAEYuDHeGeXtko7vIv63hpkP8zeA3Xf393ZUSW7OcdcAc7EWqmg56Wc8hrvHmqm_MPimS15sbqcFMs2EPMe88xC-CfRM15Po86Jl42lRw8xL5_rx0LXTm1aLZ2uD_htWD4v6XeMPqNbIWo2PYIecMYCvwKlwQtbZWrDSeoZOjw84t",
-              "AUc7tXVNy8gk7nwoOXZGm-j3tRktzi6b41XP2HZeJIIxiDXllyzcmAGIeCRywwxT1tQaw2e-oS815SE2f9NXnryA49fuNyeU2dlG926-r1GtJmcO4PooTQN6GcCqgV56zxgcts3qjfGeeEANkDh_udh3xr7uFemn0X0381vgDFjTOQ2nf2QF",
-              "AUc7tXVVsop5JJuPq-wrJnQ2NcoiHTEIJPh0ZqmEGGqkT_UjJoC8ADfeSsOgXMgV0yhe37a5K6h8QhKzwIi1E3jT_ENrpY9rz8BtxCrHIimamxJ7KpwowA04mfN4qJdf9VlytkJuuI1BGmQRWRcu_oXP6fFOkdBEOLiSON3F5-cLEthcuzHG",
-              "AUc7tXUd1dK0aSI7zFAqzW7cP2NFFAkVY7qcm2bCXZphOsaxHyrMu_iAYJBDnxhG6QqM2vcuKQuz4zUREW_F94khAMfsIRjB6gCfI1xyuI9Qhp1cySVPv22KM4BWzJDtB3PN2UdRM0EzEReeR2dRvacqyJgkD2vEr3ZcxYJtWWsJ_Y90sSDS",
-              "AUc7tXUfekq6JEsNmL4FgflAxXTOHihNhNwF_jtvGN9dfWQOgOna3BISA0rAJHkj3bOB6BSsydZ6CnjafqVPl915hRDZsS25JP1M7v6ldyqQogXn9Iyuagz2XQ1IaLJxiapny0fsPyOgoM077C7qfcGy-tI72qGg6IXvnpUJi-uM5MzPFnFj",
-              "AUc7tXU8K7CFsY9SfPHInISL3JfOF7KY2QcppMzZW-dhnEpbLU93FBXamB1-s4LMWoHCOWDCjGbpAD5DodbSKMJMcjtZrkE3hNxW9GmnSwsiE1Zhdx4yAhqwp2ksErbQ18ItGfE7uv9NhAS6-bPLM_bsCrEP1a7iYHEZbwPNqA-hZ31I3rkv",
-              "AUc7tXVFJuRhy_jtGJjqO_nl8mFsL1Pr0H7Na5VcdnUo8kARrkPuHnh62jUFi4J3RbnmtcGipf1lSughhcHsqjreTXUlH7brdl3ony1twQrRdhbR14ojoLODBTpy5cd4lsKJE_6_3WWsAhVascL119VEQHxbokOyUDoL6dDt-7T8HkL1V3zd",
-              "AUc7tXUVnspbRX4rG1yAHM99c1254vaDe6-r0BEgWjQe0X-BOq3CVEp_HlzcWgmtjHA__zy5B3lMFpXUIF9xToTmqA_rWReu99to7GgsquUZ2StxJ1UDxCtVPgBFwJiyp65e_Rm3FEGniUNyHSpEy-h6iBWt9W4efN0Shq1s72FKUft-6088",
-              "AUc7tXXOIvXxRD2aw0IykWgGlkKfU7Nd9firZFF6bRpphlCO9BS2Vp6vQrKCfLYE0wyO7JlkjrgqdiE2ukCrE4xx0A7RFc7XCl3GD7XqsK4uUC41C--p--UO5oIdCoTogBEbtXgMpGtNg_cjVvKwQLzM_j4OAUUnfaueD9DeZDvRaD07I9G5",
-              "AUc7tXVdx5thxVxe8YelmoYJr3RQZmE7cKC0EIE3U6okgHbdoeJRFJQsxtgj498JgMJ8pML9iJLiOz4yPSIR_uBrkpZLjcETqfpnHvFhRo-9z8R-afrWi9sMMh4zeo0wJFfqTXpHmpwFwCrCREDOWNMZqQs_xC7Sh4RkP76tMq2xeI7zaScH"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=10763621538599936407"
-          }
+          "updatedAt": "2024-07-03T14:26:29.146Z"
         }
       ]
     },
     {
       "id": "d2",
-      "events": [
+      "places": [
         {
           "id": "MSvjSHjEwxSGzB5I",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJT86vfifoD0cRLbauTNu0ARo",
+
+          "name": "ZOO Wrocław",
+          "address": "Zygmunta Wróblewskiego 1-5, 51-618 Wrocław, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 71 348 30 24",
+          "cost": "0",
+          "website": "http://www.zoo.wroclaw.pl/",
+          "imageUrl": "ref:AUc7tXVnQhlswM4K6_V5pR1gTje1B1EQNrz75b1hnCrYvzcmVLuyDUNK5eUnspJgPobfGQMqUCzwqdOOpIgTOIN1kvzbuhzLtgBUvBhac-04A_2eTEuxs6IBK9P-AwG5drfF6QzgOLpyPi5L1_fQlIWvySj9P6ZPBLwYrB0i-tJE1XHtTsyg",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:27:01.386Z",
-          "updatedAt": "2024-07-03T14:27:01.386Z",
-          "activity": {
-            "id": "ecYBSO1s0YXQl0uj",
-            "eventId": "MSvjSHjEwxSGzB5I",
-            "placeId": "ChIJT86vfifoD0cRLbauTNu0ARo",
-            "name": "ZOO Wrocław",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "0900", "close": "1800" },
-              { "day": 1, "open": "0900", "close": "1700" },
-              { "day": 2, "open": "0900", "close": "1700" },
-              { "day": 3, "open": "0900", "close": "1700" },
-              { "day": 4, "open": "0900", "close": "1700" },
-              { "day": 5, "open": "0900", "close": "1800" },
-              { "day": 6, "open": "0900", "close": "1800" }
-            ],
-            "address": "Zygmunta Wróblewskiego 1-5, 51-618 Wrocław, Poland",
-            "phoneNumber": "+48 71 348 30 24",
-            "website": "http://www.zoo.wroclaw.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXVnQhlswM4K6_V5pR1gTje1B1EQNrz75b1hnCrYvzcmVLuyDUNK5eUnspJgPobfGQMqUCzwqdOOpIgTOIN1kvzbuhzLtgBUvBhac-04A_2eTEuxs6IBK9P-AwG5drfF6QzgOLpyPi5L1_fQlIWvySj9P6ZPBLwYrB0i-tJE1XHtTsyg",
-              "AUc7tXUzAfuR8xwv3l6CY3iv0b75lXTNfyE2MrVdVe2_qRqrNjVNs5QqlOCtZRnQj3KbTE5ogwvMPUeKN1y83Xb1mhnJomK4eSv_4CtyTbXxv0h0R2f20lPwUwdXiM6Seml4stAFAiQUjdWQ5ra_T1trwdTtxh4Ae6puRMA_nSf-7hLkQ3E8",
-              "AUc7tXUsFr8C2KGgMUXyYMowRaWwZ358rFHvAFVGpzZQm1gerYBYFC-pdZ_viNmwGAlBp73Ja1rI1TUESJ1kdSo7xm-mDOMowwYyxF0k1GffpzXR7jb4i98QQ2GNoFLGzkYp9XllMUSubWfpguNzXoKJhBdBIew7S_y47W64MF7_SY0hBQcQ",
-              "AUc7tXXQoFzqlFkqsPFf7DqCCFmA1wSZBbwgmVCshIP0xUW4iRCXMiSMCMAPGXsAnEzudCEd1oUgvH-MIZfnLsss1E1lJGRJT_xO_nyD2ld29BEpt0TD3ew3_uvXcy3jCzDBIzWPjPtW6jeTbXEjnVLw6vA41Z_l1KbEWhGco3pWYcrVJx2w",
-              "AUc7tXWGEIOgbkNDzrv4uTrsTZu3-x9Sv2rn3NceieptCi245ZDJKV3umeJSzdb-kZ4HOB3PpsX-nS0aTqdfE-YPHonoybZ4Flc8cswmPxRVpKIPgn5R1N_bePgS67jBwuZsFQj7miALI2_h1UTnBkUIIin30MZfzh54Xc8BXxw8SLgLqANQ",
-              "AUc7tXXil-VDh-NUTcVEvJKbqlhz84aTnHqbt-lBR2OaKijmLSz5vWxihOXOowjqltE94ryNUCAccWjTIbnxm5ixmMkqqC5PST3HK4T4nbspTv83Y7d25IJuQm8Sp1HHZs2OF80LOpARQzIbWNaBl2xwM5zreYQgEkDqvvIy9_Y1oISTq_TU",
-              "AUc7tXVkHcViP9giaEcoaDVRrJq9ccDjYYl_JqFtb4VdemmpcwdQCYgWZWwxZPgtH83Sm1YxitbH0cVv6YvT1aM3n3QFcRJoJhRxomSENxQsQCIxqnnMYySEJ6sAGJ923JrCDscJ_XXIHTIO-p_p-lntRLPbXOkcsiLK3OhNYAjxPAPb35Q",
-              "AUc7tXXetQmpoO19cypMirNGgSBruBVC4A0oW1gstKkRtzlXU2wouO0j8XzpqL6iYWLqprpJVAMqzvkFe6pgy7mBCy4RcZpqA8xP6Bl5Vazza4J0OAafgRW4ZAe21Zo6nr_BrxfJIrD31EzF79W3MuH705HLhmLJdv0SyXlgzyQAlnZkGu9n",
-              "AUc7tXVC2QMX4Bme8v_UBXFEacGrgEoCiwgxXJVhxoiaA3LPPJbicPrTv0KI-xwgu21CNaipMlvMGlohDJOUgdcTpnQ1JtrlAzVJFpg2qrzn2EdLxuCn3_kV62iEIug3YotYjANeYX_Cc8SOzwaRIO-xHFZT-Z1zWQqokpVMp5T761_y8E8N",
-              "AUc7tXU_TN3F0oRZcvXIjv7EXYZsqmWMVe59UBTlvONBnbtA22FiRllPq5YMfhywPgoS9DXe56nl9kdDa3ejH9A8X2WN4p7hF8cj1tkp88NepUq_FfHv-t2rKSPGDt_PvJmPCI21rw0ZdOuMmbFCMJyTVB_EsYnWihOFkivxnN0FiLnebqmN"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=1873977773940192813"
-          }
+          "updatedAt": "2024-07-03T14:27:01.386Z"
         },
         {
           "id": "1pMdc8dEwIPaEQ3D",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJ00svx4DCD0cRWRQck-i2I18",
+
+          "name": "Hydropolis",
+          "address": "Na Grobli 17, 50-421 Wrocław, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 71 340 95 15",
+          "cost": "0",
+          "website": "https://hydropolis.pl/",
+          "imageUrl": "ref:AUc7tXVPvnDpfOgOeum262aBW9dZiXzSAHmPTvBANgR2yfWmXQCH8q27sORDc41CuWWtehtsxwpj7m73Lhz7PnPKZ76nUtqOm7WzY5UTPA2ppHjuCapFKud58hahoyUVlgPj65qfjw7EpBcebCqrT3olK1lEz0aC8mrl7I2WkUTWURhhMJ4A",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:27:09.558Z",
-          "updatedAt": "2024-07-03T14:27:09.558Z",
-          "activity": {
-            "id": "QvjDzq4b6zQfgqA2",
-            "eventId": "1pMdc8dEwIPaEQ3D",
-            "placeId": "ChIJ00svx4DCD0cRWRQck-i2I18",
-            "name": "Hydropolis",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1000", "close": "2000" },
-              { "day": 1, "open": "0900", "close": "1800" },
-              { "day": 2, "open": "0900", "close": "1800" },
-              { "day": 3, "open": "0900", "close": "1800" },
-              { "day": 4, "open": "0900", "close": "1800" },
-              { "day": 5, "open": "0900", "close": "1800" },
-              { "day": 6, "open": "1000", "close": "2000" }
-            ],
-            "address": "Na Grobli 17, 50-421 Wrocław, Poland",
-            "phoneNumber": "+48 71 340 95 15",
-            "website": "https://hydropolis.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXVPvnDpfOgOeum262aBW9dZiXzSAHmPTvBANgR2yfWmXQCH8q27sORDc41CuWWtehtsxwpj7m73Lhz7PnPKZ76nUtqOm7WzY5UTPA2ppHjuCapFKud58hahoyUVlgPj65qfjw7EpBcebCqrT3olK1lEz0aC8mrl7I2WkUTWURhhMJ4A",
-              "AUc7tXUFha8Bl2bGIqpJQ0lyciYzOzlCpuSQykuwyTUwW8b7M1WpMjkkuOfC5GN3ZxPSFsgZSK_Pt_uctpkMT-aOzQVVP8zCTL3wYjjAIT1BzWTFhFBZv1cqxq4fwpK7nou_XWp9SSb4qheeso1pnGw6zOVmjj4486oi425G4DAlgAQJHZmb",
-              "AUc7tXVtHEf7-rxCt-t7yOvOoDfAopmUpPRQVDR9DHDUG91S4KO0wcvKDWdS2y8zv3ncswwTQrV30kaP0-9wjFtcBdgdniqmuVCEjPuKzOz_jnZIETTYW1rwu6TRZr8uCrRm2LmCTS-fNkcGQa4tfnRVoWDDDQpZTcufxgBPsj0S0WjuQQiV",
-              "AUc7tXXk82cqZteiJm1c_LGaT2hm7B9xt2wZuREJgw3H2l4TSy_SsMfgWdzuXZk51L_eanzcqRmdG0apJh_XMCB_iy2Z5iBzoFAXK5WLYuyHIYtDEa6Nbaf_1a2I2IKEVnaSwHceekRvqpu_PEf9inOjlSGIptc31QRh7g_mztN2n-6E8z8X",
-              "AUc7tXWc5Ks_Ubrw7-V_j_BthXLM5ws4wXd9Pl8eNDqvtrc_v7CLuXStfeh16MTVQwkudnLFZAOhxBBV4jiNiu4sQS_RnURFAR1tnVA6KdPhVCOtExWacSBR4ddbbw7RjHHGh-fhcvik8IJB-0KOgKMo1tRgeiGFvBBK2foo46bE0QCEXEb8",
-              "AUc7tXVqjL2OwDGDFkjPeM9tiLJ3lU0zxrzSZiY3CWV1bJuifuhBRXgs_rekIq4VP83IN5yFMxoswNM_-imhUhhaNfsD11H41M7I1tE8dE9qbq18ns3z1IIWN5CmISXilsQRH5vxqqmnfFrlOeIsHVGAw3ll1q3P6xHg4HaMb9tOwQ92xl4u",
-              "AUc7tXUZK-yTmDta-0f6KH0CdnJEZHprMW3EtB7mMx0kbVh2PmzxHorvcfdj_3PHkT-RefBuUgwGWzvDa02TkHRi9hf_c7goeTCEDxIkp65pPWdZumXFK2z4ugWR0zlwR1TpbKmXml-ZtA_5EttuHD3KfIWzaeaQxJ6pYj6Pi61ZPUCbBv5u",
-              "AUc7tXUyQ3p4cXpvbSYl-ywKOnrIMEXdw8E9lNen7phVMjPdQfMNCrvPlKNFwBT00LOPRdZgL_uvI1QF_-wXhfUzKmeUVsNsThPPm5MeZAMigLsW44BaKZzkMwhLpyHRV8zggN5r_OF-kkW6TfoWLZbgtpij2UNviUcc1wfs2axFIBQr8EhX",
-              "AUc7tXV38D8dq3hBu_WGuKU9DV8T3mQuJqERTjLJS1ly4lwAApBqq7Cxvy-umtSLpczQteupG1G03V-ib-GWtiGw8g_LIIAJYPmUSmK_3_xSxKZkzGLMMQ0CPp_74mb9fqLINTAvvZxppv1JjHdY2hhRAfBROsGVpf-55f8hkgF0cN6vBgOr",
-              "AUc7tXW3TJRCm2qtIa4TVyhFyzxicxjI34V5ypCo-mat8NESAYLiokOm_Bqkuc9Tc8jd7fx6nR4JStWi_0u-c4vid93O6lISGEqlYWq1ZkSNGHgDLigYu3XWYvMgQ0ktEVkjITleZXCNUO7WkoEBFQyBMghdJN5cXa6XZ5rWtwAxYng6JrSA"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=6855524167804785753"
-          }
+          "updatedAt": "2024-07-03T14:27:09.558Z"
         }
       ]
     }
@@ -974,297 +550,156 @@
   [
     {
       "id": "d0",
-      "events": [
+      "places": [
         {
           "id": "saEnjiCNR2kXthdQ",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJhVCZVUdbBEcREBYfAvhFUMo",
+
+          "name": "Old Market Square",
+          "address": "Stary Rynek, 61-001 Poznań, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXX0di4SCwAPbOkMTc79t4vmjn6W4TaEls7u6_1iORpk3HLd0Z4kWmQCGHFTrwFbC1lhHgLFYO7HiJeWfdoHnUnjXcjz-w-4hL2BlhhisavAebdejYC6dzspvRNAtIwLFprGYfkss9Jo-HFwa34lhamXC-Oy--29rdpDk73fD8oggtYn",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:29:35.616Z",
-          "updatedAt": "2024-07-03T14:29:35.616Z",
-          "activity": {
-            "id": "7NZrH01FnJPfee2v",
-            "eventId": "saEnjiCNR2kXthdQ",
-            "placeId": "ChIJhVCZVUdbBEcREBYfAvhFUMo",
-            "name": "Old Market Square",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Stary Rynek, 61-001 Poznań, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXX0di4SCwAPbOkMTc79t4vmjn6W4TaEls7u6_1iORpk3HLd0Z4kWmQCGHFTrwFbC1lhHgLFYO7HiJeWfdoHnUnjXcjz-w-4hL2BlhhisavAebdejYC6dzspvRNAtIwLFprGYfkss9Jo-HFwa34lhamXC-Oy--29rdpDk73fD8oggtYn",
-              "AUc7tXUXHryBy-wOFVc0Ij0igODCBivFhkXlPQ6wq36SGcwhaR6_48WbKJFq6mKRsg66eFHwt0gGgjtPPsgCn19XA9UycFCUQuVIXhqkJuj5Tt1_1NzDmb_AiTGinFWdgGMDK1RbBC9GIxpACVifMbetrHepoaDcnDR4xQwPoxt-mIpOzTk",
-              "AUc7tXWic64rH44IvPabt16w0ewANRI3FV-JzTkL9UxbCU_Ll40A5F0N6IRFoRx6goV2u5zNkzLY3xnnAAZz3_kBKDGh7BbZX9Yaa2tz5qekRcHAvbVKHs3fo7llf9amiihhssPpDJfLjtvy3ZwhOf7Q6UVvLPurHAryY5MK6hMHDOK4wSSQ",
-              "AUc7tXVKPg-IcgcArTotX55TWefuxgFKBQQbPAQMRPGww_f1AiWEMu-27KFxGnhASRAlXUtsvDXcNYH2NrCoa-incZyIFrw8Z4txStM0F2VKVZek3UvcBAfD61-wVXOsreeF8dVb2brk8hRzqVZfSMX6C2aPoBcSqAAe_li-N3pGdTzrYwaO",
-              "AUc7tXWP1Rd4ch-fWHHISQl3twfaasoc7yU-PCrWW_1IS9vK-0kM8QKn3DWUZNMCbY7tK870nPejLcq-vgToeezc_nrl86fK2dqtwh64aazwgCSS9NHKIQyYZMDNVdjqs3u4J9f3FPkHNgUmlXn_VRTeVkgjyRRgnry2CfuKfmAPFdpVarv1",
-              "AUc7tXWtYnTX1bjwTSWpH9KBVN7Ap0SBO6j45EuV2m4IhT6QKdUc0GV0_VPEYF5a-TpFBrQvzZtALSfTccLnBW35H6XX1Vi_v1g7CZ1F2nBiddNdMR-UOEMwFPHI7qIp_X_KbrwrCr6WK-9Mu3Xg0-VQEFetSEJ58h5lqWR41n4FcONvWwg",
-              "AUc7tXXChxLpozwkINZbtBe5J88dj8Ppk1vpkxa1LhV3D0lnk7qqEyQ2kVktSuvT7tA3lp4PkyX3HigVeXWm8cz8yd5L-3SNR2eLcudFcNLKaEOaJKsZg8nqLq1A6xw5yjafDsm-4-ruXzhbCMz8_hCHl0bukyA4fb9eBCEWcPnVETG9Ep25",
-              "AUc7tXURyoa5dSh2PgRAaPvGP6Kh9oe79Wwrlob-yajs-VmVYIGmt-v1jRD4XDj64drtuKug2wurP0YkyfsdtB4vj6m5PXxIKU1y5Xc66uilRcln1kzqBv6-emx2Jbn_jEm4Mjheacq6IdQkjNzZycUReP2ScL61LQFgQ4eaZs0gQxwklNaw",
-              "AUc7tXVOtrmlxaH7SGVSgzZOM3jmDFPg2hdorcXLLZ7WwgkSd2n3Wgq4KCiWUT2NqY_Z8eFUP9lDvxugfQN7coQIzxCcRAYZhcBzFWinrdbxdlEotilOu5UPBsvY2bZ0Idsjis8BU6ogRltXAr8JS8TnQsvaLp6NrRLUCk3l9KEHhosJdBct",
-              "AUc7tXVLZffVcFGb8jbIvwUE5wZLcPDuJmNmf6LDUPZKoRElQo0-EYNPqD9LfrWrWTSRcSb-P8t7HsKjl9QZ6VwI2kdP96z046AfPis-CJILS4C58YwgQQ72t1KN4nf6thbwIzVvFKx9uIM1YZlLjQYz3jfNsqsW7Ht7vdMqRULoBF4rW5Vy"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Old+Market+Square&ftid=0x47045b4755995085:0xca5045f8021f1610"
-          }
+          "updatedAt": "2024-07-03T14:29:35.616Z"
         },
         {
           "id": "XH1QqgJoSOsw9WTA",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJfXKkm7JbBEcRi8vsqqb8620",
+
+          "name": "Town Hall",
+          "address": "Stary Rynek 25, 61-772 Poznań, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": "https://poznan.travel/en/poi/show/id/64",
+          "imageUrl": "ref:AUc7tXX0Bfby55zeepP3v-5kDXpUio_cbtUsFkM31JeTvaJkIkj_ajGBIRGJtShf_8mgAiSSbcsgyh5nxTiLAgc8yYBQd4n65PqaoamDnCOqCL_fFNfsZznPtZI2ZJ-aRJxv2Uxa5MenSJjejRycenMA-0dwrM1oCtzQwkNZhYlZ8e0c1k_r",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:29:45.556Z",
-          "updatedAt": "2024-07-03T14:29:45.556Z",
-          "activity": {
-            "id": "ra6P6S7asw7VZldv",
-            "eventId": "XH1QqgJoSOsw9WTA",
-            "placeId": "ChIJfXKkm7JbBEcRi8vsqqb8620",
-            "name": "Town Hall",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Stary Rynek 25, 61-772 Poznań, Poland",
-            "phoneNumber": null,
-            "website": "https://poznan.travel/en/poi/show/id/64",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXX0Bfby55zeepP3v-5kDXpUio_cbtUsFkM31JeTvaJkIkj_ajGBIRGJtShf_8mgAiSSbcsgyh5nxTiLAgc8yYBQd4n65PqaoamDnCOqCL_fFNfsZznPtZI2ZJ-aRJxv2Uxa5MenSJjejRycenMA-0dwrM1oCtzQwkNZhYlZ8e0c1k_r",
-              "AUc7tXUb5yLLjhWU89droqL1rsjOL_61K1_0BPGEakgm6a8Jy0lSC-7YNk1zTKp0wA1vBjkltP55mKXaEeBcRFNIrBeUQY6HiDCvOlOi0D8ioqCQW1LV3NtM6FnnTLZh_F1Ni70oxwoSGRpanqVVkALHdR6cxGQMD2P8kNtLJZXkOgOcc9iV",
-              "AUc7tXWYv-uzD6LE6bQBpG4el5lgOxZwW93xJO_1_5dvxY4d0m-maMhtvIYiToEsIO8JabDYUjCUD8qYZJXNH-5C4hHTzicHBr4zxZiexWXzwSFr5I0aK6xeNgBj-VZii8onu_LjcpOxNTkppsn9cwvx8J8nOQcA-Ohcn-DrF2gSFSewgFl1",
-              "AUc7tXU96iRJkvNDxqJa9s_94uE_bhXY8VkP036DHxwN_uDxTqoyoRCR9nBfsJTjBfzzCHKEJwtSAbJPk9xcv9ROQOXnwm1rYd58E32d0ExPDPx5Xjr-y1-OU592InxfG5kmucMp5DmZpHLlyjvhSgU8tFHMM9FOLin-4qmnLbB3kIKHJ6Ow",
-              "AUc7tXVxL2Cpd9Cxs_nvbp0S3ZV26aKrxFj5i2uSgFUQtT6Ircce1Am5mNCNa5QIcKHPCTNCCpmQ0H-mbFCtpVs7Aq7j-cCB5VZzIwwkZZADu7Vlu8KA-Hr4NmwOYyhlbEKtan38gj8jZYCF3L9XREy-ODZiXRg8m3V_rAw4dpFzNWiVnUuB",
-              "AUc7tXWAXauj-q27G_GH7UWDol0Zj9A9zOTMjRsl38w_V1yomPwaSTfmAJ3zBgGhCL3BTbeLfBTH0NuJaD5aTFYCyQJcwkZJBzC9kfw8fwEXQjz2FRAV4QoDVGyJPnlGuGiOlpz2mSKBmWGpTGqPHrarJC96Xo8oj5YgTj_vd1TKvnjqgtgn",
-              "AUc7tXX68UUNErJ9erDFwiJ2gTibPQjfSH3eNCsiLhCRjrcfzSXMc_7RStHMqBVSGLnbrFBDwrlmr6SbXzJjS4xRB9tas12ErFvARTLWjHJn0zqXA_F7NpvefsE832mm0chysiZ410exs0a0LMcO2sOGWL9AKaHOVSxfKUdH_M1mANv047eI",
-              "AUc7tXU4niP7RzFzly4T0u8T-t4A1EEYilcbzTHBHpgdRHGKMSg_l6htSAXBTTit0c2JMVZFViMd3zE_fCeFOjdrJppQ_ZX1qPWdtOQaeXUmv8LsNb1Yhm_BkzPyDun57rTtm9-YJMC6pAHXSE9PfWTSnDQt0IkX-KtYs8smFg68n0shtWgD",
-              "AUc7tXVSHeR6hSHhJIH0UGdXW_ZR2x8xnvllPpnfFi--PB75TSNnbtJMlTgOYfa3gn5U5zsrH-1w8lFJp82WnxAFSalH4VlAhAG3UXqo_NbEJXgQP8jnQ4Jo5torW2_J_S_nFiLwPX70yuXnyudvymq2PMp9NdkeAVq3JMY8bVPvdGnohCbq",
-              "AUc7tXU1jweEllLxQ-MvbqknW8q2R7QLIaCwgmPcq0NaCwWvTyBlXTr7Jgyodh8X6O2BHdYvdt3cHcK5b__Tspl9JjTUSzCLAWlr21RpBG5Fv_fT8q3fTYWzsuDOJ9HCEslxOJ6Q0K9AKzYV38Asexsvo_Obse3qy_C8hBHfm3Fckuwzdeqm"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=7920702162423565195"
-          }
+          "updatedAt": "2024-07-03T14:29:45.556Z"
         },
         {
           "id": "xhNeDtszG7UxgDVB",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJmaTVXzZbBEcRYlhvvUeU4bM",
+
+          "name": "Imperial Castle",
+          "address": "Święty Marcin 80/82, 61-809 Poznań, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 61 646 52 60",
+          "cost": "0",
+          "website": "http://www.ckzamek.pl/",
+          "imageUrl": "ref:AUc7tXVw9g0jVajEkDxss1EWKfua6ddG2xOHGLlQOM0nEv9nsKUx15ciVf1XfNC1o3Sup3ZV1ju4nw98Y0BOHgNgN89_xYPoeEQOYLJFB3mKZNkH4Kaxbj6k4n8bVfC08p0H-izEBF9DapI5otrIC0RoEplS9_Z7X1PEyqxpY2cJDZVRDaWc",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:29:56.998Z",
-          "updatedAt": "2024-07-03T14:29:56.998Z",
-          "activity": {
-            "id": "wqBac8z2fYCn1TY9",
-            "eventId": "xhNeDtszG7UxgDVB",
-            "placeId": "ChIJmaTVXzZbBEcRYlhvvUeU4bM",
-            "name": "Imperial Castle",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "1200", "close": "2000" },
-              { "day": 1, "open": "1200", "close": "2000" },
-              { "day": 2, "open": "1200", "close": "2000" },
-              { "day": 3, "open": "1200", "close": "2000" },
-              { "day": 4, "open": "1200", "close": "2000" },
-              { "day": 5, "open": "1200", "close": "2000" },
-              { "day": 6, "open": "1200", "close": "2000" }
-            ],
-            "address": "Święty Marcin 80/82, 61-809 Poznań, Poland",
-            "phoneNumber": "+48 61 646 52 60",
-            "website": "http://www.ckzamek.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXVw9g0jVajEkDxss1EWKfua6ddG2xOHGLlQOM0nEv9nsKUx15ciVf1XfNC1o3Sup3ZV1ju4nw98Y0BOHgNgN89_xYPoeEQOYLJFB3mKZNkH4Kaxbj6k4n8bVfC08p0H-izEBF9DapI5otrIC0RoEplS9_Z7X1PEyqxpY2cJDZVRDaWc",
-              "AUc7tXWBipMokA-wCMyUpOTLekOAFeBFTMyE9WnmDvmUMrAjxqf1QTyxR8S3pUhtKvcSnehaDSpvpMucax2CyedBLK4MawSZ8sw0rL6Mbc1vZQSaHvVoKb8W6E3wCnzWAWn7dxKzMquZuS-GM6t--GUoKHYD3T7LMRp8RRQF00JDUDP4iaWt",
-              "AUc7tXXSsDUPuUaunbPirO5cjjEHcxfSE73I8N71INw_cKANkUuNTaYpyJTHrVbK_4bthT4Sz_i5YCoWkSvjjRW6DNTYBy0aTsyyJqdH9mZ1ym-3xmW_Td7NulTqlYSay3UfoGGC88ZAYNfMW_ARiJgxD3y2ZgzgWhvK_X7nptmkYWhw7csd",
-              "AUc7tXXMsG4Dv6iaWhw6ZwwEbL3ElZqbwwvbhcktnG-LQyr3TR6cu63f8qs8YQleZOGw0yRyVqK7QXoGIeCBsTK5lpCC1JL83UWe8wR77Q0RT9LjK_m5tKPZCSWfFvH7mqRMMQNDioTmkiZKTiAfD-ZNK5I526xTGHVxB-Wo3LyrdW67m9Oz",
-              "AUc7tXVT3ygElTETW8op1QSBYxAlfSaxV62-zRQbXhgS_udihPYpY213pLYUEMQknL12Z7itASE2jDEPu0QmxQ7ngwvWRZyS0MPo_ci_H5oiwKlowvgL3TBrsVb0LTr9mw5hcyNW2mizXAUWtiBMdGiTgBwiKOn-svtiCQyJG1C_KBOGZmow",
-              "AUc7tXVezJyTsbFmHA8ZgQDN31rto1IZ-Bu37NKW5EPSXl2AkF0_4llV7MFdCvZHVDyj2M2G_Xbs8qekY1cI7woZUdWy7_SnS4eqATwv7mPrFsb1qHClyFo7l8gMmvcfy5pGToanW3_4K9t1UD4db6h8aQ2y0dbFkO1QH-Il5tL4Hfq12Cce",
-              "AUc7tXU_iteBgrXZBpIVQqHXV1r0Po_8MbgK_GhVOaRz7KOQcHZ08FeHv81oYWwEdUxETRxMs0aq-8ORUzTM3mimNg4aqDXCuVyaqxHh583bfwkl00EHtpzHq-MJp9Cl-dSAQLnoJPVSM1LpMr5OamvxbN5Jd-hLHWySXPQ0JQ_PEFMKO3sX",
-              "AUc7tXVWVrvDfQwaolbWVylLgPJP8I5Zuq4iHgmBAJ9WKEFGyYYZeERlXzbDKH4ZBmhSCHMKt9eGvu4y6t-G6uYQIie5wZwOn2Gg3-A0P1CK1FYrGi3eMLUmoV4VpAeUHJOyyLUoHmMB7BQU3cyhz4Bd1Hk8-bBI1sWSV7Uslh6VTV9N0paP",
-              "AUc7tXWBdBVPAJ5Fe2YMEjiAnQnka-qCsvOQDpKL0-CWuwL6Fi6jzn7rZ9Jul_nhNwwCgNMFoKMwtYZLnQbBl93FjX0nAF8Frf-oyIeLNR8s_jupfZjAlJ62gcnn02lDoJ0vz8K629a9CabOtekueS79op--Vl3GTrffvyRN1hNab5z4znmE",
-              "AUc7tXWB8kEIEyTtN_eNMwjgqutIdnCNvtv9Y1C0guRoBlahGytiqT71Q_vaUzaiUx6nHNe1E032VRMryXQNoNr58awGPonqYfZ6ATHYGeK23eWLwWLFQFxlDnwu2ETzVO9l5Q2vV2t_9r1woxRbjLA7-x0QyR4s_Oa6Ta680ccwjC2cNPYd"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=12961804238390777954"
-          }
+          "updatedAt": "2024-07-03T14:29:56.998Z"
         }
       ]
     },
     {
       "id": "d1",
-      "events": [
+      "places": [
         {
           "id": "QJdpB3PJWX86lKkx",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJ3eYVOGhbBEcRYAjtmTrRlvQ",
+
+          "name": "Ostrów Tumski",
+          "address": "Ostrów Tumski, 61-001 Poznań, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXUxitmn7r7yFZZzuQ7FzhenXfsZDjFsoPupxuXBKYhVUgGhc0lj7VjHDPyoAflnxV4dNt3m7Ozc4wZT-DtAfD-8mMlUpZrKbJtESvBoZu9IZF44j_PULWK3v4m48Xm-xXxWTSnl8Uq-iO-G28CWB8PCY-qlNWXY7WqDw7GeYc8B7Bqr",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:30:37.547Z",
-          "updatedAt": "2024-07-03T14:30:37.547Z",
-          "activity": {
-            "id": "gfVhQGFRmwBlTldh",
-            "eventId": "QJdpB3PJWX86lKkx",
-            "placeId": "ChIJ3eYVOGhbBEcRYAjtmTrRlvQ",
-            "name": "Ostrów Tumski",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Ostrów Tumski, 61-001 Poznań, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUxitmn7r7yFZZzuQ7FzhenXfsZDjFsoPupxuXBKYhVUgGhc0lj7VjHDPyoAflnxV4dNt3m7Ozc4wZT-DtAfD-8mMlUpZrKbJtESvBoZu9IZF44j_PULWK3v4m48Xm-xXxWTSnl8Uq-iO-G28CWB8PCY-qlNWXY7WqDw7GeYc8B7Bqr",
-              "AUc7tXVbMV8gMYvfv6J2b-aFPAl5oWViX8mPn4_EDP_DUkvPmdq2XP_g_52YKqJJv8WVxs09GO9ha6opjeZsY86v61YaWx7J1B25FxfmU59D0EygXYcg20nDyVZGiFK46OR8ZQtXw_7PVLcNFf8qN3nSGBL2FAYi1NYBBzG4V_ZQ3R4-jfa_",
-              "AUc7tXXsY40jSfT9fg2yTPt_LUhWU8cTBe7BRjihWW9i8OyDWI_7d0dB_EcolNnBYykyxeqQQzmRVoFaLGmY7xOQzKs9ypj3zKCW5PGHXor9YdeSFuh_QGvvFM81Loj7eG1ZQBLB0mKefm20EH_uMRDhxdGSoTwmhUf0IE6Y8hMHBUe6JZhM",
-              "AUc7tXWcdhtlW-PU3-TJycMiVep-Yp8zB4rcRKjUDSXEAzmWllu_QDwvuYvR-Jgq8w7Z3aARfE9ngKh0W6fSnwd0BMV6PDwuu6v-U7u61ZtHknK6aTpIgA3HF66ki16KeMZtE1pAkk8PzNsPDwBnCvnKT2QCdn9lgQF1GvwSLWMXr--EfZko",
-              "AUc7tXWGNFk2h_zkjq80lVz-1DZSVRUB_gtf0j6thdpIZuXNwo9vF1xt4CeGDQhDodB1P3zuSQDdrc2Btf1nywL1FSZV-uRin97-IOzu0nQA-AlsS4PJ3rCLzd5onMbY0iaCM7NpTZWuGQtffhvjfnXnT-fATkYNit-IEUqbvdSWegLjK1IO",
-              "AUc7tXU2QjbNavlVRmceHpaIaFHevfRByikA2MfMsDlu0NO4ZfahR5k9CtJcq-2psfrljJY7Fo4Vm6invodw_7oYtH27_52WXDYH-2AxLSar27WS0y0vAEp0STRVFPOWEzJJrxnXMpj4o5c7Uz0ON2g_G5xlxCgB1rdeziMFCjGBjbZmJJJH",
-              "AUc7tXUk8XsD2r7zE3g1AcFAOGCXFbfSX57g1UJN5tZlBFOWaVKLab8tdjFy4cGPkoiG6p5Sq3eDtqRZTp4_unYFrTlRjCMJMhliFCwGaegb8zDpZ_5z7NyRUZs7jCs-XN_nt8MUrXOsvhGgodRREjOwVgfzAsanQlaPCeTBkpc39U2R1462",
-              "AUc7tXWlXxo1vj1Km2TNliEKH8uZvqpmYHG3UPR6YjcXUkWTsSZT7qTRiQHeTqTiHgy5u_eGLVc0pvdD31jhXqR-qepvyqxZMxKKQPHHxe483_fXF1ViUIsdZHaGzsvFsMzYiiafMj5kuX27nxBhF8xj0TUOCGM-KLo_DuSbdJT46vcAJj7A",
-              "AUc7tXUyBtW3zE2wxpWB-pX2QFz5c924MFT9jkQt3jYG1F3XsqrvTHIQp5EDhm2JAp7IyGnJQPUVjLDHHXBX9m8PA6DWkBG2TKPicP1mVX3Db_IXjwws7QkY0M6s4nwS-mxMdNdhZXhapyFLwBGEgKyVA9Ep77G22lQUWEVl6F7NYqmuVHU0",
-              "AUc7tXXJB_uqbWOEh-P_qCYh8E_cuYAcs_j0b-6fAhRYV2-dTZo9dfL7ALHzYZRqlFj3pFDlvfZBy8oOR6MSzJyjUbozYx7JULsG1LK-xUTAORdq-Rcvo_NP3jdsLd-KEdtx5P7RbeSqSom-_RZCe6Fy6o2T-CCdjJhedIKaLjCjTIYclu8x"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Ostr%C3%B3w+Tumski,+61-001+Pozna%C5%84,+Poland&ftid=0x47045b683815e6dd:0xf496d13a99ed0860"
-          }
+          "updatedAt": "2024-07-03T14:30:37.547Z"
         },
         {
           "id": "dZu7ynEfpPDnB2Jc",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJH-AyQ1BbBEcRTzkQu389Dqo",
+
+          "name": "Park Cytadela",
+          "address": "aleja Armii Poznań, 61-001 Poznań, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 61 860 85 00",
+          "cost": "0",
+          "website": "http://www.poznan.pl/mim/turystyka/parki,poi,3338/park-cytadela,51946.html",
+          "imageUrl": "ref:AUc7tXU9QRfTaBaDA6RBMl-paTPCUmd154bPPqJsB1GF8vFbMt3zWchirAPSqliSSgSeR6W_SJJznID7oCNRB1Kuqck04-9yqYOgx_a5Pdk1HkjZofA80JAWg8q0u29B1CqLvlryVby7hae23on1NfaRmjOzuJ-9pN1ORQV1WtYLjXgUCnW6",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:30:51.359Z",
-          "updatedAt": "2024-07-03T14:30:51.359Z",
-          "activity": {
-            "id": "xqrNzPIJlI8Cfm0b",
-            "eventId": "dZu7ynEfpPDnB2Jc",
-            "placeId": "ChIJH-AyQ1BbBEcRTzkQu389Dqo",
-            "name": "Park Cytadela",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [{ "day": 0, "open": "0000" }],
-            "address": "aleja Armii Poznań, 61-001 Poznań, Poland",
-            "phoneNumber": "+48 61 860 85 00",
-            "website": "http://www.poznan.pl/mim/turystyka/parki,poi,3338/park-cytadela,51946.html",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXU9QRfTaBaDA6RBMl-paTPCUmd154bPPqJsB1GF8vFbMt3zWchirAPSqliSSgSeR6W_SJJznID7oCNRB1Kuqck04-9yqYOgx_a5Pdk1HkjZofA80JAWg8q0u29B1CqLvlryVby7hae23on1NfaRmjOzuJ-9pN1ORQV1WtYLjXgUCnW6",
-              "AUc7tXUuZY2cpdx6terV1hjW7tGDUVJycVsRdxwr9hMtHLZLhM0-qV6r2zm82e-F8Zman1H0LiZk56M_IAY7T_MbQQZ4qVZaX5x36Z4j1M2hy7f0uH4bXgRZ_1Wc7Bg78ZI0BLso8V_rd_W6uM1Gh_RrlINi65X247Sx-nqZ_g8HkH7yNDNo",
-              "AUc7tXXZ7ZjnaH1twUlPcmAmzUvyYayfJc5V_sgasix6HIxX4ShlFM9xpRHLSXo6eItQZATKAKMPluMbFmhXrZcRO_jeD3-zqM2ZDS01iYR5zX-rwTjexoXbcyY7GI2vxGvxMA9vFavi_D4bm4gJABtXw7huBmEay6cUSqPrPNEaQF676TgM",
-              "AUc7tXXWLC2E71rb-Ub3X42rMgP0HANNCYSQ1fCJ0HTAl84X4QzMDKXKF8Qhir-8Zha5Re3OIe69cxLbKlZduTYx4K6kJkLWOVX-Xm8lii5TS2sQPluey-VRTB-ZAvVSCY8mDOxLizu4W1pfvqwJRR5QSSbSZCVug0D3CXephG1nMVMY8X6B",
-              "AUc7tXV6VpAKi3LHskXgQPNSVE2yrsUf902g1XqV2KL7dOi9FdcmFVTY95NvGYaqIxTBPNk1vReuYeyK58Cwf79B9goYb8mEfTR7HFWVqbuaFYSXxDGLvsf1n_Qir87XKe1re8zX-G6aLdl69SW0XkL1s02bxhF9h--8rYaXUEIe8Tksx7CI",
-              "AUc7tXWf-rDrgV32C4ehyJPY2GxO0_fs0gjaoAWk7JuExAJZldilAPi2Pc_aezOIswfq142ka01Bq-msjVvhZQ81c4RFMTdi6w9crf-fvktCQdOQ_24r5I8P2l1R2koJUzQ-JI-ZLZP1ChXa6IbdWrQzxhLF7rPjIWMROGakKH3Thqo1vYHT",
-              "AUc7tXVvTplRyjg15UXeZHPIU4gdYL-93gXH4qCmOyTdKg2UKbrGwSkODPARVojCzJpm5UIywk06Lv4snY4chEO_pMIEX51SYDC9Mpa4ganNT6hPpdEXTal83zSNXFdseso15DW2AcPTW4qSiWJQOhDWrahUu2UH0Cp9LRMJM3GPoOlPzQdU",
-              "AUc7tXXrR7mVQtE2CAiWftFnnwgfQ0IkquEBEvLlR9U0874pIghHFzCtoXntLj-6CYp-8A0jfrc5jMn77h6WZ9k-vFFd5GiOvv0U18RnXB_r0b7nrF8JjRNW0vIusOKvEecEcqUnSauWZ-GPO8-V2fY6TT6Dhsr-wrMCrFTNqxE_-ml-Lx4p",
-              "AUc7tXW1XEF3RI0vLAS-ZiizfyCOPssFkhzQSWNC2kq0yi5tGxW-K7AkRGaIeQ4cRdwLSL54RbWoerCT0OJbs_BERmGvIV_t_T5PyivBLsPIbrH6_pVJwnSV8VgNSk19gXYZwr7AD1L0PFUCUrj5yGa4qIobAtf-AHZ-Y7szne_OE8on6AAa",
-              "AUc7tXUdYz-brDTUSm4CX-YEbn_TVdebvdo5PeCzoyEcOckSKUlJm88gPIJl29r1bw7SmRsrxe0IuOjk68W1XhhIUHekkiOLZmXhwSUAOF9OJzJmqEnAA1PLmgtqGFMOj3BriV6X-f05CHSXSaC2reHWYwhMwAw5dzB8K30cHCfIiJxqcw01"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=12253799254930241871"
-          }
+          "updatedAt": "2024-07-03T14:30:51.359Z"
         }
       ]
     },
     {
       "id": "d2",
-      "events": [
+      "places": [
         {
           "id": "DFC95QVB3KB1mxtM",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJUbkWetJEBEcRrfyATKdQipQ",
+
+          "name": "Poznań Palm House",
+          "address": "Matejki 18, 60-767 Poznań, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": "+48 61 865 89 07",
+          "cost": "0",
+          "website": "http://www.palmiarnia.poznan.pl/",
+          "imageUrl": "ref:AUc7tXVxUBTm5O6SQm8sUs0Am3QpPQDquFAZPF7r5ai2DdqO93loT7DyX9yQh9-eoBvFoaXE_L3Q7jm5EjV9_6dLPH2KXf6I0daAlrfeIdzZg00SIx66lH_PYbOEYK1k3Zd9q4UqyEJHuaVWtdmAgwMxVWTXkITrT6EUmWGpOR4jZw_vw0jc",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:31:14.465Z",
-          "updatedAt": "2024-07-03T14:31:14.465Z",
-          "activity": {
-            "id": "HnqvSO2IFcpddK5M",
-            "eventId": "DFC95QVB3KB1mxtM",
-            "placeId": "ChIJUbkWetJEBEcRrfyATKdQipQ",
-            "name": "Poznań Palm House",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [
-              { "day": 0, "open": "0900", "close": "1800" },
-              { "day": 2, "open": "0900", "close": "1700" },
-              { "day": 3, "open": "0900", "close": "1700" },
-              { "day": 4, "open": "0900", "close": "1700" },
-              { "day": 5, "open": "0900", "close": "1700" },
-              { "day": 6, "open": "0900", "close": "1800" }
-            ],
-            "address": "Matejki 18, 60-767 Poznań, Poland",
-            "phoneNumber": "+48 61 865 89 07",
-            "website": "http://www.palmiarnia.poznan.pl/",
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXVxUBTm5O6SQm8sUs0Am3QpPQDquFAZPF7r5ai2DdqO93loT7DyX9yQh9-eoBvFoaXE_L3Q7jm5EjV9_6dLPH2KXf6I0daAlrfeIdzZg00SIx66lH_PYbOEYK1k3Zd9q4UqyEJHuaVWtdmAgwMxVWTXkITrT6EUmWGpOR4jZw_vw0jc",
-              "AUc7tXV55D0kidmEHrArpho6qXU11-J0Zp_Oc5eA74_iZBDhk56alMJZsVrBGZHG6z9DK6sweg2poV7gfvNYkwp6HwEJ6mF62kOFrWiVuIP3AmWdlTzJiPfVM6j4nfLu81U1SDXbdLRHFBh1DOv5gyFIy7KPyhhFo1Cb22PjTwqgNIdvOxGD",
-              "AUc7tXXKQMEi9tx0B_lf-1hRKcUZPJHOvOICZ8pMIzG37sN3ItZihu4I-Kowzx_CGpfcVRFGbl_ggdifar2_FzQcLFc5cL9qyS5RJUph8sUnFfUcSg-uwoBFKhsSEYXfHT2iePhTGcDvQwKtv35JT_ET3qbw6DAwKuHMihaOza-TxlvrBgv0",
-              "AUc7tXU7E64D0t80yWcEvTMakkwZBK7x-mfd7BxRfrKjBf3QoLhll0Yf7V-QnFHU4ZPteG1G9zwNk45ML037EA15NjnOvZbSA6-hpBSpKNGuxmKUbJ4gSWXOdYm6LME2LbiqGCTr4gi20JY5e3y9guoLE4Xf3fOeGskwDuOg3LUPhM47wBuv",
-              "AUc7tXWwpOQwya5y2iSl9sL8OhQdBm59xWxkaE1v_J_B_N-DIAfh1et3yyE_5ATCi6c__CbKcagCa3_De7O5C35Eq1aHdw4LXcBjZAQQc916ahYSkJgSPS2XdAYZRFLh7FH1S-wSdjgvIKbJwDgDthWaeJuLSPcW1ef2IpBbbDmPv7j4eVlU",
-              "AUc7tXVwQqrtS5FUMvR6U5hf8gAqfiVtJLiIOdpouiopbCC_aa2iWXW1Ms9-wU34tkedMIEAio1YFHtfW7fhLVNCk7ETQmSx2SDEp9jRwKXmiy1NVviPTK3AUv5PK6D-jdBj0gArL1B1Z-TVBMfrXn_TXiMJvLi8naWFYMtJFnaWYgKPXG3G",
-              "AUc7tXXhWJa-zkSC7aHBPqxZCUhdtT0RzN0w2vONxBac6R_GPRPy8LM1gyzs6GyWmHuh1YRV01Ep8-7L_XlB3rxwLT-PoPI4eneRexFKScl_diTHAKkOs01Pm7Y3Yw6jsdIbDjhkIZ8u8u2kVL9wIaHZP6dhqqt88TbKguhtlqSCJ9mXve4j",
-              "AUc7tXUW-sJwl_T9BsoEizKlZ7CoKdhuY_rA-2MdooUuzlogoqTTtm--ULcT5yWjGEKJY0ELnzh2iSMySJJuH2qOQ7HInD6cyki7JmimMnmNByBqFZXEUk69H5JdDx5u37dFlEE21_IGZyoHRXpro81S3T4oXfBCe_QQl7V6G6hm3zwjMQha",
-              "AUc7tXVSqykirqjleMFBOUhfNf-Larv5DcpiOrzeChjCppqGPvOVYp870wf99TlSASCVfuxM2Y7EiuO1HajVN_P4sT23F2JPA24JGQSX5rWmqLEX196cU0kcvAE2THXhkdN2gP_WZu54zlvkWEzGlfkOv-plbmkTiBBRT-ofDDvAVbYp5Ub4",
-              "AUc7tXUVSry43tAK1G-41MZpoulZUkWSHu-zjuS4W9aWEvtzm6YSE6WVbpEo-ulXOBSJf2I8BdLKBkIVi2wSyjnqUW3C4j1kdBe0hmnfWec3n3cpYydAl-15CqgPHmRQHILp6cwNYyfri3vHR6gDE7N7VtbM6M2MpYMOIhqw75lEBiMczTup"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?cid=10703456143872687277"
-          }
+          "updatedAt": "2024-07-03T14:31:14.465Z"
         },
         {
           "id": "fmZaFJvlYJ6IBnFd",
           "tripId": "t",
-          "type": "ACTIVITY",
+          "googleId": "ChIJCUKwX3VbBEcROqCRG79Dcyk",
+
+          "name": "Lake Malta",
+          "address": "Lake Malta, Poznań, Poland",
+          "startTime": null,
+          "endTime": null,
+          "phoneNumber": null,
+          "cost": "0",
+          "website": null,
+          "imageUrl": "ref:AUc7tXUsUR6ge77WfmZgWwPi6V9-fO786tIfKMRokI9uLfWFBJnqsEuu14C3nG-XMQ15_uN9SagUa3Zl67HFSGSMpUFDe77d9Ig5jeAsV7ATx98zCzKYZdTPygEjkFh1sEZNfNgjK1fXnao25HCRlQ96kNPDCPJZqliauX29e-E6FzcqdtZs",
+          "note": null,
+
           "createdBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "updatedBy": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
           "createdAt": "2024-07-03T14:31:27.436Z",
-          "updatedAt": "2024-07-03T14:31:27.436Z",
-          "activity": {
-            "id": "1RFZEb4Y6uBr5GZT",
-            "eventId": "fmZaFJvlYJ6IBnFd",
-            "placeId": "ChIJCUKwX3VbBEcROqCRG79Dcyk",
-            "name": "Lake Malta",
-            "startTime": null,
-            "endTime": null,
-            "openingHours": [],
-            "address": "Lake Malta, Poznań, Poland",
-            "phoneNumber": null,
-            "website": null,
-            "cost": "0",
-            "currency": "USD",
-            "images": [
-              "AUc7tXUsUR6ge77WfmZgWwPi6V9-fO786tIfKMRokI9uLfWFBJnqsEuu14C3nG-XMQ15_uN9SagUa3Zl67HFSGSMpUFDe77d9Ig5jeAsV7ATx98zCzKYZdTPygEjkFh1sEZNfNgjK1fXnao25HCRlQ96kNPDCPJZqliauX29e-E6FzcqdtZs",
-              "AUc7tXWMCmP4dxoaOdS7zihtKEUFzIHp8NNI_0TDkWbbvFTDGbLyuTW47eoAs7XnNq_6cYwjeVk1OXM-OZCsm3J58wl3iWSp8e40ygiskJQX255a9_Wb9iVcqzt5lp5mzV7B7mObpLu-bmEfg-R06shphYNOHfNgAugx4Bt8XVyGsFhKnegJ",
-              "AUc7tXVF_0PIeJ5VDqVYy5Ffbz2rRRISwj1jStdGSKJxfEDXTO3gx1wcvQWhDTDeKLv8FNbNTAxI6eTb9eLkykoo976rEPwbXAxFRoihg6Sbq-07LZ4AiSNg-RLpIZhAnBpAsMOlwSEjCUqHO-oxaw8lkwf5byXNHkrUloLzKOlfW31cjFCz",
-              "AUc7tXUEpMi_uFi1KD57LCu-w1JDk4i131r3weAarwtamzplF-F47Bc3Fy9tU6GSmrgwhrqD5FsfJnvNKVTE8F5R7SHVxwckDFbVqEeD7jVnsh7sQR7ymAxhMJpInv7lJ2zeovKs4GmyCoMLdawJD0aRdcm8NUN0PtZk30h-ARztkylwF9wp",
-              "AUc7tXXUk8YZuHJAgR3W6C9IUQ1G3yk7iYo0BGKoZbv87IcLf_1YHC77rRs2nqLtzaBIc3-yRTm4TikXAEbekChDPGLzg4D-tLNMCMq73APv1WVQifDdBUvMLTwRvMvCz0FLpYKecffB-zZ5R9gSPyoQI66MOsxG5DExCiTpztS74fHW8BpQ",
-              "AUc7tXWfMZ4VAEj88_HgXfNMCxPNER70qwaE7AbQMkwf-WtA2BKZuOXcTQUwoUjCsxH20ClNg-cfR4ypFEPA65DRxCi8OV-k2T5z-bNKIyrqwqgzVgb0q07ah-BO4nIwsuU5sHEncpuqgPyGLbOEMXo-Gc4DWIkgdAdYKpx2tJF4BLwqqPZc",
-              "AUc7tXXxUqlvDtK45EhFXC6WHYUZcO6vIC97-bZR3ttPfrrNQ5TLNqQSn4jWF7h2CjpBrlRayQAT0AvN0rd_D_G5lnlWgfxjsoR7Hb3jSpg5IKVcUbL5S3PJny44GuuxCRiLryWFaVIvHC8vnGTDwrB_dOly8I2tj-AQBuXlcpWx8za3EHp-",
-              "AUc7tXV_2W9LPBpdMmfySV7a3bfwFcuxFifJ8uX5TW52dutnm7ub6drE1Y36pTTyiuw2a0PBn1RprVsjGWMpYfohUf47YzvOVUCyB2ewDVtmETjTFOv-h0hcSHvnxlqVXiBpkwYB4WIJZURS10TEpggr1D6hFS2ahY80vfo0pHCK7N5oX3Gu",
-              "AUc7tXUGpqLbckjqsGbfxaO8sPAI4bh4ng2cgSrCOoOdTG9i63l9YUWiW76u2VZNUAKxRs8iInn0io-lHaksYXRoU4HsZ9we85yb8LPMOkQLQNOR_5QGGpERinpu2th7JlFi1EqKIEgNabBNy0iDret6jBECi9JERbwCLXwXQ-B1tEh-NtMv",
-              "AUc7tXU5bjp9_sj1f515FPQ4RQbrmMx-IZ3UWXtCYwcC0XOuDyTxh6SUGZA-mPg3ZRe4ayhgwYjgHhSmDernhg_gzeEKjNCH9I-RC8Jy4nCnhmp5_UqGo8xBVVS4oFIldk2qV63tkWm0ETZk-Z7C-rKXTNil6iULKcm2KW9PkTH2tJ_VUh2g"
-            ],
-            "imageIndex": 0,
-            "note": null,
-            "url": "https://maps.google.com/?q=Lake+Malta&ftid=0x47045b755fb04209:0x297343bf1b91a03a"
-          }
+          "updatedAt": "2024-07-03T14:31:27.436Z"
         }
       ]
     }

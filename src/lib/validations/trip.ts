@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { insertTripSchema, selectTripSchema as trip } from "~/server/db/schema";
-import { eventSchema } from "./event";
+import { placeSchema } from "./place";
 
 const daySchema = z.object({
   id: z.string(),
   date: z.string(),
-  events: eventSchema.array(),
+  places: placeSchema.array(),
 });
 export const itinerarySchema = daySchema.array();
 
@@ -26,7 +26,7 @@ export const tripIdSchema = z.object({ id: z.string().length(10) });
 
 export const createTripSchema = insertTripSchema.extend({
   id: z.string(),
-  position: z.number().nonnegative(),
+  sortIndex: z.number().int().nonnegative(),
 });
 export const duplicateTripSchema = tripIdSchema.extend({ duplicateId: z.string().length(10) });
 

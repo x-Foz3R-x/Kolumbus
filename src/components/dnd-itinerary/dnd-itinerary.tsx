@@ -37,11 +37,7 @@ import DndTrash from "./dnd-trash";
 import DndDay from "./dnd-day";
 import { Activity } from "./events";
 import type { ItinerarySchema, DaySchema } from "~/lib/validations/trip";
-import type {
-  ActivityEventSchema as ActivityType,
-  EventSchema,
-  UpdateEventSchema,
-} from "~/lib/validations/event";
+import type { PlaceSchema, UpdatePlaceSchema } from "~/lib/validations/place";
 import { KEYS } from "~/types";
 
 // * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity (notion dnd style)
@@ -62,7 +58,7 @@ type DndItineraryProps = {
   tripId: string;
   itinerary: ItinerarySchema;
   setItinerary: (itineraryOrIndex: ItinerarySchema | number, desc?: string) => void;
-  eventLimit: number;
+  placeLimit: number;
   onEventCreated?: onEventCreated;
   onEventUpdated?: onEventUpdated;
   onEventDeleted?: onEventDeleted;
@@ -74,34 +70,34 @@ export function DndItinerary({
   tripId,
   itinerary,
   setItinerary,
-  eventLimit,
+  placeLimit,
   onEventCreated,
   onEventUpdated,
   onEventDeleted,
   dndTrash,
   calendar,
 }: DndItineraryProps) {
-  const [activeItem, setActiveItem] = useState<DaySchema | EventSchema | null>(null);
+  const [activeItem, setActiveItem] = useState<DaySchema | PlaceSchema | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const affectedDatesRef = useRef<string[]>([]);
+  const affectedDaysRef = useRef<string[]>([]);
 
-  const eventCount = useMemo(() => itinerary.flatMap((day) => day.events).length, [itinerary]);
+  const placeCount = useMemo(() => itinerary.flatMap((day) => day.places).length, [itinerary]);
 
   const selectEvent = useCallback(
     (id: string) => {
       const areEventsOnSameDay = (id1: string, id2: string) => {
-        const events = itinerary.flatMap((day) => day.events);
-        return (
-          events.find((event) => event.id === id1)?.date ===
-          events.find((event) => event.id === id2)?.date
+        return itinerary.some(
+          (day) =>
+            day.places.some((place) => place.id === id1) &&
+            day.places.some((place) => place.id === id2),
         );
       };
 
       const findEventIndex = (id: string) => {
         // Find the day that contains the event with the given id and return the index of that event in the day
-        const day = itinerary.find((day) => day.events.find((event) => event.id === id));
-        return day?.events.findIndex((event) => event.id === id) ?? -1;
+        const day = itinerary.find((day) => day.places.find((place) => place.id === id));
+        return day?.places.findIndex((place) => place.id === id) ?? -1;
       };
 
       setSelectedIds((selectedIds) => {
@@ -123,36 +119,31 @@ export function DndItinerary({
     [itinerary],
   );
   const createEvent = useCallback(
-    (event: EventSchema, dayIndex?: number, index?: number) => {
+    (place: PlaceSchema, dayIndex?: number, index?: number) => {
       const newItinerary = structuredClone(itinerary);
 
-      // Find the index of the day that contains the event with the given date or use the provided day index
-      const targetDayIndex = dayIndex ?? newItinerary.findIndex((day) => day.date === event.date);
+      const targetDayIndex = findDayIndexByPlaceId(place.id, newItinerary, dayIndex);
       if (targetDayIndex === -1) return;
 
       // If no index is provided, add the event to the end of the day's events array.
       // Otherwise, insert the event at the specified index and update the position of the events in the day.
-      if (!index) newItinerary[targetDayIndex]!.events.push(event);
+      if (!index) newItinerary[targetDayIndex]!.places.push(place);
       else {
-        newItinerary[targetDayIndex]!.events.splice(index, 0, event);
-        newItinerary[targetDayIndex]!.events.slice(index).map((event, i) => {
-          event.position = index + i;
-          if (onEventUpdated && i > 0) onEventUpdated(event.id, tripId, { position: index + i });
+        newItinerary[targetDayIndex]!.places.splice(index, 0, place);
+        newItinerary[targetDayIndex]!.places.slice(index).map((place, i) => {
+          onEventUpdated?.(place.id, tripId, { sortIndex: index + i });
         });
       }
 
-      setItinerary(
-        newItinerary,
-        `Add ${event.type.toLocaleLowerCase()} to day ${targetDayIndex + 1}`,
-      );
-      onEventCreated?.(event);
+      setItinerary(newItinerary, `Add place to day ${targetDayIndex + 1}`);
+      onEventCreated?.(place);
     },
     [tripId, itinerary, setItinerary, onEventCreated, onEventUpdated],
   );
   const updateEvent = useCallback(
     (
-      event: EventSchema,
-      updateData: UpdateEventSchema["data"],
+      place: PlaceSchema,
+      updateData: UpdatePlaceSchema["data"],
       {
         dayIndex,
         entryDescription,
@@ -161,22 +152,20 @@ export function DndItinerary({
     ) => {
       const newItinerary = structuredClone(itinerary);
 
-      const targetDayIndex = dayIndex ?? newItinerary.findIndex((day) => day.date === event.date);
+      const targetDayIndex = findDayIndexByPlaceId(place.id, newItinerary, dayIndex);
       if (targetDayIndex === -1) return;
 
-      const eventIndex = newItinerary[targetDayIndex]!.events.findIndex((e) => e.id === event.id);
-      if (eventIndex === -1 || !newItinerary[targetDayIndex]!.events[eventIndex]) return;
+      const placeIndex = newItinerary[targetDayIndex]!.places.findIndex((e) => e.id === place.id);
+      if (placeIndex === -1 || !newItinerary[targetDayIndex]!.places[placeIndex]) return;
 
-      event.updatedAt = new Date();
-      newItinerary[targetDayIndex]!.events[eventIndex] = event;
+      place.updatedAt = new Date();
+      newItinerary[targetDayIndex]!.places[placeIndex] = place;
 
       setItinerary(
         newItinerary,
-        !preventEntry
-          ? entryDescription ?? `Update ${event.type.toLocaleLowerCase()} in day ${targetDayIndex}`
-          : undefined,
+        !preventEntry ? entryDescription ?? `Update place in day ${targetDayIndex}` : undefined,
       );
-      onEventUpdated?.(event.id, tripId, updateData);
+      onEventUpdated?.(place.id, tripId, updateData);
     },
     [tripId, itinerary, setItinerary, onEventUpdated],
   );
@@ -185,8 +174,8 @@ export function DndItinerary({
       const newItinerary = structuredClone(itinerary);
 
       newItinerary.forEach((day) => {
-        if (day.events.some((event) => eventIds.includes(event.id))) {
-          day.events = updateEventData(filterEventsExcludingIds(day.events, eventIds));
+        if (day.places.some((place) => eventIds.includes(place.id))) {
+          day.places = updateItemsPlacement(filterEventsExcludingIds(day.places, eventIds));
         }
       });
 
@@ -206,13 +195,13 @@ export function DndItinerary({
   // handleDragEnd - handles drag to trash and drag of events in the same day
   // handleDragCancel - handles resetting itinerary to the last history entry
 
-  type DragData = { type: "event" | "day"; dayIndex: number } | undefined;
+  type DragData = { type: "list" | "item"; listIndex: number } | undefined;
 
   const handleDragStart = ({ active }: DragStartEvent) => {
     const activeItem =
-      (active.data.current as DragData)?.type === "day"
+      (active.data.current as DragData)?.type === "list"
         ? itinerary.find((day) => day.id === active.id)
-        : itinerary.flatMap((day) => day.events).find((event) => event.id === active.id);
+        : itinerary.flatMap((day) => day.places).find((place) => place.id === active.id);
 
     setActiveItem(activeItem ?? null);
     setSelectedIds((selected) => (selected.includes(active.id as string) ? selected : []));
@@ -230,61 +219,63 @@ export function DndItinerary({
       !overData ||
       !activeData?.type ||
       !overData?.type ||
-      !("dayIndex" in activeData) ||
-      !("dayIndex" in overData)
+      !("listIndex" in activeData) ||
+      !("listIndex" in overData)
     ) {
       return;
     }
 
-    const { type: activeType, dayIndex: activeDayIndex } = activeData;
-    const { type: overType, dayIndex: overDayIndex } = overData;
+    const { type: activeType, listIndex: activeListIndex } = activeData;
+    const { type: overType, listIndex: overListIndex } = overData;
 
-    const activeDay = itinerary[activeDayIndex]!;
-    const overDay = itinerary[overDayIndex]!;
+    const activeDay = itinerary[activeListIndex]!;
+    const overDay = itinerary[overListIndex]!;
 
     // Add the activeDay and overDay IDs to the update list if they're not already included
-    if (!affectedDatesRef.current.includes(activeDay.date)) {
-      affectedDatesRef.current.push(activeDay.date);
+    if (!affectedDaysRef.current.includes(activeDay.id)) {
+      affectedDaysRef.current.push(activeDay.id);
     }
-    if (!affectedDatesRef.current.includes(overDay.date)) {
-      affectedDatesRef.current.push(overDay.date);
+    if (!affectedDaysRef.current.includes(overDay.id)) {
+      affectedDaysRef.current.push(overDay.id);
     }
 
     // Handle dragging of a day within the itinerary.
-    if (activeType === "day") {
-      const newItinerary = arrayMove(itinerary, activeDayIndex, overDayIndex);
+    if (activeType === "list") {
+      const newItinerary = arrayMove(itinerary, activeListIndex, overListIndex);
 
       // Swap the dates of the active and target days
       [activeDay.date, overDay.date] = [overDay.date, activeDay.date];
 
-      // Update the dates of the events in the active and target days
-      activeDay.events = updateEventData(activeDay.events, activeDay.date);
-      overDay.events = updateEventData(overDay.events, overDay.date);
-
       // Update the date of the active item
-      if (activeItem) setActiveItem({ ...activeItem, date: activeDay.date });
+      if (activeItem) setActiveItem?.({ ...activeItem, dayIndex: overListIndex });
 
       setItinerary(newItinerary);
-      setSelectedIds([]);
+      // setSelectedIds([]);
       return;
     }
 
+    // // Handle dragging of a day within the itinerary.
+    // if (activeType === "list") {
+    //   const newItinerary = arrayMove(itinerary, activeListIndex, overListIndex);
+    //   if (activeItem) setActiveItem({ ...activeItem, dayIndex: overListIndex });
+
+    //   setItinerary(newItinerary);
+    //   // setSelectedIds([]);
+    //   return;
+    // }
+
     // Handle dragging of single or multiple events between different days.
     // Skip if dragging is within the same day. Handled in `DragEnd`.
-    if (activeDayIndex === overDayIndex) return;
+    if (activeListIndex === overListIndex) return;
 
-    const activeEvents = filterEvents(activeDay.events, true);
-    const draggedEvents = filterDraggedEvents(activeDay.events);
+    const activeEvents = filterEvents(activeDay.places, true);
+    const draggedEvents = filterDraggedEvents(activeDay.places);
 
     const targetIndex = findTargetIndex(active, over, overDay, overType);
 
     const newItinerary = structuredClone(itinerary);
-    newItinerary[activeDayIndex]!.events = updateEventData(activeEvents);
-    newItinerary[overDayIndex]!.events = updateEventData(
-      insertAt(overDay.events, draggedEvents, targetIndex),
-      overDay.id,
-    );
-
+    newItinerary[activeListIndex]!.places = updateItemsPlacement(activeEvents);
+    newItinerary[overListIndex]!.places = insertAt(overDay.places, draggedEvents, targetIndex);
     setItinerary(newItinerary);
 
     recentlyMovedToNewDay.current = true;
@@ -306,22 +297,22 @@ export function DndItinerary({
       !overData ||
       !activeData?.type ||
       !overData?.type ||
-      !("dayIndex" in activeData) ||
-      !("dayIndex" in overData)
+      !("listIndex" in activeData) ||
+      !("listIndex" in overData)
     ) {
       setActiveItem(null);
       setSelectedIds([]);
       return;
     }
 
-    const { type: activeType, dayIndex: activeDayIndex } = activeData;
-    const { type: overType, dayIndex: overDayIndex } = overData;
+    const { type: activeType, listIndex: activeListIndex } = activeData;
+    const { type: overType, listIndex: overListIndex } = overData;
 
-    const activeDay = itinerary[activeDayIndex]!;
-    const overDay = itinerary[overDayIndex]!;
+    const activeDay = itinerary[activeListIndex]!;
+    const overDay = itinerary[overListIndex]!;
 
     // Handle dragging of single or multiple events to the trash.
-    if (over.id === "trash" && activeType === "event" && activeItem) {
+    if (over.id === "trash" && activeType === "item" && activeItem) {
       deleteEvents(selectedIds.length ? selectedIds : [active.id as string]);
       setActiveItem(null);
       setSelectedIds([]);
@@ -329,22 +320,19 @@ export function DndItinerary({
     }
 
     // Skip if dragging is not within the same day or if the drag type is a day. Both cases are handled in `DragOver`.
-    if (activeDayIndex !== overDayIndex || activeType === "day" || overType === "day") {
-      if (activeType === "day") setItinerary(itinerary, "Move day");
-      else {
-        setItinerary(
-          itinerary,
-          selectedIds.length > 1 ? `Move ${selectedIds.length} events` : "Move event",
-        );
-      }
+    if (activeListIndex !== overListIndex || activeType === "list" || overType === "list") {
+      let message = "Move event";
+      if (activeType === "list") message = "Move day";
+      else if (selectedIds.length > 1) message = `Move ${selectedIds.length} events`;
 
+      setItinerary(itinerary, message);
       setActiveItem(null);
       // syncEvents(affectedDatesRef.current);
       return;
     }
 
-    const dayEvents = filterEvents(activeDay.events);
-    const draggedEvents = filterDraggedEvents(activeDay.events);
+    const dayEvents = filterEvents(activeDay.places);
+    const draggedEvents = filterDraggedEvents(activeDay.places);
 
     const initialIndex = dayEvents.findIndex((event) => event.id === active.id);
     const targetIndex = findTargetIndex(active, over, overDay, overType);
@@ -359,7 +347,7 @@ export function DndItinerary({
     );
 
     const newItinerary = structuredClone(itinerary);
-    newItinerary[activeDayIndex]!.events = updateEventData(rearrangedEvents);
+    newItinerary[activeListIndex]!.places = updateItemsPlacement(rearrangedEvents);
     setItinerary(
       newItinerary,
       selectedIds.length > 1 ? `Move ${selectedIds.length} events` : "Move event",
@@ -388,7 +376,7 @@ export function DndItinerary({
    */
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
-      if (activeItem && "events" in activeItem) {
+      if (activeItem && "places" in activeItem) {
         // If the active item is an day, return the closestCenter detection strategy with droppable's of the type "day"
         return closestCenter({
           ...args,
@@ -406,27 +394,27 @@ export function DndItinerary({
 
       if (overId === "trash") return pointerWithin(args);
       if (overId !== null) {
-        const intersectingDayEventsIds = itinerary
+        const intersectingDayPlacesIds = itinerary
           .find((day) => day.id === overId)
-          ?.events.map((event) => event.id);
+          ?.places.map((place) => place.id);
         const intersectingRect = args.droppableContainers.find(
           (droppable) => droppable.id === overId,
         )?.rect.current;
         const pointerX = args.pointerCoordinates?.x;
 
-        if (intersectingDayEventsIds && intersectingRect && pointerX) {
-          const eventsWidthWithinContainer =
-            intersectingRect.left + intersectingDayEventsIds.length * 160;
-          const isPointerWithinEvents =
-            intersectingDayEventsIds.length > 0 && pointerX < eventsWidthWithinContainer;
+        if (intersectingDayPlacesIds && intersectingRect && pointerX) {
+          const placesWidthWithinContainer =
+            intersectingRect.left + intersectingDayPlacesIds.length * 160;
+          const isPointerWithinPlaces =
+            intersectingDayPlacesIds.length > 0 && pointerX < placesWidthWithinContainer;
 
-          if (isPointerWithinEvents) {
+          if (isPointerWithinPlaces) {
             return closestCenter({
               ...args,
               droppableContainers: args.droppableContainers.filter(
                 (droppable) =>
                   droppable.id !== overId &&
-                  intersectingDayEventsIds.includes(droppable.id as string),
+                  intersectingDayPlacesIds.includes(droppable.id as string),
               ),
             });
           }
@@ -493,15 +481,15 @@ export function DndItinerary({
     () => ({
       userId,
       tripId,
-      eventCount,
-      eventLimit,
+      placeCount,
+      placeLimit,
 
       selectEvent,
       createEvent,
       updateEvent,
       deleteEvents,
     }),
-    [userId, tripId, eventCount, eventLimit, selectEvent, createEvent, updateEvent, deleteEvents],
+    [userId, tripId, placeCount, placeLimit, selectEvent, createEvent, updateEvent, deleteEvents],
   );
 
   return (
@@ -529,21 +517,17 @@ export function DndItinerary({
                 calendar={calendar}
               >
                 <SortableContext
-                  items={filterEvents(day.events).map((event) => event.id)}
+                  items={filterEvents(day.places).map((place) => place.id)}
                   strategy={horizontalListSortingStrategy}
                 >
-                  {filterEvents(day.events).map((event) => {
-                    if (event.type === "ACTIVITY")
-                      return (
-                        <Activity
-                          key={event.id}
-                          event={event as ActivityType}
-                          dayIndex={index}
-                          isSelected={selectedIds.includes(event.id)}
-                        />
-                      );
-                    return null;
-                  })}
+                  {filterEvents(day.places).map((event) => (
+                    <Activity
+                      key={event.id}
+                      place={event}
+                      dayIndex={index}
+                      isSelected={selectedIds.includes(event.id)}
+                    />
+                  ))}
                 </SortableContext>
               </DndDay>
             ))}
@@ -573,7 +557,7 @@ export function DndItinerary({
         <DndDragOverlay
           activeItem={activeItem}
           selectedIds={selectedIds}
-          enableEventComposer={eventCount < eventLimit}
+          enableEventComposer={placeCount < placeLimit}
         />
       </DndContext>
     </DndItineraryContext.Provider>
@@ -599,26 +583,29 @@ export function DndItinerary({
     active: Active,
     over: Over,
     overDay: DaySchema,
-    overType: "day" | "event",
+    overType: "list" | "item",
   ) {
-    const filteredOverDayEvents = filterEvents(overDay.events);
-    const totalEvents = filteredOverDayEvents.length;
+    const filteredOverDayPlaces = filterEvents(overDay.places);
+    const totalPlaces = filteredOverDayPlaces.length;
 
-    if (overType === "day") return totalEvents;
+    if (overType === "list") return totalPlaces;
 
-    // This comment addresses a subtle behavior when dragging an event over a day that already contains events.
-    // It might seem like you're dragging over the day itself, but in reality, the event is dragged over the last event of the day.
-    // If the event is dragged past the last event, we adjust the position to append it at the day's end.
-    const isDraggedPastOverEvent =
+    // This comment addresses a subtle behavior when dragging an place over a day that already contains places.
+    // It might seem like you're dragging over the day itself, but in reality, the place is dragged over the last place of the day.
+    // If the place is dragged past the last place, we adjust the position to append it at the day's end.
+    const isDraggedPastOverPlace =
       over &&
       active.rect.current.translated &&
       active.rect.current.translated.left > over.rect.left + over.rect.width;
-    const positionAdjustment = isDraggedPastOverEvent ? 1 : 0;
+    const positionAdjustment = isDraggedPastOverPlace ? 1 : 0;
 
-    const overEventIndex = filteredOverDayEvents.findIndex((event) => event.id === over.id);
-    const validIndex = overEventIndex >= 0 && overEventIndex + positionAdjustment <= totalEvents;
+    const overPlaceIndex = filteredOverDayPlaces.findIndex((place) => place.id === over.id);
+    const validIndex = overPlaceIndex >= 0 && overPlaceIndex + positionAdjustment <= totalPlaces;
 
-    return validIndex ? overEventIndex + positionAdjustment : totalEvents;
+    return validIndex ? overPlaceIndex + positionAdjustment : totalPlaces;
+  }
+  function findDayIndexByPlaceId(id: string, itinerary: ItinerarySchema, dayIndex?: number) {
+    return dayIndex ?? itinerary.findIndex((day) => day.places.some((place) => place.id === id));
   }
 
   // Filter functions
@@ -631,7 +618,7 @@ export function DndItinerary({
    * @param excludeActiveEvent - Optional. If true, the active event is excluded from the new array. Default is false.
    * @returns  A new array of events excluding the selected ones and optionally the active event.
    */
-  function filterEvents(events: EventSchema[], excludeActiveEvent = false): EventSchema[] {
+  function filterEvents(events: PlaceSchema[], excludeActiveEvent = false): PlaceSchema[] {
     if (!activeItem) return events;
 
     if (excludeActiveEvent)
@@ -647,7 +634,7 @@ export function DndItinerary({
    * @param events - The array of events to filter.
    * @returns An array of events that are currently being dragged or the original array.
    */
-  function filterDraggedEvents(events: EventSchema[]): EventSchema[] {
+  function filterDraggedEvents(events: PlaceSchema[]): PlaceSchema[] {
     if (!activeItem) return events;
     return events.filter((event) => event.id === activeItem.id || selectedIds.includes(event.id));
   }
@@ -658,7 +645,7 @@ export function DndItinerary({
    * @param ids - The array of ids to exclude.
    * @returns An array of events whose ids are not included in the provided ids array.
    */
-  function filterEventsExcludingIds(events: EventSchema[], ids: string[]): EventSchema[] {
+  function filterEventsExcludingIds(events: PlaceSchema[], ids: string[]): PlaceSchema[] {
     return events.filter((event) => !ids.includes(event.id));
   }
 
@@ -669,12 +656,16 @@ export function DndItinerary({
    * The date property is updated to the provided date, or if no date is provided, it remains the same.
    * The position property is updated to the index of the event in the array.
    *
-   * @param events - The array of events to update.
+   * @param places - The array of events to update.
    * @param date - Optional. The new date for the events. If not provided, the date of each event remains the same.
    * @returns A new array of events with updated date and position properties.
    */
-  function updateEventData(events: EventSchema[], date?: string): EventSchema[] {
-    return events.map((event, index) => ({ ...event, date: date ?? event.date, position: index }));
+  function updateItemsPlacement(places: PlaceSchema[], dayIndex?: number): PlaceSchema[] {
+    return places.map((place, index) => ({
+      ...place,
+      dayIndex: dayIndex ?? place.dayIndex,
+      sortIndex: index,
+    }));
   }
   /**
    * Inserts an array of events at a specific index in another array of events.
@@ -682,13 +673,20 @@ export function DndItinerary({
    * The function creates a new array that includes all events from the original array,
    * but with the events from the second array inserted at the specified index.
    *
-   * @param array - The original array of events.
-   * @param events - The array of events to insert.
+   * @param listItems - The original array of events.
+   * @param newItems - The array of events to insert.
    * @param index - The index at which to insert the events.
    * @returns A new array with the events inserted at the specified index.
    */
-  function insertAt(array: EventSchema[], events: EventSchema[], index: number): EventSchema[] {
-    return [...array.slice(0, index), ...events, ...array.slice(index)];
+  function insertAt(
+    listItems: PlaceSchema[],
+    newItems: PlaceSchema[],
+    index: number,
+  ): PlaceSchema[] {
+    const combinedList = [...listItems.slice(0, index), ...newItems, ...listItems.slice(index)];
+    const updatedIndexesList = combinedList.map((item, index) => ({ ...item, sortIndex: index }));
+
+    return updatedIndexesList;
   }
 
   /**

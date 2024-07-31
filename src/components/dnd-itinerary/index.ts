@@ -1,11 +1,11 @@
-import type { EventSchema, UpdateEventSchema } from "~/lib/validations/event";
+import type { PlaceSchema, UpdatePlaceSchema } from "~/lib/validations/place";
 
 export { DndItinerary } from "./dnd-itinerary";
 
-export type onEventCreated = (event: EventSchema) => void;
+export type onEventCreated = (event: PlaceSchema) => void;
 export type onEventUpdated = (
   eventId: string,
   tripId: string,
-  eventData: UpdateEventSchema["data"],
+  eventData: UpdatePlaceSchema["data"],
 ) => void;
 export type onEventDeleted = (eventIds: string | string[], tripId: string) => void;

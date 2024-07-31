@@ -14,7 +14,7 @@ import { createId, decodePermissions } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { toastHandler } from "~/lib/trpc";
 import { constructTrip } from "~/lib/constructors";
-import type { EventSchema } from "~/lib/validations/event";
+import type { PlaceSchema } from "~/lib/validations/place";
 
 type TripContext = {
   trip: TripSchema;
@@ -27,7 +27,7 @@ type TripContext = {
 
   updateItinerary: (itineraryOrIndex: ItinerarySchema | number, desc?: string) => void;
   createTrip: (name: string, startDate: string, endDate: string) => void;
-  deleteEvent: (event: EventSchema) => void;
+  deleteEvent: (event: PlaceSchema) => void;
 };
 export const TripContext = createContext<TripContext | null>(null);
 export const useTripContext = () => {
@@ -80,7 +80,7 @@ export const TripProvider = (props: {
   );
 
   const handleEventDelete = useCallback(
-    (event: EventSchema) => {
+    (event: PlaceSchema) => {
       if (
         (event.createdBy === props.userId && !permissions.deleteOwnEvents) ||
         (event.createdBy !== props.userId && !permissions.deleteEvents)

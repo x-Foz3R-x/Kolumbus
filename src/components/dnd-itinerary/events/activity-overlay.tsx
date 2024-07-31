@@ -1,13 +1,13 @@
 import { memo, useRef } from "react";
 
-import type { ActivityEventSchema } from "~/lib/validations/event";
 import { cn } from "~/lib/utils";
 
 import { Badge, ScrollIndicator } from "../../ui";
 import ActivityImage from "./activity-image";
+import type { PlaceSchema } from "~/lib/types";
 
 type EventOverlayProps = {
-  event: ActivityEventSchema;
+  event: PlaceSchema;
   selectCount: number;
   hoverShadow?: boolean;
 };
@@ -35,7 +35,7 @@ export const ActivityOverlay = memo(function ActivityOverlay({
         {/* Name */}
         <div className="relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
           <div ref={scrollRef} className="w-full select-none">
-            {event.activity.name}
+            {event.name}
             <ScrollIndicator
               scrollRef={scrollRef}
               className={cn(selectCount > 0 && "from-kolumblue-200")}

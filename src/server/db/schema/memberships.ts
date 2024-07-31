@@ -20,7 +20,7 @@ export const memberships = pgTable(
       .references(() => trips.id, { onDelete: "cascade" })
       .notNull(),
     permissions: integer("permissions").notNull(),
-    tripPosition: smallint("trip_position").notNull(),
+    sortIndex: smallint("sort_index").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .$onUpdateFn(() => new Date())

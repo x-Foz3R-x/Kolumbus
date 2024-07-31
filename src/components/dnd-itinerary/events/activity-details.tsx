@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import type { ActivityEventSchema } from "~/lib/validations/event";
+import type { ActivityEventSchema } from "~/lib/validations/place";
 import { EASING } from "~/lib/motion";
 import { Floating } from "~/components/ui/floating";
 import { ActivityDetailsContent } from "./activity-details-content";

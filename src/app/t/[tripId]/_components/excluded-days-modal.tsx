@@ -2,7 +2,7 @@ import { memo, useRef } from "react";
 import { format } from "date-fns";
 
 import type { DaySchema } from "~/lib/validations/trip";
-import type { ActivityEventSchema } from "~/lib/validations/event";
+import type { ActivityEventSchema } from "~/lib/validations/place";
 
 import { ActivityOverlay } from "~/components/dnd-itinerary/events";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";

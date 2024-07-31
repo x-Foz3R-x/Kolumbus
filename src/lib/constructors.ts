@@ -1,10 +1,10 @@
 import { add } from "date-fns";
 
 import { formatDate } from "./utils";
+
 import type { Trip } from "./validations/trip";
 import type { Membership } from "./validations/membership";
-import type { ActivityEventSchema, Event, EventTypes } from "./validations/event";
-import type { Currency } from "./validations/db";
+import type { Place } from "./validations/place";
 
 export function constructTrip(data: {
   id: string;
@@ -12,19 +12,17 @@ export function constructTrip(data: {
   name?: string;
   startDate?: string;
   endDate?: string;
-  image?: string;
-  tierLevel?: number;
+  imageUrl?: string;
   inviteCode?: string;
   inviteCreatedAt?: Date;
 }): Trip {
   return {
     id: data.id,
     ownerId: data.ownerId,
-    name: data.name ?? "New Trip",
+    name: data.name ?? "Trip to ...",
     startDate: data.startDate ?? formatDate(new Date()),
     endDate: data.endDate ?? formatDate(add(new Date(), { days: 4 })),
-    image: data.image ?? null,
-    tierLevel: data.tierLevel ?? 0,
+    imageUrl: data.imageUrl ?? null,
     inviteCode: data.inviteCode ?? null,
     inviteCreatedAt: data.inviteCreatedAt ?? null,
     createdAt: new Date(),
@@ -41,78 +39,50 @@ export function constructMembership(data: {
   return {
     userId: data.userId,
     tripId: data.tripId,
-    tripPosition: data.tripPosition,
+    sortIndex: data.tripPosition,
     permissions: data.permissions ?? 0,
     updatedAt: new Date(),
     createdAt: new Date(),
   };
 }
 
-export function constructEvent(event: {
+export function constructPlace(place: {
   id: string;
   tripId: string;
-  date: string;
-  position: number;
-  type: EventTypes;
+  googleId?: string;
+  name?: string;
+  address?: string;
+  startTime?: string;
+  endTime?: string;
+  phoneNumber?: string;
+  cost?: string;
+  website?: string;
+  note?: string;
+  imageUrl?: string;
+  dayIndex: number;
+  sortIndex: number;
   createdBy: string;
-}): Event {
+}): Place {
   return {
-    id: event.id,
-    tripId: event.tripId,
-    date: event.date,
-    position: event.position,
-    type: event.type,
-    createdBy: event.createdBy,
-    updatedBy: event.createdBy,
+    id: place.id,
+    tripId: place.tripId,
+    googleId: place.googleId ?? null,
+
+    name: place.name ?? null,
+    address: place.address ?? null,
+    startTime: place.startTime ?? null,
+    endTime: place.endTime ?? null,
+    phoneNumber: place.phoneNumber ?? null,
+    cost: place.cost ?? "0",
+    website: place.website ?? null,
+    note: place.note ?? null,
+    imageUrl: place.imageUrl ?? null,
+
+    dayIndex: place.dayIndex,
+    sortIndex: place.sortIndex,
+    createdBy: place.createdBy,
+    updatedBy: place.createdBy,
     createdAt: new Date(),
     updatedAt: new Date(),
-  };
-}
-
-export function constructActivityEvent(event: {
-  id: string;
-  tripId: string;
-  date: string;
-  position: number;
-  createdBy: string;
-
-  activity: {
-    id: string;
-    placeId?: string;
-    name?: string;
-    startTime?: string;
-    endTime?: string;
-    openingHours?: { day: number; open: string; close?: string }[];
-    address?: string;
-    phoneNumber?: string;
-    website?: string;
-    cost?: string;
-    currency?: Currency;
-    images?: string[];
-    imageIndex?: number;
-    note?: string;
-    url?: string;
-  };
-}): ActivityEventSchema {
-  return {
-    ...constructEvent({ ...event, type: "ACTIVITY" }),
-    activity: {
-      id: event.activity.id,
-      eventId: event.id,
-      placeId: event.activity.placeId ?? null,
-      name: event.activity.name ?? "",
-      startTime: event.activity.startTime ?? null,
-      endTime: event.activity.endTime ?? null,
-      openingHours: event.activity.openingHours ?? [],
-      address: event.activity.address ?? null,
-      phoneNumber: event.activity.phoneNumber ?? null,
-      website: event.activity.website ?? null,
-      cost: event.activity.cost ?? "0",
-      currency: event.activity.currency ?? "USD",
-      images: event.activity.images ?? [],
-      imageIndex: event.activity.imageIndex ?? 0,
-      note: event.activity.note ?? null,
-      url: event.activity.url ?? null,
-    },
   };
 }

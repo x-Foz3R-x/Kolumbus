@@ -7,8 +7,8 @@ import { EASING } from "~/lib/motion";
 import { cn, os } from "~/lib/utils";
 
 import { Button, Icons, Input, ScrollIndicator, TextArea } from "~/components/ui";
-import type { ActivityEventSchema } from "~/lib/validations/event";
 import ActivityImage from "./activity-image";
+import { PlaceSchema } from "~/lib/types";
 
 // * test/proposal - render activity as the trigger in triggerProps instead of a span
 
@@ -21,7 +21,7 @@ import ActivityImage from "./activity-image";
 // todo - way to upload photo/link to change/remove activity photo and change image index in array
 
 type ActivityDetailsProps = {
-  event: ActivityEventSchema;
+  event: PlaceSchema;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   detailsRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -40,12 +40,12 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
   const [details, setDetails, { initialValue, canUndo, canRedo, undo, redo, handleShortcut }] =
     useHistoryState(
       {
-        name: event.activity.name,
-        address: event.activity.address,
-        phoneNumber: event.activity.phoneNumber,
-        cost: event.activity.cost,
-        website: event.activity.website,
-        note: event.activity.note,
+        name: event.name,
+        address: event.address,
+        phoneNumber: event.phoneNumber,
+        cost: event.cost,
+        website: event.website,
+        note: event.note,
       },
       { keepInitial: true },
     );
@@ -103,7 +103,7 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
           ref={inputScrollRef}
           name="activity name"
           placeholder="name"
-          value={details.name}
+          value={details.name ?? ""}
           onUpdate={(e) => handleUpdate({ name: e.target.value })}
           onInput={(e) => handleChange({ name: e.currentTarget.value })}
           variant="unset"
@@ -317,7 +317,7 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
         </Button>
 
         {/* Google Maps */}
-        {!!event.activity.url && (
+        {/* {!!event.activity.url && (
           <Button
             tabIndex={-1}
             variant="scale"
@@ -334,7 +334,7 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
               <Icons.googleMapsIcon className="h-4 w-full scale-100" />
             </Link>
           </Button>
-        )}
+        )} */}
 
         {/* Delete */}
         <Button

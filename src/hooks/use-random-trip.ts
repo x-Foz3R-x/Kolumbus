@@ -3,7 +3,7 @@ import { add, getDayOfYear, getMonth, getWeekOfMonth, getYear } from "date-fns";
 
 import useHistoryState from "./use-history-state";
 import { formatDate } from "~/lib/utils";
-import type { EventSchema, ItinerarySchema } from "~/lib/types";
+import type { PlaceSchema, ItinerarySchema } from "~/lib/types";
 
 import itineraries from "~/assets/itineraries.json";
 
@@ -17,9 +17,9 @@ export default function useRandomTrip(algorithm: Algorithm, customItineraries?: 
           startDate: formatDate(new Date()),
           endDate: formatDate(new Date()),
           itinerary: [
-            { id: "d0", date: "2004-03-08", events: [] },
-            { id: "d1", date: "2004-03-09", events: [] },
-            { id: "d2", date: "2004-03-10", events: [] },
+            { id: "d0", date: "2004-03-08", places: [] },
+            { id: "d1", date: "2004-03-09", places: [] },
+            { id: "d2", date: "2004-03-10", places: [] },
           ],
         }
       : generateTrip({ algorithm: "by-day", customItineraries }),
@@ -70,44 +70,44 @@ function generateTrip(props: {
   const startDate = props.startDate ?? formatDate(add(new Date(), { days: startDateIndex }));
   const endDate = formatDate(add(new Date(startDate), { days: itinerary.length - 1 }));
 
-  const eventCountTarget = itinerary.length + 1;
-  const multiEventDays = itinerary.filter((day) => day.events.length > 1);
-  const requiredDaysCount = eventCountTarget - itinerary.length; // count of days that need two events
+  const placeCountTarget = itinerary.length + 1;
+  const multiPlacesDays = itinerary.filter((day) => day.places.length > 1);
+  const requiredDaysCount = placeCountTarget - itinerary.length; // count of days that need two places
   const pickedDays: string[] = [];
 
   let attempt = 0;
-  // Pick days that will have two events, ensuring each picked day is unique
+  // Pick days that will have two places, ensuring each picked day is unique
   while (
     pickedDays.length < requiredDaysCount &&
-    pickedDays.length < multiEventDays.length &&
+    pickedDays.length < multiPlacesDays.length &&
     attempt < maxAttempts
   ) {
-    const dayIndex = getRandomValue(props.algorithm, multiEventDays.length, attempt);
-    const dayId = multiEventDays[dayIndex]!.id;
+    const dayIndex = getRandomValue(props.algorithm, multiPlacesDays.length, attempt);
+    const dayId = multiPlacesDays[dayIndex]!.id;
     if (!pickedDays.includes(dayId)) pickedDays.push(dayId);
     if (props.algorithm === "by-day") attempt++;
   }
 
-  // Construct the itinerary with randomized events for each day
+  // Construct the itinerary with randomized places for each day
   const generatedItinerary = itinerary.map((day, index) => {
     day = {
-      ...day,
       id: `d${index}`,
       date: formatDate(add(new Date(startDate), { days: index })),
+      places: day.places,
     };
-    const eventsToPick = pickedDays.includes(day.id) ? 2 : 1;
-    const events: EventSchema[] = [];
+    const placesToPick = pickedDays.includes(day.id) ? 2 : 1;
+    const places: PlaceSchema[] = [];
 
     let attempt = 0;
-    // Randomly select unique events for the day until the required number of events is reached
-    while (events.length < eventsToPick && attempt < maxAttempts) {
-      const randomEventIndex = getRandomValue(props.algorithm, day.events.length, attempt);
-      const event = { ...day.events[randomEventIndex]!, date: day.date, position: events.length };
-      if (!events.some((e) => e.id === event.id)) events.push(event);
+    // Randomly select unique places for the day until the required number of places is reached
+    while (places.length < placesToPick && attempt < maxAttempts) {
+      const randomPlaceIndex = getRandomValue(props.algorithm, day.places.length, attempt);
+      const place = { ...day.places[randomPlaceIndex]!, position: places.length };
+      if (!places.some((e) => e.id === place.id)) places.push(place);
       if (props.algorithm === "by-day") attempt++;
     }
 
-    return { ...day, events };
+    return { ...day, places };
   });
 
   return { startDate, endDate, itinerary: generatedItinerary };

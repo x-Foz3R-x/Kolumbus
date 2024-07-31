@@ -9,9 +9,9 @@ import { cn, createId } from "~/lib/utils";
 import { Button, Icons, Spinner } from "../ui";
 import { Floating } from "../ui/floating/floating";
 import { Combobox } from "../ui/combobox";
-import { constructActivityEvent } from "~/lib/constructors";
 import { toastHandler } from "~/lib/trpc";
 import { FieldsGroup } from "~/lib/validations/google";
+import { constructPlace } from "~/lib/constructors";
 
 const ACTIVITY_WIDTH = 160;
 const GAP_WIDTH = 8;
@@ -34,7 +34,7 @@ export const EventComposer = memo(function EventComposer({
   dayIndex,
   dragging,
 }: EventComposerProps) {
-  const { userId, tripId, createEvent, eventCount, eventLimit } = useDndItineraryContext();
+  const { userId, tripId, createEvent, placeCount, placeLimit } = useDndItineraryContext();
 
   const autocomplete = api.external.googleAutocomplete.useMutation(toastHandler());
   const details = api.external.googleDetails.useMutation(toastHandler());
@@ -49,7 +49,7 @@ export const EventComposer = memo(function EventComposer({
   const activePredictionRef = useRef<Prediction | null>(null);
 
   const handleChange = async (value: string) => {
-    if (eventCount >= eventLimit) return;
+    if (placeCount >= placeLimit) return;
 
     setLoading(true);
     autocomplete.mutate(
@@ -86,23 +86,22 @@ export const EventComposer = memo(function EventComposer({
   };
 
   const handleAdd = () => {
-    if (eventCount >= eventLimit) return;
+    if (placeCount >= placeLimit) return;
 
     const prediction = activePredictionRef.current;
-    const event = constructActivityEvent({
+    const place = constructPlace({
       id: createId(),
       tripId,
-      date: day.date,
-      position: day.events.length,
+      dayIndex: dayIndex,
+      sortIndex: day.places.length,
       createdBy: userId,
-      activity: { id: createId() },
     });
 
     if (prediction === null) {
-      event.activity.name = inputValue;
-      createEvent(event, dayIndex, day.events.length);
+      place.name = inputValue;
+      createEvent(place, dayIndex, day.places.length);
     } else if (prediction.placeId) {
-      event.activity.placeId = prediction.placeId;
+      place.googleId = prediction.placeId;
       details.mutate(
         {
           place_id: prediction.placeId,
@@ -111,30 +110,21 @@ export const EventComposer = memo(function EventComposer({
         },
         {
           onSuccess(data) {
-            const place = data.result;
+            const result = data.result;
 
-            event.activity.name = place.name ?? event.activity.name;
-            event.activity.images =
-              place.photos?.map((photo) => photo.photo_reference) ?? event.activity.images;
-            event.activity.address = place.formatted_address ?? event.activity.address;
-            event.activity.phoneNumber =
-              place.international_phone_number ?? event.activity.phoneNumber;
-            event.activity.url = place.url ?? event.activity.url;
-            event.activity.website = place.website ?? event.activity.website;
-            event.activity.openingHours =
-              place.opening_hours?.periods?.map((period) => ({
-                day: period.open.day,
-                open: period.open.time,
-                close: period.close?.time,
-              })) ?? event.activity.openingHours;
+            place.name = result.name ?? place.name;
+            place.imageUrl = result.photos?.[0]?.photo_reference ?? place.imageUrl;
+            place.address = result.formatted_address ?? place.address;
+            place.phoneNumber = result.international_phone_number ?? place.phoneNumber;
+            place.website = result.website ?? place.website;
 
-            createEvent(event, dayIndex, day.events.length);
+            createEvent(place, dayIndex, day.places.length);
           },
         },
       );
     } else {
-      event.activity.name = prediction.value;
-      createEvent(event, dayIndex, day.events.length);
+      place.name = prediction.value;
+      createEvent(place, dayIndex, day.places.length);
     }
 
     setIsOpen(false);
@@ -195,7 +185,7 @@ export const EventComposer = memo(function EventComposer({
         ),
         animate: {
           opacity: isOpen ? 0 : 1,
-          left: day.events.length * (ACTIVITY_WIDTH + GAP_WIDTH),
+          left: day.places.length * (ACTIVITY_WIDTH + GAP_WIDTH),
           width: isOpen ? "312px" : "32px",
           pointerEvents: isOpen ? "none" : "auto",
         },

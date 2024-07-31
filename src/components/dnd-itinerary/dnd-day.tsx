@@ -21,7 +21,7 @@ type DndDayProps = {
   children?: React.ReactNode;
 };
 const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
-  const { eventCount, eventLimit } = useDndItineraryContext();
+  const { placeCount, placeLimit } = useDndItineraryContext();
 
   const {
     setNodeRef,
@@ -34,7 +34,7 @@ const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
     transform,
   } = useSortable({
     id: day.id,
-    data: { type: "day", dayIndex },
+    data: { type: "list", listIndex: dayIndex },
     animateLayoutChanges: (args) =>
       args.isSorting || args.wasDragging ? defaultAnimateLayoutChanges(args) : true,
   });
@@ -66,7 +66,7 @@ const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
           <ul className="relative mr-4 mt-5 flex h-28 w-full min-w-40 list-none gap-2">
             {children}
 
-            {eventCount < eventLimit && (
+            {placeCount < placeLimit && (
               <>
                 <EventComposer day={day} dayIndex={dayIndex} dragging={!!active?.id} />
 

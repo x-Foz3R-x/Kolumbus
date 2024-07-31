@@ -1,10 +1,9 @@
 import { relations } from "drizzle-orm";
-import { index, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
+import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { createId } from "~/lib/utils";
 
-import { memberships } from "./memberships";
-import { events } from "./events";
+import { memberships, places } from "./";
 
 export const trips = pgTable(
   "trips",
@@ -14,10 +13,10 @@ export const trips = pgTable(
       .primaryKey(),
     ownerId: text("owner_id").notNull(),
     name: text("name").notNull(),
-    image: text("image"),
     startDate: text("start_date").notNull(),
     endDate: text("end_date").notNull(),
-    tierLevel: smallint("tier_level").default(0).notNull(),
+    // defaultCurrency: enum("default_currency", ARRAY).notNull(),
+    imageUrl: text("image_url"),
     inviteCode: text("invite_code").unique(),
     inviteCreatedAt: timestamp("invite_created_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -31,7 +30,7 @@ export const trips = pgTable(
 
 export const tripsRelations = relations(trips, ({ many }) => ({
   memberships: many(memberships),
-  events: many(events),
+  places: many(places),
 }));
 
 export const selectTripSchema = createSelectSchema(trips);

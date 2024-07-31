@@ -21,22 +21,11 @@ import {
   getTripMemberCount,
   isUserMemberOfTrip,
 } from "~/server/queries";
-import {
-  activities,
-  events,
-  flights,
-  memberships,
-  transportations,
-  trips,
-} from "~/server/db/schema";
-
-type NewActivity = typeof activities.$inferInsert;
-type NewTransportation = typeof transportations.$inferInsert;
-type NewFlight = typeof flights.$inferInsert;
+import { memberships, places, trips } from "~/server/db/schema";
 
 export const tripRouter = createTRPCRouter({
   create: protectedProcedure.input(createTripSchema).mutation(async ({ ctx, input }) => {
-    const { position, ...trip } = input;
+    const { sortIndex, ...trip } = input;
 
     await enforceRateLimit(ctx.user.id);
     await ctx.db.transaction(async (tx) => {
@@ -45,7 +34,7 @@ export const tripRouter = createTRPCRouter({
       await tx.insert(memberships).values({
         tripId: trip.id,
         userId: ctx.user.id,
-        tripPosition: position,
+        sortIndex,
         permissions: -1,
       });
     });
@@ -67,16 +56,11 @@ export const tripRouter = createTRPCRouter({
         columns: { id: false, inviteCode: false, updatedAt: false, createdAt: false },
         where: and(eq(trips.ownerId, ctx.user.id), eq(trips.id, id)),
         with: {
-          events: {
+          places: {
             columns: { tripId: false, updatedAt: false, createdAt: false },
-            with: {
-              activity: { columns: { id: false, eventId: false } },
-              transportation: { columns: { id: false, eventId: false } },
-              flight: { columns: { id: false, eventId: false } },
-            },
           },
           memberships: {
-            columns: { tripPosition: true },
+            columns: { sortIndex: true },
             where: eq(memberships.userId, ctx.user.id),
           },
         },
@@ -93,12 +77,12 @@ export const tripRouter = createTRPCRouter({
       // Increment the trip position of the user's other trips in memberships table
       await tx
         .update(memberships)
-        .set({ tripPosition: sql`"trip_position" + 1` })
+        .set({ sortIndex: sql`"trip_position" + 1` })
         .where(
           and(
             eq(memberships.userId, ctx.user.id),
             eq(memberships.permissions, -1),
-            gt(memberships.tripPosition, originalTrip.memberships[0]!.tripPosition),
+            gt(memberships.sortIndex, originalTrip.memberships[0]!.sortIndex),
           ),
         );
 
@@ -106,54 +90,17 @@ export const tripRouter = createTRPCRouter({
       await tx.insert(memberships).values({
         tripId: duplicateId,
         userId: ctx.user.id,
-        tripPosition: originalTrip.memberships[0]!.tripPosition + 1,
+        sortIndex: originalTrip.memberships[0]!.sortIndex + 1,
         permissions: -1,
       });
 
-      if (originalTrip.events.length > 0) {
+      if (originalTrip.places.length > 0) {
         // Insert the duplicated events
-        const duplicatedEvents = await tx
-          .insert(events)
+        await tx
+          .insert(places)
           .values(
-            originalTrip.events.map((event) => ({ ...event, id: createId(), tripId: duplicateId })),
-          )
-          .returning();
-
-        const activitiesToInsert: NewActivity[] = [];
-        const transportationsToInsert: NewTransportation[] = [];
-        const flightsToInsert: NewFlight[] = [];
-
-        // Push activities, transportations, and flights for the duplicated events into their respective arrays
-        duplicatedEvents.map((event) => {
-          const originalEvent = originalTrip.events.find(
-            (e) => e.date === event.date && e.position === event.position && e.type === event.type,
+            originalTrip.places.map((place) => ({ ...place, id: createId(), tripId: duplicateId })),
           );
-
-          if (!originalEvent) return;
-
-          if (originalEvent.type === "ACTIVITY") {
-            activitiesToInsert.push({ ...originalEvent.activity, eventId: event.id });
-          } else if (originalEvent.type === "TRANSPORTATION") {
-            transportationsToInsert.push({ ...originalEvent.transportation, eventId: event.id });
-          } else if (originalEvent.type === "FLIGHT") {
-            flightsToInsert.push({ ...originalEvent.flight, eventId: event.id });
-          }
-        });
-
-        if (activitiesToInsert.length > 0) {
-          // Insert activities for the duplicated events
-          await tx.insert(activities).values(activitiesToInsert);
-        }
-
-        if (transportationsToInsert.length > 0) {
-          // Insert transportations for the duplicated events
-          await tx.insert(transportations).values(transportationsToInsert);
-        }
-
-        if (flightsToInsert.length > 0) {
-          // Insert flights for the duplicated events
-          await tx.insert(flights).values(flightsToInsert);
-        }
       }
     });
   }),
@@ -165,10 +112,7 @@ export const tripRouter = createTRPCRouter({
           columns: { userId: true, permissions: true, createdAt: true },
           orderBy: (memberships, { asc }) => asc(memberships.createdAt),
         },
-        events: {
-          orderBy: (events, { asc }) => asc(events.position),
-          with: { activity: true, transportation: true, flight: true },
-        },
+        places: { orderBy: (events, { asc }) => asc(events.sortIndex) },
       },
     });
 
@@ -215,7 +159,7 @@ export const tripRouter = createTRPCRouter({
 
     await ctx.db.transaction(async (tx) => {
       const membership = await tx.query.memberships.findFirst({
-        columns: { permissions: true, tripPosition: true },
+        columns: { permissions: true, sortIndex: true },
         where: and(eq(memberships.userId, ctx.user.id), eq(memberships.tripId, tripId)),
       });
 
@@ -232,12 +176,12 @@ export const tripRouter = createTRPCRouter({
 
       await tx
         .update(memberships)
-        .set({ tripPosition: sql`"trip_position" - 1` })
+        .set({ sortIndex: sql`"trip_position" - 1` })
         .where(
           and(
             eq(memberships.userId, ctx.user.id),
             eq(memberships.permissions, -1),
-            gt(memberships.tripPosition, membership.tripPosition),
+            gt(memberships.sortIndex, membership.sortIndex),
           ),
         );
       await tx.delete(trips).where(and(eq(trips.ownerId, ctx.user.id), eq(trips.id, tripId)));
@@ -268,7 +212,7 @@ export const tripRouter = createTRPCRouter({
           name: true,
           startDate: true,
           endDate: true,
-          image: true,
+          imageUrl: true,
           inviteCode: true,
         },
         where: eq(trips.inviteCode, inviteCode),
@@ -288,7 +232,7 @@ export const tripRouter = createTRPCRouter({
         name: trip.name,
         startDate: trip.startDate,
         endDate: trip.endDate,
-        image: trip.image,
+        imageUrl: trip.imageUrl,
         memberCount,
         isMember,
       };
@@ -333,7 +277,7 @@ export const tripRouter = createTRPCRouter({
       await tx.insert(memberships).values({
         tripId: tripId,
         userId: ctx.user.id,
-        tripPosition: sharedMembershipsCount,
+        sortIndex: sharedMembershipsCount,
         permissions: 801,
       });
     });
@@ -349,7 +293,7 @@ export const tripRouter = createTRPCRouter({
 
     await ctx.db.transaction(async (tx) => {
       const membership = await tx.query.memberships.findFirst({
-        columns: { permissions: true, tripPosition: true },
+        columns: { permissions: true, sortIndex: true },
         where: and(eq(memberships.userId, ctx.user.id), eq(memberships.tripId, tripId)),
       });
       if (!membership) {
@@ -365,12 +309,12 @@ export const tripRouter = createTRPCRouter({
 
       await tx
         .update(memberships)
-        .set({ tripPosition: sql`"trip_position" - 1` })
+        .set({ sortIndex: sql`"trip_position" - 1` })
         .where(
           and(
             eq(memberships.userId, ctx.user.id),
             ne(memberships.permissions, -1),
-            gt(memberships.tripPosition, membership.tripPosition),
+            gt(memberships.sortIndex, membership.sortIndex),
           ),
         );
       await tx

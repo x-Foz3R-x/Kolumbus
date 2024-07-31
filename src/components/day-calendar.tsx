@@ -1,15 +1,22 @@
 import { isValidElement, memo, useMemo } from "react";
-import { format, getDay, isToday } from "date-fns";
+import { format, getDay, isToday, add } from "date-fns";
 import { cn } from "~/lib/utils";
 
 type Props = {
-  date: string | Date;
+  date: string | Date | { startDate: string | Date; index: number };
   header: string | React.ReactNode;
   className?: string | { container?: string; header?: string; body?: string };
 };
 export const DayCalendar = memo(function ItineraryCalendar({ date, header, className }: Props) {
-  const d = useMemo(() => new Date(date), [date]);
-  const isDateToday = useMemo(() => isToday(d), [d]);
+  const currentDate = useMemo(() => {
+    console.log(date, typeof date, date instanceof Date);
+    if (typeof date === "string") return new Date(date);
+    if (date instanceof Date) return date;
+
+    const { startDate, index } = date;
+    return add(new Date(startDate), { days: index });
+  }, [date]);
+  const isDateToday = useMemo(() => isToday(currentDate), [currentDate]);
 
   const containerClassName = typeof className === "string" ? className : className?.container;
   const headerClassName = typeof className === "string" ? undefined : className?.header;
@@ -40,7 +47,9 @@ export const DayCalendar = memo(function ItineraryCalendar({ date, header, class
         )}
       >
         {/* Month & Year */}
-        <div className="text-sm leading-[14px] text-gray-600">{format(d, "MMM yyyy")}</div>
+        <div className="text-sm leading-[14px] text-gray-600">
+          {format(currentDate, "MMM yyyy")}
+        </div>
 
         {/* Date */}
         <div
@@ -49,13 +58,13 @@ export const DayCalendar = memo(function ItineraryCalendar({ date, header, class
             isDateToday && "text-kolumblue-500",
           )}
         >
-          {format(d, "d")}
+          {format(currentDate, "d")}
         </div>
 
         {/* Day of Week Indicator */}
         <div className="flex select-none font-inconsolata text-sm">
           {["M", "T", "W", "T", "F", "S", "S"].map((dayOfWeek, i) => {
-            const isCurrentDay = (getDay(d) + 6) % 7 === i;
+            const isCurrentDay = (getDay(currentDate) + 6) % 7 === i;
             const isWeekend = i === 5 || i === 6;
 
             return (

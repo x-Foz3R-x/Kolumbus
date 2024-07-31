@@ -2,13 +2,13 @@ import { memo, useState } from "react";
 import { FloatingDelayGroup } from "@floating-ui/react";
 
 import { cn, os } from "~/lib/utils";
-import { Event } from "~/types";
+import type { PlaceSchema } from "~/lib/types";
 
 import { Button, Divider, Icons } from "~/components/ui";
 import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
 
 type ActivityOverlayProps = {
-  activity: Event;
+  place: PlaceSchema;
   disable: boolean;
   onOpen: () => void;
   onSelect: () => void;
@@ -16,7 +16,7 @@ type ActivityOverlayProps = {
   onDelete: () => void;
 };
 export const ActivityUIOverlay = memo(function ActivityOverlay({
-  activity,
+  place,
   disable,
   onOpen: handleOpen,
   onSelect: handleSelect,
@@ -82,19 +82,19 @@ export const ActivityUIOverlay = memo(function ActivityOverlay({
           </MenuOption>
           <MenuOption
             label="Copy Address"
-            onClick={() => activity.address && navigator.clipboard.writeText(activity.address)}
+            onClick={() => place.address && navigator.clipboard.writeText(place.address)}
           >
             <Icons.clipboardPin className="h-4 w-4" />
             Copy Address
           </MenuOption>
 
-          <MenuLink label="Google Maps" href={activity.url} target="_blank">
+          {/* <MenuLink label="Google Maps" href={place.url} target="_blank">
             <Icons.googleMapsIcon className="h-4 w-4" />
             <span>
               <Icons.googleMapsText className="fill-gray-650 mr-1 inline h-[14.5px] w-20" />
               <Icons.arrowTopRight className="mb-2 inline h-1.5" />
             </span>
-          </MenuLink>
+          </MenuLink> */}
 
           <Divider className="my-1.5 bg-gray-100" />
 

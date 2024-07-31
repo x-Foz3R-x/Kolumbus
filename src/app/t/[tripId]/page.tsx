@@ -13,7 +13,7 @@ export default function Itinerary() {
         tripId={trip.id}
         itinerary={trip.itinerary}
         setItinerary={updateItinerary}
-        eventLimit={100}
+        placeLimit={100}
         dndTrash={permissions.deleteEvents}
       />
     </div>

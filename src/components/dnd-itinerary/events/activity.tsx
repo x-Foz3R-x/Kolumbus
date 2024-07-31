@@ -7,7 +7,6 @@ import { CSS } from "@dnd-kit/utilities";
 import deepEqual from "deep-equal";
 
 import { useDndItineraryContext } from "../dnd-context";
-import type { ActivityEventSchema } from "~/lib/validations/event";
 import { EASING } from "~/lib/motion";
 import { cn, createId } from "~/lib/utils";
 
@@ -15,39 +14,40 @@ import { Button, Icons, ScrollIndicator } from "../../ui";
 import { ActivityUIOverlay } from "./activity-ui-overlay";
 import { ActivityDetails } from "./activity-details";
 import ActivityImage from "./activity-image";
+import type { PlaceSchema } from "~/lib/types";
 
 // todo - Context Menu (like in floating ui react examples)
 
-type DndEventProps = {
-  event: ActivityEventSchema;
+type Props = {
+  place: PlaceSchema;
   dayIndex: number;
   isSelected: boolean;
 };
-export const Activity = memo(function Activity({ event, dayIndex, isSelected }: DndEventProps) {
+export const Activity = memo(function Activity({ place, dayIndex, isSelected }: Props) {
   const { userId, selectEvent, createEvent, updateEvent, deleteEvents } = useDndItineraryContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const { setNodeRef, active, over, isDragging, attributes, listeners, transform, transition } =
     useSortable({
-      id: event.id,
-      data: { type: "event", dayIndex },
+      id: place.id,
+      data: { type: "item", listIndex: dayIndex },
       disabled: isOpen,
       animateLayoutChanges: (args) =>
         args.isSorting || args.wasDragging ? defaultAnimateLayoutChanges(args) : true,
     });
 
-  const cacheRef = useRef(event);
+  const cacheRef = useRef(place);
   const nameScrollRef = useRef<HTMLDivElement>(null);
 
   //#region Handlers
   const handleOpen = () => {
-    cacheRef.current = event;
+    cacheRef.current = place;
     setIsOpen(true);
   };
 
-  const handleClose = (event: ActivityEventSchema) => {
-    if (deepEqual(event, cacheRef.current)) return;
-    updateEvent(event, cacheRef.current, { dayIndex });
+  const handleClose = (place: PlaceSchema) => {
+    if (deepEqual(place, cacheRef.current)) return;
+    updateEvent(place, cacheRef.current, { dayIndex });
   };
 
   const handleClick = (e: MouseEvent) => {
@@ -55,27 +55,28 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
     if (e.target instanceof HTMLButtonElement) return;
     if (e.target instanceof HTMLUListElement) return;
 
-    if (e.ctrlKey || e.metaKey) selectEvent(event.id);
+    if (e.ctrlKey || e.metaKey) selectEvent(place.id);
     else handleOpen();
   };
 
   const handleDuplicate = () => {
-    const position = event.position + 1;
-    const duplicate: ActivityEventSchema = {
-      ...event,
+    const sortIndex = place.sortIndex + 1;
+    const duplicate: PlaceSchema = {
+      ...place,
       id: createId(),
-      position,
+      dayIndex,
+      sortIndex,
       updatedAt: new Date(),
       createdAt: new Date(),
       createdBy: userId,
     };
 
-    createEvent(duplicate, dayIndex, position);
+    createEvent(duplicate, dayIndex, sortIndex);
   };
 
   const handleDelete = () => {
     setIsOpen(false);
-    deleteEvents([event.id]);
+    deleteEvents([place.id]);
   };
   //#endregion
 
@@ -98,7 +99,7 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
       className={cn(
         "group/event relative flex h-28 w-40 origin-top flex-col overflow-hidden rounded-lg border-2 border-white bg-white font-inter shadow-borderXL",
         isSorting && "-z-10 animate-slideIn border-dashed border-gray-300 bg-gray-50",
-        active?.id === event.id && over?.id === "trash" && "hidden",
+        active?.id === place.id && over?.id === "trash" && "hidden",
         isSelected && "border-kolumblue-200 bg-kolumblue-200",
       )}
       initial={{ opacity: 0 }}
@@ -128,23 +129,23 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
       {!isSorting && (
         <>
           <ActivityUIOverlay
-            activity={event}
+            place={place}
             disable={isOpen || !!active}
             onOpen={handleOpen}
-            onSelect={() => selectEvent(event.id)}
+            onSelect={() => selectEvent(place.id)}
             onDuplicate={handleDuplicate}
             onDelete={handleDelete}
           />
 
           {/* Image */}
           <div className="relative h-[82px] flex-shrink-0 overflow-hidden">
-            <ActivityImage event={event} size={82} />
+            <ActivityImage event={place} size={82} />
           </div>
 
           {/* Name */}
           <div className="group relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
             <div ref={nameScrollRef} className="w-full select-none">
-              {event.activity.name}
+              {place.name}
               <ScrollIndicator
                 scrollRef={nameScrollRef}
                 className={isSelected ? "from-kolumblue-200" : ""}
@@ -153,7 +154,7 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
 
             {!active && (
               <Button
-                onClick={() => navigator.clipboard.writeText(event.activity.name)}
+                onClick={() => navigator.clipboard.writeText(place.name ?? "")}
                 variant="unset"
                 size="unset"
                 className="absolute inset-y-0 right-0 z-10 fill-gray-500 px-2 opacity-0 duration-300 ease-kolumb-out hover:fill-gray-800 group-hover:opacity-100 group-hover:ease-kolumb-flow"
@@ -172,7 +173,7 @@ export const Activity = memo(function Activity({ event, dayIndex, isSelected }: 
           </div>
 
           <ActivityDetails
-            event={event}
+            event={place}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             onClose={handleClose}
