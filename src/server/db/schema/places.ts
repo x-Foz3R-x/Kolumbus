@@ -1,17 +1,10 @@
 import { relations } from "drizzle-orm";
 import { index, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+
 import { createId } from "~/lib/utils";
 
 import { trips } from "./trips";
-
-// export const EventTypes = pgEnum("event_type", [
-//   "PLACE",
-//   "CUSTOM_PLACE",
-//   "NOTE",
-//   "CHECKLIST",
-//   "GROUP",
-// ]);
 
 export const places = pgTable(
   "places",
@@ -42,13 +35,13 @@ export const places = pgTable(
       .notNull(),
   },
   (table) => ({
-    eventsTripIdIdx: index("events_trip_id_idx").on(table.tripId),
+    placesTripIdIdx: index("places_trip_id_idx").on(table.tripId),
   }),
 );
 
-export const eventsRelations = relations(places, ({ one }) => ({
+export const placesRelations = relations(places, ({ one }) => ({
   trip: one(trips, { fields: [places.tripId], references: [trips.id] }),
 }));
 
-export const selectEventSchema = createSelectSchema(places);
-export const insertEventSchema = createInsertSchema(places);
+export const selectPlaceSchema = createSelectSchema(places);
+export const insertPlaceSchema = createInsertSchema(places);
