@@ -33,13 +33,13 @@ export function constructTrip(data: {
 export function constructMembership(data: {
   userId: string;
   tripId: string;
-  tripPosition: number;
+  sortIndex: number;
   permissions?: number;
 }): Membership {
   return {
     userId: data.userId,
     tripId: data.tripId,
-    sortIndex: data.tripPosition,
+    sortIndex: data.sortIndex,
     permissions: data.permissions ?? 0,
     updatedAt: new Date(),
     createdAt: new Date(),

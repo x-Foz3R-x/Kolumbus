@@ -7,7 +7,7 @@ export const myMembershipSchema = z.object({
   userId: z.string(),
   tripId: z.string(),
   permissions: z.number(),
-  tripPosition: z.number(),
+  sortIndex: z.number(),
   createdAt: z.date(),
   updatedAt: z.date(),
   trip: z.object({
@@ -15,7 +15,7 @@ export const myMembershipSchema = z.object({
     name: z.string(),
     startDate: z.string(),
     endDate: z.string(),
-    image: z.string(),
+    imageUrl: z.string(),
     eventCount: z.number(),
   }),
 });

@@ -56,8 +56,8 @@ export function LibraryProvider(props: {
   const deleteTrip = api.trip.delete.useMutation(toastHandler());
 
   const handleCreate = useCallback(
-    (name: string, startDate: string, endDate: string, image?: string) => {
-      const position = memberships.length;
+    (name: string, startDate: string, endDate: string, imageUrl?: string) => {
+      const sortIndex = memberships.length;
 
       const trip = constructTrip({
         id: createId(10),
@@ -65,14 +65,14 @@ export function LibraryProvider(props: {
         name,
         startDate,
         endDate,
-        image,
+        imageUrl,
       });
 
       const membership: MyMembershipSchema = {
         ...constructMembership({
           userId: props.userId,
           tripId: trip.id,
-          tripPosition: position,
+          sortIndex,
           permissions: -1,
         }),
         trip: {
@@ -80,7 +80,7 @@ export function LibraryProvider(props: {
           name: trip.name,
           startDate: trip.startDate,
           endDate: trip.endDate,
-          image: trip.image ?? tripFallbackUrl,
+          imageUrl: trip.imageUrl ?? tripFallbackUrl,
           eventCount: 0,
         },
       };
@@ -88,7 +88,7 @@ export function LibraryProvider(props: {
       setMemberships([...memberships, membership]);
       loadingTripIdRef.current = membership.tripId;
       createTrip.mutate(
-        { ...trip, position },
+        { ...trip, sortIndex },
         {
           onError: () => {
             setMemberships(memberships.filter((m) => m.tripId !== loadingTripIdRef.current));
@@ -109,17 +109,17 @@ export function LibraryProvider(props: {
       const duplicatedMembership = structuredClone(originalMembership);
       duplicatedMembership.userId = props.userId;
       duplicatedMembership.tripId = createId(10);
-      duplicatedMembership.tripPosition += 1;
+      duplicatedMembership.sortIndex += 1;
       duplicatedMembership.createdAt = new Date();
       duplicatedMembership.updatedAt = new Date();
 
       // Update tripPosition of memberships and insert the duplicated membership
       const newMemberships = [...memberships].map((membership) =>
-        membership.tripPosition > originalMembership.tripPosition
-          ? { ...membership, tripPosition: membership.tripPosition + 1 }
+        membership.sortIndex > originalMembership.sortIndex
+          ? { ...membership, sortIndex: membership.sortIndex + 1 }
           : membership,
       );
-      newMemberships.splice(duplicatedMembership.tripPosition, 0, duplicatedMembership);
+      newMemberships.splice(duplicatedMembership.sortIndex, 0, duplicatedMembership);
 
       setMemberships(newMemberships);
       loadingTripIdRef.current = duplicatedMembership.tripId;
@@ -137,16 +137,14 @@ export function LibraryProvider(props: {
   );
   const handleLeave = useCallback(
     (id: string) => {
-      const position = sharedMemberships.find(
-        (membership) => membership.tripId === id,
-      )?.tripPosition;
-      if (position === undefined) return;
+      const sortIndex = sharedMemberships.find((membership) => membership.tripId === id)?.sortIndex;
+      if (sortIndex === undefined) return;
 
       const filteredMemberships = sharedMemberships
         .filter((membership) => membership.tripId !== id)
         .map((membership) =>
-          membership.tripPosition > position
-            ? { ...membership, tripPosition: membership.tripPosition - 1 }
+          membership.sortIndex > sortIndex
+            ? { ...membership, tripPosition: membership.sortIndex - 1 }
             : membership,
         );
 
@@ -157,14 +155,14 @@ export function LibraryProvider(props: {
   );
   const handleDelete = useCallback(
     (id: string) => {
-      const position = memberships.find((membership) => membership.tripId === id)?.tripPosition;
-      if (position === undefined) return;
+      const sortIndex = memberships.find((membership) => membership.tripId === id)?.sortIndex;
+      if (sortIndex === undefined) return;
 
       const filteredMemberships = [...memberships]
         .filter((membership) => membership.tripId !== id)
         .map((membership) =>
-          membership.tripPosition > position
-            ? { ...membership, tripPosition: membership.tripPosition - 1 }
+          membership.sortIndex > sortIndex
+            ? { ...membership, tripPosition: membership.sortIndex - 1 }
             : membership,
         );
 

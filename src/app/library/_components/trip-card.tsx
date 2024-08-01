@@ -18,7 +18,7 @@ type TripCardProps = {
     name: string;
     startDate: string;
     endDate: string;
-    image: string;
+    imageUrl: string;
     eventCount: number;
   };
   onDuplicate?: () => void;
@@ -55,7 +55,7 @@ const TripCard = memo(function TripCard({
     >
       <Link href={`/t/${trip.id}`}>
         <div className="relative h-56 w-56 overflow-hidden rounded-b-sm bg-gray-200">
-          <TripImage image={trip.image} size="224px" />
+          <TripImage imageUrl={trip.imageUrl} size="224px" />
         </div>
 
         <div

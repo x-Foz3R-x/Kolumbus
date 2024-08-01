@@ -49,7 +49,7 @@ export default function SwitchTrip(props: { myMemberships: MyMembershipSchema[] 
             className="relative h-12 min-w-64 text-left"
           >
             <div className="relative h-9 w-9 overflow-hidden rounded-md bg-gray-200">
-              <TripImage image={membership.trip.image} size="36px" />
+              <TripImage imageUrl={membership.trip.imageUrl} size="36px" />
             </div>
 
             <div className="flex flex-col font-light leading-tight">
@@ -78,7 +78,7 @@ export default function SwitchTrip(props: { myMemberships: MyMembershipSchema[] 
           >
             <div className="relative h-9 w-9 overflow-hidden rounded-md bg-gray-200">
               <Image
-                src={membership.trip.image ? membership.trip.image : tripFallbackUrl}
+                src={membership.trip.imageUrl ? membership.trip.imageUrl : tripFallbackUrl}
                 alt="Trip photo"
                 sizes="224px"
                 priority

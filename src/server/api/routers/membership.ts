@@ -11,7 +11,7 @@ export const membershipRouter = createTRPCRouter({
         orderBy: (t, { asc }) => asc(t.sortIndex),
         with: {
           trip: {
-            columns: { id: true, name: true, startDate: true, endDate: true, image: true },
+            columns: { id: true, name: true, startDate: true, endDate: true, imageUrl: true },
             with: { places: { limit: 3, where: (t, { like }) => like(t.imageUrl, "ref:%") } },
           },
         },
@@ -24,17 +24,21 @@ export const membershipRouter = createTRPCRouter({
       return memberships.map((membership) => {
         const { places, ...trip } = membership.trip;
 
-        const eventsImages = places.flatMap((place) => place.imageUrl);
+        const placesImageRef = places
+          .map((place) => place.imageUrl?.slice(4)) // Remove 'ref:' from the start of the imageUrl
+          .filter((d) => typeof d === "string");
 
-        const image =
-          trip.image ??
-          (eventsImages.length > 0
-            ? `/api/get-trip-image?imageRefs=${eventsImages.join(",")}`
+        console.log(placesImageRef);
+
+        const imageUrl =
+          trip.imageUrl ??
+          (placesImageRef.length > 0
+            ? `/api/get-trip-image?imageRefs=${placesImageRef.join(",")}`
             : tripFallbackUrl);
 
         const eventCount = tripsEventCount[membership.tripId] ?? 0;
 
-        return { ...membership, trip: { ...trip, image, eventCount } };
+        return { ...membership, trip: { ...trip, imageUrl, eventCount } };
       });
     });
   }),

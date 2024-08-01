@@ -21,7 +21,7 @@ export async function GET(request: Request) {
         <div style={{ display: "flex" }}>
           <img
             src={getUrl(imageRefs[0]!)}
-            alt="img"
+            alt="trip-image"
             style={{ width: pixelSize, height: pixelSize, objectFit: "cover" }}
           />
         </div>
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
         <div style={{ display: "flex" }}>
           <img
             src={getUrl(imageRefs[0]!)}
-            alt="img1"
+            alt="trip-image-1"
             style={{
               width: pixelSize,
               height: pixelSize,
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
           />
           <img
             src={getUrl(imageRefs[1]!)}
-            alt="img2"
+            alt="trip-image-2"
             style={{
               width: pixelSize,
               height: pixelSize,
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
         <div style={{ display: "flex" }}>
           <img
             src={getUrl(imageRefs[1]!)}
-            alt="img2"
+            alt="trip-image-2"
             style={{
               width: pixelSize,
               height: pixelSize,
@@ -91,7 +91,7 @@ export async function GET(request: Request) {
           />
           <img
             src={getUrl(imageRefs[0]!)}
-            alt="img1"
+            alt="trip-image-1"
             style={{
               width: pixelSize,
               height: pixelSize,
@@ -112,7 +112,7 @@ export async function GET(request: Request) {
           />
           <img
             src={getUrl(imageRefs[2]!)}
-            alt="img3"
+            alt="trip-image-3"
             style={{
               width: "100%",
               height: "100%",
