@@ -42,18 +42,19 @@ import { KEYS } from "~/types";
 
 // * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity (notion dnd style)
 
-// todo - optimize the performance when dragging events
-// todo - Multi select events from different days
-// todo - Selecting events with selection rectangle (like in any file manager)
+// todo - optimize the performance when dragging items
+// todo - Multi select items from different days
+// todo - Selecting items with selection rectangle (like in any file manager)
 // todo - Properly done dnd keyboard support (filter tabbable elements, move events with keyboard, etc)
 // todo: Shortcuts:
 // <kbd>Ctrl + Shift + Click</kbd> to select a range of events
-// <kbd>Ctrl + A</kbd> to select all events
+// <kbd>Ctrl + Backspace</kbd> to delete selected events
 // <kbd>Ctrl + X</kbd> to cut selected events
 // <kbd>Ctrl + C</kbd> to copy selected events
 // <kbd>Ctrl + V</kbd> to paste events
+// <kbd>Ctrl + A</kbd> to select all events
 
-type DndItineraryProps = {
+type Props = {
   userId: string;
   tripId: string;
   itinerary: ItinerarySchema;
@@ -76,7 +77,7 @@ export function DndItinerary({
   onEventDeleted,
   dndTrash,
   calendar,
-}: DndItineraryProps) {
+}: Props) {
   const [activeItem, setActiveItem] = useState<DaySchema | PlaceSchema | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 

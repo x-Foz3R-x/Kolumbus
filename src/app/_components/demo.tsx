@@ -10,6 +10,7 @@ import PortalWindow from "~/components/portal-window";
 import { DatePicker } from "~/components/date-picker";
 import { DndItinerary } from "~/components/dnd-itinerary";
 import { Button } from "~/components/ui";
+import { add } from "date-fns";
 
 export default function Demo() {
   const { trip, setTrip, updateItinerary, changes, position, jumpTo, randomise } =
@@ -46,6 +47,7 @@ export default function Demo() {
     const days = differenceInDays(new Date(endDate), new Date(startDate));
     const itinerary = Array.from({ length: days }, (_, index) => ({
       id: `d${index + 1}`,
+      date: formatDate(add(new Date(startDate), { days: index })),
       places: !!trip.itinerary[index]
         ? trip.itinerary[index].places.map((place) => ({
             ...place,
@@ -131,7 +133,6 @@ export default function Demo() {
             userId="guest"
             itinerary={trip.itinerary}
             setItinerary={updateItinerary}
-            startDate={trip.startDate}
             placeLimit={5}
             dndTrash={{ variant: "inset", className: "h-32" }}
             calendar="left-0 mb-0"
