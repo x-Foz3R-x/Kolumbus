@@ -84,7 +84,7 @@ export function DndItinerary({
 
   const placeCount = useMemo(() => itinerary.flatMap((day) => day.places).length, [itinerary]);
 
-  const selectEvent = useCallback(
+  const selectItem = useCallback(
     (id: string) => {
       const areEventsOnSameDay = (id1: string, id2: string) => {
         return itinerary.some(
@@ -118,7 +118,7 @@ export function DndItinerary({
     },
     [itinerary],
   );
-  const createEvent = useCallback(
+  const createItem = useCallback(
     (place: PlaceSchema, dayIndex?: number, index?: number) => {
       const newItinerary = structuredClone(itinerary);
 
@@ -135,12 +135,12 @@ export function DndItinerary({
         });
       }
 
-      setItinerary(newItinerary, `Add place to day ${targetDayIndex + 1}`);
+      setItinerary(newItinerary, "Add place");
       onEventCreated?.(place);
     },
     [tripId, itinerary, setItinerary, onEventCreated, onEventUpdated],
   );
-  const updateEvent = useCallback(
+  const updateItem = useCallback(
     (
       place: PlaceSchema,
       updateData: UpdatePlaceSchema["data"],
@@ -161,40 +161,38 @@ export function DndItinerary({
       place.updatedAt = new Date();
       newItinerary[targetDayIndex]!.places[placeIndex] = place;
 
-      setItinerary(
-        newItinerary,
-        !preventEntry ? entryDescription ?? `Update place in day ${targetDayIndex}` : undefined,
-      );
+      setItinerary(newItinerary, !preventEntry ? entryDescription ?? "Update place" : undefined);
       onEventUpdated?.(place.id, tripId, updateData);
     },
     [tripId, itinerary, setItinerary, onEventUpdated],
   );
-  const deleteEvents = useCallback(
-    (eventIds: string[]) => {
+  const deleteItem = useCallback(
+    (placeId: string | string[]) => {
       const newItinerary = structuredClone(itinerary);
 
       newItinerary.forEach((day) => {
-        if (day.places.some((place) => eventIds.includes(place.id))) {
-          day.places = updateItemsPlacement(filterEventsExcludingIds(day.places, eventIds));
+        if (day.places.some((place) => placeId.includes(place.id))) {
+          day.places = updateItemsPlacement(
+            filterEventsExcludingIds(day.places, typeof placeId === "string" ? [placeId] : placeId),
+          );
         }
       });
 
       const actionDescription =
-        eventIds.length > 1 ? `Delete ${eventIds.length} events` : "Delete event";
+        placeId.length > 1 ? `Delete ${placeId.length} events` : "Delete event";
       setItinerary(newItinerary, actionDescription);
 
-      const ids = eventIds.length > 1 ? eventIds : eventIds[0]!;
+      const ids = placeId.length > 1 ? placeId : placeId[0]!;
       onEventDeleted?.(ids, tripId);
     },
     [tripId, itinerary, setItinerary, onEventDeleted],
   );
 
   //#region Drag handlers
-  // handleDragStart - handles setting active id and item and cache itinerary
-  // handleDragOver - handles drag between days and drag of events between days
-  // handleDragEnd - handles drag to trash and drag of events in the same day
+  // handleDragStart - setts active item
+  // handleDragOver - handles drag of days and drag of items between days
+  // handleDragEnd - handles drag to trash and drag of items in the same day
   // handleDragCancel - handles resetting itinerary to the last history entry
-
   type DragData = { type: "list" | "item"; listIndex: number } | undefined;
 
   const handleDragStart = ({ active }: DragStartEvent) => {
@@ -247,22 +245,12 @@ export function DndItinerary({
       [activeDay.date, overDay.date] = [overDay.date, activeDay.date];
 
       // Update the date of the active item
-      if (activeItem) setActiveItem?.({ ...activeItem, dayIndex: overListIndex });
+      if (activeItem) setActiveItem?.({ ...activeItem, date: activeDay.date });
 
       setItinerary(newItinerary);
       // setSelectedIds([]);
       return;
     }
-
-    // // Handle dragging of a day within the itinerary.
-    // if (activeType === "list") {
-    //   const newItinerary = arrayMove(itinerary, activeListIndex, overListIndex);
-    //   if (activeItem) setActiveItem({ ...activeItem, dayIndex: overListIndex });
-
-    //   setItinerary(newItinerary);
-    //   // setSelectedIds([]);
-    //   return;
-    // }
 
     // Handle dragging of single or multiple events between different days.
     // Skip if dragging is within the same day. Handled in `DragEnd`.
@@ -313,7 +301,7 @@ export function DndItinerary({
 
     // Handle dragging of single or multiple events to the trash.
     if (over.id === "trash" && activeType === "item" && activeItem) {
-      deleteEvents(selectedIds.length ? selectedIds : [active.id as string]);
+      deleteItem(selectedIds.length ? selectedIds : [active.id as string]);
       setActiveItem(null);
       setSelectedIds([]);
       return;
@@ -321,9 +309,9 @@ export function DndItinerary({
 
     // Skip if dragging is not within the same day or if the drag type is a day. Both cases are handled in `DragOver`.
     if (activeListIndex !== overListIndex || activeType === "list" || overType === "list") {
-      let message = "Move event";
+      let message = "Move place";
       if (activeType === "list") message = "Move day";
-      else if (selectedIds.length > 1) message = `Move ${selectedIds.length} events`;
+      else if (selectedIds.length > 1) message = `Move ${selectedIds.length} places`;
 
       setItinerary(itinerary, message);
       setActiveItem(null);
@@ -350,7 +338,7 @@ export function DndItinerary({
     newItinerary[activeListIndex]!.places = updateItemsPlacement(rearrangedEvents);
     setItinerary(
       newItinerary,
-      selectedIds.length > 1 ? `Move ${selectedIds.length} events` : "Move event",
+      selectedIds.length > 1 ? `Move ${selectedIds.length} places` : "Move place",
     );
     setActiveItem(null);
     // syncEvents([activeDay.id]);
@@ -381,7 +369,7 @@ export function DndItinerary({
         return closestCenter({
           ...args,
           droppableContainers: args.droppableContainers.filter(
-            (droppable) => droppable.data.current?.type === "day",
+            (droppable) => droppable.data.current?.type === "list",
           ),
         });
       }
@@ -484,12 +472,12 @@ export function DndItinerary({
       placeCount,
       placeLimit,
 
-      selectEvent,
-      createEvent,
-      updateEvent,
-      deleteEvents,
+      selectEvent: selectItem,
+      createEvent: createItem,
+      updateEvent: updateItem,
+      deleteEvents: deleteItem,
     }),
-    [userId, tripId, placeCount, placeLimit, selectEvent, createEvent, updateEvent, deleteEvents],
+    [userId, tripId, placeCount, placeLimit, selectItem, createItem, updateItem, deleteItem],
   );
 
   return (

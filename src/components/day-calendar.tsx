@@ -9,7 +9,6 @@ type Props = {
 };
 export const DayCalendar = memo(function ItineraryCalendar({ date, header, className }: Props) {
   const currentDate = useMemo(() => {
-    console.log(date, typeof date, date instanceof Date);
     if (typeof date === "string") return new Date(date);
     if (date instanceof Date) return date;
 
