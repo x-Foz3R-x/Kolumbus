@@ -28,8 +28,6 @@ export const membershipRouter = createTRPCRouter({
           .map((place) => place.imageUrl?.slice(4)) // Remove 'ref:' from the start of the imageUrl
           .filter((d) => typeof d === "string");
 
-        console.log(placesImageRef);
-
         const imageUrl =
           trip.imageUrl ??
           (placesImageRef.length > 0

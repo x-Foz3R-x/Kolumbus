@@ -63,7 +63,7 @@ type Props = {
   onEventCreated?: onEventCreated;
   onEventUpdated?: onEventUpdated;
   onEventDeleted?: onEventDeleted;
-  dndTrash?: { variant: "default" | "inset"; className?: string } | true;
+  dndTrash?: { variant: "default" | "inset"; className?: string } | boolean;
   calendar?: string;
 };
 export function DndItinerary({

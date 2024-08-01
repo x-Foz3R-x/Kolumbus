@@ -8,8 +8,6 @@ export default function TripImage({ imageUrl, size }: { imageUrl: string; size: 
 
   const src = imageUrl.startsWith("/") ? `${imageUrl}&size=${parseInt(size) * 2}` : imageUrl;
 
-  console.log(src);
-
   return imageUrl.startsWith("/") || imageUrl.startsWith(tripFallbackUrl) ? (
     // Use the Image component for local or fallback images for optimized loading
     <Image src={src} alt="Trip image" sizes={size} priority fill />

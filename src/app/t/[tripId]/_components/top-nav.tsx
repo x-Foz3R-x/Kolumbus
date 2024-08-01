@@ -85,7 +85,6 @@ export default function TopNav() {
 
   // todo
   const handleDeleteEvents = (startDate: Date, endDate: Date) => {
-    console.log(startDate, endDate);
     updateTripData(startDate, endDate);
     setIsOpenModal(false);
 

@@ -25,7 +25,7 @@ export default async function Layout(props: {
   const user = auth();
   if (!user.userId) return props.children;
 
-  const { events, ...tripData } = await api.trip.get({ id: props.params.tripId });
+  const { places, ...tripData } = await api.trip.get({ id: props.params.tripId });
   const myMemberships = await api.membership.getMy();
 
   const trip = {
@@ -33,7 +33,7 @@ export default async function Layout(props: {
     itinerary: generateItinerary(
       tripData.startDate,
       tripData.endDate,
-      events as unknown as PlaceSchema[],
+      places as unknown as PlaceSchema[],
     ),
   };
 

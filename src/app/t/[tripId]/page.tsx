@@ -3,7 +3,7 @@
 import { useTripContext } from "./_components/trip-provider";
 import { DndItinerary } from "~/components/dnd-itinerary";
 
-export default function Itinerary() {
+export default function Trip() {
   const { userId, trip, permissions, updateItinerary } = useTripContext();
 
   return (
