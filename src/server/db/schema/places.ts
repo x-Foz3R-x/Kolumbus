@@ -27,8 +27,8 @@ export const places = pgTable(
     note: text("note"),
     imageUrl: text("image_url"),
 
-    dayIndex: smallint("day").notNull(),
-    sortIndex: smallint("sort_order").notNull(),
+    dayIndex: smallint("day_index").notNull(),
+    sortIndex: smallint("sort_index").notNull(),
     createdBy: text("created_by").notNull(),
     updatedBy: text("updated_by").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

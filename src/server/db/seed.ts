@@ -8,10 +8,7 @@ import trips from "./seed-data/trips.json";
 import memberships from "./seed-data/memberships.json";
 import places from "./seed-data/places.json";
 
-const connection = postgres(
-  "postgres://postgres.azkhztdwoqyqaqayrdph:lnYoQ6Cum70t5xBy@aws-0-eu-central-1.pooler.supabase.com:6543/postgres",
-  { prepare: false },
-);
+const connection = postgres("db-url", { prepare: false });
 const db = drizzle(connection, { schema });
 
 const main = async () => {
@@ -27,6 +24,7 @@ const main = async () => {
     const end = Date.now();
 
     console.log(`✅ Seed completed in ${end - start}ms`);
+    process.exit();
   } catch (error) {
     console.error("❌ Seed failed");
     console.error(error);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { add } from "date-fns";
 
 import useRandomTrip from "~/hooks/use-random-trip";
 import { cn, differenceInDays, formatDate } from "~/lib/utils";
@@ -10,7 +11,6 @@ import PortalWindow from "~/components/portal-window";
 import { DatePicker } from "~/components/date-picker";
 import { DndItinerary } from "~/components/dnd-itinerary";
 import { Button } from "~/components/ui";
-import { add } from "date-fns";
 
 export default function Demo() {
   const { trip, setTrip, updateItinerary, changes, position, jumpTo, randomise } =

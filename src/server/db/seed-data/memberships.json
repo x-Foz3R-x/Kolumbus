@@ -3,37 +3,37 @@
     "userId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
     "tripId": "YJGg3KxTd0",
     "permissions": -1,
-    "tripPosition": 0
+    "sortIndex": 0
   },
   {
     "userId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
     "tripId": "DNqOiPjFAZ",
     "permissions": -1,
-    "tripPosition": 1
+    "sortIndex": 1
   },
   {
     "userId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
     "tripId": "jBCJuVK7ki",
     "permissions": -1,
-    "tripPosition": 2
+    "sortIndex": 2
   },
   {
     "userId": "user_2V4uEaizT8KUvjti1t9eGfNnsHz",
     "tripId": "BCEwB8Yx14",
     "permissions": 999,
-    "tripPosition": 3
+    "sortIndex": 3
   },
 
   {
     "userId": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB",
     "tripId": "BCEwB8Yx14",
     "permissions": -1,
-    "tripPosition": 0
+    "sortIndex": 0
   },
   {
     "userId": "user_2Z8Yg9wGUtKU0FnD0RVwStm66eB",
     "tripId": "9ghxMu7fAQ",
     "permissions": -1,
-    "tripPosition": 1
+    "sortIndex": 1
   }
 ]
