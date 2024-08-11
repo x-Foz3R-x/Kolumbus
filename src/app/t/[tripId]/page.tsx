@@ -3,8 +3,14 @@
 import { useTripContext } from "./_components/trip-provider";
 import { DndItinerary } from "~/components/dnd-itinerary";
 
+import type { UpdatePlaceSchema } from "~/lib/types";
+
 export default function Trip() {
-  const { userId, trip, permissions, updateItinerary } = useTripContext();
+  const { userId, trip, permissions, updateItinerary, getItineraryEntry } = useTripContext();
+
+  const onPlaceUpdated = (tripId: string, placeId: string, data: UpdatePlaceSchema["data"]) => {
+    console.log("place", placeId, data);
+  };
 
   return (
     <div className="h-screen pl-20 pt-14">
@@ -13,8 +19,10 @@ export default function Trip() {
         tripId={trip.id}
         itinerary={trip.itinerary}
         setItinerary={updateItinerary}
+        getEntry={getItineraryEntry}
         placeLimit={100}
-        dndTrash={permissions.deleteEvents}
+        onPlaceUpdated={onPlaceUpdated}
+        dndTrash={permissions.editItinerary}
       />
     </div>
   );

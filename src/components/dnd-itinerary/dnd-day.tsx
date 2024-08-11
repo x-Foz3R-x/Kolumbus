@@ -63,7 +63,7 @@ const DndDay = memo(({ day, dayIndex, calendar, children }: DndDayProps) => {
           />
 
           {/* Events droppable */}
-          <ul className="relative mr-4 mt-5 flex h-28 w-full min-w-40 list-none gap-2">
+          <ul className="relative mr-5 mt-5 flex h-28 w-full min-w-40 list-none gap-2">
             {children}
 
             {placeCount < placeLimit && (

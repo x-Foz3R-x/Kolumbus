@@ -24,16 +24,14 @@ export enum MemberPermissionFlags {
   // General permissions
   shareInvite = 1 << 0,
   editInvite = 1 << 1,
-  kickMembers = 1 << 2,
-  managePermissions = 1 << 3,
+  editPermissions = 1 << 2,
+  kickMembers = 1 << 3,
 
   // Trip permissions
   editTrip = 1 << 4,
-  addEvents = 1 << 5,
-  editEvents = 1 << 6,
-  deleteEvents = 1 << 7,
-  editOwnEvents = 1 << 8,
-  deleteOwnEvents = 1 << 9,
+  editItinerary = 1 << 5,
+  editBudget = 1 << 6,
+  viewDetails = 1 << 7,
 }
 
 export type Membership = z.infer<typeof membership>;

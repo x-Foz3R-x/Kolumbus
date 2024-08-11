@@ -2,7 +2,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { tripRouter } from "~/server/api/routers/trip";
 import { membershipRouter } from "./routers/membership";
 import { externalRouter } from "./routers/external";
-import { eventRouter } from "./routers/event";
+import { placeRouter } from "./routers/place";
 
 /**
  * This is the primary router for your server.
@@ -12,7 +12,7 @@ import { eventRouter } from "./routers/event";
 export const appRouter = createTRPCRouter({
   trip: tripRouter,
   membership: membershipRouter,
-  event: eventRouter,
+  place: placeRouter,
   external: externalRouter,
 });
 

@@ -26,6 +26,8 @@ type TripContext = {
   permissions: MemberPermissions;
 
   updateItinerary: (itineraryOrIndex: ItinerarySchema | number, desc?: string) => void;
+  getItineraryEntry: (index: number) => ItinerarySchema;
+
   createTrip: (name: string, startDate: string, endDate: string) => void;
   deleteEvent: (event: PlaceSchema) => void;
 };
@@ -45,7 +47,9 @@ export const TripProvider = (props: {
 }) => {
   const router = useRouter();
 
-  const [trip, setTrip, { changes }] = useHistoryState(props.trip, { initialDescription: "Fetch" });
+  const [trip, setTrip, { getEntry }] = useHistoryState(props.trip, {
+    initialDescription: "Fetch",
+  });
   const [myMemberships, setMyMemberships] = useState(props.myMemberships);
 
   const permissions = useMemo(
@@ -58,11 +62,11 @@ export const TripProvider = (props: {
   );
 
   const createTrip = api.trip.create.useMutation(toastHandler("Trip created"));
-  const deleteEvent = api.event.delete.useMutation(toastHandler("Event deleted"));
+  const deleteItem = api.place.delete.useMutation(toastHandler("Item deleted"));
 
   const handleCreate = useCallback(
     (name: string, startDate: string, endDate: string) => {
-      const position = myMemberships.length;
+      const sortIndex = myMemberships.length;
       const trip = constructTrip({
         id: createId(10),
         ownerId: props.userId,
@@ -72,7 +76,7 @@ export const TripProvider = (props: {
       });
 
       createTrip.mutate(
-        { ...trip, position },
+        { ...trip, sortIndex },
         { onError: () => router.refresh(), onSuccess: () => router.push(`/t/${trip.id}`) },
       );
     },
@@ -80,39 +84,35 @@ export const TripProvider = (props: {
   );
 
   const handleEventDelete = useCallback(
-    (event: PlaceSchema) => {
-      if (
-        (event.createdBy === props.userId && !permissions.deleteOwnEvents) ||
-        (event.createdBy !== props.userId && !permissions.deleteEvents)
-      ) {
+    (place: PlaceSchema) => {
+      if (place.createdBy === props.userId && !permissions.editItinerary) {
         return;
       }
 
       const newItinerary = structuredClone(trip.itinerary);
 
-      const dayIndex = newItinerary.findIndex((day) => day.date === event.date);
+      const dayIndex = newItinerary.findIndex((_, index) => index === place.dayIndex);
       if (dayIndex === -1) return;
 
       if (!newItinerary[dayIndex]) return;
-      if (!newItinerary[dayIndex].events[event.position]) return;
+      if (!newItinerary[dayIndex].places[place.sortIndex]) return;
 
-      newItinerary[dayIndex].events.splice(event.position, 1);
-      newItinerary[dayIndex].events.map((event, index) => (event.position = index));
+      newItinerary[dayIndex].places.splice(place.sortIndex, 1);
+      newItinerary[dayIndex].places.map((place, index) => (place.sortIndex = index));
 
       setTrip({ ...trip, itinerary: newItinerary });
 
-      deleteEvent.mutate(
+      deleteItem.mutate(
         {
-          id: event.id,
+          id: place.id,
           tripId: trip.id,
-          date: event.date,
-          position: event.position,
-          createdBy: props.userId,
+          dayIndex,
+          sortIndex: place.sortIndex,
         },
         { onError: () => router.refresh() },
       );
     },
-    [props.userId, trip, setTrip, permissions, deleteEvent, router],
+    [props.userId, trip, setTrip, permissions, deleteItem, router],
   );
 
   const updateItinerary = useCallback(
@@ -126,8 +126,12 @@ export const TripProvider = (props: {
     },
     [trip, setTrip],
   );
-
-  console.log(changes);
+  const getItineraryEntry = useCallback(
+    (index: number) => {
+      return getEntry(index).itinerary;
+    },
+    [getEntry],
+  );
 
   const value = useMemo(
     () => ({
@@ -140,6 +144,8 @@ export const TripProvider = (props: {
       permissions,
 
       updateItinerary,
+      getItineraryEntry,
+
       createTrip: handleCreate,
       deleteEvent: handleEventDelete,
     }),
@@ -150,6 +156,7 @@ export const TripProvider = (props: {
       setTrip,
       myMemberships,
       updateItinerary,
+      getItineraryEntry,
       handleCreate,
       handleEventDelete,
     ],

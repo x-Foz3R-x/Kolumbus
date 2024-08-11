@@ -1,21 +1,30 @@
 import { z } from "zod";
 
 import { selectPlaceSchema as place } from "~/server/db/schema";
-
-export const deletePlaceSchema = z.object({
-  id: z.string().length(16),
-  tripId: z.string().length(10),
-  dayIndex: z.number().int().nonnegative(),
-  sortIndex: z.number().int().nonnegative(),
-  createdBy: z.string().optional(),
-});
+import { placeId, tripId } from ".";
 
 export const placeSchema = place;
 
 export const updatePlaceSchema = z.object({
-  id: z.string().length(16),
-  tripId: z.string().length(10),
+  id: placeId,
+  tripId,
   data: place.partial(),
+});
+
+export const updatePlacementSchema = z.object({
+  id: placeId,
+  tripId,
+  dayIndex: z.number().int().nonnegative(),
+  prevDayIndex: z.number().int().nonnegative(),
+  sortIndex: z.number().int().nonnegative(),
+  prevSortIndex: z.number().int().nonnegative(),
+});
+
+export const deletePlaceSchema = z.object({
+  id: placeId,
+  tripId,
+  dayIndex: z.number().int().nonnegative(),
+  sortIndex: z.number().int().nonnegative(),
 });
 
 export type Place = z.infer<typeof place>;
