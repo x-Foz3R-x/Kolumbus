@@ -28,7 +28,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import type { onEventCreated, onEventDeleted, onPlaceUpdated, onItemMoved } from ".";
+import type { onItemCreate, onItemsDelete, onItemUpdate, onItemsMove } from ".";
 import { DndItineraryContext, type DndItineraryContextProps } from "./dnd-context";
 import { cn } from "~/lib/utils";
 
@@ -65,10 +65,10 @@ type Props = {
   setItinerary: (itineraryOrIndex: ItinerarySchema | number, desc?: string) => void;
   getEntry: (index: number) => ItinerarySchema;
   placeLimit: number;
-  onEventCreated?: onEventCreated;
-  onPlaceUpdated?: onPlaceUpdated;
-  onItemMoved?: onItemMoved;
-  onEventDeleted?: onEventDeleted;
+  onItemCreate?: onItemCreate;
+  onItemUpdate?: onItemUpdate;
+  onItemsMove?: onItemsMove;
+  onItemsDelete?: onItemsDelete;
   dndTrash?: { variant: "default" | "inset"; className?: string } | boolean;
   calendar?: string;
 };
@@ -79,9 +79,10 @@ export function DndItinerary({
   setItinerary,
   getEntry,
   placeLimit,
-  onEventCreated,
-  onPlaceUpdated,
-  onEventDeleted,
+  onItemCreate,
+  onItemUpdate,
+  onItemsMove,
+  onItemsDelete,
   dndTrash,
   calendar,
 }: Props) {
@@ -139,14 +140,14 @@ export function DndItinerary({
       else {
         newItinerary[targetDayIndex]!.places.splice(index, 0, place);
         newItinerary[targetDayIndex]!.places.slice(index).map((place, i) => {
-          onPlaceUpdated?.(place.id, tripId, { sortIndex: index + i });
+          onItemUpdate?.(place.id, tripId, { sortIndex: index + i });
         });
       }
 
       setItinerary(newItinerary, "Add place");
-      onEventCreated?.(place);
+      onItemCreate?.(place);
     },
-    [tripId, itinerary, setItinerary, onEventCreated, onPlaceUpdated],
+    [tripId, itinerary, setItinerary, onItemCreate, onItemUpdate],
   );
   const updateItem = useCallback(
     (
@@ -170,9 +171,9 @@ export function DndItinerary({
       newItinerary[targetDayIndex]!.places[placeIndex] = place;
 
       setItinerary(newItinerary, !preventEntry ? entryDescription ?? "Update place" : undefined);
-      onPlaceUpdated?.(place.id, tripId, updateData);
+      onItemUpdate?.(place.id, tripId, updateData);
     },
-    [tripId, itinerary, setItinerary, onPlaceUpdated],
+    [tripId, itinerary, setItinerary, onItemUpdate],
   );
   const deleteItems = useCallback(
     (placeId: string | string[]) => {
@@ -191,9 +192,9 @@ export function DndItinerary({
       setItinerary(newItinerary, actionDescription);
 
       const ids = placeId.length > 1 ? placeId : placeId[0]!;
-      onEventDeleted?.(ids, tripId);
+      onItemsDelete?.(tripId, ids);
     },
-    [tripId, itinerary, setItinerary, onEventDeleted],
+    [tripId, itinerary, setItinerary, onItemsDelete],
   );
 
   //#region Drag handlers
@@ -712,23 +713,29 @@ export function DndItinerary({
         .filter((day) => affectedListIds.includes(day.id))
         .flatMap((day) => day.places);
     };
-    const extractUnSyncedItems = (affectedPlaces: PlaceSchema[], prevPlaces: PlaceSchema[]) => {
-      return affectedPlaces.filter((place) =>
-        prevPlaces.some(
-          (prevPlace) =>
-            prevPlace.id === place.id &&
-            // Check if the place's dayIndex or sortIndex has changed
-            (place.dayIndex !== prevPlace.dayIndex || place.sortIndex !== prevPlace.sortIndex),
-        ),
-      );
+    const extractUnSyncedItemsChanges = (
+      affectedPlaces: PlaceSchema[],
+      prevPlaces: PlaceSchema[],
+    ) => {
+      return affectedPlaces
+        .filter((place) =>
+          prevPlaces.some(
+            (prevPlace) =>
+              prevPlace.id === place.id &&
+              // Check if the place's dayIndex or sortIndex has changed
+              (place.dayIndex !== prevPlace.dayIndex || place.sortIndex !== prevPlace.sortIndex),
+          ),
+        )
+        .map((place) => ({ id: place.id, dayIndex: place.dayIndex, sortIndex: place.sortIndex }));
     };
 
     const affectedItems = extractItemsFromAffectedLists(newItinerary);
     const prevItems = extractItemsFromAffectedLists(prevItinerary);
-    const unSyncedItems = extractUnSyncedItems(affectedItems, prevItems);
+    const unSyncedItems = extractUnSyncedItemsChanges(affectedItems, prevItems);
 
-    unSyncedItems.forEach((place) =>
-      onPlaceUpdated?.(tripId, place.id, { dayIndex: place.dayIndex, sortIndex: place.sortIndex }),
-    );
+    onItemsMove?.(tripId, unSyncedItems);
+    // unSyncedItems.forEach((place) =>
+    //   onItemsMove?.(tripId, place.id, place.dayIndex, place.sortIndex),
+    // );
   }
 }

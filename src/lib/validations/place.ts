@@ -12,12 +12,14 @@ export const updatePlaceSchema = z.object({
 });
 
 export const updatePlacementSchema = z.object({
-  id: placeId,
   tripId,
-  dayIndex: z.number().int().nonnegative(),
-  prevDayIndex: z.number().int().nonnegative(),
-  sortIndex: z.number().int().nonnegative(),
-  prevSortIndex: z.number().int().nonnegative(),
+  items: z.array(
+    z.object({
+      id: placeId,
+      dayIndex: z.number().int().nonnegative(),
+      sortIndex: z.number().int().nonnegative(),
+    }),
+  ),
 });
 
 export const deletePlaceSchema = z.object({

@@ -32,7 +32,7 @@ export default function TopNav() {
   const daysToDeleteRef = useRef<DaySchema[]>([]);
 
   const updateTripData = (startDate: Date, endDate: Date) => {
-    const events = trip.itinerary.flatMap((day) => day.events);
+    const events = trip.itinerary.flatMap((day) => day.places);
     const itinerary = generateItinerary(startDate, endDate, events);
 
     setTrip(
@@ -72,7 +72,7 @@ export default function TopNav() {
     );
 
     // If there are no events to delete, update the trip and exit (no conflicts).
-    if (daysToDeleteRef.current.flatMap((day) => day.events).length === 0) {
+    if (daysToDeleteRef.current.flatMap((day) => day.places).length === 0) {
       updateTripData(startDate, endDate);
       return;
     }
@@ -90,7 +90,7 @@ export default function TopNav() {
 
     // Delete the events scheduled on the days being deleted.
     daysToDeleteRef.current
-      .flatMap((day) => day.events)
+      .flatMap((day) => day.places)
       .forEach((event) => {
         deleteEvent(event);
         console.log(event.id);
@@ -130,7 +130,6 @@ export default function TopNav() {
             endDate={trip.endDate}
             maxDays={14}
             onApply={applyDateRange}
-            daysPicker
           />
           <MembersDropdown
             tripId={trip.id}

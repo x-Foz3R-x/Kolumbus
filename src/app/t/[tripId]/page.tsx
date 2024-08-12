@@ -1,15 +1,25 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
+import { api } from "~/trpc/react";
+import { toastHandler } from "~/lib/trpc";
+
 import { useTripContext } from "./_components/trip-provider";
 import { DndItinerary } from "~/components/dnd-itinerary";
 
-import type { UpdatePlaceSchema } from "~/lib/types";
-
 export default function Trip() {
+  const router = useRouter();
+
+  const updatePlacement = api.place.updatePlacement.useMutation(toastHandler());
   const { userId, trip, permissions, updateItinerary, getItineraryEntry } = useTripContext();
 
-  const onPlaceUpdated = (tripId: string, placeId: string, data: UpdatePlaceSchema["data"]) => {
-    console.log("place", placeId, data);
+  const onPlaceMoved = (
+    tripId: string,
+    items: { id: string; dayIndex: number; sortIndex: number }[],
+  ) => {
+    // console.log("place", placeId, dayIndex, sortIndex);
+    updatePlacement.mutate({ tripId, items }, { onError: () => router.refresh() });
   };
 
   return (
@@ -21,7 +31,7 @@ export default function Trip() {
         setItinerary={updateItinerary}
         getEntry={getItineraryEntry}
         placeLimit={100}
-        onPlaceUpdated={onPlaceUpdated}
+        onItemsMove={onPlaceMoved}
         dndTrash={permissions.editItinerary}
       />
     </div>
