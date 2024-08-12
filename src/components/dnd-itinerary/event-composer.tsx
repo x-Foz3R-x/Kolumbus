@@ -34,7 +34,13 @@ export const EventComposer = memo(function EventComposer({
   dayIndex,
   dragging,
 }: EventComposerProps) {
-  const { userId, tripId, createEvent, placeCount, placeLimit } = useDndItineraryContext();
+  const {
+    userId,
+    tripId,
+    createItem: createEvent,
+    placeCount,
+    placeLimit,
+  } = useDndItineraryContext();
 
   const autocomplete = api.external.googleAutocomplete.useMutation(toastHandler());
   const details = api.external.googleDetails.useMutation(toastHandler());

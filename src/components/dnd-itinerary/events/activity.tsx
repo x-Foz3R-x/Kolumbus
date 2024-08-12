@@ -24,7 +24,13 @@ type Props = {
   isSelected: boolean;
 };
 export const Activity = memo(function Activity({ place, dayIndex, isSelected }: Props) {
-  const { userId, selectEvent, createEvent, updateEvent, deleteEvents } = useDndItineraryContext();
+  const {
+    userId,
+    selectItem: selectEvent,
+    createItem: createEvent,
+    updateItem: updateEvent,
+    deleteItems: deleteEvents,
+  } = useDndItineraryContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const { setNodeRef, active, over, isDragging, attributes, listeners, transform, transition } =

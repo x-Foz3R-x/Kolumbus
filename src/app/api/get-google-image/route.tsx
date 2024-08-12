@@ -20,7 +20,13 @@ export async function GET(request: Request) {
   };
 
   return new ImageResponse(
-    <img src={getSrc()} alt="img" style={{ width: "100%", height: "100%", objectFit: "cover" }} />,
+    (
+      <img
+        src={getSrc()}
+        alt="img"
+        style={{ width: `${maxWidth}px`, height: `${maxHeight}px`, objectFit: "cover" }}
+      />
+    ),
     {
       width: maxWidth,
       height: maxHeight,

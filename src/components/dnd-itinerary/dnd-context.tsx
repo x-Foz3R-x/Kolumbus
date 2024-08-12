@@ -7,10 +7,10 @@ export type DndItineraryContextProps = {
   placeCount: number;
   placeLimit: number;
 
-  selectEvent: (eventId: string) => void;
-  createEvent: (event: PlaceSchema, dayIndex?: number, index?: number) => void;
-  updateEvent: (
-    event: PlaceSchema,
+  selectItem: (itemId: string) => void;
+  createItem: (item: PlaceSchema, dayIndex?: number, sortIndex?: number) => void;
+  updateItem: (
+    item: PlaceSchema,
     updateData: UpdatePlaceSchema["data"],
     {
       dayIndex,
@@ -24,7 +24,7 @@ export type DndItineraryContextProps = {
       preventEntry?: boolean;
     },
   ) => void;
-  deleteEvents: (eventIds: string[]) => void;
+  deleteItems: (itemIds: string[]) => void;
 };
 export const DndItineraryContext = createContext<DndItineraryContextProps | null>(null);
 export const useDndItineraryContext = () => {

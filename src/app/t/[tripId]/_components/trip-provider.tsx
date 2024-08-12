@@ -116,7 +116,7 @@ export const TripProvider = (props: {
   );
 
   const updateItinerary = useCallback(
-    (itineraryOrIndex: TripSchema["itinerary"] | number, desc?: string) => {
+    (itineraryOrIndex: ItinerarySchema | number, desc?: string) => {
       setTrip(
         typeof itineraryOrIndex === "number"
           ? itineraryOrIndex

@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   if (imageRefs.length === 1) {
     return new ImageResponse(
       (
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", width: pixelSize, height: pixelSize }}>
           <img
             src={getUrl(imageRefs[0]!)}
             alt="trip-image"
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
   } else if (imageRefs.length === 2) {
     return new ImageResponse(
       (
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", width: pixelSize, height: pixelSize }}>
           <img
             src={getUrl(imageRefs[0]!)}
             alt="trip-image-1"
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
   } else if (imageRefs.length === 3) {
     return new ImageResponse(
       (
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", width: pixelSize, height: pixelSize }}>
           <img
             src={getUrl(imageRefs[1]!)}
             alt="trip-image-2"
@@ -114,11 +114,11 @@ export async function GET(request: Request) {
             src={getUrl(imageRefs[2]!)}
             alt="trip-image-3"
             style={{
-              width: "100%",
-              height: "100%",
+              width: pixelSize,
+              height: pixelSize,
+              objectFit: "cover",
               position: "absolute",
               left: "39%",
-              objectFit: "cover",
               clipPath: "polygon(25% 0%, 61% 0%, 61% 100%, 39% 100%)",
             }}
           />
