@@ -734,8 +734,5 @@ export function DndItinerary({
     const unSyncedItems = extractUnSyncedItemsChanges(affectedItems, prevItems);
 
     onItemsMove?.(tripId, unSyncedItems);
-    // unSyncedItems.forEach((place) =>
-    //   onItemsMove?.(tripId, place.id, place.dayIndex, place.sortIndex),
-    // );
   }
 }

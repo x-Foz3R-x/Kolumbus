@@ -18,7 +18,6 @@ export default function Trip() {
     tripId: string,
     items: { id: string; dayIndex: number; sortIndex: number }[],
   ) => {
-    // console.log("place", placeId, dayIndex, sortIndex);
     updatePlacement.mutate({ tripId, items }, { onError: () => router.refresh() });
   };
 
