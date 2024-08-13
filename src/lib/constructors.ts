@@ -1,14 +1,13 @@
 import { add } from "date-fns";
 
-import { formatDate } from "./utils";
+import { createId, formatDate } from "./utils";
 
 import type { Trip } from "./validations/trip";
 import type { Membership } from "./validations/membership";
 import type { Place } from "./validations/place";
 
-export function constructTrip(data: {
-  id: string;
-  ownerId: string;
+export function constructTrip(trip: {
+  userId: string;
   name?: string;
   startDate?: string;
   endDate?: string;
@@ -17,37 +16,37 @@ export function constructTrip(data: {
   inviteCreatedAt?: Date;
 }): Trip {
   return {
-    id: data.id,
-    ownerId: data.ownerId,
-    name: data.name ?? "Trip to ...",
-    startDate: data.startDate ?? formatDate(new Date()),
-    endDate: data.endDate ?? formatDate(add(new Date(), { days: 4 })),
-    imageUrl: data.imageUrl ?? null,
-    inviteCode: data.inviteCode ?? null,
-    inviteCreatedAt: data.inviteCreatedAt ?? null,
+    id: createId(10),
+    ownerId: trip.userId,
+    name: trip.name ?? "Trip to ...",
+    startDate: trip.startDate ?? formatDate(new Date()),
+    endDate: trip.endDate ?? formatDate(add(new Date(), { days: 4 })),
+    imageUrl: trip.imageUrl ?? null,
+    inviteCode: trip.inviteCode ?? null,
+    inviteCreatedAt: trip.inviteCreatedAt ?? null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
 }
 
-export function constructMembership(data: {
+export function constructMembership(props: {
   userId: string;
   tripId: string;
   sortIndex: number;
   permissions?: number;
 }): Membership {
   return {
-    userId: data.userId,
-    tripId: data.tripId,
-    sortIndex: data.sortIndex,
-    permissions: data.permissions ?? 0,
+    userId: props.userId,
+    tripId: props.tripId,
+    sortIndex: props.sortIndex,
+    permissions: props.permissions ?? 0,
     updatedAt: new Date(),
     createdAt: new Date(),
   };
 }
 
 export function constructPlace(place: {
-  id: string;
+  userId: string;
   tripId: string;
   googleId?: string;
   name?: string;
@@ -61,10 +60,9 @@ export function constructPlace(place: {
   imageUrl?: string;
   dayIndex: number;
   sortIndex: number;
-  createdBy: string;
 }): Place {
   return {
-    id: place.id,
+    id: createId(),
     tripId: place.tripId,
     googleId: place.googleId ?? null,
 
@@ -80,8 +78,8 @@ export function constructPlace(place: {
 
     dayIndex: place.dayIndex,
     sortIndex: place.sortIndex,
-    createdBy: place.createdBy,
-    updatedBy: place.createdBy,
+    createdBy: place.userId,
+    updatedBy: place.userId,
     createdAt: new Date(),
     updatedAt: new Date(),
   };

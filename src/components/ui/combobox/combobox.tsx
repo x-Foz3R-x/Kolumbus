@@ -26,7 +26,6 @@ type ComboboxProps = {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     inputValue: string;
     setInputValue: React.Dispatch<React.SetStateAction<string>>;
-    activeItemRef: React.MutableRefObject<unknown>;
     list: { value: string; [data: string]: unknown }[];
     scrollItemIntoView?: ScrollIntoViewOptions;
     className?: string;
@@ -36,7 +35,7 @@ type ComboboxProps = {
     placeholder?: string;
     childrenWidth?: number;
     onChange?: (value: string) => void | Promise<void>;
-    onEnterPress?: (activeIndex: number | null) => void;
+    onEnterPress?: (prediction: unknown) => void;
     style?: React.CSSProperties;
     className?: string;
     containerProps?: { style?: React.CSSProperties; className?: string } & Omit<
@@ -51,7 +50,7 @@ type ComboboxProps = {
     className?: string;
     children?: React.ReactNode;
   };
-  option: { index: number; className?: string; children?: React.ReactNode };
+  option: { index: number; onClick?: () => void; className?: string; children?: React.ReactNode };
 };
 export const Combobox = {
   Root({
@@ -59,7 +58,6 @@ export const Combobox = {
     setOpen,
     inputValue,
     setInputValue,
-    activeItemRef,
     list,
     scrollItemIntoView = { behavior: "smooth", block: "nearest", inline: "nearest" },
     className,
@@ -98,7 +96,6 @@ export const Combobox = {
         setInputValue,
         activeIndex,
         setActiveIndex,
-        activeItemRef,
         list,
         listRef,
         ...interactions,
@@ -111,7 +108,6 @@ export const Combobox = {
         setInputValue,
         activeIndex,
         setActiveIndex,
-        activeItemRef,
         list,
         listRef,
         interactions,
@@ -140,8 +136,6 @@ export const Combobox = {
     const combobox = useComboboxContext();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      combobox.activeItemRef.current = null;
-
       const value = z.string().default("").parse(e.target.value);
       combobox.setInputValue(value);
 
@@ -157,14 +151,13 @@ export const Combobox = {
         if (combobox.activeIndex !== null) {
           const selectedListItem = combobox.list[combobox.activeIndex];
           if (selectedListItem !== undefined) {
-            combobox.activeItemRef.current = combobox.list[combobox.activeIndex];
             combobox.setInputValue(selectedListItem.value);
             combobox.setActiveIndex(null);
             combobox.setOpen(false);
           }
-        }
 
-        onEnterPress?.(combobox.activeIndex);
+          onEnterPress?.(combobox.list[combobox.activeIndex]);
+        }
       }
     };
 
@@ -284,7 +277,7 @@ export const Combobox = {
     );
   },
 
-  Option({ index, className, children }: ComboboxProps["option"]) {
+  Option({ index, onClick, className, children }: ComboboxProps["option"]) {
     const combobox = useComboboxContext();
 
     const active = combobox.activeIndex === index;
@@ -294,13 +287,11 @@ export const Combobox = {
         combobox.refs.domReference.current?.querySelector("input, textarea") as
           | HTMLElement
           | undefined
-      )?.focus({
-        preventScroll: true,
-      });
+      )?.focus({ preventScroll: true });
 
-      combobox.activeItemRef.current = combobox.list[index];
       combobox.setInputValue(combobox.list[index]!.value);
       combobox.setOpen(false);
+      onClick?.();
     };
 
     return (

@@ -28,17 +28,19 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import type { ItinerarySchema, DaySchema } from "~/lib/validations/trip";
+import type { PlaceSchema, UpdatePlaceSchema } from "~/lib/validations/place";
+import { DAY_CALENDAR_WIDTH, LIST_GAP, PLACE_WIDTH } from "~/lib/constants";
+import { cn } from "~/lib/utils";
+import { KEYS } from "~/types";
+
 import type { onItemCreate, onItemsDelete, onItemUpdate, onItemsMove } from ".";
 import { DndItineraryContext, type DndItineraryContextProps } from "./dnd-context";
-import { cn } from "~/lib/utils";
 
 import DndDragOverlay from "./dnd-drag-overlay";
 import DndTrash from "./dnd-trash";
 import DndDay from "./dnd-day";
 import { Activity } from "./events";
-import type { ItinerarySchema, DaySchema } from "~/lib/validations/trip";
-import type { PlaceSchema, UpdatePlaceSchema } from "~/lib/validations/place";
-import { KEYS } from "~/types";
 
 // * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity (notion dnd style)
 
@@ -53,10 +55,6 @@ import { KEYS } from "~/types";
 // <kbd>Ctrl + C</kbd> to copy selected events
 // <kbd>Ctrl + V</kbd> to paste events
 // <kbd>Ctrl + A</kbd> to select all events
-
-const ITINERARY_CALENDAR_WIDTH = 132;
-const ITINERARY_CALENDAR_GAP = 20;
-const PLACE_WIDTH = 160;
 
 type Props = {
   userId: string;
@@ -128,26 +126,14 @@ export function DndItinerary({
     [itinerary],
   );
   const createItem = useCallback(
-    (place: PlaceSchema, dayIndex?: number, index?: number) => {
+    (place: PlaceSchema) => {
       const newItinerary = structuredClone(itinerary);
-
-      const targetDayIndex = findListIndexByItemId(place.id, newItinerary, dayIndex);
-      if (targetDayIndex === -1) return;
-
-      // If no index is provided, add the event to the end of the day's events array.
-      // Otherwise, insert the event at the specified index and update the position of the events in the day.
-      if (!index) newItinerary[targetDayIndex]!.places.push(place);
-      else {
-        newItinerary[targetDayIndex]!.places.splice(index, 0, place);
-        newItinerary[targetDayIndex]!.places.slice(index).map((place, i) => {
-          onItemUpdate?.(place.id, tripId, { sortIndex: index + i });
-        });
-      }
+      newItinerary[place.dayIndex]!.places.push(place);
 
       setItinerary(newItinerary, "Add place");
       onItemCreate?.(place);
     },
-    [tripId, itinerary, setItinerary, onItemCreate, onItemUpdate],
+    [itinerary, setItinerary, onItemCreate],
   );
   const updateItem = useCallback(
     (
@@ -175,26 +161,62 @@ export function DndItinerary({
     },
     [tripId, itinerary, setItinerary, onItemUpdate],
   );
+  const getMovedItemsDetails = useCallback(
+    (newItinerary: ItinerarySchema, affectedListIds: string[]) => {
+      // Retrieves the last saved itinerary state before the current drag operation.
+      // Due to a delay in history updates, the last entry (-1) reflects the previous state,
+      // not the current one, making it suitable for comparison.
+      const prevItinerary = getEntry(-1);
+
+      const getItemsFromAffectedLists = (itinerary: ItinerarySchema) => {
+        return itinerary
+          .filter((day) => affectedListIds.includes(day.id))
+          .flatMap((day) => day.places);
+      };
+      const identifyMovedItems = (affectedPlaces: PlaceSchema[], prevPlaces: PlaceSchema[]) => {
+        return affectedPlaces
+          .filter((place) =>
+            prevPlaces.some(
+              (prevPlace) =>
+                prevPlace.id === place.id &&
+                // Check if the place's dayIndex or sortIndex has changed
+                (place.dayIndex !== prevPlace.dayIndex || place.sortIndex !== prevPlace.sortIndex),
+            ),
+          )
+          .map((place) => ({ id: place.id, dayIndex: place.dayIndex, sortIndex: place.sortIndex }));
+      };
+
+      const newItems = getItemsFromAffectedLists(newItinerary);
+      const prevItems = getItemsFromAffectedLists(prevItinerary);
+      const movedItemsDetails = identifyMovedItems(newItems, prevItems);
+
+      return movedItemsDetails;
+    },
+    [getEntry],
+  );
   const deleteItems = useCallback(
-    (placeId: string | string[]) => {
+    (placeIds: string[]) => {
       const newItinerary = structuredClone(itinerary);
 
       newItinerary.forEach((day) => {
-        if (day.places.some((place) => placeId.includes(place.id))) {
-          day.places = updateItemsPlacement(
-            filterPlacesExcludingIds(day.places, typeof placeId === "string" ? [placeId] : placeId),
-          );
+        const hasDeletedPlaces = day.places.some((place) => placeIds.includes(place.id));
+        if (hasDeletedPlaces) {
+          day.places = updateItemsPlacement(filterPlacesExcludingIds(day.places, placeIds));
         }
       });
 
-      const actionDescription =
-        placeId.length > 1 ? `Delete ${placeId.length} events` : "Delete event";
-      setItinerary(newItinerary, actionDescription);
+      const actionDesc = placeIds.length > 1 ? `Delete ${placeIds.length} places` : "Delete place";
+      setItinerary(newItinerary, actionDesc);
 
-      const ids = placeId.length > 1 ? placeId : placeId[0]!;
-      onItemsDelete?.(tripId, ids);
+      if (onItemsDelete && onItemsMove) {
+        const affectedDayIds = newItinerary.map((day) => day.id);
+        const movedItemsDetails = getMovedItemsDetails(newItinerary, affectedDayIds);
+
+        onItemsMove(tripId, movedItemsDetails);
+        onItemsDelete(tripId, placeIds);
+      }
     },
-    [tripId, itinerary, setItinerary, onItemsDelete],
+    [itinerary, setItinerary, onItemsDelete, onItemsMove, getMovedItemsDetails, tripId],
   );
 
   //#region Drag handlers
@@ -213,7 +235,6 @@ export function DndItinerary({
     setActiveItem(activeItem ?? null);
     setSelectedIds((selected) => (selected.includes(active.id as string) ? selected : [])); // Deselect all if dragged item is not in selection
   };
-
   const handleDragOver = ({ active, over }: DragOverEvent) => {
     // Skip if there's no drop target or if target is a trash can. Handled in `DragEnd`.
     if (over === null || over.id === "trash") return;
@@ -282,7 +303,6 @@ export function DndItinerary({
 
     recentlyMovedToNewList.current = true;
   };
-
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     // Skip if there's no drop target.
     if (over === null) {
@@ -329,11 +349,11 @@ export function DndItinerary({
       activeType === "list" ||
       overType === "list"
     ) {
-      let message = "Move place";
-      if (activeType === "list") message = "Move day";
-      else if (selectedIds.length > 1) message = `Move ${selectedIds.length} places`;
+      let actionDesc = "Move place";
+      if (activeType === "list") actionDesc = "Move day";
+      else if (selectedIds.length > 1) actionDesc = `Move ${selectedIds.length} places`;
 
-      setItinerary(itinerary, message);
+      setItinerary(itinerary, actionDesc);
       syncItemsPlacement(itinerary, affectedListsRef.current);
       setActiveItem(null);
       affectedListsRef.current = [];
@@ -365,7 +385,6 @@ export function DndItinerary({
     setActiveItem(null);
     affectedListsRef.current = [];
   };
-
   const handleDragCancel = () => {
     setItinerary(-1);
     setActiveItem(null);
@@ -592,10 +611,7 @@ export function DndItinerary({
       // Thus, a different solution is needed to accurately calculate the target index.
 
       const activeRelativeLeft =
-        active.rect.current.translated.left -
-        over.rect.left -
-        ITINERARY_CALENDAR_WIDTH -
-        ITINERARY_CALENDAR_GAP;
+        active.rect.current.translated.left - over.rect.left - DAY_CALENDAR_WIDTH - LIST_GAP;
 
       // Directly calculate the target index based on the width of a place
       const targetIndex = Math.floor(activeRelativeLeft / PLACE_WIDTH);
@@ -703,6 +719,8 @@ export function DndItinerary({
     }));
   }
   function syncItemsPlacement(newItinerary: ItinerarySchema, affectedListIds: string[]) {
+    if (!onItemsMove) return;
+
     // Retrieves the last saved itinerary state before the current drag operation.
     // Due to a delay in history updates, the last entry (-1) reflects the previous state,
     // not the current one, making it suitable for comparison.
@@ -733,6 +751,6 @@ export function DndItinerary({
     const prevItems = extractItemsFromAffectedLists(prevItinerary);
     const unSyncedItems = extractUnSyncedItemsChanges(affectedItems, prevItems);
 
-    onItemsMove?.(tripId, unSyncedItems);
+    onItemsMove(tripId, unSyncedItems);
   }
 }

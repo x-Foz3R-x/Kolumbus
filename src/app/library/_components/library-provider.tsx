@@ -60,8 +60,7 @@ export function LibraryProvider(props: {
       const sortIndex = memberships.length;
 
       const trip = constructTrip({
-        id: createId(10),
-        ownerId: props.userId,
+        userId: props.userId,
         name,
         startDate,
         endDate,

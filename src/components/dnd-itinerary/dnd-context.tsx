@@ -8,7 +8,7 @@ export type DndItineraryContextProps = {
   placeLimit: number;
 
   selectItem: (itemId: string) => void;
-  createItem: (item: PlaceSchema, dayIndex?: number, sortIndex?: number) => void;
+  createItem: (item: PlaceSchema) => void;
   updateItem: (
     item: PlaceSchema,
     updateData: UpdatePlaceSchema["data"],

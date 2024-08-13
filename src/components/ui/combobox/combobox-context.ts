@@ -9,7 +9,6 @@ type ComboboxContext = ReturnType<typeof useFloating> &
     setInputValue: React.Dispatch<React.SetStateAction<string>>;
     activeIndex: number | null;
     setActiveIndex: React.Dispatch<React.SetStateAction<number | null>>;
-    activeItemRef: React.MutableRefObject<unknown>;
     list: { value: string; [data: string]: unknown }[];
     listRef: React.RefObject<Array<HTMLLIElement | null>>;
   };

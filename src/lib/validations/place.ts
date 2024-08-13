@@ -13,7 +13,7 @@ export const updatePlaceSchema = z.object({
 
 export const updatePlacementSchema = z.object({
   tripId,
-  items: z.array(
+  places: z.array(
     z.object({
       id: placeId,
       dayIndex: z.number().int().nonnegative(),
@@ -23,11 +23,15 @@ export const updatePlacementSchema = z.object({
 });
 
 export const deletePlaceSchema = z.object({
-  id: placeId,
   tripId,
-  dayIndex: z.number().int().nonnegative(),
-  sortIndex: z.number().int().nonnegative(),
+  placeIds: z.array(placeId),
 });
+// export const deletePlaceSchema = z.object({
+//   tripId,
+//   placeId,
+//   dayIndex: z.number().int().nonnegative(),
+//   sortIndex: z.number().int().nonnegative(),
+// });
 
 export type Place = z.infer<typeof place>;
 export type PlaceSchema = z.infer<typeof placeSchema>;

@@ -10,12 +10,12 @@ import { Icons } from "../ui";
 export default function DndTrash(props: { variant: "default" | "inset"; className?: string }) {
   const { active, isOver, setNodeRef } = useDroppable({
     id: "trash",
-    data: { type: "trash", dayIndex: -1 },
+    data: { type: "trash", listIndex: -1 },
   });
 
   return (
     <AnimatePresence>
-      {active?.data.current?.type === "event" && (
+      {active?.data.current?.type === "item" && (
         <FloatingPortal id="trash-container">
           <div ref={setNodeRef}>
             <motion.div

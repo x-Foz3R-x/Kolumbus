@@ -12,4 +12,4 @@ export type onItemsMove = (
   tripId: string,
   items: { id: string; dayIndex: number; sortIndex: number }[],
 ) => void;
-export type onItemsDelete = (tripId: string, itemIds: string | string[]) => void;
+export type onItemsDelete = (tripId: string, itemIds: string[]) => void;

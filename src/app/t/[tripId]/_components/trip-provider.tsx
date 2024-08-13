@@ -10,7 +10,7 @@ import {
   type MyMembershipSchema,
   type MemberPermissions,
 } from "~/lib/validations/membership";
-import { createId, decodePermissions } from "~/lib/utils";
+import { decodePermissions } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { toastHandler } from "~/lib/trpc";
 import { constructTrip } from "~/lib/constructors";
@@ -68,8 +68,7 @@ export const TripProvider = (props: {
     (name: string, startDate: string, endDate: string) => {
       const sortIndex = myMemberships.length;
       const trip = constructTrip({
-        id: createId(10),
-        ownerId: props.userId,
+        userId: props.userId,
         name,
         startDate,
         endDate,
@@ -104,7 +103,7 @@ export const TripProvider = (props: {
 
       deleteItem.mutate(
         {
-          id: place.id,
+          placeId: place.id,
           tripId: trip.id,
           dayIndex,
           sortIndex: place.sortIndex,

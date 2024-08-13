@@ -6,7 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { useDndItineraryContext } from "./dnd-context";
 
-import { EventComposer } from "./event-composer";
+import { EventComposer } from "./item-composer";
 import { DayCalendar } from "../day-calendar";
 import { cn } from "~/lib/utils";
 import type { DaySchema, ItinerarySchema } from "~/lib/validations/trip";

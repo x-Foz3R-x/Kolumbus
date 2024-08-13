@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { api } from "~/trpc/react";
 import { toastHandler } from "~/lib/trpc";
+import type { PlaceSchema } from "~/lib/types";
 
 import { useTripContext } from "./_components/trip-provider";
 import { DndItinerary } from "~/components/dnd-itinerary";
@@ -11,14 +12,22 @@ import { DndItinerary } from "~/components/dnd-itinerary";
 export default function Trip() {
   const router = useRouter();
 
+  const createPlace = api.place.create.useMutation(toastHandler("Place created"));
   const updatePlacement = api.place.updatePlacement.useMutation(toastHandler());
+  const deletePlace = api.place.delete.useMutation(toastHandler());
   const { userId, trip, permissions, updateItinerary, getItineraryEntry } = useTripContext();
 
-  const onPlaceMoved = (
+  const onPlaceCreate = (place: PlaceSchema) => {
+    createPlace.mutate(place, { onError: () => router.refresh() });
+  };
+  const onPlaceMove = (
     tripId: string,
-    items: { id: string; dayIndex: number; sortIndex: number }[],
+    places: { id: string; dayIndex: number; sortIndex: number }[],
   ) => {
-    updatePlacement.mutate({ tripId, items }, { onError: () => router.refresh() });
+    updatePlacement.mutate({ tripId, places: places }, { onError: () => router.refresh() });
+  };
+  const onPlaceDelete = (tripId: string, placeIds: string[]) => {
+    deletePlace.mutate({ tripId, placeIds }, { onError: () => router.refresh() });
   };
 
   return (
@@ -30,7 +39,9 @@ export default function Trip() {
         setItinerary={updateItinerary}
         getEntry={getItineraryEntry}
         placeLimit={100}
-        onItemsMove={onPlaceMoved}
+        onItemCreate={onPlaceCreate}
+        onItemsMove={onPlaceMove}
+        onItemsDelete={onPlaceDelete}
         dndTrash={permissions.editItinerary}
       />
     </div>

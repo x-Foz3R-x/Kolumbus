@@ -19,3 +19,8 @@ export const inviteError = {
     2: "You're already part of 20 trips. That's the limit!",
   },
 };
+
+export const DAY_CALENDAR_WIDTH = 132;
+export const PLACE_WIDTH = 160;
+export const LIST_GAP = 20;
+export const ITEM_GAP = 8;

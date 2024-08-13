@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useState } from "react";
 
 import { api } from "~/trpc/react";
 import { useDndItineraryContext } from "./dnd-context";
@@ -12,9 +12,7 @@ import { Combobox } from "../ui/combobox";
 import { toastHandler } from "~/lib/trpc";
 import { FieldsGroup } from "~/lib/validations/google";
 import { constructPlace } from "~/lib/constructors";
-
-const ACTIVITY_WIDTH = 160;
-const GAP_WIDTH = 8;
+import { ITEM_GAP, PLACE_WIDTH } from "~/lib/constants";
 
 type Prediction = {
   value: string;
@@ -34,13 +32,7 @@ export const EventComposer = memo(function EventComposer({
   dayIndex,
   dragging,
 }: EventComposerProps) {
-  const {
-    userId,
-    tripId,
-    createItem: createEvent,
-    placeCount,
-    placeLimit,
-  } = useDndItineraryContext();
+  const { userId, tripId, createItem, placeCount, placeLimit } = useDndItineraryContext();
 
   const autocomplete = api.external.googleAutocomplete.useMutation(toastHandler());
   const details = api.external.googleDetails.useMutation(toastHandler());
@@ -52,14 +44,13 @@ export const EventComposer = memo(function EventComposer({
   const [predictionList, setPredictionList] = useState<Prediction[]>([]);
   const [sessionToken, setSessionToken] = useState(createId());
   const [loading, setLoading] = useState(false);
-  const activePredictionRef = useRef<Prediction | null>(null);
 
-  const handleChange = async (value: string) => {
+  const handleChange = async (searchValue: string) => {
     if (placeCount >= placeLimit) return;
 
     setLoading(true);
     autocomplete.mutate(
-      { searchValue: value, sessionToken },
+      { searchValue, sessionToken },
       {
         onSuccess(data) {
           if (data.status === "OK") {
@@ -91,21 +82,21 @@ export const EventComposer = memo(function EventComposer({
     );
   };
 
-  const handleAdd = () => {
+  const handleAdd = (value: unknown) => {
+    const prediction = value as Prediction | null;
+
     if (placeCount >= placeLimit) return;
 
-    const prediction = activePredictionRef.current;
     const place = constructPlace({
-      id: createId(),
+      userId,
       tripId,
       dayIndex: dayIndex,
       sortIndex: day.places.length,
-      createdBy: userId,
     });
 
     if (prediction === null) {
       place.name = inputValue;
-      createEvent(place, dayIndex, day.places.length);
+      createItem(place);
     } else if (prediction.placeId) {
       place.googleId = prediction.placeId;
       details.mutate(
@@ -119,18 +110,20 @@ export const EventComposer = memo(function EventComposer({
             const result = data.result;
 
             place.name = result.name ?? place.name;
-            place.imageUrl = result.photos?.[0]?.photo_reference ?? place.imageUrl;
+            place.imageUrl = result.photos?.[0]?.photo_reference
+              ? `ref:${result.photos[0].photo_reference}`
+              : place.imageUrl;
             place.address = result.formatted_address ?? place.address;
             place.phoneNumber = result.international_phone_number ?? place.phoneNumber;
             place.website = result.website ?? place.website;
 
-            createEvent(place, dayIndex, day.places.length);
+            createItem(place);
           },
         },
       );
     } else {
       place.name = prediction.value;
-      createEvent(place, dayIndex, day.places.length);
+      createItem(place);
     }
 
     setIsOpen(false);
@@ -140,8 +133,6 @@ export const EventComposer = memo(function EventComposer({
 
   const handleClear = () => {
     if (inputValue === "" && predictionList.length === 0) setIsOpen(false);
-
-    activePredictionRef.current = null;
     setIsExpanded(false);
     setInputValue("");
     setPredictionList([]);
@@ -191,7 +182,7 @@ export const EventComposer = memo(function EventComposer({
         ),
         animate: {
           opacity: isOpen ? 0 : 1,
-          left: day.places.length * (ACTIVITY_WIDTH + GAP_WIDTH),
+          left: day.places.length * (PLACE_WIDTH + ITEM_GAP),
           width: isOpen ? "312px" : "32px",
           pointerEvents: isOpen ? "none" : "auto",
         },
@@ -208,12 +199,11 @@ export const EventComposer = memo(function EventComposer({
         setOpen={setIsExpanded}
         inputValue={inputValue}
         setInputValue={setInputValue}
-        activeItemRef={activePredictionRef}
         list={predictionList}
         className="h-full w-full"
       >
         <Combobox.Input
-          placeholder="Search or enter name"
+          placeholder="Add a place"
           onChange={handleChange}
           onEnterPress={handleAdd}
           initial={{ opacity: 0, paddingLeft: "0px" }}
@@ -244,36 +234,12 @@ export const EventComposer = memo(function EventComposer({
           }}
         >
           <Button
-            onClick={handleAdd}
-            variant="unset"
-            size="unset"
-            className="h-full rounded-none duration-100 hover:fill-gray-800 focus-visible:fill-gray-800 dark:hover:fill-gray-300 dark:focus-visible:fill-gray-300"
-            initial={{ width: "32px", paddingInline: "8px", pointerEvents: "none" }}
-            animate={{
-              width: "42px",
-              paddingInline: "14px",
-              pointerEvents: "auto",
-              transition: { ease: EASING.anticipate, duration: 0.6, pointerEvents: { delay: 0.6 } },
-            }}
-            exit={{
-              width: "32px",
-              paddingInline: "8px",
-              pointerEvents: "none",
-              transition: { ease: EASING.anticipate, duration: 0.6 },
-            }}
-            tooltip={{ placement: "bottom", offset: 0, arrow: true, zIndex: 30, children: "Add" }}
-          >
-            <Icons.plus className="h-4 w-4" />
-          </Button>
-
-          <Button
-            onClick={handleClear}
             variant="unset"
             size="unset"
             className="h-full overflow-hidden rounded-none duration-100 hover:fill-gray-800 focus-visible:fill-gray-800 dark:hover:fill-gray-300 dark:focus-visible:fill-gray-300"
             initial={{ width: "0px", paddingInline: "0px", pointerEvents: "none" }}
             animate={{
-              width: "42px",
+              width: "44px",
               paddingInline: "14px",
               pointerEvents: "auto",
               transition: {
@@ -289,9 +255,15 @@ export const EventComposer = memo(function EventComposer({
               pointerEvents: "none",
               transition: { ease: EASING.anticipate, duration: 0.3 },
             }}
-            tooltip={{ placement: "bottom", offset: 0, arrow: true, zIndex: 30, children: "Clear" }}
+            tooltip={{
+              placement: "bottom",
+              offset: 0,
+              arrow: true,
+              zIndex: 30,
+              children: "Add custom place",
+            }}
           >
-            <Icons.x className="h-3.5 w-3.5" />
+            <Icons.pin className="h-4 w-4" />
           </Button>
         </Combobox.Input>
 
@@ -304,6 +276,7 @@ export const EventComposer = memo(function EventComposer({
             <Combobox.Option
               key={prediction.value + index}
               index={index}
+              onClick={() => handleAdd(prediction)}
               className="before:last:rounded-b-xl"
             >
               <div className="w-10 flex-shrink-0">

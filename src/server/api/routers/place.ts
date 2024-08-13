@@ -1,18 +1,45 @@
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { error } from "~/lib/trpc";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import analyticsServerClient from "~/server/analytics";
 
-import { places } from "~/server/db/schema";
+import { places, trips } from "~/server/db/schema";
 import {
   deletePlaceSchema,
+  placeSchema,
   updatePlacementSchema,
   updatePlaceSchema,
 } from "~/lib/validations/place";
 import { getMyMembershipDecodedPermissions } from "~/server/queries";
 
 export const placeRouter = createTRPCRouter({
+  create: protectedProcedure.input(placeSchema).mutation(async ({ ctx, input: place }) => {
+    await ctx.db.transaction(async (tx) => {
+      const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, place.tripId);
+
+      if (!permissions.editItinerary) {
+        throw error.unauthorized(
+          "You do not have permission to create an itinerary item. Please contact the trip organizer to request edit permissions.",
+        );
+      }
+
+      await tx.insert(places).values(place).execute();
+      await tx.update(trips).set({ updatedAt: new Date() }).where(eq(trips.id, place.tripId));
+    });
+
+    analyticsServerClient.capture({
+      distinctId: ctx.user.id,
+      event: "create item",
+      properties: {
+        tripId: place.tripId,
+        itemId: place.id,
+        itemName: place.name,
+        dayIndex: place.dayIndex,
+        sortIndex: place.sortIndex,
+      },
+    });
+  }),
   update: protectedProcedure.input(updatePlaceSchema).mutation(async ({ ctx, input }) => {
     const { id, tripId, data } = input;
 
@@ -28,7 +55,7 @@ export const placeRouter = createTRPCRouter({
       await tx
         .update(places)
         .set({ ...data })
-        .where(and(eq(places.id, id), eq(places.tripId, tripId)));
+        .where(and(eq(places.tripId, tripId), eq(places.id, id)));
     });
 
     analyticsServerClient.capture({
@@ -40,7 +67,7 @@ export const placeRouter = createTRPCRouter({
   updatePlacement: protectedProcedure
     .input(updatePlacementSchema)
     .mutation(async ({ ctx, input }) => {
-      const { tripId, items } = input;
+      const { tripId, places: placesList } = input;
 
       await ctx.db.transaction(async (tx) => {
         const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
@@ -52,26 +79,26 @@ export const placeRouter = createTRPCRouter({
         }
 
         // Validate and update each item's placement
-        for (const item of items) {
-          if (item.dayIndex < 0 || item.sortIndex < 0) {
+        for (const place of placesList) {
+          if (place.dayIndex < 0 || place.sortIndex < 0) {
             throw error.badRequest("Invalid item position.");
           }
 
           await tx
             .update(places)
-            .set({ dayIndex: item.dayIndex, sortIndex: item.sortIndex })
-            .where(and(eq(places.tripId, tripId), eq(places.id, item.id)));
+            .set({ dayIndex: place.dayIndex, sortIndex: place.sortIndex })
+            .where(and(eq(places.tripId, tripId), eq(places.id, place.id)));
         }
 
         analyticsServerClient.capture({
           distinctId: ctx.user.id,
           event: "update placement",
-          properties: { tripId, items },
+          properties: { tripId, items: placesList },
         });
       });
     }),
   delete: protectedProcedure.input(deletePlaceSchema).mutation(async ({ ctx, input }) => {
-    const { id, tripId, dayIndex, sortIndex } = input;
+    const { tripId, placeIds } = input;
 
     await ctx.db.transaction(async (tx) => {
       const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
@@ -82,23 +109,46 @@ export const placeRouter = createTRPCRouter({
         );
       }
 
-      await tx
-        .update(places)
-        .set({ sortIndex: sql`"sort_index" - 1` })
-        .where(
-          and(
-            eq(places.tripId, tripId),
-            eq(places.dayIndex, dayIndex),
-            gt(places.sortIndex, sortIndex),
-          ),
-        );
-      await tx.delete(places).where(and(eq(places.id, id), eq(places.tripId, tripId)));
-    });
+      for (const placeId of placeIds) {
+        await tx.delete(places).where(and(eq(places.tripId, tripId), eq(places.id, placeId)));
+      }
 
-    analyticsServerClient.capture({
-      distinctId: ctx.user.id,
-      event: "delete itinerary item",
-      properties: { tripId, itemId: id },
+      analyticsServerClient.capture({
+        distinctId: ctx.user.id,
+        event: "delete item",
+        properties: { tripId, placeIds },
+      });
     });
   }),
+  // delete: protectedProcedure.input(deletePlaceSchema).mutation(async ({ ctx, input }) => {
+  //   const { tripId, placeId, dayIndex, sortIndex } = input;
+
+  //   await ctx.db.transaction(async (tx) => {
+  //     const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
+
+  //     if (!permissions.editItinerary) {
+  //       throw error.unauthorized(
+  //         "You do not have permission to delete this itinerary. Please contact the trip organizer to request edit permissions.",
+  //       );
+  //     }
+
+  //     await tx
+  //       .update(places)
+  //       .set({ sortIndex: sql`"sort_index" - 1` })
+  //       .where(
+  //         and(
+  //           eq(places.tripId, tripId),
+  //           eq(places.dayIndex, dayIndex),
+  //           gt(places.sortIndex, sortIndex),
+  //         ),
+  //       );
+  //     await tx.delete(places).where(and(eq(places.tripId, tripId), eq(places.id, placeId)));
+  //   });
+
+  //   analyticsServerClient.capture({
+  //     distinctId: ctx.user.id,
+  //     event: "delete item",
+  //     properties: { tripId, itemId: placeId },
+  //   });
+  // }),
 });
