@@ -91,6 +91,40 @@ export function DndItinerary({
 
   const placeCount = useMemo(() => itinerary.flatMap((day) => day.places).length, [itinerary]);
 
+  const getMovedItemsDetails = useCallback(
+    (newItinerary: ItinerarySchema, affectedListIds: string[]) => {
+      // Retrieves the last saved itinerary state before the current drag operation.
+      // Due to a delay in history updates, the last entry (-1) reflects the previous state,
+      // not the current one, making it suitable for comparison.
+      const prevItinerary = getEntry(-1);
+
+      const getItemsFromAffectedLists = (itinerary: ItinerarySchema) => {
+        return itinerary
+          .filter((day) => affectedListIds.includes(day.id))
+          .flatMap((day) => day.places);
+      };
+      const identifyMovedItems = (affectedPlaces: PlaceSchema[], prevPlaces: PlaceSchema[]) => {
+        return affectedPlaces
+          .filter((place) =>
+            prevPlaces.some(
+              (prevPlace) =>
+                prevPlace.id === place.id &&
+                // Check if the place's dayIndex or sortIndex has changed
+                (place.dayIndex !== prevPlace.dayIndex || place.sortIndex !== prevPlace.sortIndex),
+            ),
+          )
+          .map((place) => ({ id: place.id, dayIndex: place.dayIndex, sortIndex: place.sortIndex }));
+      };
+
+      const newItems = getItemsFromAffectedLists(newItinerary);
+      const prevItems = getItemsFromAffectedLists(prevItinerary);
+      const movedItemsDetails = identifyMovedItems(newItems, prevItems);
+
+      return movedItemsDetails;
+    },
+    [getEntry],
+  );
+
   const selectItem = useCallback(
     (id: string) => {
       const areEventsOnSameDay = (id1: string, id2: string) => {
@@ -160,39 +194,6 @@ export function DndItinerary({
       onItemUpdate?.(place.id, tripId, updateData);
     },
     [tripId, itinerary, setItinerary, onItemUpdate],
-  );
-  const getMovedItemsDetails = useCallback(
-    (newItinerary: ItinerarySchema, affectedListIds: string[]) => {
-      // Retrieves the last saved itinerary state before the current drag operation.
-      // Due to a delay in history updates, the last entry (-1) reflects the previous state,
-      // not the current one, making it suitable for comparison.
-      const prevItinerary = getEntry(-1);
-
-      const getItemsFromAffectedLists = (itinerary: ItinerarySchema) => {
-        return itinerary
-          .filter((day) => affectedListIds.includes(day.id))
-          .flatMap((day) => day.places);
-      };
-      const identifyMovedItems = (affectedPlaces: PlaceSchema[], prevPlaces: PlaceSchema[]) => {
-        return affectedPlaces
-          .filter((place) =>
-            prevPlaces.some(
-              (prevPlace) =>
-                prevPlace.id === place.id &&
-                // Check if the place's dayIndex or sortIndex has changed
-                (place.dayIndex !== prevPlace.dayIndex || place.sortIndex !== prevPlace.sortIndex),
-            ),
-          )
-          .map((place) => ({ id: place.id, dayIndex: place.dayIndex, sortIndex: place.sortIndex }));
-      };
-
-      const newItems = getItemsFromAffectedLists(newItinerary);
-      const prevItems = getItemsFromAffectedLists(prevItinerary);
-      const movedItemsDetails = identifyMovedItems(newItems, prevItems);
-
-      return movedItemsDetails;
-    },
-    [getEntry],
   );
   const deleteItems = useCallback(
     (placeIds: string[]) => {
@@ -299,6 +300,7 @@ export function DndItinerary({
       targetIndex,
       overListIndex,
     );
+
     setItinerary(newItinerary);
 
     recentlyMovedToNewList.current = true;
@@ -354,7 +356,8 @@ export function DndItinerary({
       else if (selectedIds.length > 1) actionDesc = `Move ${selectedIds.length} places`;
 
       setItinerary(itinerary, actionDesc);
-      syncItemsPlacement(itinerary, affectedListsRef.current);
+      onItemsMove?.(tripId, getMovedItemsDetails(itinerary, [activeList.id]));
+
       setActiveItem(null);
       affectedListsRef.current = [];
       return;
@@ -377,11 +380,13 @@ export function DndItinerary({
 
     const newItinerary = structuredClone(itinerary);
     newItinerary[activeListIndex]!.places = updateItemsPlacement(rearrangedItems, activeListIndex);
+
     setItinerary(
       newItinerary,
       selectedIds.length > 1 ? `Move ${selectedIds.length} places` : "Move place",
     );
-    syncItemsPlacement(newItinerary, [activeList.id]);
+    onItemsMove?.(tripId, getMovedItemsDetails(newItinerary, [activeList.id]));
+
     setActiveItem(null);
     affectedListsRef.current = [];
   };
@@ -717,40 +722,5 @@ export function DndItinerary({
       dayIndex: dayIndex ?? place.dayIndex,
       sortIndex: index,
     }));
-  }
-  function syncItemsPlacement(newItinerary: ItinerarySchema, affectedListIds: string[]) {
-    if (!onItemsMove) return;
-
-    // Retrieves the last saved itinerary state before the current drag operation.
-    // Due to a delay in history updates, the last entry (-1) reflects the previous state,
-    // not the current one, making it suitable for comparison.
-    const prevItinerary = getEntry(-1);
-
-    const extractItemsFromAffectedLists = (itinerary: ItinerarySchema) => {
-      return itinerary
-        .filter((day) => affectedListIds.includes(day.id))
-        .flatMap((day) => day.places);
-    };
-    const extractUnSyncedItemsChanges = (
-      affectedPlaces: PlaceSchema[],
-      prevPlaces: PlaceSchema[],
-    ) => {
-      return affectedPlaces
-        .filter((place) =>
-          prevPlaces.some(
-            (prevPlace) =>
-              prevPlace.id === place.id &&
-              // Check if the place's dayIndex or sortIndex has changed
-              (place.dayIndex !== prevPlace.dayIndex || place.sortIndex !== prevPlace.sortIndex),
-          ),
-        )
-        .map((place) => ({ id: place.id, dayIndex: place.dayIndex, sortIndex: place.sortIndex }));
-    };
-
-    const affectedItems = extractItemsFromAffectedLists(newItinerary);
-    const prevItems = extractItemsFromAffectedLists(prevItinerary);
-    const unSyncedItems = extractUnSyncedItemsChanges(affectedItems, prevItems);
-
-    onItemsMove(tripId, unSyncedItems);
   }
 }
