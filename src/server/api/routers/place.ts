@@ -30,7 +30,7 @@ export const placeRouter = createTRPCRouter({
 
     analyticsServerClient.capture({
       distinctId: ctx.user.id,
-      event: "create item",
+      event: "create place",
       properties: {
         tripId: place.tripId,
         itemId: place.id,
@@ -40,8 +40,9 @@ export const placeRouter = createTRPCRouter({
       },
     });
   }),
+  // TODO: duplicate: protectedProcedure.input(placeSchema).mutation(async ({ ctx, input}) => {})
   update: protectedProcedure.input(updatePlaceSchema).mutation(async ({ ctx, input }) => {
-    const { id, tripId, data } = input;
+    const { tripId, id: placeId, data } = input;
 
     await ctx.db.transaction(async (tx) => {
       const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
@@ -55,13 +56,13 @@ export const placeRouter = createTRPCRouter({
       await tx
         .update(places)
         .set({ ...data })
-        .where(and(eq(places.tripId, tripId), eq(places.id, id)));
+        .where(and(eq(places.tripId, tripId), eq(places.id, placeId)));
     });
 
     analyticsServerClient.capture({
       distinctId: ctx.user.id,
       event: "update item",
-      properties: { tripId, itemId: id },
+      properties: { tripId, placeId },
     });
   }),
   updatePlacement: protectedProcedure
@@ -93,7 +94,7 @@ export const placeRouter = createTRPCRouter({
         analyticsServerClient.capture({
           distinctId: ctx.user.id,
           event: "update placement",
-          properties: { tripId, items: placesList },
+          properties: { tripId, places: placesList },
         });
       });
     }),
@@ -115,7 +116,7 @@ export const placeRouter = createTRPCRouter({
 
       analyticsServerClient.capture({
         distinctId: ctx.user.id,
-        event: "delete item",
+        event: "delete places",
         properties: { tripId, placeIds },
       });
     });
