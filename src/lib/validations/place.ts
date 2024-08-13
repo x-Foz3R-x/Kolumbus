@@ -26,12 +26,6 @@ export const deletePlaceSchema = z.object({
   tripId,
   placeIds: z.array(placeId),
 });
-// export const deletePlaceSchema = z.object({
-//   tripId,
-//   placeId,
-//   dayIndex: z.number().int().nonnegative(),
-//   sortIndex: z.number().int().nonnegative(),
-// });
 
 export type Place = z.infer<typeof place>;
 export type PlaceSchema = z.infer<typeof placeSchema>;

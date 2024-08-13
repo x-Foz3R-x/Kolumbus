@@ -120,35 +120,4 @@ export const placeRouter = createTRPCRouter({
       });
     });
   }),
-  // delete: protectedProcedure.input(deletePlaceSchema).mutation(async ({ ctx, input }) => {
-  //   const { tripId, placeId, dayIndex, sortIndex } = input;
-
-  //   await ctx.db.transaction(async (tx) => {
-  //     const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
-
-  //     if (!permissions.editItinerary) {
-  //       throw error.unauthorized(
-  //         "You do not have permission to delete this itinerary. Please contact the trip organizer to request edit permissions.",
-  //       );
-  //     }
-
-  //     await tx
-  //       .update(places)
-  //       .set({ sortIndex: sql`"sort_index" - 1` })
-  //       .where(
-  //         and(
-  //           eq(places.tripId, tripId),
-  //           eq(places.dayIndex, dayIndex),
-  //           gt(places.sortIndex, sortIndex),
-  //         ),
-  //       );
-  //     await tx.delete(places).where(and(eq(places.tripId, tripId), eq(places.id, placeId)));
-  //   });
-
-  //   analyticsServerClient.capture({
-  //     distinctId: ctx.user.id,
-  //     event: "delete item",
-  //     properties: { tripId, itemId: placeId },
-  //   });
-  // }),
 });
