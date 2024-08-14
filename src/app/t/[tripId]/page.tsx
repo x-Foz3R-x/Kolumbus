@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { api } from "~/trpc/react";
 import { toastHandler } from "~/lib/trpc";
-import type { PlaceSchema } from "~/lib/types";
+import type { PlaceDetailsSchema, PlaceSchema } from "~/lib/types";
 
 import { useTripContext } from "./_components/trip-provider";
 import { DndItinerary } from "~/components/dnd-itinerary";
@@ -13,18 +13,26 @@ export default function Trip() {
   const router = useRouter();
 
   const createPlace = api.place.create.useMutation(toastHandler("Place created"));
-  const updatePlacement = api.place.updatePlacement.useMutation(toastHandler());
-  const deletePlace = api.place.delete.useMutation(toastHandler());
+  const updatePlace = api.place.update.useMutation(toastHandler("Place updated"));
+  const movePlace = api.place.move.useMutation(toastHandler("Place moved"));
+  const deletePlace = api.place.delete.useMutation(toastHandler("Place deleted"));
   const { userId, trip, permissions, updateItinerary, getItineraryEntry } = useTripContext();
 
   const onPlaceCreate = (place: PlaceSchema) => {
     createPlace.mutate(place, { onError: () => router.refresh() });
   };
+  const onPlaceUpdate = (
+    tripId: string,
+    placeId: string,
+    modifiedFields: Partial<PlaceDetailsSchema>,
+  ) => {
+    updatePlace.mutate({ tripId, placeId, modifiedFields }, { onError: () => router.refresh() });
+  };
   const onPlaceMove = (
     tripId: string,
     places: { id: string; dayIndex: number; sortIndex: number }[],
   ) => {
-    updatePlacement.mutate({ tripId, places: places }, { onError: () => router.refresh() });
+    movePlace.mutate({ tripId, places: places }, { onError: () => router.refresh() });
   };
   const onPlaceDelete = (tripId: string, placeIds: string[]) => {
     deletePlace.mutate({ tripId, placeIds }, { onError: () => router.refresh() });
@@ -40,6 +48,7 @@ export default function Trip() {
         getEntry={getItineraryEntry}
         placeLimit={100}
         onItemCreate={onPlaceCreate}
+        onItemUpdate={onPlaceUpdate}
         onItemsMove={onPlaceMove}
         onItemsDelete={onPlaceDelete}
         dndTrash={permissions.editItinerary}
