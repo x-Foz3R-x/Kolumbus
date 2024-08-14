@@ -7,7 +7,7 @@ import { api } from "~/trpc/react";
 import { differenceInDays } from "~/lib/utils";
 
 import { dotDivider, Button } from "~/components/ui";
-import { tripFallbackUrl } from "~/lib/constants";
+import { tripFallbackImageUrl } from "~/lib/constants";
 import { format } from "date-fns";
 
 type InviteProps = {
@@ -37,7 +37,7 @@ export default function InviteTrip({ invite }: InviteProps) {
     <>
       <div className="relative h-28 w-28 overflow-hidden rounded-3xl">
         <Image
-          src={invite.image ? invite.image : tripFallbackUrl}
+          src={invite.image ? invite.image : tripFallbackImageUrl}
           alt="Trip photo"
           sizes="80px"
           priority

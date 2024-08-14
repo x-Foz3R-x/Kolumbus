@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import deepEqual from "deep-equal";
 
 type Options = { initialDescription?: string; limit?: number; keepInitial?: boolean };
-type HistoryProps<T> = {
+export type HistoryActions<T> = {
   /** The initially passed value. */
   initialValue: T;
   /** An array of descriptive changes made in history. */
@@ -46,7 +46,7 @@ type HistoryProps<T> = {
 export default function useHistoryState<T>(
   initialValue: T,
   { initialDescription = "Open", limit = 20, keepInitial = false }: Options = {},
-): [T, (valueOrIndex: T | number, desc?: string) => void, HistoryProps<T>] {
+): [T, (valueOrIndex: T | number, desc?: string) => void, HistoryActions<T>] {
   const [value, setValue] = useState<T>(initialValue);
   const [history, setHistory] = useState<Array<{ value: T; desc: string }>>([
     { value: structuredClone(initialValue), desc: initialDescription },

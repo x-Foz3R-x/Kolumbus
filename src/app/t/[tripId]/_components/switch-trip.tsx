@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
 
-import { tripFallbackUrl } from "~/lib/constants";
+import { tripFallbackImageUrl } from "~/lib/constants";
 import type { MyMembershipSchema } from "~/lib/types";
 
 import TripImage from "~/components/trip-image";
@@ -78,7 +78,7 @@ export default function SwitchTrip(props: { myMemberships: MyMembershipSchema[] 
           >
             <div className="relative h-9 w-9 overflow-hidden rounded-md bg-gray-200">
               <Image
-                src={membership.trip.imageUrl ? membership.trip.imageUrl : tripFallbackUrl}
+                src={membership.trip.imageUrl ? membership.trip.imageUrl : tripFallbackImageUrl}
                 alt="Trip photo"
                 sizes="224px"
                 priority

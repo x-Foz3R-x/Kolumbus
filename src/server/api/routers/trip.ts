@@ -16,8 +16,8 @@ import analyticsServerClient from "~/server/analytics";
 import {
   enforceMembershipLimit,
   enforceRateLimit,
-  getMyMembershipDecodedPermissions,
-  getMyMembershipsCount,
+  getUserMembershipPermissions,
+  getUserMembershipCount,
   getTripMemberCount,
   isUserMemberOfTrip,
 } from "~/server/queries";
@@ -137,7 +137,7 @@ export const tripRouter = createTRPCRouter({
     const { id: tripId, ...trip } = input;
 
     await ctx.db.transaction(async (tx) => {
-      const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
+      const permissions = await getUserMembershipPermissions(tx, ctx.user.id, tripId);
 
       if (!permissions.editTrip) {
         throw error.unauthorized(
@@ -243,7 +243,7 @@ export const tripRouter = createTRPCRouter({
 
     await enforceRateLimit(ctx.user.id);
     await ctx.db.transaction(async (tx) => {
-      const permissions = await getMyMembershipDecodedPermissions(tx, ctx.user.id, tripId);
+      const permissions = await getUserMembershipPermissions(tx, ctx.user.id, tripId);
 
       if (!permissions?.editInvite) {
         throw error.unauthorized(
@@ -272,7 +272,7 @@ export const tripRouter = createTRPCRouter({
       if (isMember) throw error.badRequest("You're already a member of this trip");
 
       // Get the number of shared memberships the user has to determine the trip position
-      const sharedMembershipsCount = await getMyMembershipsCount(tx, ctx.user.id, false);
+      const sharedMembershipsCount = await getUserMembershipCount(tx, ctx.user.id, false);
 
       await tx.insert(memberships).values({
         tripId: tripId,

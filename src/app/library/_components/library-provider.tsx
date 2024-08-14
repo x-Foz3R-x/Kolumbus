@@ -17,7 +17,7 @@ import { toastHandler } from "~/lib/trpc";
 import { constructMembership, constructTrip } from "~/lib/constructors";
 import type { MyMembershipSchema } from "~/lib/validations/membership";
 import type { UserTypeSchema } from "~/lib/validations/auth";
-import { tripFallbackUrl } from "~/lib/constants";
+import { tripFallbackImageUrl } from "~/lib/constants";
 
 type LibraryContext = {
   userType: UserTypeSchema;
@@ -79,7 +79,7 @@ export function LibraryProvider(props: {
           name: trip.name,
           startDate: trip.startDate,
           endDate: trip.endDate,
-          imageUrl: trip.imageUrl ?? tripFallbackUrl,
+          imageUrl: trip.imageUrl ?? tripFallbackImageUrl,
           eventCount: 0,
         },
       };

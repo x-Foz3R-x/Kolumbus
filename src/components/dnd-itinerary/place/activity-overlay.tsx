@@ -3,16 +3,16 @@ import { memo, useRef } from "react";
 import { cn } from "~/lib/utils";
 
 import { Badge, ScrollIndicator } from "../../ui";
-import ActivityImage from "./activity-image";
+import PlaceImage from "./place-image";
 import type { PlaceSchema } from "~/lib/types";
 
 type EventOverlayProps = {
-  event: PlaceSchema;
+  place: PlaceSchema;
   selectCount: number;
   hoverShadow?: boolean;
 };
 export const ActivityOverlay = memo(function ActivityOverlay({
-  event,
+  place,
   selectCount,
   hoverShadow,
 }: EventOverlayProps) {
@@ -29,13 +29,13 @@ export const ActivityOverlay = memo(function ActivityOverlay({
       >
         {/* Image */}
         <div className="relative h-[82px] flex-shrink-0">
-          <ActivityImage event={event} size={82} />
+          <PlaceImage imageUrl={place.imageUrl} size={82} />
         </div>
 
         {/* Name */}
         <div className="relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
           <div ref={scrollRef} className="w-full select-none">
-            {event.name}
+            {place.name}
             <ScrollIndicator
               scrollRef={scrollRef}
               className={cn(selectCount > 0 && "from-kolumblue-200")}

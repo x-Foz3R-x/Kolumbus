@@ -1,18 +1,8 @@
 import "server-only";
 
 import { TRPCError } from "@trpc/server";
-import {
-  and,
-  count,
-  eq,
-  type ExtractTablesWithRelations,
-  inArray,
-  ne,
-  sql,
-  type Subquery,
-  type TableConfig,
-} from "drizzle-orm";
-import type { PgTable, PgTransaction, QueryResultHKT } from "drizzle-orm/pg-core";
+import { and, count, eq, type ExtractTablesWithRelations, inArray, ne } from "drizzle-orm";
+import type { PgTransaction, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import { auth } from "@clerk/nextjs/server";
 import ratelimit from "./ratelimit";
 import { error } from "~/lib/trpc";
@@ -24,17 +14,19 @@ import { MemberPermissionFlags } from "~/lib/validations/membership";
 import type { UserTypeSchema } from "~/lib/validations/auth";
 
 type Transaction = PgTransaction<
-  QueryResultHKT,
+  PgQueryResultHKT,
   typeof schema,
   ExtractTablesWithRelations<typeof schema>
 >;
-type Table = PgTable<TableConfig> | Subquery<string, Record<string, unknown>>;
 
 /*--------------------------------------------------------------------------------------------------
  * Read
  *------------------------------------------------------------------------------------------------*/
-
-export async function getMyMembershipPermissions(tx: Transaction, userId: string, tripId: string) {
+export async function getUserMembershipPermissions(
+  tx: Transaction,
+  userId: string,
+  tripId: string,
+): Promise<Record<keyof typeof MemberPermissionFlags, boolean>> {
   const result = await tx.query.memberships.findFirst({
     columns: { permissions: true },
     where: and(eq(memberships.userId, userId), eq(memberships.tripId, tripId)),
@@ -46,19 +38,10 @@ export async function getMyMembershipPermissions(tx: Transaction, userId: string
     );
   }
 
-  return result.permissions;
+  return decodePermissions(result.permissions, MemberPermissionFlags);
 }
 
-export async function getMyMembershipDecodedPermissions(
-  tx: Transaction,
-  userId: string,
-  tripId: string,
-): Promise<Record<keyof typeof MemberPermissionFlags, boolean>> {
-  const permissions = await getMyMembershipPermissions(tx, userId, tripId);
-  return decodePermissions(permissions, MemberPermissionFlags);
-}
-
-export async function getMyMembershipsCount(tx: Transaction, userId: string, owner?: boolean) {
+export async function getUserMembershipCount(tx: Transaction, userId: string, owner?: boolean) {
   const [result] = owner
     ? await tx
         .select({ membershipsCount: count() })
@@ -109,21 +92,6 @@ export async function getTripsEventCount(tx: Transaction, tripIds: string[]) {
   );
 }
 
-export async function isIdUsed(tx: Transaction, table: Table, id: string) {
-  const [result] = await tx
-    .select({ keyCount: count() })
-    .from(table)
-    .where(sql`id = ${id}`);
-
-  if (!result) {
-    throw error.internalServerError(
-      "Failed to verify if the ID is already used in the table. Please try again later.",
-    );
-  }
-
-  return result.keyCount > 0;
-}
-
 export async function isUserMemberOfTrip(tx: Transaction, userId: string, tripId: string) {
   const [result] = await tx
     .select({ tripMembershipCount: count() })
@@ -158,7 +126,7 @@ export async function enforceMembershipLimit<T>(
   returnValueOnEnforce?: T,
 ) {
   const userType = await getMyUserType();
-  const membershipsCount = await getMyMembershipsCount(tx, userId);
+  const membershipsCount = await getUserMembershipCount(tx, userId);
 
   if (membershipsCount >= userType.maxMemberships) {
     if (returnValueOnEnforce) return returnValueOnEnforce;
@@ -169,13 +137,6 @@ export async function enforceMembershipLimit<T>(
 /*--------------------------------------------------------------------------------------------------
  * Auth
  *------------------------------------------------------------------------------------------------*/
-
-export function getUserId() {
-  const { userId } = auth();
-  if (!userId) throw error.unauthorized("Unauthorized. Please sign in to continue.");
-  return userId;
-}
-
 export async function getMyUserType(): Promise<UserTypeSchema> {
   const { userId, sessionClaims } = auth();
   if (!userId) throw error.unauthorized("Unauthorized. Please sign in to continue.");

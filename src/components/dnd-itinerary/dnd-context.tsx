@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { PlaceSchema, UpdatePlaceSchema } from "~/lib/validations/place";
+import type { PlaceDetailsSchema, PlaceSchema } from "~/lib/validations/place";
 
 export type DndItineraryContextProps = {
   userId: string;
@@ -9,21 +9,22 @@ export type DndItineraryContextProps = {
 
   selectItem: (itemId: string) => void;
   createItem: (item: PlaceSchema) => void;
-  updateItem: (
-    item: PlaceSchema,
-    updateData: UpdatePlaceSchema["data"],
-    {
-      dayIndex,
-      entryDescription,
-      preventEntry,
-      preventUpdate,
-    }: {
-      dayIndex?: number;
-      entryDescription?: string;
-      preventUpdate?: boolean;
-      preventEntry?: boolean;
-    },
-  ) => void;
+  updateItem: (place: PlaceSchema, modifiedFields: Partial<PlaceDetailsSchema>) => void;
+  // updateItem: (
+  //   item: PlaceSchema,
+  //   updateData: UpdatePlaceSchema["data"],
+  //   {
+  //     dayIndex,
+  //     entryDescription,
+  //     preventEntry,
+  //     preventUpdate,
+  //   }: {
+  //     dayIndex?: number;
+  //     entryDescription?: string;
+  //     preventUpdate?: boolean;
+  //     preventEntry?: boolean;
+  //   },
+  // ) => void;
   deleteItems: (itemIds: string[]) => void;
 };
 export const DndItineraryContext = createContext<DndItineraryContextProps | null>(null);

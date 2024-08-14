@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { isAfter, isBefore } from "date-fns";
@@ -15,15 +15,15 @@ import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
 import { DatePicker } from "~/components/date-picker";
 import { Icons } from "~/components/ui";
-import { ExcludedDaysModal } from "./excluded-days-modal";
+// import { ExcludedDaysModal } from "./excluded-days-modal";
 
 export default function TopNav() {
-  const { trip, setTrip, deleteEvent } = useTripContext();
+  const { trip, setTrip } = useTripContext();
 
   const router = useRouter();
   const updateTrip = api.trip.update.useMutation(toastHandler("Trip dates changed"));
 
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  // const [isOpenModal, setIsOpenModal] = useState(false);
 
   const datesRef = useRef<{ startDate: Date; endDate: Date }>({
     startDate: new Date(trip.startDate),
@@ -80,31 +80,7 @@ export default function TopNav() {
     datesRef.current = { startDate, endDate };
     // Show a confirmation modal if events scheduled on days being deleted
     // Are affected by the date change, requiring user input to proceed.
-    setIsOpenModal(true);
-  };
-
-  // todo
-  const handleDeleteEvents = (startDate: Date, endDate: Date) => {
-    updateTripData(startDate, endDate);
-    setIsOpenModal(false);
-
-    // Delete the events scheduled on the days being deleted.
-    daysToDeleteRef.current
-      .flatMap((day) => day.places)
-      .forEach((event) => {
-        deleteEvent(event);
-        console.log(event.id);
-        // dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { event, tripId: activeTrip.id } });
-        // deleteEvent.mutate(
-        //   { eventId: event.id },
-        //   {
-        //     onError(error) {
-        //       console.error(error);
-        //       dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: { ...activeTrip, itinerary: deepCloneItinerary(activeTrip.itinerary) } });
-        //     },
-        //   },
-        // );
-      });
+    // setIsOpenModal(true);
   };
 
   return (
@@ -139,14 +115,14 @@ export default function TopNav() {
         </section>
       </nav>
 
-      <ExcludedDaysModal
+      {/* <ExcludedDaysModal
         isOpen={isOpenModal}
         setOpen={setIsOpenModal}
         startDate={datesRef.current.startDate}
         endDate={datesRef.current.endDate}
         daysToDelete={daysToDeleteRef.current}
         onDeleteEvents={handleDeleteEvents}
-      />
+      /> */}
     </>
   );
 }

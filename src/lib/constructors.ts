@@ -4,7 +4,7 @@ import { createId, formatDate } from "./utils";
 
 import type { Trip } from "./validations/trip";
 import type { Membership } from "./validations/membership";
-import type { Place } from "./validations/place";
+import type { PlaceSchema } from "./validations/place";
 
 export function constructTrip(trip: {
   userId: string;
@@ -60,7 +60,7 @@ export function constructPlace(place: {
   imageUrl?: string;
   dayIndex: number;
   sortIndex: number;
-}): Place {
+}): PlaceSchema {
   return {
     id: createId(),
     tripId: place.tripId,

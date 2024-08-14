@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { customAlphabet } from "nanoid";
 import { env } from "~/env";
 
-import type { Place } from "./validations/place";
+import type { PlaceSchema } from "./validations/place";
 import type { ItinerarySchema } from "./validations/trip";
 
 export function cn(...inputs: ClassValue[]) {
@@ -106,7 +106,7 @@ export function decodePermissions<T extends Record<string, boolean>>(
 export function generateItinerary(
   startDate: string | Date,
   endDate: string | Date,
-  places: Place[],
+  places: PlaceSchema[],
 ): ItinerarySchema {
   const totalDays = differenceInCalendarDays(new Date(endDate), new Date(startDate)) + 1;
   const itinerary: ItinerarySchema = [];

@@ -1,14 +1,14 @@
 import { memo, useEffect, useRef } from "react";
-import Link from "next/link";
+// import Link from "next/link";
 import { motion } from "framer-motion";
 
-import useHistoryState from "~/hooks/use-history-state";
+import { type HistoryActions } from "~/hooks/use-history-state";
 import { EASING } from "~/lib/motion";
 import { cn, os } from "~/lib/utils";
+import type { PlaceDetailsSchema } from "~/lib/types";
 
+import PlaceImage from "./place-image";
 import { Button, Icons, Input, ScrollIndicator, TextArea } from "~/components/ui";
-import ActivityImage from "./activity-image";
-import { PlaceSchema } from "~/lib/types";
 
 // * test/proposal - render activity as the trigger in triggerProps instead of a span
 
@@ -20,60 +20,44 @@ import { PlaceSchema } from "~/lib/types";
 // todo - Tooltip info icon with created at and updated at dates
 // todo - way to upload photo/link to change/remove activity photo and change image index in array
 
-type ActivityDetailsProps = {
-  event: PlaceSchema;
+type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  detailsRef: React.MutableRefObject<HTMLDivElement | null>;
+  details: PlaceDetailsSchema;
+  setDetails: (valueOrIndex: PlaceDetailsSchema | number, desc?: string) => void;
+  historyActions: HistoryActions<PlaceDetailsSchema>;
+  detailsRef: (element: HTMLDivElement | null) => void;
   detailsHeight: number;
   onDelete: () => void;
 };
-export const ActivityDetailsContent = memo(function ActivityDetails({
-  event,
+export const PlaceDetails = memo(function ActivityDetails({
   isOpen,
   setIsOpen,
+  details,
+  setDetails,
+  historyActions,
   detailsRef,
   detailsHeight,
   onDelete: handleDelete,
-}: ActivityDetailsProps) {
+}: Props) {
   const inputScrollRef = useRef<HTMLInputElement | null>(null);
-  const [details, setDetails, { initialValue, canUndo, canRedo, undo, redo, handleShortcut }] =
-    useHistoryState(
-      {
-        name: event.name,
-        address: event.address,
-        phoneNumber: event.phoneNumber,
-        cost: event.cost,
-        website: event.website,
-        note: event.note,
-      },
-      { keepInitial: true },
-    );
 
-  type detailsUpdateData = {
-    name?: string;
-    address?: string;
-    phoneNumber?: string;
-    cost?: string;
-    website?: string;
-    note?: string;
-  };
-  const handleChange = (data: detailsUpdateData) => {
+  const handleChange = (data: Partial<PlaceDetailsSchema>) => {
     setDetails({ ...details, ...data });
   };
-  const handleUpdate = (data: detailsUpdateData) => {
+  const handleUpdate = (data: Partial<PlaceDetailsSchema>) => {
     setDetails({ ...details, ...data }, "Update event");
   };
   const handleCancel = () => {
-    setDetails(initialValue);
+    setDetails(historyActions.initialValue);
     setTimeout(() => setIsOpen(false));
   };
 
   // Handle undo/redo shortcuts
   useEffect(() => {
-    window.addEventListener("keydown", handleShortcut);
-    return () => window.removeEventListener("keydown", handleShortcut);
-  }, [handleShortcut]);
+    window.addEventListener("keydown", historyActions.handleShortcut);
+    return () => window.removeEventListener("keydown", historyActions.handleShortcut);
+  }, [historyActions.handleShortcut]);
 
   return (
     <>
@@ -88,7 +72,7 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
         exit={{ height: "82px" }}
         transition={{ ease: EASING.anticipate, duration: 0.6 }}
       >
-        <ActivityImage event={event} size={82} />
+        <PlaceImage imageUrl={details.imageUrl} size={82} />
       </motion.div>
 
       {/* Name */}
@@ -184,7 +168,7 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
                 id="cost"
                 type="number"
                 placeholder="0.00"
-                value={details.cost || ""}
+                value={details.cost ?? ""}
                 onChange={(e) => handleChange({ cost: e.target.value })}
                 onUpdate={(e) => handleUpdate({ cost: e.target.value })}
                 variant="unset"
@@ -272,12 +256,12 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
 
         {/* Undo */}
         <Button
-          onClick={undo}
+          onClick={historyActions.undo}
           variant="scale"
           size="icon"
           className="flex w-9 items-center justify-center p-0 before:rounded-lg before:bg-gray-100 before:shadow-none"
           animatePress
-          disabled={!canUndo}
+          disabled={!historyActions.canUndo}
           tooltip={{
             zIndex: 40,
             className: "flex gap-1.5 items-center",
@@ -294,12 +278,12 @@ export const ActivityDetailsContent = memo(function ActivityDetails({
 
         {/* Redo */}
         <Button
-          onClick={redo}
+          onClick={historyActions.redo}
           variant="scale"
           size="unset"
           className="flex h-9 w-9 items-center justify-center before:rounded-lg before:bg-gray-100 before:shadow-none"
           animatePress
-          disabled={!canRedo}
+          disabled={!historyActions.canRedo}
           tooltip={{
             zIndex: 40,
             className: "flex gap-1.5 items-center",

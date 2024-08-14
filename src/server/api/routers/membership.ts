@@ -1,7 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { getTripsEventCount } from "~/server/queries";
 
-import { tripFallbackUrl } from "~/lib/constants";
+import { tripFallbackImageUrl } from "~/lib/constants";
 
 export const membershipRouter = createTRPCRouter({
   getMy: protectedProcedure.query(async ({ ctx }) => {
@@ -32,7 +32,7 @@ export const membershipRouter = createTRPCRouter({
           trip.imageUrl ??
           (placesImageRef.length > 0
             ? `/api/get-trip-image?imageRefs=${placesImageRef.join(",")}`
-            : tripFallbackUrl);
+            : tripFallbackImageUrl);
 
         const eventCount = tripsEventCount[membership.tripId] ?? 0;
 

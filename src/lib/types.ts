@@ -7,4 +7,4 @@ export type {
   MemberPermissionFlags,
 } from "./validations/membership";
 
-export type { Place, PlaceSchema, UpdatePlaceSchema } from "./validations/place";
+export type { PlaceSchema, PlaceDetailsSchema, UpdatePlaceSchema } from "./validations/place";

@@ -1,4 +1,4 @@
-import type { PlaceSchema, UpdatePlaceSchema } from "~/lib/validations/place";
+import type { PlaceDetailsSchema, PlaceSchema } from "~/lib/validations/place";
 
 export { DndItinerary } from "./dnd-itinerary";
 
@@ -6,7 +6,7 @@ export type onItemCreate = (item: PlaceSchema) => void;
 export type onItemUpdate = (
   tripId: string,
   itemId: string,
-  itemData: UpdatePlaceSchema["data"],
+  modifiedItemFields: Partial<PlaceDetailsSchema>,
 ) => void;
 export type onItemsMove = (
   tripId: string,

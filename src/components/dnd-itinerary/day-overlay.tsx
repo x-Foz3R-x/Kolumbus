@@ -3,7 +3,7 @@ import { memo } from "react";
 import type { DaySchema } from "~/lib/validations/trip";
 
 import { DayCalendar } from "../day-calendar";
-import { ActivityOverlay } from "./events";
+import { ActivityOverlay } from "./place";
 import { Button, Icons } from "../ui";
 
 const DayOverlay = memo(function DayOverlay(props: {
@@ -20,7 +20,7 @@ const DayOverlay = memo(function DayOverlay(props: {
 
       <ul className="mt-5 flex h-28 w-full min-w-40 list-none gap-2">
         {props.day.places.map((place) => (
-          <ActivityOverlay key={place.id} event={place} selectCount={0} />
+          <ActivityOverlay key={place.id} place={place} selectCount={0} />
         ))}
 
         {props.enableEventComposer && (

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
-import { tripFallbackUrl } from "~/lib/constants";
+import { tripFallbackImageUrl } from "~/lib/constants";
 
 export default function TripImage({ imageUrl, size }: { imageUrl: string; size: string }) {
   // Adjust the source url to include a size parameter if the image
@@ -8,7 +8,7 @@ export default function TripImage({ imageUrl, size }: { imageUrl: string; size: 
 
   const src = imageUrl.startsWith("/") ? `${imageUrl}&size=${parseInt(size) * 2}` : imageUrl;
 
-  return imageUrl.startsWith("/") || imageUrl.startsWith(tripFallbackUrl) ? (
+  return imageUrl.startsWith("/") || imageUrl.startsWith(tripFallbackImageUrl) ? (
     // Use the Image component for local or fallback images for optimized loading
     <Image src={src} alt="Trip image" sizes={size} priority fill />
   ) : (

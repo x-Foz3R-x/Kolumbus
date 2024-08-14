@@ -22,16 +22,15 @@ export const myMembershipSchema = z.object({
 
 export enum MemberPermissionFlags {
   // General permissions
-  shareInvite = 1 << 0,
+  viewInvite = 1 << 0,
   editInvite = 1 << 1,
-  editPermissions = 1 << 2,
-  kickMembers = 1 << 3,
+  editMembers = 1 << 2,
 
   // Trip permissions
-  editTrip = 1 << 4,
-  editItinerary = 1 << 5,
-  editBudget = 1 << 6,
-  viewDetails = 1 << 7,
+  editTrip = 1 << 3,
+  editItinerary = 1 << 4,
+  editBudget = 1 << 5,
+  viewDetails = 1 << 6,
 }
 
 export type Membership = z.infer<typeof membership>;

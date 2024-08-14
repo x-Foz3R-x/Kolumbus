@@ -29,7 +29,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import type { ItinerarySchema, DaySchema } from "~/lib/validations/trip";
-import type { PlaceSchema, UpdatePlaceSchema } from "~/lib/validations/place";
+import type { PlaceDetailsSchema, PlaceSchema } from "~/lib/validations/place";
 import { DAY_CALENDAR_WIDTH, LIST_GAP, PLACE_WIDTH } from "~/lib/constants";
 import { cn } from "~/lib/utils";
 import { KEYS } from "~/types";
@@ -40,7 +40,7 @@ import { DndItineraryContext, type DndItineraryContextProps } from "./dnd-contex
 import DndDragOverlay from "./dnd-drag-overlay";
 import DndTrash from "./dnd-trash";
 import DndDay from "./dnd-day";
-import { Activity } from "./events";
+import { Place } from "./place";
 
 // * PROPOSAL: Remove most of animation/shifting logic on drag to greatly improve performance and potentially reduce complexity (notion dnd style)
 
@@ -170,28 +170,20 @@ export function DndItinerary({
     [itinerary, setItinerary, onItemCreate],
   );
   const updateItem = useCallback(
-    (
-      place: PlaceSchema,
-      updateData: UpdatePlaceSchema["data"],
-      {
-        dayIndex,
-        entryDescription,
-        preventEntry,
-      }: { dayIndex?: number; entryDescription?: string; preventEntry?: boolean } = {},
-    ) => {
+    (place: PlaceSchema, updatedFields: Partial<PlaceDetailsSchema>) => {
       const newItinerary = structuredClone(itinerary);
 
-      const targetDayIndex = findListIndexByItemId(place.id, newItinerary, dayIndex);
-      if (targetDayIndex === -1) return;
+      const dayIndex = findListIndexByItemId(place.id, newItinerary, place.dayIndex);
+      if (dayIndex === -1) return;
 
-      const placeIndex = newItinerary[targetDayIndex]!.places.findIndex((e) => e.id === place.id);
-      if (placeIndex === -1 || !newItinerary[targetDayIndex]!.places[placeIndex]) return;
+      const sortIndex =
+        place.sortIndex ?? newItinerary[dayIndex]!.places.findIndex((e) => e.id === place.id);
+      if (sortIndex === -1 || !newItinerary[dayIndex]!.places[sortIndex]) return;
 
-      place.updatedAt = new Date();
-      newItinerary[targetDayIndex]!.places[placeIndex] = place;
+      newItinerary[dayIndex]!.places[sortIndex] = place;
 
-      setItinerary(newItinerary, !preventEntry ? entryDescription ?? "Update place" : undefined);
-      onItemUpdate?.(place.id, tripId, updateData);
+      setItinerary(newItinerary, "Update place");
+      onItemUpdate?.(tripId, place.id, updatedFields);
     },
     [tripId, itinerary, setItinerary, onItemUpdate],
   );
@@ -555,12 +547,12 @@ export function DndItinerary({
                   items={filterItems(day.places).map((place) => place.id)}
                   strategy={horizontalListSortingStrategy}
                 >
-                  {filterItems(day.places).map((event) => (
-                    <Activity
-                      key={event.id}
-                      place={event}
+                  {filterItems(day.places).map((place) => (
+                    <Place
+                      key={place.id}
+                      place={place}
                       dayIndex={index}
-                      isSelected={selectedIds.includes(event.id)}
+                      isSelected={selectedIds.includes(place.id)}
                     />
                   ))}
                 </SortableContext>

@@ -5,7 +5,7 @@ import type { DaySchema } from "~/lib/validations/trip";
 import type { PlaceSchema } from "~/lib/validations/place";
 
 import DayOverlay from "./day-overlay";
-import { ActivityOverlay } from "./events";
+import { ActivityOverlay } from "./place";
 
 const ACTIVITY_WIDTH = 160;
 
@@ -51,7 +51,7 @@ function Overlay({ activeItem, selectedIds, enableEventComposer }: OverlayProps)
 
   return (
     <ActivityOverlay
-      event={activeItem}
+      place={activeItem}
       selectCount={selectedIds.length ? selectedIds.length : 0}
       hoverShadow
     />

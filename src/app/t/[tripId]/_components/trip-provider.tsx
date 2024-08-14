@@ -14,7 +14,6 @@ import { decodePermissions } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { toastHandler } from "~/lib/trpc";
 import { constructTrip } from "~/lib/constructors";
-import type { PlaceSchema } from "~/lib/validations/place";
 
 type TripContext = {
   trip: TripSchema;
@@ -29,7 +28,6 @@ type TripContext = {
   getItineraryEntry: (index: number) => ItinerarySchema;
 
   createTrip: (name: string, startDate: string, endDate: string) => void;
-  deleteEvent: (event: PlaceSchema) => void;
 };
 export const TripContext = createContext<TripContext | null>(null);
 export const useTripContext = () => {
@@ -62,7 +60,6 @@ export const TripProvider = (props: {
   );
 
   const createTrip = api.trip.create.useMutation(toastHandler("Trip created"));
-  const deleteItem = api.place.delete.useMutation(toastHandler("Item deleted"));
 
   const handleCreate = useCallback(
     (name: string, startDate: string, endDate: string) => {
@@ -82,44 +79,12 @@ export const TripProvider = (props: {
     [props.userId, createTrip, myMemberships, router],
   );
 
-  const handleEventDelete = useCallback(
-    (place: PlaceSchema) => {
-      if (place.createdBy === props.userId && !permissions.editItinerary) {
-        return;
-      }
-
-      const newItinerary = structuredClone(trip.itinerary);
-
-      const dayIndex = newItinerary.findIndex((_, index) => index === place.dayIndex);
-      if (dayIndex === -1) return;
-
-      if (!newItinerary[dayIndex]) return;
-      if (!newItinerary[dayIndex].places[place.sortIndex]) return;
-
-      newItinerary[dayIndex].places.splice(place.sortIndex, 1);
-      newItinerary[dayIndex].places.map((place, index) => (place.sortIndex = index));
-
-      setTrip({ ...trip, itinerary: newItinerary });
-
-      deleteItem.mutate(
-        {
-          placeId: place.id,
-          tripId: trip.id,
-          dayIndex,
-          sortIndex: place.sortIndex,
-        },
-        { onError: () => router.refresh() },
-      );
-    },
-    [props.userId, trip, setTrip, permissions, deleteItem, router],
-  );
-
   const updateItinerary = useCallback(
     (itineraryOrIndex: ItinerarySchema | number, desc?: string) => {
       setTrip(
         typeof itineraryOrIndex === "number"
           ? itineraryOrIndex
-          : { ...trip, itinerary: itineraryOrIndex },
+          : { ...trip, updatedAt: new Date(), itinerary: itineraryOrIndex },
         desc,
       );
     },
@@ -146,7 +111,6 @@ export const TripProvider = (props: {
       getItineraryEntry,
 
       createTrip: handleCreate,
-      deleteEvent: handleEventDelete,
     }),
     [
       props.userId,
@@ -157,7 +121,6 @@ export const TripProvider = (props: {
       updateItinerary,
       getItineraryEntry,
       handleCreate,
-      handleEventDelete,
     ],
   );
 

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import useRandomTrip from "~/hooks/use-random-trip";
 import { cn } from "~/lib/utils";
 
-import Event from "./event";
+import Place from "./event";
 import { DayCalendar } from "~/components/day-calendar";
 
 const PRESETS = [
@@ -115,7 +115,7 @@ export default function HeroFeature(props: { disableAnimation?: boolean }) {
                 props.disableAnimation && "animate-none",
               )}
             >
-              <Event event={day.places[0]} />
+              <Place place={day.places[0]} />
             </Displacement>
           </motion.li>
         ))}
