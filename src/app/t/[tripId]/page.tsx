@@ -45,12 +45,12 @@ export default function Trip() {
         tripId={trip.id}
         itinerary={trip.itinerary}
         setItinerary={updateItinerary}
-        getEntry={getItineraryEntry}
-        placeLimit={100}
         onItemCreate={onPlaceCreate}
         onItemUpdate={onPlaceUpdate}
         onItemsMove={onPlaceMove}
         onItemsDelete={onPlaceDelete}
+        getEntry={getItineraryEntry}
+        placeLimit={100}
         dndTrash={permissions.editItinerary}
       />
     </div>

@@ -61,12 +61,12 @@ type Props = {
   tripId: string;
   itinerary: ItinerarySchema;
   setItinerary: (itineraryOrIndex: ItinerarySchema | number, desc?: string) => void;
-  getEntry: (index: number) => ItinerarySchema;
-  placeLimit: number;
   onItemCreate?: onItemCreate;
   onItemUpdate?: onItemUpdate;
   onItemsMove?: onItemsMove;
   onItemsDelete?: onItemsDelete;
+  getEntry: (index: number) => ItinerarySchema;
+  placeLimit: number;
   dndTrash?: { variant: "default" | "inset"; className?: string } | boolean;
   calendar?: string;
 };
@@ -75,12 +75,12 @@ export function DndItinerary({
   tripId,
   itinerary,
   setItinerary,
-  getEntry,
-  placeLimit,
   onItemCreate,
   onItemUpdate,
   onItemsMove,
   onItemsDelete,
+  getEntry,
+  placeLimit,
   dndTrash,
   calendar,
 }: Props) {
