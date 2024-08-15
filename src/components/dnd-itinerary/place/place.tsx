@@ -91,10 +91,8 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
   };
 
   const handleDuplicate = () => {
-    const newPlace = constructPlace({ ...place, userId, sortIndex: place.sortIndex + 1 });
-
-    console.log("duplicate");
-    createItem(newPlace);
+    const duplicatedPlace = constructPlace({ ...place, userId, sortIndex: place.sortIndex + 1 });
+    createItem(duplicatedPlace);
   };
 
   const handleDelete = () => {

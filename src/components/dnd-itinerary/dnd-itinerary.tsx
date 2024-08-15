@@ -175,12 +175,10 @@ export function DndItinerary({
       }
 
       setItinerary(newItinerary, "Add place");
-      console.log(dayPlaces);
 
       if (onItemCreate && onItemsMove) {
         const movedItemsDetails = getMovedItemsDetails(newItinerary, [dayId]);
 
-        console.log(movedItemsDetails);
         onItemsMove(tripId, movedItemsDetails);
         onItemCreate(place);
       }
