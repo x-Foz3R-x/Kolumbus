@@ -162,12 +162,30 @@ export function DndItinerary({
   const createItem = useCallback(
     (place: PlaceSchema) => {
       const newItinerary = structuredClone(itinerary);
-      newItinerary[place.dayIndex]!.places.push(place);
+
+      const dayId = newItinerary[place.dayIndex]!.id;
+      const dayPlaces = newItinerary[place.dayIndex]!.places;
+
+      if (place.sortIndex < dayPlaces.length) {
+        // Insert the new place at the sortIndex and update the sortIndex of the following places
+        dayPlaces.splice(place.sortIndex, 0, place);
+        dayPlaces.map((place, index) => (place.sortIndex = index));
+      } else {
+        dayPlaces.push(place);
+      }
 
       setItinerary(newItinerary, "Add place");
-      onItemCreate?.(place);
+      console.log(dayPlaces);
+
+      if (onItemCreate && onItemsMove) {
+        const movedItemsDetails = getMovedItemsDetails(newItinerary, [dayId]);
+
+        console.log(movedItemsDetails);
+        onItemsMove(tripId, movedItemsDetails);
+        onItemCreate(place);
+      }
     },
-    [itinerary, setItinerary, onItemCreate],
+    [tripId, itinerary, setItinerary, onItemCreate, onItemsMove, getMovedItemsDetails],
   );
   const updateItem = useCallback(
     (place: PlaceSchema, updatedFields: Partial<PlaceDetailsSchema>) => {
@@ -190,11 +208,13 @@ export function DndItinerary({
   const deleteItems = useCallback(
     (placeIds: string[]) => {
       const newItinerary = structuredClone(itinerary);
+      const affectedDayIds: string[] = [];
 
       newItinerary.forEach((day) => {
         const hasDeletedPlaces = day.places.some((place) => placeIds.includes(place.id));
         if (hasDeletedPlaces) {
           day.places = updateItemsPlacement(filterPlacesExcludingIds(day.places, placeIds));
+          affectedDayIds.push(day.id);
         }
       });
 
@@ -202,7 +222,6 @@ export function DndItinerary({
       setItinerary(newItinerary, actionDesc);
 
       if (onItemsDelete && onItemsMove) {
-        const affectedDayIds = newItinerary.map((day) => day.id);
         const movedItemsDetails = getMovedItemsDetails(newItinerary, affectedDayIds);
 
         onItemsMove(tripId, movedItemsDetails);

@@ -48,16 +48,15 @@ export function constructMembership(props: {
 export function constructPlace(place: {
   userId: string;
   tripId: string;
-  googleId?: string;
-  name?: string;
-  address?: string;
-  startTime?: string;
-  endTime?: string;
-  phoneNumber?: string;
-  cost?: string;
-  website?: string;
-  note?: string;
-  imageUrl?: string;
+  googleId?: string | null;
+  name?: string | null;
+  address?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  phoneNumber?: string | null;
+  website?: string | null;
+  note?: string | null;
+  imageUrl?: string | null;
   dayIndex: number;
   sortIndex: number;
 }): PlaceSchema {
@@ -71,7 +70,6 @@ export function constructPlace(place: {
     startTime: place.startTime ?? null,
     endTime: place.endTime ?? null,
     phoneNumber: place.phoneNumber ?? null,
-    cost: place.cost ?? "0",
     website: place.website ?? null,
     note: place.note ?? null,
     imageUrl: place.imageUrl ?? null,

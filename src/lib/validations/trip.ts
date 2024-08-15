@@ -10,15 +10,15 @@ const daySchema = z.object({
 export const itinerarySchema = daySchema.array();
 
 export const tripSchema = trip.extend({
-  members: z.array(
-    z.object({
+  members: z
+    .object({
       userId: z.string(),
       name: z.string().nullable(),
       image: z.string(),
       permissions: z.number(),
       createdAt: z.date(),
-    }),
-  ),
+    })
+    .array(),
   itinerary: itinerarySchema,
 });
 

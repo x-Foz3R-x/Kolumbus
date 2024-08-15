@@ -5,7 +5,7 @@ import { placeId, tripId } from ".";
 
 export const placeSchema = place;
 
-export const placeDetailsSchema = place.omit({
+export const placeDetailsSchema = placeSchema.omit({
   id: true,
   tripId: true,
   googleId: true,
@@ -25,18 +25,18 @@ export const updatePlaceSchema = z.object({
 
 export const updatePlacementSchema = z.object({
   tripId,
-  places: z.array(
-    z.object({
+  places: z
+    .object({
       id: placeId,
       dayIndex: z.number().int().nonnegative(),
       sortIndex: z.number().int().nonnegative(),
-    }),
-  ),
+    })
+    .array(),
 });
 
 export const deletePlaceSchema = z.object({
   tripId,
-  placeIds: z.array(placeId),
+  placeIds: placeId.array(),
 });
 
 export type PlaceSchema = z.infer<typeof placeSchema>;

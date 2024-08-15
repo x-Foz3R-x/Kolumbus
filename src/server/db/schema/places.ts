@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { decimal, index, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
+import { index, pgTable, smallint, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { createId } from "~/lib/utils";
@@ -22,7 +22,6 @@ export const places = pgTable(
     startTime: text("start_time"),
     endTime: text("end_time"),
     phoneNumber: text("phone_number"),
-    cost: decimal("cost", { precision: 10, scale: 2 }).default("0").notNull(), // to be replaced with its own table
     website: text("website"),
     note: text("note"),
     imageUrl: text("image_url"),

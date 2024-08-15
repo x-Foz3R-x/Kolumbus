@@ -17,6 +17,7 @@ import PlaceImage from "./place-image";
 import { PlaceDetails } from "./place-details";
 import { Floating } from "../../ui/floating";
 import { Button, Icons, ScrollIndicator } from "../../ui";
+import { constructPlace } from "~/lib/constructors";
 
 // todo - Context Menu (like in floating ui react examples)
 
@@ -26,7 +27,7 @@ type Props = {
   isSelected: boolean;
 };
 export const Place = memo(function Place({ place, dayIndex, isSelected }: Props) {
-  const { userId, selectItem, updateItem, deleteItems } = useDndItineraryContext();
+  const { userId, selectItem, createItem, updateItem, deleteItems } = useDndItineraryContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const { setNodeRef, active, over, isDragging, attributes, listeners, transform, transition } =
@@ -45,7 +46,6 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
       startTime: place.startTime,
       endTime: place.endTime,
       phoneNumber: place.phoneNumber,
-      cost: place.cost,
       website: place.website,
       note: place.note,
       imageUrl: place.imageUrl,
@@ -85,27 +85,16 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
     const newPlace = { ...place, ...details, updateBy: userId, updatedAt: new Date() };
     const modifiedDetails = getUpdatedDetails(place, details);
 
-    // No changes
-    if (Object.keys(modifiedDetails).length === 0) return;
+    if (Object.keys(modifiedDetails).length === 0) return; // No changes
 
-    console.log("update", modifiedDetails);
     updateItem(newPlace, modifiedDetails);
   };
 
   const handleDuplicate = () => {
-    console.log("duplicate");
-    // const sortIndex = place.sortIndex + 1;
-    // const duplicate: PlaceSchema = {
-    //   ...place,
-    //   id: createId(),
-    //   dayIndex,
-    //   sortIndex,
-    //   updatedAt: new Date(),
-    //   createdAt: new Date(),
-    //   createdBy: userId,
-    // };
+    const newPlace = constructPlace({ ...place, userId, sortIndex: place.sortIndex + 1 });
 
-    // createItem(duplicate, dayIndex, sortIndex);
+    console.log("duplicate");
+    createItem(newPlace);
   };
 
   const handleDelete = () => {

@@ -131,54 +131,28 @@ export const PlaceDetails = memo(function ActivityDetails({
             />
           </div>
 
-          {/* Phone number & Cost */}
-          <div className="flex gap-1.5">
-            <div className="relative flex-1 flex-shrink-0">
-              <label
-                htmlFor="phone"
-                className="absolute left-2 top-1.5 text-xs font-semibold tracking-tight text-gray-500"
-              >
-                Phone
-              </label>
+          {/* Phone number*/}
+          <div className="relative">
+            <label
+              htmlFor="phone"
+              className="absolute left-2 top-1.5 text-xs font-semibold tracking-tight text-gray-500"
+            >
+              Phone
+            </label>
 
-              <Input
-                id="phone"
-                placeholder="xxx xxx xxxx"
-                value={details.phoneNumber ?? ""}
-                onChange={(e) => handleChange({ phoneNumber: e.target.value })}
-                onUpdate={(e) => handleUpdate({ phoneNumber: e.target.value })}
-                variant="unset"
-                size="unset"
-                className={{
-                  input:
-                    "rounded-md bg-transparent px-2 pb-1 pt-6 duration-200 ease-kolumb-flow hover:shadow-border focus:bg-white focus:shadow-focus",
-                }}
-              />
-            </div>
-
-            <div className="relative w-24 flex-shrink-0">
-              <label
-                htmlFor="cost"
-                className="absolute left-2 top-1.5 text-xs font-semibold tracking-tight text-gray-500"
-              >
-                Cost
-              </label>
-
-              <Input
-                id="cost"
-                type="number"
-                placeholder="0.00"
-                value={details.cost ?? ""}
-                onChange={(e) => handleChange({ cost: e.target.value })}
-                onUpdate={(e) => handleUpdate({ cost: e.target.value })}
-                variant="unset"
-                size="unset"
-                className={{
-                  input:
-                    "rounded-md bg-transparent px-2 pb-1 pt-6 duration-200 ease-kolumb-flow hover:shadow-border focus:bg-white focus:shadow-focus",
-                }}
-              />
-            </div>
+            <Input
+              id="phone"
+              placeholder="xxx xxx xxxx"
+              value={details.phoneNumber ?? ""}
+              onChange={(e) => handleChange({ phoneNumber: e.target.value })}
+              onUpdate={(e) => handleUpdate({ phoneNumber: e.target.value })}
+              variant="unset"
+              size="unset"
+              className={{
+                input:
+                  "rounded-md bg-transparent px-2 pb-1 pt-6 duration-200 ease-kolumb-flow hover:shadow-border focus:bg-white focus:shadow-focus",
+              }}
+            />
           </div>
 
           {/* Website */}
