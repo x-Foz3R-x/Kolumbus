@@ -499,13 +499,8 @@ export function DndItinerary({
     const handleClick = (e: MouseEvent) => {
       if (selectedIds.length === 0) return;
 
-      const target = e.target as HTMLElement;
-      const containsIgnore = target.classList.contains(".ignore-deselect");
-      const childrenContainsIgnore = Array.from(target.children).some((child) =>
-        child.classList.contains("ignore-deselect"),
-      );
-
-      if (containsIgnore || childrenContainsIgnore) return;
+      // Ignore clicks on elements with the class "ignore-deselect"
+      if (e.target instanceof Element && e.target.closest(".ignore-deselect")) return;
 
       if (!(e.ctrlKey || e.metaKey)) setSelectedIds([]);
     };
