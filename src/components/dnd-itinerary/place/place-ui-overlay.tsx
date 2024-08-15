@@ -87,6 +87,7 @@ export const PlaceUiOverlay = memo(function ActivityOverlay({
             ),
           }}
         >
+          {/* Open in third party website */}
           {(!!googleUrl || !!googleMapsUrl) && (
             <>
               <p className="p-1.5 text-xs font-semibold text-gray-500">Open in</p>
