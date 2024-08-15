@@ -91,7 +91,7 @@ export function constructGoogleMapsUrl(
   if (!placeName && !placeAddress) return null;
 
   const LENGTH_LIMIT = 2048;
-  let query = "";
+  let query: string | null = null;
 
   // Prioritize address for the query parameter if available
   if (placeAddress) {
@@ -111,9 +111,9 @@ export function constructGoogleMapsUrl(
 }
 
 export function constructGoogleUrl(placeName: string | null, placeAddress: string | null) {
-  if (!placeName && !placeAddress) return null;
+  if (!placeName) return null;
 
-  let query = encodeURIComponent(placeName ?? "");
+  let query = encodeURIComponent(placeName);
 
   if (placeName && placeAddress) {
     const nameWords = placeName.split(/[\s,]+/);
