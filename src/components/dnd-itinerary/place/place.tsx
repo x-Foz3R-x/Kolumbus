@@ -12,7 +12,7 @@ import { cn } from "~/lib/utils";
 import type { PlaceDetailsSchema, PlaceSchema } from "~/lib/types";
 
 import { useDndItineraryContext } from "../dnd-context";
-import { ActivityUIOverlay } from "./activity-ui-overlay";
+import { PlaceUiOverlay } from "./place-ui-overlay";
 import PlaceImage from "./place-image";
 import { PlaceDetails } from "./place-details";
 import { Floating } from "../../ui/floating";
@@ -30,6 +30,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
   const { userId, selectItem, createItem, updateItem, deleteItems } = useDndItineraryContext();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
   const { setNodeRef, active, over, isDragging, attributes, listeners, transform, transition } =
     useSortable({
       id: place.id,
@@ -39,6 +40,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
         args.isSorting || args.wasDragging ? defaultAnimateLayoutChanges(args) : true,
     });
 
+  const nameScrollRef = useRef<HTMLDivElement>(null);
   const [details, setDetails, historyActions] = useHistoryState<PlaceDetailsSchema>(
     {
       name: place.name,
@@ -52,19 +54,19 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
     },
     { limit: 10 },
   );
-  const nameScrollRef = useRef<HTMLDivElement>(null);
 
-  //#region Handlers
   const handleClick = (e: MouseEvent) => {
     if (isOpen || !!active) return;
-    if (e.target instanceof HTMLButtonElement) return;
-    if (e.target instanceof HTMLUListElement) return;
+    // Prevent opening details when clicking on place ui overlay
+    if (e.target instanceof Element && e.target.closest(".place-ui-overlay")) return;
 
     if (e.ctrlKey || e.metaKey) selectItem(place.id);
     else setIsOpen(true);
   };
 
-  const handleUpdate = () => {
+  const savePlaceDetails = () => {
+    setIsOpen(false); // Close the details
+
     const getUpdatedDetails = (
       place: PlaceSchema,
       details: PlaceDetailsSchema,
@@ -90,16 +92,15 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
     updateItem(newPlace, modifiedDetails);
   };
 
-  const handleDuplicate = () => {
+  const duplicatePlace = () => {
     const duplicatedPlace = constructPlace({ ...place, userId, sortIndex: place.sortIndex + 1 });
     createItem(duplicatedPlace);
   };
 
-  const handleDelete = () => {
+  const deletePlace = () => {
     setIsOpen(false);
     deleteItems([place.id]);
   };
-  //#endregion
 
   //#region Sorting State
   const [isSorting, setIsSorting] = useState(false);
@@ -153,10 +154,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
   return (
     <Floating
       isOpen={isOpen}
-      onOpenChange={() => {
-        setIsOpen(false);
-        handleUpdate();
-      }}
+      onOpenChange={savePlaceDetails}
       placement="top-start"
       offset={({ rects }) => ({
         mainAxis: -rects.reference.height - (rects.floating.height - rects.reference.height),
@@ -204,17 +202,19 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
               transition: { boxShadow: { duration: isSorting ? 0 : 0.3, ease: EASING.kolumbFlow } },
             }}
             {...attributes}
-            {...listeners}
+            {...(!isMenuOpen && listeners)}
           >
             {!isSorting && (
               <>
-                <ActivityUIOverlay
+                <PlaceUiOverlay
                   place={place}
-                  disable={isOpen || !!active}
+                  isMenuOpen={isMenuOpen}
+                  setMenuOpen={setMenuOpen}
                   onOpen={() => setIsOpen(true)}
                   onSelect={() => selectItem(place.id)}
-                  onDuplicate={handleDuplicate}
-                  onDelete={handleDelete}
+                  onDuplicate={duplicatePlace}
+                  onDelete={deletePlace}
+                  disable={isOpen || !!active}
                 />
 
                 {/* Image */}
@@ -265,7 +265,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
         historyActions={historyActions}
         detailsRef={detailsRef}
         detailsHeight={detailsHeight}
-        onDelete={handleDelete}
+        onDelete={deletePlace}
       />
     </Floating>
   );
