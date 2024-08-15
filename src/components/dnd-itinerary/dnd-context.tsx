@@ -9,22 +9,7 @@ export type DndItineraryContextProps = {
 
   selectItem: (itemId: string) => void;
   createItem: (item: PlaceSchema) => void;
-  updateItem: (place: PlaceSchema, modifiedFields: Partial<PlaceDetailsSchema>) => void;
-  // updateItem: (
-  //   item: PlaceSchema,
-  //   updateData: UpdatePlaceSchema["data"],
-  //   {
-  //     dayIndex,
-  //     entryDescription,
-  //     preventEntry,
-  //     preventUpdate,
-  //   }: {
-  //     dayIndex?: number;
-  //     entryDescription?: string;
-  //     preventUpdate?: boolean;
-  //     preventEntry?: boolean;
-  //   },
-  // ) => void;
+  updateItem: (item: PlaceSchema, modifiedFields: Partial<PlaceDetailsSchema>) => void;
   deleteItems: (itemIds: string[]) => void;
 };
 export const DndItineraryContext = createContext<DndItineraryContextProps | null>(null);
