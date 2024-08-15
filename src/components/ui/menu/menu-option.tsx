@@ -7,8 +7,9 @@ import { cn } from "~/lib/utils";
 import { useMenuContext } from "./menu-context";
 import { OptionVariants } from "../option-variants";
 
-type MenuOptionProps = VariantProps<typeof OptionVariants> & {
+type Props = VariantProps<typeof OptionVariants> & {
   label: string;
+  shortcut?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   classNames?: { button?: string; active?: string };
@@ -17,6 +18,7 @@ type MenuOptionProps = VariantProps<typeof OptionVariants> & {
 };
 export const MenuOption = memo(function MenuOption({
   label,
+  shortcut,
   onClick,
   variant,
   size,
@@ -24,7 +26,7 @@ export const MenuOption = memo(function MenuOption({
   classNames,
   disabled,
   children,
-}: MenuOptionProps) {
+}: Props) {
   const menu = useMenuContext();
   const item = useListItem({ label: disabled ? null : label });
   const tree = useFloatingTree();
@@ -57,6 +59,7 @@ export const MenuOption = memo(function MenuOption({
         )}
       >
         {children ?? label}
+        {shortcut && <span className="ml-auto text-xs text-gray-400">{shortcut}</span>}
       </div>
     </button>
   );

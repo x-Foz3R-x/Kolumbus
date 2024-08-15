@@ -55,7 +55,8 @@ export const MenuLink = memo(function MenuLink({
     >
       <div
         className={cn(
-          "pointer-events-none flex h-[34px] w-full cursor-default select-none items-center gap-4 px-3 duration-200 ease-kolumb-overflow group-focus:translate-x-1.5",
+          "pointer-events-none flex h-[34px] w-full cursor-default select-none items-center gap-4 px-3 duration-200 group-focus:translate-x-1.5",
+          !className?.split(" ").includes("ease-kolumb-flow") && "ease-kolumb-overflow",
           className,
           isActive && classNames?.active,
         )}
