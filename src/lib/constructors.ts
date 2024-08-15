@@ -82,3 +82,48 @@ export function constructPlace(place: {
     updatedAt: new Date(),
   };
 }
+
+export function constructGoogleMapsUrl(
+  placeId: string,
+  placeName: string | null,
+  placeAddress: string | null,
+) {
+  if (!placeName && !placeAddress) return null;
+
+  const LENGTH_LIMIT = 2048;
+  let query = "";
+
+  // Prioritize address for the query parameter if available
+  if (placeAddress) {
+    const encodedAddress = encodeURIComponent(placeAddress);
+    if (encodedAddress.length <= LENGTH_LIMIT) query = encodedAddress;
+  }
+
+  // Use name if address is not provided or exceeds length limit, and name is available
+  if (!query && placeName) {
+    const encodedName = encodeURIComponent(placeName);
+    if (encodedName.length <= LENGTH_LIMIT) query = encodedName;
+  }
+
+  if (!query) return null;
+
+  return `https://www.google.com/maps/search/?api=1&query=${query}&query_place_id=${placeId}`;
+}
+
+export function constructGoogleUrl(placeName: string | null, placeAddress: string | null) {
+  if (!placeName && !placeAddress) return null;
+
+  let query = encodeURIComponent(placeName ?? "");
+
+  if (placeName && placeAddress) {
+    const nameWords = placeName.split(/[\s,]+/);
+    const addressWords = placeAddress.split(/[\s,]+/);
+    const nameContainsAddressWords = addressWords.some((word) => nameWords.includes(word));
+
+    if (!nameContainsAddressWords) {
+      query += `%20${encodeURIComponent(placeAddress)}`;
+    }
+  }
+
+  return `https://www.google.com/search?q=${query}`;
+}
