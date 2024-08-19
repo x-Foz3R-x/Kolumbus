@@ -15,6 +15,7 @@ import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
 import { DatePicker } from "~/components/date-picker";
 import { Icons } from "~/components/ui";
+import ProfileButton from "~/components/profile-button";
 // import { ExcludedDaysModal } from "./excluded-days-modal";
 
 export default function TopNav() {
@@ -101,17 +102,21 @@ export default function TopNav() {
 
         <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
           <div id="trash-container" />
+
           <DatePicker
             startDate={trip.startDate}
             endDate={trip.endDate}
             maxDays={14}
             onApply={applyDateRange}
           />
+
           <MembersDropdown
             tripId={trip.id}
             tripInviteCode={trip.inviteCode}
             tripMembers={trip.members}
           />
+
+          <ProfileButton />
         </section>
       </nav>
 

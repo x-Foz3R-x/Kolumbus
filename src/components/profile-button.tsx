@@ -25,7 +25,7 @@ export default function ProfileButton({ size = 32, dark }: ProfileButtonProps) {
 
   return (
     <SignedIn>
-      <div id="profile-button">
+      <div id="profile-button" style={{ width: `${size}px`, height: `${size}px` }}>
         <Menu
           placement="bottom-end"
           offset={4}

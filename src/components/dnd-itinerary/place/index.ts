@@ -1,2 +1,2 @@
 export { Place } from "./place";
-export { ActivityOverlay } from "./activity-overlay";
+export { PlaceOverlay } from "./place-overlay";

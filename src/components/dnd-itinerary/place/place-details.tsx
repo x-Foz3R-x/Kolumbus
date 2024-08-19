@@ -72,7 +72,7 @@ export const PlaceDetails = memo(function ActivityDetails({
         exit={{ height: "82px" }}
         transition={{ ease: EASING.anticipate, duration: 0.6 }}
       >
-        <PlaceImage imageUrl={details.imageUrl} size={82} />
+        <PlaceImage src={details.imageUrl} size={82} />
       </motion.div>
 
       {/* Name */}

@@ -2,8 +2,8 @@ import Image from "next/image";
 
 import { placeFallbackImageUrl } from "~/lib/constants";
 
-export default function PlaceImage(props: { imageUrl?: string | null; size?: number }) {
-  const imageUrl = resolveImageUrl(props.imageUrl);
+export default function PlaceImage(props: { src?: string | null; size?: number }) {
+  const imageUrl = resolveImageUrl(props.src);
 
   if (imageUrl.startsWith("/") || imageUrl.startsWith(placeFallbackImageUrl)) {
     return (

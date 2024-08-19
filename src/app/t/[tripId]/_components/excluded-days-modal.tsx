@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import type { DaySchema } from "~/lib/validations/trip";
 import type { ActivityEventSchema } from "~/lib/validations/place";
 
-import { ActivityOverlay } from "~/components/dnd-itinerary/place/index";
+import { PlaceOverlay } from "~/components/dnd-itinerary/place/index";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
 import { Button, Icons, ScrollIndicator } from "~/components/ui";
 
@@ -121,7 +121,7 @@ const DayToDelete = memo(function DaysToDelete(props: { day: DaySchema }) {
               zIndex: 1000,
               className: "p-0 rounded-lg bg-transparent shadow-floatingHover",
               followCursor: true,
-              children: <ActivityOverlay place={event as ActivityEventSchema} selectCount={0} />,
+              children: <PlaceOverlay place={event as ActivityEventSchema} selectCount={0} />,
             }}
           >
             {event.activity?.name}

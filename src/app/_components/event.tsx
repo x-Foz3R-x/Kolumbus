@@ -18,7 +18,7 @@ export default function Place(props: { place: PlaceSchema; className?: string })
     >
       {/* Image */}
       <div className="relative h-[82px] flex-shrink-0 overflow-hidden">
-        <PlaceImage imageUrl={props.place.imageUrl} size={82} />
+        <PlaceImage src={props.place.imageUrl} size={82} />
       </div>
 
       {/* Name */}

@@ -1,21 +1,17 @@
 import { memo, useRef } from "react";
 
 import { cn } from "~/lib/utils";
-
-import { Badge, ScrollIndicator } from "../../ui";
-import PlaceImage from "./place-image";
 import type { PlaceSchema } from "~/lib/types";
 
-type EventOverlayProps = {
+import PlaceImage from "./place-image";
+import { Badge, ScrollIndicator } from "../../ui";
+
+type Props = {
   place: PlaceSchema;
   selectCount: number;
   hoverShadow?: boolean;
 };
-export const ActivityOverlay = memo(function ActivityOverlay({
-  place,
-  selectCount,
-  hoverShadow,
-}: EventOverlayProps) {
+export const PlaceOverlay = memo(function PlaceOverlay({ place, selectCount, hoverShadow }: Props) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -29,7 +25,7 @@ export const ActivityOverlay = memo(function ActivityOverlay({
       >
         {/* Image */}
         <div className="relative h-[82px] flex-shrink-0">
-          <PlaceImage imageUrl={place.imageUrl} size={82} />
+          <PlaceImage src={place.imageUrl} size={82} />
         </div>
 
         {/* Name */}

@@ -64,7 +64,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
     else setIsOpen(true);
   };
 
-  const savePlaceDetails = () => {
+  const savePlace = () => {
     setIsOpen(false); // Close the details
 
     const getUpdatedDetails = (
@@ -154,7 +154,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
   return (
     <Floating
       isOpen={isOpen}
-      onOpenChange={savePlaceDetails}
+      onOpenChange={savePlace}
       placement="top-start"
       offset={({ rects }) => ({
         mainAxis: -rects.reference.height - (rects.floating.height - rects.reference.height),
@@ -219,7 +219,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
 
                 {/* Image */}
                 <div className="relative h-[82px] flex-shrink-0 overflow-hidden">
-                  <PlaceImage imageUrl={place.imageUrl} size={82} />
+                  <PlaceImage src={place.imageUrl} size={82} />
                 </div>
 
                 {/* Name */}
