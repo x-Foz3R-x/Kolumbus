@@ -43,7 +43,10 @@ const TripCard = memo(function TripCard({
 
   const startDate = useMemo(() => new Date(trip.startDate), [trip.startDate]);
   const endDate = useMemo(() => new Date(trip.endDate), [trip.endDate]);
-  const tripDuration = useMemo(() => differenceInDays(startDate, endDate), [startDate, endDate]);
+  const tripDuration = useMemo(
+    () => differenceInDays(startDate, endDate, true),
+    [startDate, endDate],
+  );
 
   return (
     <li

@@ -8,7 +8,7 @@ import { cn, differenceInDays, formatDate } from "~/lib/utils";
 
 import Window from "~/components/window";
 import PortalWindow from "~/components/portal-window";
-import { Calendar } from "~/components/calendar";
+import Calendar from "~/components/calendar";
 import { DndItinerary } from "~/components/dnd-itinerary";
 import { Button } from "~/components/ui";
 
@@ -44,7 +44,7 @@ export default function Demo() {
   };
 
   const handleDateSelection = (startDate: Date, endDate: Date) => {
-    const days = differenceInDays(new Date(endDate), new Date(startDate));
+    const days = differenceInDays(new Date(endDate), new Date(startDate), true);
     const itinerary = Array.from({ length: days }, (_, index) => ({
       id: `d${index + 1}`,
       date: formatDate(add(new Date(startDate), { days: index })),
@@ -77,13 +77,13 @@ export default function Demo() {
 
     // Update tasks based on changes
     setTasks({
-      addEvent: changes.some((change) => change.match(/^Add.+/)),
+      addEvent: changes.some((change) => /^Add.+/.exec(change)),
       moveEvent:
         changes.includes("Move event") || changes.some((change) => /Move \d+ events/.test(change)),
       moveMultipleEvents: changes.some((change) => /Move \d+ events/.test(change)),
       moveDay: changes.includes("Move day"),
       updateEvent: changes.includes("Update event"),
-      deleteEvent: changes.some((change) => change.match(/^Delete.+/)),
+      deleteEvent: changes.some((change) => /^Delete.+/.exec(change)),
       changeDate: changes.includes("Change date"),
     });
 
@@ -133,6 +133,7 @@ export default function Demo() {
             userId="guest"
             itinerary={trip.itinerary}
             setItinerary={updateItinerary}
+            // getEntry={() => console.log("getEntry")}
             placeLimit={5}
             dndTrash={{ variant: "inset", className: "h-32" }}
             calendar="left-0 mb-0"

@@ -10,24 +10,22 @@ import { dotDivider, Button } from "~/components/ui";
 import { tripFallbackImageUrl } from "~/lib/constants";
 import { format } from "date-fns";
 
-type InviteProps = {
-  invite: {
-    id: string;
-    name: string;
-    startDate: string;
-    endDate: string;
-    image: string | null;
-    memberCount: number;
-    isMember: boolean;
-  };
+type Invite = {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  image: string | null;
+  memberCount: number;
+  isMember: boolean;
 };
-export default function InviteTrip({ invite }: InviteProps) {
+export default function InviteTrip(invite: Invite) {
   const router = useRouter();
   const joinTrip = api.trip.join.useMutation();
 
   const startDate = new Date(invite.startDate);
   const endDate = new Date(invite.endDate);
-  const tripDuration = differenceInDays(startDate, endDate);
+  const tripDuration = differenceInDays(startDate, endDate, true);
 
   const handleJoin = () => {
     joinTrip.mutate({ id: invite.id }, { onSuccess: () => router.push(`/t/${invite.id}`) });

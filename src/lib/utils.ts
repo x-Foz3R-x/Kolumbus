@@ -18,8 +18,8 @@ export function os() {
   if (/(macintosh|macintel|macppc|mac68k|macos)/i.test(userAgent)) return "macos";
   else if (/(iphone|ipad|ipod)/i.test(userAgent)) return "ios";
   else if (/(win32|win64|windows|wince)/i.test(userAgent)) return "windows";
-  else if (/android/.test(userAgent)) return "android";
-  else if (/linux/.test(userAgent)) return "linux";
+  else if (/(android)/i.test(userAgent)) return "android";
+  else if (/(linux)/i.test(userAgent)) return "linux";
 
   return null;
 }
@@ -39,15 +39,15 @@ export function createId(length = 16) {
 
 /**
  * Calculate the days difference between two dates.
- * @param exclusive - Whether to exclude the first date in the calculation.
+ * @param includeStartDate - Whether to include the start date in the calculation.
  */
 export function differenceInDays(
   startDate: Date | string,
   endDate: Date | string,
-  exclusive?: boolean,
+  includeStartDate?: boolean,
 ): number {
   const daysDifference = Math.abs(differenceInCalendarDays(new Date(endDate), new Date(startDate)));
-  return exclusive ? daysDifference : daysDifference + 1;
+  return includeStartDate ? daysDifference + 1 : daysDifference;
 }
 
 /**
