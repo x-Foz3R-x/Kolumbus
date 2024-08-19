@@ -1,18 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import type { Placement } from "@floating-ui/react";
-import type { RangeFocus } from "react-date-range";
 import { format } from "date-fns";
 
-import useDateRange from "~/hooks/use-date-range";
+import useDatePicker from "~/hooks/use-date-picker";
 import { differenceInDays, formatDate } from "~/lib/utils";
 
 import DatePicker from "./date-picker";
 import { Floating } from "../ui/floating";
 import { Icons, type ButtonProps } from "../ui";
 
-export function Calendar(props: {
+const Calendar = memo(function Calendar(props: {
   startDate: string;
   endDate: string;
   maxDays: number;
@@ -22,13 +21,10 @@ export function Calendar(props: {
   triggerProps?: ButtonProps;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [focusedRange, setFocusedRange] = useState<RangeFocus>([0, 0]);
-
-  const [dateRange, setDateRange, { maxDate, minDate }] = useDateRange({
+  const { dateRange, setDateRange, focusedRange, setFocusedRange, disabledDay } = useDatePicker({
     startDate: props.startDate,
     endDate: props.endDate,
     maxDays: props.maxDays,
-    focusedRange,
   });
 
   const updateCalendar = (isOpen: boolean) => {
@@ -57,11 +53,19 @@ export function Calendar(props: {
       <div id="calendar" className="flex">
         <DatePicker
           dateRange={dateRange}
-          setDateRange={setDateRange}
+          setDateRange={(dateRange) => {
+            setDateRange(dateRange);
+
+            const startDate = dateRange.startDate ?? new Date(props.startDate);
+            const endDate = dateRange.endDate ?? new Date(props.endDate);
+            const hasDateRangeChanged =
+              formatDate(startDate) !== props.startDate || formatDate(endDate) !== props.endDate;
+
+            if (!isOpen && hasDateRangeChanged) props.onApply(startDate, endDate);
+          }}
           focusedRange={focusedRange}
           setFocusedRange={setFocusedRange}
-          maxDate={maxDate}
-          minDate={minDate}
+          disabledDay={disabledDay}
         />
       </div>
     );
@@ -119,7 +123,7 @@ export function Calendar(props: {
                           DAYS
                         </span>
                         <span className="text-sm leading-[15px]">
-                          {differenceInDays(props.startDate, props.endDate)}
+                          {differenceInDays(props.startDate, props.endDate, true)}
                         </span>
                       </div>
                     </div>
@@ -133,10 +137,11 @@ export function Calendar(props: {
           setDateRange={setDateRange}
           focusedRange={focusedRange}
           setFocusedRange={setFocusedRange}
-          maxDate={maxDate}
-          minDate={minDate}
+          disabledDay={disabledDay}
         />
       </Floating>
     </div>
   );
-}
+});
+
+export default Calendar;

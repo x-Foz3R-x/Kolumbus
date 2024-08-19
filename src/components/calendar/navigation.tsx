@@ -6,9 +6,7 @@ import "~/styles/react-date-range/navigation.css";
 
 import { format } from "date-fns";
 
-import YearOption from "./year-option";
-import MonthOption from "./month-option";
-import { Select } from "../ui/select";
+import { Select, SelectOption } from "../ui/select";
 import { Button, Icons } from "../ui";
 
 type ChangeShownDate = (
@@ -37,54 +35,60 @@ export default function Navigation(props: {
   );
 
   return (
-    <div className="flex justify-between pt-2">
-      <div>
-        <Select
-          placement="bottom"
-          selectedIndex={props.shownDate.getMonth()}
-          zIndex={50}
-          buttonProps={{
-            variant: "scale",
-            className: "h-8 w-24 before:bg-gray-100 text-xs",
-            children: currentMonth,
-          }}
-        >
-          {arrayOfMonths.map((month, index) => (
-            <MonthOption
-              key={month}
-              month={month}
-              onClick={() => props.changeShownDate(index, "setMonth")}
-            />
-          ))}
-        </Select>
+    <div className="flex pt-2">
+      <Select
+        placement="bottom"
+        selectedIndex={props.shownDate.getMonth()}
+        zIndex={50}
+        buttonProps={{
+          variant: "appear",
+          className: "h-8 rounded-lg hover:bg-gray-100 text-xs hover:shadow-sm",
+          children: currentMonth,
+        }}
+      >
+        {arrayOfMonths.map((month, index) => (
+          <SelectOption
+            key={month}
+            label={month}
+            onClick={() => props.changeShownDate(index, "setMonth")}
+            size="sm"
+            className={{ base: "h-[30px] px-4", selected: "font-semibold text-kolumblue-500" }}
+          >
+            {month}
+          </SelectOption>
+        ))}
+      </Select>
 
-        <Select
-          placement="bottom"
-          selectedIndex={props.shownDate.getFullYear() - props.minDate.getFullYear()}
-          zIndex={50}
-          buttonProps={{
-            variant: "scale",
-            className: "h-8 before:bg-gray-100 text-xs",
-            children: currentYear,
-          }}
-        >
-          {arrayOfYears.map((year) => (
-            <YearOption
-              key={year}
-              year={year}
-              onClick={() => props.changeShownDate(year, "setYear")}
-            />
-          ))}
-        </Select>
-      </div>
+      <Select
+        placement="bottom"
+        selectedIndex={props.shownDate.getFullYear() - props.minDate.getFullYear()}
+        zIndex={50}
+        buttonProps={{
+          variant: "appear",
+          className: "h-8 rounded-lg hover:bg-gray-100 text-xs hover:shadow-sm",
+          children: currentYear,
+        }}
+      >
+        {arrayOfYears.map((year) => (
+          <SelectOption
+            key={year}
+            label={year.toString()}
+            onClick={() => props.changeShownDate(year, "setYear")}
+            size="sm"
+            className={{ base: "h-[30px] px-4", selected: "font-semibold text-kolumblue-500" }}
+          >
+            {year}
+          </SelectOption>
+        ))}
+      </Select>
 
-      <div className="flex">
+      <div className="ml-auto flex">
         <Button
           onClick={() => props.changeShownDate(-1, "monthOffset")}
           animatePress
-          variant="scale"
+          variant="appear"
           size="unset"
-          className="flex h-8 w-8 items-center justify-center before:rounded-md before:bg-gray-100"
+          className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100 hover:shadow-sm"
         >
           <Icons.chevron className="h-2.5 w-2.5 rotate-90 scale-100" />
         </Button>
@@ -92,9 +96,9 @@ export default function Navigation(props: {
         <Button
           onClick={() => props.changeShownDate(1, "monthOffset")}
           animatePress
-          variant="scale"
+          variant="appear"
           size="unset"
-          className="flex h-8 w-8 items-center justify-center before:rounded-md before:bg-gray-100"
+          className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100 hover:shadow-sm"
         >
           <Icons.chevron className="h-2.5 w-2.5 -rotate-90 scale-100" />
         </Button>

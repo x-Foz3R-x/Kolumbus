@@ -1,36 +1,21 @@
 import { DateRange, type RangeKeyDict, type RangeFocus } from "react-date-range";
 import Navigation from "./navigation";
-
-// type Preview = { startDate: Date; endDate: Date } | undefined;
+import { useMemo } from "react";
+import { add } from "date-fns";
 
 export default function DatePicker(props: {
   dateRange: { startDate: Date; endDate: Date };
-  setDateRange: (changeProps: { startDate?: Date; endDate?: Date; days?: number }) => void;
+  setDateRange: (dateRange: { startDate?: Date; endDate?: Date }) => void;
   focusedRange: RangeFocus;
   setFocusedRange: (range: RangeFocus) => void;
-  minDate: Date;
-  maxDate: Date;
+  disabledDay: (date: Date) => boolean;
 }) {
-  // const [preview, setPreview] = useState<Preview>(undefined);
-
   const handleChange = (item: RangeKeyDict) => {
     props.setDateRange({ startDate: item.selection?.startDate, endDate: item.selection?.endDate });
   };
 
-  // const handlePreviewChange = (date: Date | undefined) => {
-  //   if (!date) {
-  //     setPreview(undefined);
-  //     setDateRange({ days: differenceInDays(dateRange.startDate, dateRange.endDate) });
-  //     return;
-  //   }
-
-  //   const isDateBefore = isBefore(date, dateRange.startDate);
-  //   const startDate = focusedRange[1] === 1 && isDateBefore ? date : dateRange.startDate;
-  //   const endDate = focusedRange[1] === 1 && isDateBefore ? dateRange.startDate : date;
-
-  //   if (focusedRange[1] === 1) setDateRange({ days: differenceInDays(startDate, endDate) });
-  //   setPreview({ startDate, endDate });
-  // };
+  const minDate = useMemo(() => new Date("2023-01-01"), []);
+  const maxDate = useMemo(() => add(new Date(), { days: 1095 }), []);
 
   return (
     <div className="space-y-2 p-2">
@@ -40,22 +25,19 @@ export default function DatePicker(props: {
         onChange={handleChange}
         focusedRange={props.focusedRange}
         onRangeFocusChange={(focusRange) => props.setFocusedRange(focusRange)}
-        // {...((!!preview || focusedRange[1] === 1) && { preview: preview })}
-        // {...((!!preview || focusedRange[1] === 1) && {
-        //   onPreviewChange: handlePreviewChange,
-        // })}
+        disabledDay={props.disabledDay}
         dateDisplayFormat="d MMM yyyy"
         weekdayDisplayFormat="EEEEE"
-        minDate={props.minDate}
-        maxDate={props.maxDate}
+        minDate={minDate}
+        maxDate={maxDate}
         weekStartsOn={1}
         scroll={{ enabled: true, monthHeight: 212, longMonthHeight: 244, calendarHeight: 228 }}
         navigatorRenderer={(shownDate, changeShownDate) => (
           <Navigation
             shownDate={shownDate}
             changeShownDate={changeShownDate}
-            maxDate={props.maxDate}
-            minDate={props.minDate}
+            maxDate={maxDate}
+            minDate={minDate}
           />
         )}
       />
