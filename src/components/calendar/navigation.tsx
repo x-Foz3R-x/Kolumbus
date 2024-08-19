@@ -1,5 +1,9 @@
 "use client";
 
+import "~/styles/react-date-range/styles.css";
+import "~/styles/react-date-range/date-display.css";
+import "~/styles/react-date-range/navigation.css";
+
 import { format } from "date-fns";
 
 import YearOption from "./year-option";
@@ -12,17 +16,17 @@ type ChangeShownDate = (
   mode?: "set" | "setYear" | "setMonth" | "monthOffset",
 ) => void;
 
-export function datePickerNavigation(
-  shownDate: Date,
-  changeShownDate: ChangeShownDate,
-  maxDate: Date,
-  minDate: Date,
-) {
-  const currentMonth = format(shownDate, "MMMM");
-  const currentYear = format(shownDate, "yyyy");
+export default function Navigation(props: {
+  shownDate: Date;
+  changeShownDate: ChangeShownDate;
+  maxDate: Date;
+  minDate: Date;
+}) {
+  const currentMonth = format(props.shownDate, "MMMM");
+  const currentYear = format(props.shownDate, "yyyy");
 
-  const upperYearLimit = maxDate.getFullYear();
-  const lowerYearLimit = minDate.getFullYear();
+  const upperYearLimit = props.maxDate.getFullYear();
+  const lowerYearLimit = props.minDate.getFullYear();
 
   const arrayOfMonths = Array.from({ length: 12 }, (_, index) =>
     format(new Date(0, index + 1, 0), "MMMM"),
@@ -37,7 +41,7 @@ export function datePickerNavigation(
       <div>
         <Select
           placement="bottom"
-          selectedIndex={shownDate.getMonth()}
+          selectedIndex={props.shownDate.getMonth()}
           zIndex={50}
           buttonProps={{
             variant: "scale",
@@ -49,14 +53,14 @@ export function datePickerNavigation(
             <MonthOption
               key={month}
               month={month}
-              onClick={() => changeShownDate(index, "setMonth")}
+              onClick={() => props.changeShownDate(index, "setMonth")}
             />
           ))}
         </Select>
 
         <Select
           placement="bottom"
-          selectedIndex={shownDate.getFullYear() - minDate.getFullYear()}
+          selectedIndex={props.shownDate.getFullYear() - props.minDate.getFullYear()}
           zIndex={50}
           buttonProps={{
             variant: "scale",
@@ -65,14 +69,18 @@ export function datePickerNavigation(
           }}
         >
           {arrayOfYears.map((year) => (
-            <YearOption key={year} year={year} onClick={() => changeShownDate(year, "setYear")} />
+            <YearOption
+              key={year}
+              year={year}
+              onClick={() => props.changeShownDate(year, "setYear")}
+            />
           ))}
         </Select>
       </div>
 
       <div className="flex">
         <Button
-          onClick={() => changeShownDate(-1, "monthOffset")}
+          onClick={() => props.changeShownDate(-1, "monthOffset")}
           animatePress
           variant="scale"
           size="unset"
@@ -82,7 +90,7 @@ export function datePickerNavigation(
         </Button>
 
         <Button
-          onClick={() => changeShownDate(1, "monthOffset")}
+          onClick={() => props.changeShownDate(1, "monthOffset")}
           animatePress
           variant="scale"
           size="unset"

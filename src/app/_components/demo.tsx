@@ -8,7 +8,7 @@ import { cn, differenceInDays, formatDate } from "~/lib/utils";
 
 import Window from "~/components/window";
 import PortalWindow from "~/components/portal-window";
-import { DatePicker } from "~/components/date-picker";
+import { Calendar } from "~/components/calendar";
 import { DndItinerary } from "~/components/dnd-itinerary";
 import { Button } from "~/components/ui";
 
@@ -146,7 +146,7 @@ export default function Demo() {
             onClose={() => closeWindow("calendar")}
             className="py-0"
           >
-            <DatePicker
+            <Calendar
               startDate={trip.startDate}
               endDate={trip.endDate}
               maxDays={3}

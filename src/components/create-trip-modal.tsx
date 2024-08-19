@@ -4,7 +4,7 @@ import { memo, useState } from "react";
 import { add } from "date-fns";
 import { formatDate } from "~/lib/utils";
 
-import { DatePicker } from "./date-picker";
+import { Calendar } from "./calendar";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
 import { Button, Icons, Input } from "~/components/ui";
 
@@ -50,7 +50,7 @@ export const CreateTripModal = memo(function CreateTripModal({
         <div className="flex gap-3">
           <Input value={name} label="Trip Name" onChange={(e) => setName(e.target.value)} />
 
-          <DatePicker
+          <Calendar
             startDate={formatDate(startDate)}
             endDate={formatDate(endDate)}
             maxDays={maxDays}
