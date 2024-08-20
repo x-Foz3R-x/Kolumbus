@@ -78,13 +78,17 @@ export const placeRouter = createTRPCRouter({
 
       // Validate and update each item's placement
       for (const place of placesList) {
-        if (place.dayIndex < 0 || place.sortIndex < 0) {
+        if ((place?.dayIndex && place.dayIndex < 0) || (place?.sortIndex && place.sortIndex < 0)) {
           throw error.badRequest("Invalid item position.");
         }
 
         await tx
           .update(places)
-          .set({ dayIndex: place.dayIndex, sortIndex: place.sortIndex })
+          .set({
+            ...(typeof place.dayIndex === "number" ? { dayIndex: place.dayIndex } : {}),
+            ...(typeof place.sortIndex === "number" ? { sortIndex: place.sortIndex } : {}),
+          })
+          // .set({ dayIndex: place.dayIndex, sortIndex: place.sortIndex })
           .where(and(eq(places.tripId, tripId), eq(places.id, place.id)));
         await tx.update(trips).set({ updatedAt: new Date() }).where(eq(trips.id, tripId));
       }

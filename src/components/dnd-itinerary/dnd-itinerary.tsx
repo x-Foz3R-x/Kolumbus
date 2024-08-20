@@ -65,7 +65,10 @@ type Props = {
   onItemUpdate?: onItemUpdate;
   onItemsMove?: onItemsMove;
   onItemsDelete?: onItemsDelete;
-  getEntry: (index: number) => ItinerarySchema;
+  getMovedItemsDetails: (
+    newItinerary: ItinerarySchema,
+    affectedListIds: string[],
+  ) => { id: string; dayIndex?: number; sortIndex?: number }[];
   placeLimit: number;
   dndTrash?: { variant: "default" | "inset"; className?: string } | boolean;
   calendar?: string;
@@ -79,7 +82,7 @@ export function DndItinerary({
   onItemUpdate,
   onItemsMove,
   onItemsDelete,
-  getEntry,
+  getMovedItemsDetails,
   placeLimit,
   dndTrash,
   calendar,
@@ -90,40 +93,6 @@ export function DndItinerary({
   const affectedListsRef = useRef<string[]>([]);
 
   const placeCount = useMemo(() => itinerary.flatMap((day) => day.places).length, [itinerary]);
-
-  const getMovedItemsDetails = useCallback(
-    (newItinerary: ItinerarySchema, affectedListIds: string[]) => {
-      // Retrieves the last saved itinerary state before the current drag operation.
-      // Due to a delay in history updates, the last entry (-1) reflects the previous state,
-      // not the current one, making it suitable for comparison.
-      const prevItinerary = getEntry(-1);
-
-      const getItemsFromAffectedLists = (itinerary: ItinerarySchema) => {
-        return itinerary
-          .filter((day) => affectedListIds.includes(day.id))
-          .flatMap((day) => day.places);
-      };
-      const identifyMovedItems = (affectedPlaces: PlaceSchema[], prevPlaces: PlaceSchema[]) => {
-        return affectedPlaces
-          .filter((place) =>
-            prevPlaces.some(
-              (prevPlace) =>
-                prevPlace.id === place.id &&
-                // Check if the place's dayIndex or sortIndex has changed
-                (place.dayIndex !== prevPlace.dayIndex || place.sortIndex !== prevPlace.sortIndex),
-            ),
-          )
-          .map((place) => ({ id: place.id, dayIndex: place.dayIndex, sortIndex: place.sortIndex }));
-      };
-
-      const newItems = getItemsFromAffectedLists(newItinerary);
-      const prevItems = getItemsFromAffectedLists(prevItinerary);
-      const movedItemsDetails = identifyMovedItems(newItems, prevItems);
-
-      return movedItemsDetails;
-    },
-    [getEntry],
-  );
 
   const selectItem = useCallback(
     (id: string) => {

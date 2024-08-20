@@ -13,7 +13,7 @@ export function getErrorMessage(error: unknown) {
     return error.message;
   }
   if (error instanceof Array && error.length > 0) return error.join(", ");
-  if (typeof error === "string") error;
+  if (typeof error === "string") return error;
   return unknownError;
 }
 

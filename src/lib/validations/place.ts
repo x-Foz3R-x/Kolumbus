@@ -28,8 +28,8 @@ export const updatePlacementSchema = z.object({
   places: z
     .object({
       id: placeId,
-      dayIndex: z.number().int().nonnegative(),
-      sortIndex: z.number().int().nonnegative(),
+      dayIndex: z.number().int().nonnegative().optional(),
+      sortIndex: z.number().int().nonnegative().optional(),
     })
     .array(),
 });

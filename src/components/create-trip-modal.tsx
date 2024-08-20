@@ -4,7 +4,7 @@ import { memo, useState } from "react";
 import { add } from "date-fns";
 import { formatDate } from "~/lib/utils";
 
-import { Calendar } from "./calendar";
+import Calendar from "./calendar";
 import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
 import { Button, Icons, Input } from "~/components/ui";
 

@@ -10,13 +10,13 @@ import { useTripContext } from "./_components/trip-provider";
 import { DndItinerary } from "~/components/dnd-itinerary";
 
 export default function Trip() {
-  const router = useRouter();
+  const { userId, permissions, trip, setItinerary, getMovedItemsDetails } = useTripContext();
 
+  const router = useRouter();
   const createPlace = api.place.create.useMutation(toastHandler("Place created"));
   const updatePlace = api.place.update.useMutation(toastHandler("Place updated"));
   const movePlace = api.place.move.useMutation(toastHandler("Place moved"));
   const deletePlace = api.place.delete.useMutation(toastHandler("Place deleted"));
-  const { userId, trip, permissions, updateItinerary, getItineraryEntry } = useTripContext();
 
   const onPlaceCreate = (place: PlaceSchema) => {
     createPlace.mutate(place, { onError: () => router.refresh() });
@@ -30,7 +30,7 @@ export default function Trip() {
   };
   const onPlaceMove = (
     tripId: string,
-    places: { id: string; dayIndex: number; sortIndex: number }[],
+    places: { id: string; dayIndex?: number; sortIndex?: number }[],
   ) => {
     movePlace.mutate({ tripId, places: places }, { onError: () => router.refresh() });
   };
@@ -44,12 +44,12 @@ export default function Trip() {
         userId={userId}
         tripId={trip.id}
         itinerary={trip.itinerary}
-        setItinerary={updateItinerary}
+        setItinerary={setItinerary}
         onItemCreate={onPlaceCreate}
         onItemUpdate={onPlaceUpdate}
         onItemsMove={onPlaceMove}
         onItemsDelete={onPlaceDelete}
-        getEntry={getItineraryEntry}
+        getMovedItemsDetails={getMovedItemsDetails}
         placeLimit={100}
         dndTrash={permissions.editItinerary}
       />
