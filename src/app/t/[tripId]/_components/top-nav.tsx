@@ -1,49 +1,66 @@
 "use client";
 
-import { useRef } from "react";
+// import { useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { isAfter, isBefore } from "date-fns";
+import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 import { useTripContext } from "./trip-provider";
-import { toastHandler } from "~/lib/trpc";
-import type { DaySchema } from "~/lib/validations/trip";
+// import type { DaySchema } from "~/lib/validations/trip";
 import { differenceInDays, formatDate, generateItinerary } from "~/lib/utils";
+import { toastHandler } from "~/lib/trpc";
 
 import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
-import { Calendar } from "~/components/calendar";
-import { Icons } from "~/components/ui";
-import ProfileButton from "~/components/profile-button";
 // import { ExcludedDaysModal } from "./excluded-days-modal";
+import ProfileButton from "~/components/profile-button";
+import Calendar from "~/components/calendar";
+import { Icons } from "~/components/ui";
 
 export default function TopNav() {
-  const { trip, setTrip } = useTripContext();
-
   const router = useRouter();
+  const { trip, setTrip } = useTripContext();
   const updateTrip = api.trip.update.useMutation(toastHandler("Trip dates changed"));
+  const movePlace = api.place.move.useMutation(toastHandler());
 
   // const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const datesRef = useRef<{ startDate: Date; endDate: Date }>({
-    startDate: new Date(trip.startDate),
-    endDate: new Date(trip.endDate),
-  });
-  const daysToDeleteRef = useRef<DaySchema[]>([]);
+  // const datesRef = useRef<{ startDate: Date; endDate: Date }>({
+  //   startDate: new Date(trip.startDate),
+  //   endDate: new Date(trip.endDate),
+  // });
+  // const daysToDeleteRef = useRef<DaySchema[]>([]);
 
-  const updateTripData = (startDate: Date, endDate: Date) => {
-    const events = trip.itinerary.flatMap((day) => day.places);
-    const itinerary = generateItinerary(startDate, endDate, events);
+  const handleUpdate = (startDate: Date, endDate: Date) => {
+    const totalDays = differenceInDays(startDate, endDate, true);
+    const places = trip.itinerary.flatMap((day) => day.places);
+
+    const firstPlaceDayIndex = places.length > 0 ? places.at(0)!.dayIndex : 0;
+    const lastPlaceDay = places.length > 0 ? places.at(-1)!.dayIndex + 1 : 1;
+    const minDays = lastPlaceDay - firstPlaceDayIndex;
+
+    // Check if the new date range can accommodate the current itinerary
+    if (totalDays < minDays) {
+      toast.info(
+        "Changing dates requires adjusting your itinerary. Please relocate items to proceed.",
+      );
+      return;
+    }
+
+    // Adjust the day index offset to ensure all places fit within the new date range, if necessary
+    const dayIndexOffset = totalDays < lastPlaceDay ? lastPlaceDay - minDays : 0;
+
+    console.log(dayIndexOffset);
+    if (dayIndexOffset > 0) {
+      console.log("update index");
+      places.forEach((place) => (place.dayIndex -= dayIndexOffset));
+    }
+
+    const newItinerary = generateItinerary(startDate, endDate, places);
 
     setTrip(
-      {
-        ...trip,
-        itinerary,
-        startDate: formatDate(startDate),
-        endDate: formatDate(endDate),
-        updatedAt: new Date(),
-      },
+      { itinerary: newItinerary, startDate: formatDate(startDate), endDate: formatDate(endDate) },
       "Change trip dates",
     );
 
@@ -51,37 +68,13 @@ export default function TopNav() {
       { id: trip.id, startDate: formatDate(startDate), endDate: formatDate(endDate) },
       { onError: () => router.refresh() },
     );
-  };
-
-  const applyDateRange = (startDate: Date, endDate: Date) => {
-    // If the new start and end dates are within selected date range, update the trip (no conflicts).
-    if (isBefore(startDate, new Date(trip.startDate)) && isAfter(endDate, new Date(trip.endDate))) {
-      updateTripData(startDate, endDate);
-      return;
+    if (dayIndexOffset > 0) {
+      const movedPlaces = places.map((place) => ({ id: place.id, dayIndex: place.dayIndex }));
+      movePlace.mutate(
+        { tripId: trip.id, places: movedPlaces },
+        { onError: () => router.refresh() },
+      );
     }
-
-    const lastIndex = trip.itinerary.length - 1;
-    const startOffset = isAfter(startDate, new Date(trip.startDate))
-      ? differenceInDays(startDate, trip.startDate, true)
-      : 0;
-    const endOffset = isBefore(endDate, new Date(trip.endDate))
-      ? lastIndex - differenceInDays(endDate, trip.endDate, true)
-      : lastIndex;
-
-    daysToDeleteRef.current = trip.itinerary.filter(
-      (_, index) => index < startOffset || index > endOffset,
-    );
-
-    // If there are no events to delete, update the trip and exit (no conflicts).
-    if (daysToDeleteRef.current.flatMap((day) => day.places).length === 0) {
-      updateTripData(startDate, endDate);
-      return;
-    }
-
-    datesRef.current = { startDate, endDate };
-    // Show a confirmation modal if events scheduled on days being deleted
-    // Are affected by the date change, requiring user input to proceed.
-    // setIsOpenModal(true);
   };
 
   return (
@@ -107,7 +100,7 @@ export default function TopNav() {
             startDate={trip.startDate}
             endDate={trip.endDate}
             maxDays={14}
-            onApply={applyDateRange}
+            onApply={handleUpdate}
           />
 
           <MembersDropdown
