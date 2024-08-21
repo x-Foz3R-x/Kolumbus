@@ -63,9 +63,7 @@ export default function TopNav() {
     // Adjust the day index offset to ensure all places fit within the new date range, if necessary
     const dayIndexOffset = totalDays < lastPlaceDay ? lastPlaceDay - minDays : 0;
 
-    console.log(dayIndexOffset);
     if (dayIndexOffset > 0) {
-      console.log("update index");
       places.forEach((place) => (place.dayIndex -= dayIndexOffset));
     }
 
@@ -75,9 +73,6 @@ export default function TopNav() {
       { itinerary: newItinerary, startDate: formatDate(startDate), endDate: formatDate(endDate) },
       "Change trip dates",
     );
-
-    console.log("update trip");
-    return;
 
     updateTrip.mutate(
       { id: trip.id, startDate: formatDate(startDate), endDate: formatDate(endDate) },

@@ -40,7 +40,6 @@ export const ScrollIndicator = memo(function ScrollIndicator(props: {
   children?: React.ReactNode;
 }) {
   const childrenRef = useRef<HTMLElement | null>(props.ref?.current ?? null);
-  console.log(childrenRef, props.ref);
   const overflow = useOverflowObserver(childrenRef);
   const children = useMemo(
     () =>
