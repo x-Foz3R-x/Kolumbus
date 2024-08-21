@@ -25,10 +25,11 @@ import {
   FloatingPortal,
   type Side,
 } from "@floating-ui/react";
-import { SelectContext } from "./select-context";
+
 import { TRANSITION } from "~/lib/motion";
 import { cn } from "~/lib/utils";
 
+import { SelectContext } from "./select-context";
 import { Button, type ButtonProps } from "../button";
 import { ScrollIndicator } from "../scroll-indicator";
 
@@ -80,7 +81,7 @@ export function Select({
   buttonProps,
   children,
 }: SelectProps) {
-  const [open, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [uncontrolledSelectedIndex, uncontrolledSetSelectedIndex] = useState<number | null>(
@@ -106,7 +107,7 @@ export function Select({
 
   const { refs, floatingStyles, context } = useFloating({
     placement,
-    open: open,
+    open: isOpen,
     onOpenChange: setOpen,
     whileElementsMounted: autoUpdate,
     middleware: [
@@ -132,7 +133,7 @@ export function Select({
     listRef: labelsRef,
     activeIndex,
     selectedIndex,
-    onMatch: (index) => (open ? setActiveIndex(index) : handleSelect(index)),
+    onMatch: (index) => (isOpen ? setActiveIndex(index) : handleSelect(index)),
   });
 
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
@@ -151,12 +152,12 @@ export function Select({
     return TRANSITION.fadeToPosition[placement.split("-")[0] as Side];
   }, [animation, placement]);
   const tooltipProps = useMemo(() => {
-    return open
+    return isOpen
       ? undefined
       : rootSelector && buttonProps?.tooltip
         ? { ...buttonProps.tooltip, rootSelector }
         : buttonProps?.tooltip;
-  }, [open, rootSelector, buttonProps]);
+  }, [isOpen, rootSelector, buttonProps]);
   const ButtonComponent = useMemo(
     () => (
       <Button
@@ -182,8 +183,9 @@ export function Select({
 
   // Set isMounted to true when open becomes true
   useEffect(() => {
-    open && setIsMounted(true);
-  }, [open]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isOpen && setIsMounted(true);
+  }, [isOpen]);
 
   return (
     <SelectContext.Provider value={selectContext}>
@@ -204,30 +206,30 @@ export function Select({
               {...getFloatingProps()}
             >
               <AnimatePresence onExitComplete={() => setIsMounted(false)}>
-                {open && (
+                {isOpen && (
                   <FloatingList elementsRef={elementsRef} labelsRef={labelsRef}>
-                    <motion.ul
-                      ref={scrollRef}
-                      initial="initial"
-                      animate="animate"
-                      exit="exit"
-                      variants={variants}
-                      className={cn(
-                        "flex flex-col overflow-y-auto overflow-x-hidden rounded-xl border bg-white p-1.5 font-inter font-normal antialiased shadow-floating dark:border-gray-700 dark:bg-gray-800 dark:text-white",
-                        className,
-                      )}
-                    >
-                      {children}
-                    </motion.ul>
-
                     <ScrollIndicator
-                      scrollRef={scrollRef}
-                      top={1}
-                      bottom={1}
-                      zIndex={10}
-                      className={{ start: "rounded-t-xl", end: "rounded-b-xl" }}
-                      vertical
-                    />
+                      ref={scrollRef}
+                      indicator={{
+                        offset: { top: 1, bottom: 1 },
+                        className: { top: "rounded-t-xl", bottom: "rounded-b-xl" },
+                      }}
+                      orientation="y"
+                    >
+                      <motion.ul
+                        ref={scrollRef}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        variants={variants}
+                        className={cn(
+                          "flex flex-col overflow-y-auto overflow-x-hidden rounded-xl border bg-white p-1.5 font-inter font-normal antialiased shadow-floating dark:border-gray-700 dark:bg-gray-800 dark:text-white",
+                          className,
+                        )}
+                      >
+                        {children}
+                      </motion.ul>
+                    </ScrollIndicator>
                   </FloatingList>
                 )}
               </AnimatePresence>

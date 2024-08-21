@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo } from "react";
 
 import { cn } from "~/lib/utils";
 import type { PlaceSchema } from "~/lib/types";
@@ -12,8 +12,6 @@ type Props = {
   hoverShadow?: boolean;
 };
 export const PlaceOverlay = memo(function PlaceOverlay({ place, selectCount, hoverShadow }: Props) {
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-
   return (
     <Badge content={selectCount > 1 ? selectCount : null}>
       <div
@@ -29,15 +27,13 @@ export const PlaceOverlay = memo(function PlaceOverlay({ place, selectCount, hov
         </div>
 
         {/* Name */}
-        <div className="relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
-          <div ref={scrollRef} className="w-full select-none">
-            {place.name}
-            <ScrollIndicator
-              scrollRef={scrollRef}
-              className={cn(selectCount > 0 && "from-kolumblue-200")}
-            />
-          </div>
-        </div>
+        <ScrollIndicator
+          indicator={{ className: cn(selectCount > 0 && "from-kolumblue-200") }}
+          orientation="x"
+          className="relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800"
+        >
+          <div className="w-full select-none">{place.name}</div>
+        </ScrollIndicator>
       </div>
     </Badge>
   );

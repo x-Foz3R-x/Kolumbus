@@ -10,9 +10,10 @@ import {
   FloatingList,
   autoUpdate,
 } from "@floating-ui/react";
-import { SelectContext } from "./select-context";
+
 import { cn } from "~/lib/utils";
 
+import { SelectContext } from "./select-context";
 import { ScrollIndicator } from "../scroll-indicator";
 
 type SelectProps = {
@@ -82,18 +83,26 @@ export function SelectInline({
   return (
     <SelectContext.Provider value={selectContext}>
       <FloatingList elementsRef={elementsRef} labelsRef={labelsRef}>
-        <ul
-          ref={refs.setFloating}
-          className={cn(
-            "flex flex-col overflow-y-auto overflow-x-hidden bg-white py-1.5 font-inter font-normal antialiased dark:bg-gray-800 dark:text-white",
-            className,
-          )}
-          {...getFloatingProps()}
+        <ScrollIndicator
+          ref={refs.floating}
+          indicator={{
+            offset: { top: 1, bottom: 1 },
+            className: { top: "rounded-t-xl", bottom: "rounded-b-xl" },
+          }}
+          orientation="y"
+          renderInline
         >
-          {children}
-        </ul>
-
-        <ScrollIndicator scrollRef={refs.floating} zIndex={10} size={51} vertical />
+          <ul
+            ref={refs.setFloating}
+            className={cn(
+              "flex flex-col overflow-y-auto overflow-x-hidden bg-white py-1.5 font-inter font-normal antialiased dark:bg-gray-800 dark:text-white",
+              className,
+            )}
+            {...getFloatingProps()}
+          >
+            {children}
+          </ul>
+        </ScrollIndicator>
       </FloatingList>
     </SelectContext.Provider>
   );

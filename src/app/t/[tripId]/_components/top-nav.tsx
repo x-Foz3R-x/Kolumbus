@@ -1,22 +1,24 @@
 "use client";
 
-// import { useRef } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 import { useTripContext } from "./trip-provider";
-// import type { DaySchema } from "~/lib/validations/trip";
 import { differenceInDays, formatDate, generateItinerary } from "~/lib/utils";
 import { toastHandler } from "~/lib/trpc";
+import type { DaySchema } from "~/lib/types";
 
 import TripStack from "./trip-stack";
 import MembersDropdown from "./members-dropdown";
-// import { ExcludedDaysModal } from "./excluded-days-modal";
 import ProfileButton from "~/components/profile-button";
 import Calendar from "~/components/calendar";
-import { Icons } from "~/components/ui";
+import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/components/ui/modal";
+import { Button, Icons, ScrollIndicator } from "~/components/ui";
+import { format } from "date-fns";
+import { PlaceOverlay } from "~/components/dnd-itinerary/place";
 
 export default function TopNav() {
   const router = useRouter();
@@ -24,13 +26,13 @@ export default function TopNav() {
   const updateTrip = api.trip.update.useMutation(toastHandler("Trip dates changed"));
   const movePlace = api.place.move.useMutation(toastHandler());
 
-  // const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   // const datesRef = useRef<{ startDate: Date; endDate: Date }>({
   //   startDate: new Date(trip.startDate),
   //   endDate: new Date(trip.endDate),
   // });
-  // const daysToDeleteRef = useRef<DaySchema[]>([]);
+  const daysToDeleteRef = useRef<DaySchema[]>([]);
 
   const handleUpdate = (startDate: Date, endDate: Date) => {
     const totalDays = differenceInDays(startDate, endDate, true);
@@ -42,6 +44,16 @@ export default function TopNav() {
 
     // Check if the new date range can accommodate the current itinerary
     if (totalDays < minDays) {
+      setModalOpen(true);
+
+      // Get all places that day index is bigger than totalDays with offset of firstPlaceDayIndex
+      daysToDeleteRef.current = trip.itinerary
+        .slice(totalDays + firstPlaceDayIndex)
+        .filter((day) => day.places.length > 0);
+
+      console.log(totalDays + firstPlaceDayIndex);
+      console.log(trip.itinerary, daysToDeleteRef.current);
+
       toast.info(
         "Changing dates requires adjusting your itinerary. Please relocate items to proceed.",
       );
@@ -63,6 +75,9 @@ export default function TopNav() {
       { itinerary: newItinerary, startDate: formatDate(startDate), endDate: formatDate(endDate) },
       "Change trip dates",
     );
+
+    console.log("update trip");
+    return;
 
     updateTrip.mutate(
       { id: trip.id, startDate: formatDate(startDate), endDate: formatDate(endDate) },
@@ -113,14 +128,81 @@ export default function TopNav() {
         </section>
       </nav>
 
-      {/* <ExcludedDaysModal
-        isOpen={isOpenModal}
-        setOpen={setIsOpenModal}
-        startDate={datesRef.current.startDate}
-        endDate={datesRef.current.endDate}
-        daysToDelete={daysToDeleteRef.current}
-        onDeleteEvents={handleDeleteEvents}
-      /> */}
+      <Modal isOpen={isModalOpen} setOpen={setModalOpen} size="xl">
+        <ModalBody.iconDesign variant="danger" icon={<Icons.triangleExclamation />}>
+          <ModalHeader className="text-red-500">Changing Dates Will Lead to Deletions</ModalHeader>
+
+          <ModalText className="mb-0">
+            Changing dates will permanently delete the following items:
+          </ModalText>
+
+          <ScrollIndicator
+            indicator={{
+              size: 30,
+              className: { x: "from-gray-100", left: "rounded-l-xl", right: "rounded-r-xl" },
+            }}
+            orientation="x"
+          >
+            <ul className="flex w-[470px] gap-2 overflow-x-auto rounded-xl border-x-[6px] border-gray-100 bg-gray-100 py-1.5">
+              {daysToDeleteRef.current.slice(0, 5).map((day, index) => (
+                <li key={`dtd_${day.id}`}>
+                  <h3 className="mb-0.5 flex items-center justify-between rounded-b rounded-t-lg border-b bg-white px-2 py-1 text-xs font-medium text-gray-500">
+                    <span>{format(new Date(day.date), "d MMMM")}</span>
+                    <span>Day {(day.places[0]?.dayIndex ?? index) + 1}</span>
+                  </h3>
+
+                  <ScrollIndicator
+                    indicator={{ offset: { x: 8, bottom: 1 }, size: 40 }}
+                    orientation="y"
+                  >
+                    <ul className="max-h-24 w-44 overflow-y-auto rounded-b-lg rounded-t border-b bg-white px-2">
+                      {day.places.map((place, index) => (
+                        <Button
+                          key={`listItem${index}`}
+                          variant="unset"
+                          size="unset"
+                          className="w-full cursor-default overflow-hidden text-ellipsis whitespace-nowrap border-t border-gray-200/60 py-1.5 text-left text-sm first:border-t-0"
+                          tooltip={{
+                            placement: "bottom-start",
+                            offset: 24,
+                            zIndex: 1000,
+                            className: "p-0 rounded-lg bg-transparent shadow-floatingHover",
+                            followCursor: true,
+                            children: <PlaceOverlay place={place} selectCount={0} />,
+                          }}
+                        >
+                          {place.name}
+                        </Button>
+                      ))}
+                    </ul>
+                  </ScrollIndicator>
+                </li>
+              ))}
+
+              {daysToDeleteRef.current.slice(5).flatMap((day) => day.places).length > 0 && (
+                <p className="my-auto w-24 flex-shrink-0 text-center text-sm leading-tight text-gray-600">
+                  And {daysToDeleteRef.current.slice(5).flatMap((day) => day.places).length} more
+                  items...
+                </p>
+              )}
+            </ul>
+          </ScrollIndicator>
+        </ModalBody.iconDesign>
+
+        <ModalControls>
+          <Button onClick={() => setModalOpen(false)} whileHover={{ scale: 1.05 }} animatePress>
+            Cancel
+          </Button>
+          <Button
+            // onClick={() => onDeleteEvents(startDate, endDate)}
+            whileHover={{ scale: 1.05 }}
+            animatePress
+            className="bg-red-500 text-white"
+          >
+            Delete Items
+          </Button>
+        </ModalControls>
+      </Modal>
     </>
   );
 }

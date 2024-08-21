@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect } from "react";
 // import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -40,8 +40,6 @@ export const PlaceDetails = memo(function ActivityDetails({
   detailsHeight,
   onDelete: handleDelete,
 }: Props) {
-  const inputScrollRef = useRef<HTMLInputElement | null>(null);
-
   const handleChange = (data: Partial<PlaceDetailsSchema>) => {
     setDetails({ ...details, ...data });
   };
@@ -83,19 +81,19 @@ export const PlaceDetails = memo(function ActivityDetails({
         exit={{ height: "24px", marginTop: "2px", fontSize: "14px" }}
         transition={{ ease: EASING.anticipate, duration: 0.6 }}
       >
-        <Input
-          ref={inputScrollRef}
-          name="activity name"
-          placeholder="name"
-          value={details.name ?? ""}
-          onUpdate={(e) => handleUpdate({ name: e.target.value })}
-          onInput={(e) => handleChange({ name: e.currentTarget.value })}
-          variant="unset"
-          size="unset"
-          className={{ container: "h-full w-full", input: "h-full" }}
-          preventEmpty
-        />
-        <ScrollIndicator scrollRef={inputScrollRef} />
+        <ScrollIndicator orientation="x" renderInline>
+          <Input
+            name="place name"
+            placeholder="name"
+            value={details.name ?? ""}
+            onUpdate={(e) => handleUpdate({ name: e.target.value })}
+            onInput={(e) => handleChange({ name: e.currentTarget.value })}
+            variant="unset"
+            size="unset"
+            className={{ container: "h-full w-full", input: "h-full" }}
+            preventEmpty
+          />
+        </ScrollIndicator>
       </motion.div>
 
       {/* Details */}

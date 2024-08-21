@@ -224,13 +224,15 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
 
                 {/* Name */}
                 <div className="group relative mx-1 mt-0.5 flex h-6 flex-shrink-0 items-center overflow-hidden whitespace-nowrap bg-transparent text-sm text-gray-800">
-                  <div ref={nameScrollRef} className="w-full select-none">
-                    {place.name}
-                    <ScrollIndicator
-                      scrollRef={nameScrollRef}
-                      className={isSelected ? "from-kolumblue-200" : ""}
-                    />
-                  </div>
+                  <ScrollIndicator
+                    indicator={{ className: isSelected ? "from-kolumblue-200" : "" }}
+                    orientation="x"
+                    renderInline
+                  >
+                    <div ref={nameScrollRef} className="w-full select-none">
+                      {place.name}
+                    </div>
+                  </ScrollIndicator>
 
                   {!active && !isOpen && (
                     <Button

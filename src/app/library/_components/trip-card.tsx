@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useRef, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 
@@ -39,8 +39,6 @@ const TripCard = memo(function TripCard({
   const [isLeaveModalOpen, setLeaveModalOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const scrollRef = useRef<HTMLHeadingElement>(null);
-
   const startDate = useMemo(() => new Date(trip.startDate), [trip.startDate]);
   const endDate = useMemo(() => new Date(trip.endDate), [trip.endDate]);
   const tripDuration = useMemo(
@@ -61,13 +59,11 @@ const TripCard = memo(function TripCard({
           <TripImage imageUrl={trip.imageUrl} size="224px" />
         </div>
 
-        <div
-          ref={scrollRef}
-          className="relative w-full overflow-hidden whitespace-nowrap px-2.5 py-2 text-center"
-        >
-          {trip.name}
-          <ScrollIndicator scrollRef={scrollRef} />
-        </div>
+        <ScrollIndicator orientation="x">
+          <div className="w-full overflow-hidden whitespace-nowrap px-2.5 py-2 text-center">
+            {trip.name}
+          </div>
+        </ScrollIndicator>
 
         <div className="flex w-full flex-col gap-0.5 px-2.5 pb-2 text-xs text-gray-500">
           <div>
