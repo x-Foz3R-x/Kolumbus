@@ -10,30 +10,42 @@ export default function Window(props: {
   onMaximize?: () => void;
   style?: React.CSSProperties;
   className?: string;
+  containerClassName?: string;
   children: React.ReactNode;
 }) {
   if (!props.isOpen) return null;
 
   return (
-    <div className="flex h-fit w-fit max-w-full flex-col overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500">
+    <div
+      className={cn(
+        "flex h-fit w-fit max-w-full flex-col overflow-hidden rounded-[10px] shadow-borderSplashXl duration-500",
+        props.containerClassName,
+      )}
+    >
       {/* Frame */}
       <div className="relative flex h-10 rounded-t-[10px] bg-stone-200/90 backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
         {/* Controls */}
         <div className="flex h-full items-center gap-2 px-5">
           <Button
             onClick={props.onClose}
+            aria-label={`Close ${props.title}`}
+            disabled={!props.onClose}
             variant="unset"
             size="unset"
             className="h-3 w-3 rounded-full border-[0.5px] border-red-600 bg-red-500"
           />
           <Button
             onClick={props.onMinimize}
+            aria-label={`Minimize ${props.title}`}
+            disabled={!props.onMinimize}
             variant="unset"
             size="unset"
             className="h-3 w-3 rounded-full border-[0.5px] border-yellow-600 bg-yellow-500"
           />
           <Button
             onClick={props.onMaximize}
+            aria-label={`Maximize ${props.title}`}
+            disabled={!props.onMaximize}
             variant="unset"
             size="unset"
             className="h-3 w-3 rounded-full border-[0.5px] border-green-600 bg-green-500"

@@ -33,8 +33,8 @@ export const PlaceUiOverlay = memo(function ActivityOverlay({
     [place.name, place.address],
   );
   const googleMapsUrl = useMemo(
-    () => constructGoogleMapsUrl(place.id, place.name, place.address),
-    [place.id, place.name, place.address],
+    () => constructGoogleMapsUrl(place.googleId ?? "", place.name, place.address),
+    [place.googleId, place.name, place.address],
   );
 
   if (disable) return null;

@@ -74,6 +74,7 @@ const Calendar = memo(function Calendar(props: {
   return (
     <div id="calendar" className="flex">
       <Floating
+        zIndex={60}
         isOpen={isOpen}
         onOpenChange={updateCalendar}
         placement={props.placement ?? "bottom-end"}

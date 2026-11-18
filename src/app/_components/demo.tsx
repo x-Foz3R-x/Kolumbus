@@ -1,202 +1,97 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { add } from "date-fns";
-
-import useRandomTrip from "~/hooks/use-random-trip";
-import { cn, differenceInDays, formatDate } from "~/lib/utils";
+import { useState } from "react";
 
 import Window from "~/components/window";
-import PortalWindow from "~/components/portal-window";
-import Calendar from "~/components/calendar";
-import { DndItinerary } from "~/components/dnd-itinerary";
-import { Button } from "~/components/ui";
+import DemoLibrary from "./demo/demo-library";
+import DemoTasks from "./demo/demo-tasks";
+import DemoTripEditor from "./demo/demo-trip";
+import useDemoLibrary from "./demo/use-demo-library";
 
 export default function Demo() {
-  const { trip, setTrip, updateItinerary, changes, position, jumpTo, randomise } =
-    useRandomTrip("random");
+  const library = useDemoLibrary();
+  const [selectedId, setSelectedId] = useState<string | null>();
+  const activeId = selectedId === undefined ? library.initialTripId : selectedId;
+  const activeTrip = library.trips.find((trip) => trip.id === activeId);
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  const [windows, setWindows] = useState({
-    itinerary: true,
-    calendar: true,
-    history: false,
-    tasks: true,
-    devTools: false,
-  });
-
-  const [tasks, setTasks] = useState({
-    addEvent: false,
-    moveEvent: false,
-    moveMultipleEvents: false,
-    moveDay: false,
-    updateEvent: false,
-    deleteEvent: false,
-    changeDate: false,
-  });
-
-  const openWindow = (windowName: keyof typeof windows) => {
-    setWindows({ ...windows, [windowName]: true });
+  const openLibrary = () => {
+    setSelectedId(null);
+    library.complete("library");
   };
-
-  const closeWindow = (windowName: keyof typeof windows) => {
-    setWindows({ ...windows, [windowName]: false });
-  };
-
-  const handleDateSelection = (startDate: Date, endDate: Date) => {
-    const days = differenceInDays(new Date(endDate), new Date(startDate), true);
-    const itinerary = Array.from({ length: days }, (_, index) => ({
-      id: `d${index + 1}`,
-      date: formatDate(add(new Date(startDate), { days: index })),
-      places: !!trip.itinerary[index]
-        ? trip.itinerary[index].places.map((place) => ({
-            ...place,
-            dayIndex: index,
-          }))
-        : [],
-    }));
-
-    setTrip(
-      {
-        startDate: formatDate(startDate),
-        endDate: formatDate(endDate),
-        itinerary,
-      },
-      "Change date",
-    );
-  };
-
-  const autoOpenHistory = useRef(true);
-  // Update tasks based on changes and auto open history window
-  useEffect(() => {
-    // Auto open history window when there are more than one changes
-    if (autoOpenHistory.current && changes.length > 1) {
-      autoOpenHistory.current = false;
-      openWindow("history");
-    }
-
-    // Update tasks based on changes
-    setTasks({
-      addEvent: changes.some((change) => /^Add.+/.exec(change)),
-      moveEvent:
-        changes.includes("Move place") || changes.some((change) => /Move \d+ places/.test(change)),
-      moveMultipleEvents: changes.some((change) => /Move \d+ places/.test(change)),
-      moveDay: changes.includes("Move day"),
-      updateEvent: changes.includes("Update place"),
-      deleteEvent: changes.some((change) => /^Delete.+/.exec(change)),
-      changeDate: changes.includes("Change date"),
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [changes.length]);
-
-  const highestPlaceCount = Math.max(0, ...trip.itinerary.map((day) => day.places.length));
-  const itineraryWidth = 216 + (160 + 8) * highestPlaceCount;
-
-  const listRef = useRef<HTMLUListElement>(null);
-  // Scroll to the bottom of the history list when there are new changes
-  useEffect(() => {
-    if (listRef.current) {
-      listRef.current.scrollTop = listRef.current.scrollHeight;
-    }
-  }, [changes.length]);
-
-  if (!mounted) return <div id="demo" className="min-h-[500px] scroll-mt-16" />;
 
   return (
-    <div id="demo" className="relative h-fit w-full scroll-mt-16 px-4 py-24 font-inter">
-      <div className="flex flex-col items-center gap-4 xl:flex-row xl:items-start xl:justify-center">
-        <Window
-          title="Itinerary"
-          isOpen={windows.itinerary}
-          onClose={() => closeWindow("itinerary")}
-          className="max-w-full overflow-x-auto"
-          style={{ width: itineraryWidth + "px" }}
+    <section
+      className="mx-auto max-w-[1440px] scroll-mt-20 px-0 pb-24 pt-16 font-inter sm:px-4 sm:pb-32 sm:pt-24"
+      aria-labelledby="demo-heading"
+    >
+      <div className="mb-10 text-center">
+        <h2
+          id="demo-heading"
+          className="font-belanosima text-3xl font-semibold text-gray-700 sm:text-4xl"
         >
-          <DndItinerary
-            tripId="discover"
-            userId="guest"
-            itinerary={trip.itinerary}
-            setItinerary={updateItinerary}
-            placeLimit={5}
-            dndTrash={{ variant: "inset", className: "h-32" }}
-            calendar="left-0 mb-0"
-          />
-        </Window>
-
-        <div className="flex-shrink-0">
-          <Window
-            title="Calendar"
-            isOpen={windows.calendar}
-            onClose={() => closeWindow("calendar")}
-            className="py-0"
-          >
-            <Calendar
-              startDate={trip.startDate}
-              endDate={trip.endDate}
-              maxDays={3}
-              onApply={handleDateSelection}
-              inline
-            />
-          </Window>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <Window
-            title="Dev Tools"
-            isOpen={windows.devTools}
-            onClose={() => closeWindow("devTools")}
-            className="flex h-16 justify-center gap-4"
-          >
-            <Button
-              onClick={randomise}
-              variant="button"
-              className="border-kolumblue-600 bg-kolumblue-500 font-medium text-white"
-            >
-              Random Trip
-            </Button>
-          </Window>
-
-          <Window title="History" isOpen={windows.history} onClose={() => closeWindow("history")}>
-            <ul ref={listRef} className="flex max-h-48 flex-col overflow-scroll">
-              {changes.map((change, index) => (
-                <li
-                  key={index}
-                  onClick={() => jumpTo(index)}
-                  className={cn(
-                    "w-full cursor-pointer rounded px-2 py-1 text-[13px] font-medium even:bg-gray-50 hover:underline",
-                    position === index && "bg-kolumblue-500 text-white even:bg-blue-500",
-                  )}
-                >
-                  {change}
-                </li>
-              ))}
-            </ul>
-          </Window>
-
-          <Window title="Todo’s" isOpen={windows.tasks} onClose={() => closeWindow("tasks")}>
-            <ul className="list-inside list-disc text-[13px]">
-              <li className={cn(tasks.addEvent && "line-through")}>Add new Event to itinerary</li>
-              <li className={cn(tasks.moveEvent && "line-through")}>Move at least 1 Event</li>
-              <li className={cn(tasks.moveMultipleEvents && "line-through")}>
-                Move multiple Events at the same time
-              </li>
-              <li className={cn(tasks.moveDay && "line-through")}>Move whole Day</li>
-              {/* <li className={cn(tasks.updateEvent && "line-through")}>Update any Event</li> */}
-              <li className={cn(tasks.deleteEvent && "line-through")}>Put any event/s in trash</li>
-              <li className={cn(tasks.changeDate && "line-through")}>Pick new Date</li>
-            </ul>
-          </Window>
-        </div>
-
-        <PortalWindow
-          id="trash-container"
-          title="Trash"
-          className="right-4 top-4"
-          classNames={{ body: "h-32 relative" }}
-        />
+          Take Kolumbus for a spin
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-gray-500">
+          A little room for your next big adventure. Explore a ready-made trip, then make a plan of
+          your own.
+        </p>
       </div>
-    </div>
+
+      <div
+        id="demo"
+        className="grid scroll-mt-20 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_288px]"
+      >
+        <Window
+          title="Kolumbus"
+          isOpen
+          containerClassName="w-full min-w-0"
+          className="flex min-h-[540px] w-full flex-col p-0"
+        >
+          {!library.loaded ? (
+            <div className="flex min-h-[500px] items-center justify-center text-sm text-gray-400">
+              Opening your next adventure…
+            </div>
+          ) : activeTrip ? (
+            <DemoTripEditor
+              key={activeTrip.id}
+              initialTrip={activeTrip}
+              onSave={library.save}
+              onComplete={library.complete}
+              onLibrary={openLibrary}
+            />
+          ) : (
+            <DemoLibrary
+              trips={library.trips}
+              onOpen={setSelectedId}
+              onCreate={(template) => setSelectedId(library.create(template))}
+              onDuplicate={library.duplicate}
+              onDelete={library.remove}
+            />
+          )}
+          <div className="mt-auto flex min-h-12 items-center justify-between gap-2 border-t border-gray-100 bg-white px-4 text-[11px] text-gray-400 sm:px-6">
+            <span role="status">
+              {library.storageAvailable
+                ? "Saved in this browser"
+                : "Changes stay in this tab — browser storage is unavailable"}
+            </span>
+            {activeTrip && (
+              <div
+                id="trash-container"
+                className="flex h-10 w-16 flex-shrink-0 items-center justify-center"
+                aria-label="Drop a place here to delete it"
+              />
+            )}
+          </div>
+        </Window>
+        <Window
+          title="Things to try"
+          isOpen
+          containerClassName="w-full min-w-0"
+          className="w-full p-0 xl:max-h-[calc(100vh-8rem)] xl:overflow-y-auto"
+        >
+          <DemoTasks completed={library.completed} />
+        </Window>
+      </div>
+    </section>
   );
 }

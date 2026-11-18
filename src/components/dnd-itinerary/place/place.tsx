@@ -84,7 +84,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
       return updatedDetails;
     };
 
-    const newPlace = { ...place, ...details, updateBy: userId, updatedAt: new Date() };
+    const newPlace = { ...place, ...details, updatedBy: userId, updatedAt: new Date() };
     const modifiedDetails = getUpdatedDetails(place, details);
 
     if (Object.keys(modifiedDetails).length === 0) return; // No changes
@@ -159,7 +159,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
       offset={({ rects }) => ({
         mainAxis: -rects.reference.height - (rects.floating.height - rects.reference.height),
       })}
-      shift={false}
+      shift={{ padding: 12 }}
       flip={false}
       size={false}
       customAnimation={animation}

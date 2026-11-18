@@ -60,7 +60,7 @@ export default function useHistoryState<T>(
   const undo = useCallback(() => {
     if (index > 0) {
       setIndex(index - 1);
-      setValue(history[index - 1]!.value);
+      setValue(structuredClone(history[index - 1]!.value));
     }
   }, [index, history]);
 
@@ -68,7 +68,7 @@ export default function useHistoryState<T>(
   const redo = useCallback(() => {
     if (index < history.length - 1) {
       setIndex(index + 1);
-      setValue(history[index + 1]!.value);
+      setValue(structuredClone(history[index + 1]!.value));
     }
   }, [index, history]);
 
@@ -77,7 +77,7 @@ export default function useHistoryState<T>(
     (index: number) => {
       index = Math.max(0, Math.min(history.length - 1, index < 0 ? history.length + index : index));
       setIndex(index);
-      setValue(history[index]!.value);
+      setValue(structuredClone(history[index]!.value));
     },
     [history],
   );

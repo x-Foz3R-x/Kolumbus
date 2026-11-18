@@ -7,7 +7,9 @@ export default function Footer(props: { className?: string }) {
   const footerNav = isShowcase
     ? siteConfig.footerNav
         .map(({ items }) => ({
-          items: items.filter((item) => item.external || ["/about", "/contact"].includes(item.href)),
+          items: items.filter(
+            (item) => item.external || ["/about", "/contact"].includes(item.href),
+          ),
         }))
         .filter(({ items }) => items.length)
     : siteConfig.footerNav;
@@ -20,8 +22,8 @@ export default function Footer(props: { className?: string }) {
       )}
     >
       <p className="bg-gradient-to-br from-white to-white/50 bg-clip-text text-transparent md:col-span-3">
-        Kolumbus is your story hard drive. Cherish each moment and craft long-lasting memories.
-        Travel thoughtfully with Kolumbus by your side.
+        A personal travel-planning project by Paweł Knot. Built to bring your places, plans and
+        travel ideas together, with a little room for spontaneity.
       </p>
 
       <section className="flex w-full flex-wrap justify-between gap-4 gap-y-8 whitespace-nowrap md:col-span-5 lg:col-span-4 lg:col-start-5">

@@ -199,7 +199,7 @@ export const EventComposer = memo(function EventComposer({
       }}
       placement="top-start"
       offset={({ rects }) => ({ mainAxis: (-rects.reference.height - rects.floating.height) / 2 })}
-      shift={false}
+      shift={{ padding: 12 }}
       flip={false}
       size={false}
       customAnimation={{

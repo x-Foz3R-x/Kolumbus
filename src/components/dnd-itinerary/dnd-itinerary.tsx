@@ -256,14 +256,12 @@ export function DndItinerary({
 
     // Handle dragging of a list within the itinerary.
     if (activeType === "list") {
-      const newItinerary = arrayMove(itinerary, activeListIndex, overListIndex);
-
-      [activeList.date, overList.date] = [overList.date, activeList.date]; // Swap dates between dragged and target lists.
-      if (activeItem) setActiveItem?.({ ...activeItem, date: activeList.date }); // Update overlay list date
-
-      // Correct the dayIndex for places in both swapped days.
-      newItinerary[activeListIndex]!.places.map((place) => (place.dayIndex = activeListIndex));
-      newItinerary[overListIndex]!.places.map((place) => (place.dayIndex = overListIndex));
+      const newItinerary = arrayMove(structuredClone(itinerary), activeListIndex, overListIndex);
+      newItinerary.forEach((day, index) => {
+        day.date = itinerary[index]!.date;
+        day.places = updateItemsPlacement(day.places, index);
+      });
+      if (activeItem) setActiveItem({ ...activeItem, date: newItinerary[overListIndex]!.date });
 
       setItinerary(newItinerary);
       return;
@@ -290,7 +288,7 @@ export function DndItinerary({
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     // Skip if there's no drop target.
     if (over === null) {
-      setActiveItem(null);
+      handleDragCancel();
       return;
     }
 
@@ -338,7 +336,8 @@ export function DndItinerary({
       else if (selectedIds.length > 1) actionDesc = `Move ${selectedIds.length} places`;
 
       setItinerary(itinerary, actionDesc);
-      if (onItemsMove) onItemsMove(tripId, getMovedItemsDetails(itinerary, affectedListsRef.current));
+      if (onItemsMove)
+        onItemsMove(tripId, getMovedItemsDetails(itinerary, affectedListsRef.current));
 
       setActiveItem(null);
       affectedListsRef.current = [];

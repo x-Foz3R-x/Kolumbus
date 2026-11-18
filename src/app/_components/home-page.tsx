@@ -17,9 +17,6 @@ export default function HomePage({ nav }: { nav?: React.ReactNode }) {
         <Features />
         <Demo />
 
-        {/* Benefits */}
-        {/* FAQ */}
-
         <CTA />
         <Footer className="rounded-none bg-kolumblue-500" />
       </main>
