@@ -24,6 +24,66 @@ type Indicator = {
   className?: ClassName;
 };
 
+function getStyle(dir: Direction, indicator?: Indicator) {
+  if (typeof indicator !== "object") return {};
+
+  const isHorizontal = dir === "left" || dir === "right";
+  const commonStyles = {
+    zIndex: indicator.zIndex ?? 50,
+    [isHorizontal ? "width" : "height"]: indicator.size ?? 40,
+  };
+
+  const getOffset = (dir: Direction, offset?: Offset) => {
+    if (typeof offset === "undefined") return 0;
+    if (typeof offset === "number") return offset;
+    return offset[dir] ?? (dir === "top" || dir === "bottom" ? (offset.y ?? 0) : (offset.x ?? 0));
+  };
+
+  return {
+    ...commonStyles,
+    top: ["top", "left", "right"].includes(dir) ? getOffset("top", indicator?.offset) : undefined,
+    bottom: ["bottom", "left", "right"].includes(dir)
+      ? getOffset("bottom", indicator?.offset)
+      : undefined,
+    left: ["left", "top", "bottom"].includes(dir)
+      ? getOffset("left", indicator?.offset)
+      : undefined,
+    right: ["right", "top", "bottom"].includes(dir)
+      ? getOffset("right", indicator?.offset)
+      : undefined,
+  };
+}
+
+function getClassName(dir: Direction, className?: ClassName) {
+  return typeof className === "object"
+    ? cn(dir === "top" || dir === "bottom" ? className.y : className.x, className[dir])
+    : className;
+}
+
+function Indicator(props: {
+  direction: Direction;
+  overflow: boolean;
+  style: React.CSSProperties;
+  className?: string;
+}) {
+  return (
+    <motion.span
+      aria-hidden
+      style={props.style}
+      className={cn(
+        "pointer-events-none absolute select-none from-white to-transparent dark:from-gray-800",
+        props.direction === "top" && "bg-gradient-to-b",
+        props.direction === "bottom" && "bg-gradient-to-t",
+        props.direction === "left" && "bg-gradient-to-r",
+        props.direction === "right" && "bg-gradient-to-l",
+        props.className,
+      )}
+      animate={{ opacity: props.overflow ? 1 : 0 }}
+      transition={{ duration: 0.15, ease: EASING.easeIn }}
+    />
+  );
+}
+
 /**
  * ScrollIndicator provides a visual indication of overflow in a scrollable container.
  * It displays a fading effect at the edges of the container to indicate that more content is available off-screen.
@@ -86,63 +146,3 @@ export const ScrollIndicator = memo(function ScrollIndicator(props: {
     </Container>
   );
 });
-
-function Indicator(props: {
-  direction: Direction;
-  overflow: boolean;
-  style: React.CSSProperties;
-  className?: string;
-}) {
-  return (
-    <motion.span
-      aria-hidden
-      style={props.style}
-      className={cn(
-        "pointer-events-none absolute select-none from-white to-transparent dark:from-gray-800",
-        props.direction === "top" && "bg-gradient-to-b",
-        props.direction === "bottom" && "bg-gradient-to-t",
-        props.direction === "left" && "bg-gradient-to-r",
-        props.direction === "right" && "bg-gradient-to-l",
-        props.className,
-      )}
-      animate={{ opacity: props.overflow ? 1 : 0 }}
-      transition={{ duration: 0.15, ease: EASING.easeIn }}
-    />
-  );
-}
-
-function getStyle(dir: Direction, indicator?: Indicator) {
-  if (typeof indicator !== "object") return {};
-
-  const isHorizontal = dir === "left" || dir === "right";
-  const commonStyles = {
-    zIndex: indicator.zIndex ?? 50,
-    [isHorizontal ? "width" : "height"]: indicator.size ?? 40,
-  };
-
-  const getOffset = (dir: Direction, offset?: Offset) => {
-    if (typeof offset === "undefined") return 0;
-    if (typeof offset === "number") return offset;
-    return offset[dir] ?? (dir === "top" || dir === "bottom" ? (offset.y ?? 0) : (offset.x ?? 0));
-  };
-
-  return {
-    ...commonStyles,
-    top: ["top", "left", "right"].includes(dir) ? getOffset("top", indicator?.offset) : undefined,
-    bottom: ["bottom", "left", "right"].includes(dir)
-      ? getOffset("bottom", indicator?.offset)
-      : undefined,
-    left: ["left", "top", "bottom"].includes(dir)
-      ? getOffset("left", indicator?.offset)
-      : undefined,
-    right: ["right", "top", "bottom"].includes(dir)
-      ? getOffset("right", indicator?.offset)
-      : undefined,
-  };
-}
-
-function getClassName(dir: Direction, className?: ClassName) {
-  return typeof className === "object"
-    ? cn(dir === "top" || dir === "bottom" ? className.y : className.x, className[dir])
-    : className;
-}

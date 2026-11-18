@@ -3,7 +3,6 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 import { useTripContext } from "./trip-provider";
@@ -28,10 +27,6 @@ export default function TopNav() {
 
   const [isModalOpen, setModalOpen] = useState(false);
 
-  // const datesRef = useRef<{ startDate: Date; endDate: Date }>({
-  //   startDate: new Date(trip.startDate),
-  //   endDate: new Date(trip.endDate),
-  // });
   const daysToDeleteRef = useRef<DaySchema[]>([]);
 
   const handleUpdate = (startDate: Date, endDate: Date) => {
@@ -53,10 +48,6 @@ export default function TopNav() {
 
       console.log(totalDays + firstPlaceDayIndex);
       console.log(trip.itinerary, daysToDeleteRef.current);
-
-      toast.info(
-        "Changing dates requires adjusting your itinerary. Please relocate items to proceed.",
-      );
       return;
     }
 
@@ -86,6 +77,29 @@ export default function TopNav() {
       );
     }
   };
+
+  // const handleDeleteEvents = (startDate: Date, endDate: Date) => {
+  //   // updateTripData(startDate, endDate);
+  //   setModalOpen(false);
+
+  //   // Delete the events scheduled on the days being deleted.
+  //   daysToDeleteRef.current
+  //     .flatMap((day) => day.places)
+  //     .forEach((event) => {
+  //       deleteEvent(event);
+  //       console.log(event.id);
+  //       // dispatchUserTrips({ type: UT.DELETE_EVENT, payload: { event, tripId: activeTrip.id } });
+  //       // deleteEvent.mutate(
+  //       //   { eventId: event.id },
+  //       //   {
+  //       //     onError(error) {
+  //       //       console.error(error);
+  //       //       dispatchUserTrips({ type: UT.UPDATE_TRIP, trip: { ...activeTrip, itinerary: deepCloneItinerary(activeTrip.itinerary) } });
+  //       //     },
+  //       //   },
+  //       // );
+  //     });
+  // };
 
   return (
     <>

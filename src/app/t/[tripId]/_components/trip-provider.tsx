@@ -104,7 +104,7 @@ export const TripProvider = (props: {
     [trip, setTrip],
   );
 
-  const getMovedItemsDetails = useCallback(
+  const getMovedItemsDiff = useCallback(
     (newItinerary: ItinerarySchema, affectedListIds: string[]) => {
       // Retrieves the last saved itinerary state before the current drag operation.
       // Due to a delay in history updates, the last entry (-1) reflects the previous state,
@@ -135,7 +135,6 @@ export const TripProvider = (props: {
 
             return { id: place.id, ...changes };
           });
-        // .map((place) => ({ id: place.id, dayIndex: place.dayIndex, sortIndex: place.sortIndex }));
       };
 
       const newItems = getItemsFromAffectedLists(newItinerary);
@@ -157,7 +156,7 @@ export const TripProvider = (props: {
       trip,
       setTrip: updateTrip,
       setItinerary: updateItinerary,
-      getMovedItemsDetails,
+      getMovedItemsDetails: getMovedItemsDiff,
 
       createTrip: handleCreate,
     }),
@@ -168,7 +167,7 @@ export const TripProvider = (props: {
       trip,
       updateTrip,
       updateItinerary,
-      getMovedItemsDetails,
+      getMovedItemsDiff,
       handleCreate,
     ],
   );
