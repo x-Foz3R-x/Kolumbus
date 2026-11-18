@@ -23,6 +23,7 @@ const nextConfig = {
 const config = showcase
   ? {
       reactStrictMode: false,
+      experimental: { extensionAlias: { ".js": [".ts", ".tsx", ".js"] } },
       ...(process.env.NODE_ENV === "production" ? { output: "export" } : {}),
       pageExtensions: [
         "showcase.tsx",

@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { z } from "zod";
 
-import { PlacesAutocompleteResponse, PlacesDetailsResponse } from "../src/lib/validations/google";
+import { PlacesAutocompleteResponse, PlacesDetailsResponse } from "../src/lib/validations/google.js";
 
 const querySchema = z.discriminatedUnion("action", [
   z.object({
