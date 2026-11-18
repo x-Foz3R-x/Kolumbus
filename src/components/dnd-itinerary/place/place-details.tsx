@@ -24,6 +24,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   details: PlaceDetailsSchema;
+  googleId?: string | null;
   setDetails: (valueOrIndex: PlaceDetailsSchema | number, desc?: string) => void;
   historyActions: HistoryActions<PlaceDetailsSchema>;
   detailsRef: (element: HTMLDivElement | null) => void;
@@ -34,6 +35,7 @@ export const PlaceDetails = memo(function ActivityDetails({
   isOpen,
   setIsOpen,
   details,
+  googleId,
   setDetails,
   historyActions,
   detailsRef,
@@ -70,7 +72,7 @@ export const PlaceDetails = memo(function ActivityDetails({
         exit={{ height: "82px" }}
         transition={{ ease: EASING.anticipate, duration: 0.6 }}
       >
-        <PlaceImage src={details.imageUrl} size={82} />
+        <PlaceImage src={details.imageUrl} googleId={googleId} size={82} />
       </motion.div>
 
       {/* Name */}

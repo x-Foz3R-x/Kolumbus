@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import { isShowcase } from "~/config/site";
 import { api } from "~/trpc/react";
@@ -11,7 +11,11 @@ import { Button, Icons, Spinner } from "../ui";
 import { Floating } from "../ui/floating/floating";
 import { Combobox } from "../ui/combobox";
 import { toastHandler } from "~/lib/trpc";
-import { FieldsGroup } from "~/lib/validations/google";
+import {
+  FieldsGroup,
+  PlacesAutocompleteResponse,
+  PlacesDetailsResponse,
+} from "~/lib/validations/google";
 import { constructPlace } from "~/lib/constructors";
 import { ITEM_GAP, PLACE_WIDTH } from "~/lib/constants";
 
@@ -45,54 +49,76 @@ export const EventComposer = memo(function EventComposer({
   const [predictionList, setPredictionList] = useState<Prediction[]>([]);
   const [sessionToken, setSessionToken] = useState(createId());
   const [loading, setLoading] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const searchRequest = useRef(0);
+  const currentDay = useRef({ day, dayIndex, createItem, placeCount, placeLimit });
+  currentDay.current = { day, dayIndex, createItem, placeCount, placeLimit };
+
+  useEffect(
+    () => () => {
+      searchRequest.current++;
+    },
+    [],
+  );
 
   const handleChange = async (searchValue: string) => {
-    if (placeCount >= placeLimit) return;
-    if (isShowcase) {
-      const name = searchValue.trim();
-      setPredictionList(name ? [{ value: name }] : []);
+    const request = ++searchRequest.current;
+    setPredictionList([]);
+    setSearchError(null);
+    if (!searchValue.trim() || placeCount >= placeLimit) {
+      setLoading(false);
       return;
     }
 
     setLoading(true);
-    autocomplete.mutate(
-      { searchValue, sessionToken },
-      {
-        onSuccess(data) {
-          if (data.status === "OK") {
-            setPredictionList(
-              data.predictions.map((prediction) => ({
-                value: prediction.structured_formatting.main_text,
-                secondaryValue: prediction.structured_formatting.secondary_text,
-                valueSubstring: prediction.structured_formatting.main_text_matched_substrings,
-                secondaryValueSubstring:
-                  prediction.structured_formatting.secondary_text_matched_substrings,
-                placeId: prediction.place_id,
-              })),
-            );
-          } else if (data.status === "ZERO_RESULTS") {
-            setPredictionList([]);
-          } else {
-            setPredictionList([]);
-            console.error(`Google Places API status: ${data.status}.`);
-            console.error(
-              "Please contact at pawel@kolumbus.app with API status to resolve this issue.",
-            );
-          }
-        },
-        onError(error) {
-          setPredictionList([]);
-          console.error(`Unexpected error occurred: ${error.message}`);
-        },
-      },
-    );
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    if (request !== searchRequest.current) return;
+
+    try {
+      let data;
+      if (isShowcase) {
+        const params = new URLSearchParams({
+          action: "autocomplete",
+          input: searchValue,
+          sessionToken,
+        });
+        const response = await fetch(`/api/places?${params.toString()}`);
+        if (!response.ok) throw new Error("Google Places is unavailable");
+        data = PlacesAutocompleteResponse.parse(await response.json());
+      } else {
+        data = await autocomplete.mutateAsync({ searchValue, sessionToken });
+      }
+      if (request !== searchRequest.current) return;
+      if (data.status !== "OK" && data.status !== "ZERO_RESULTS") {
+        throw new Error("Google Places is unavailable");
+      }
+      setPredictionList(
+        data.predictions.map((prediction) => ({
+          value: prediction.structured_formatting.main_text,
+          secondaryValue: prediction.structured_formatting.secondary_text,
+          valueSubstring: prediction.structured_formatting.main_text_matched_substrings,
+          secondaryValueSubstring:
+            prediction.structured_formatting.secondary_text_matched_substrings,
+          placeId: prediction.place_id,
+        })),
+      );
+    } catch {
+      if (request === searchRequest.current) {
+        setSearchError("Search unavailable. Press Enter to add your own place.");
+      }
+    } finally {
+      if (request === searchRequest.current) setLoading(false);
+    }
   };
 
-  const handleAdd = (value: unknown) => {
+  const handleAdd = async (value: unknown) => {
     const prediction = value as Prediction | null;
 
     const name = inputValue.trim();
-    if (placeCount >= placeLimit || (!prediction && !name)) return;
+    if (adding || placeCount >= placeLimit || (!prediction && !name)) return;
+    const request = ++searchRequest.current;
+    setLoading(false);
 
     const place = constructPlace({
       userId,
@@ -101,38 +127,51 @@ export const EventComposer = memo(function EventComposer({
       sortIndex: day.places.length,
     });
 
-    if (prediction === null) {
-      place.name = name;
-      createItem(place);
-    } else if (prediction.placeId) {
+    place.name = prediction?.value ?? name;
+    if (prediction?.placeId) {
+      setAdding(true);
       place.googleId = prediction.placeId;
-      details.mutate(
-        {
-          place_id: prediction.placeId,
-          fields: FieldsGroup.Basic + FieldsGroup.Contact,
-          sessionToken,
-        },
-        {
-          onSuccess(data) {
-            const result = data.result;
-
-            place.name = result.name ?? place.name;
-            place.imageUrl = result.photos?.[0]?.photo_reference
-              ? `ref:${result.photos[0].photo_reference}`
-              : place.imageUrl;
-            place.address = result.formatted_address ?? place.address;
-            place.phoneNumber = result.international_phone_number ?? place.phoneNumber;
-            place.website = result.website ?? place.website;
-
-            createItem(place);
-          },
-        },
-      );
-    } else {
-      place.name = prediction.value;
-      createItem(place);
+      try {
+        let data;
+        if (isShowcase) {
+          const params = new URLSearchParams({
+            action: "details",
+            placeId: prediction.placeId,
+            sessionToken,
+          });
+          const response = await fetch(`/api/places?${params.toString()}`);
+          if (!response.ok) throw new Error("Place details are unavailable");
+          data = PlacesDetailsResponse.parse(await response.json());
+        } else {
+          data = await details.mutateAsync({
+            place_id: prediction.placeId,
+            fields: FieldsGroup.Basic + FieldsGroup.Contact,
+            sessionToken,
+          });
+        }
+        if (data.status !== "OK") throw new Error("Place details are unavailable");
+        const { result } = data;
+        place.name = result.name ?? place.name;
+        place.imageUrl = result.photos?.[0]?.photo_reference
+          ? `ref:${result.photos[0].photo_reference}`
+          : place.imageUrl;
+        place.address = result.formatted_address ?? place.address;
+        place.phoneNumber = result.international_phone_number ?? place.phoneNumber;
+        place.website = result.website ?? place.website;
+      } catch {
+        // Keep the selected place available when its details cannot be loaded.
+      } finally {
+        if (request === searchRequest.current) setAdding(false);
+      }
     }
 
+    if (request !== searchRequest.current) return;
+    const current = currentDay.current;
+    if (current.placeCount >= current.placeLimit) return;
+    place.dayIndex = current.dayIndex;
+    place.sortIndex = current.day.places.length;
+    current.createItem(place);
+    searchRequest.current++;
     setIsOpen(false);
     setInputValue("");
     setPredictionList([]);
@@ -141,6 +180,10 @@ export const EventComposer = memo(function EventComposer({
   };
 
   const handleClear = () => {
+    searchRequest.current++;
+    setLoading(false);
+    setAdding(false);
+    setSearchError(null);
     if (inputValue === "" && predictionList.length === 0) setIsOpen(false);
     setIsExpanded(false);
     setInputValue("");
@@ -245,6 +288,7 @@ export const EventComposer = memo(function EventComposer({
         >
           <Button
             onClick={() => handleAdd(null)}
+            disabled={adding}
             variant="unset"
             size="unset"
             className="h-full overflow-hidden rounded-none duration-100 hover:fill-gray-800 focus-visible:fill-gray-800 dark:hover:fill-gray-300 dark:focus-visible:fill-gray-300"
@@ -307,7 +351,12 @@ export const EventComposer = memo(function EventComposer({
 
           {predictionList.length === 0 && (
             <div className="flex w-full items-center justify-center text-xs font-medium text-gray-400">
-              {loading ? <Spinner.default size="sm" /> : "No results"}
+              {loading || adding ? <Spinner.default size="sm" /> : (searchError ?? "No results")}
+            </div>
+          )}
+          {predictionList.length > 0 && (
+            <div translate="no" className="px-3 pt-2 text-right text-xs font-normal text-gray-600">
+              Google Maps
             </div>
           )}
         </Combobox.List>

@@ -219,7 +219,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
 
                 {/* Image */}
                 <div className="relative h-[82px] flex-shrink-0 overflow-hidden">
-                  <PlaceImage src={place.imageUrl} size={82} />
+                  <PlaceImage src={place.imageUrl} googleId={place.googleId} size={82} />
                 </div>
 
                 {/* Name */}
@@ -263,6 +263,7 @@ export const Place = memo(function Place({ place, dayIndex, isSelected }: Props)
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         details={details}
+        googleId={place.googleId}
         setDetails={setDetails}
         historyActions={historyActions}
         detailsRef={detailsRef}

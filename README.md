@@ -17,4 +17,6 @@
 
 Run `pnpm dev:showcase` for the homepage, interactive itinerary demo, and contact page.
 `pnpm build:showcase` exports the same pages to `out/`, which Vercel serves as a static site.
-The showcase runs without an `.env` file.
+The showcase builds without an `.env` file. Set `GOOGLE_KEY` in Vercel for the demo's
+Google Places search, details, and photos. Its serverless API uses this key independently
+of Supabase and Clerk. Custom places remain available when Google cannot be reached.

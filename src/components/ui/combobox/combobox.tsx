@@ -142,8 +142,8 @@ export const Combobox = {
       if (value) {
         combobox.setActiveIndex(null);
         combobox.setOpen(true);
-        void onChange?.(value);
       } else combobox.setOpen(false);
+      void onChange?.(value);
     };
 
     const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {

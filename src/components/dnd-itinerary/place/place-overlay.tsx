@@ -23,7 +23,7 @@ export const PlaceOverlay = memo(function PlaceOverlay({ place, selectCount, hov
       >
         {/* Image */}
         <div className="relative h-[82px] flex-shrink-0">
-          <PlaceImage src={place.imageUrl} size={82} />
+          <PlaceImage src={place.imageUrl} googleId={place.googleId} size={82} />
         </div>
 
         {/* Name */}

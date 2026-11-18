@@ -23,8 +23,12 @@ const nextConfig = {
 const config = showcase
   ? {
       reactStrictMode: false,
-      output: "export",
-      pageExtensions: ["showcase.tsx", "showcase.ts"],
+      ...(process.env.NODE_ENV === "production" ? { output: "export" } : {}),
+      pageExtensions: [
+        "showcase.tsx",
+        "showcase.ts",
+        ...(process.env.NODE_ENV === "development" ? ["showcase.dev.ts"] : []),
+      ],
       images: { unoptimized: true },
     }
   : withSentryConfig(nextConfig, {
