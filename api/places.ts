@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from "node:http";
 import { z } from "zod";
 
 import { PlacesAutocompleteResponse, PlacesDetailsResponse } from "../src/lib/validations/google";
@@ -23,7 +24,7 @@ const querySchema = z.discriminatedUnion("action", [
   }),
 ]);
 
-async function handlePlacesRequest(request: Request) {
+export async function handlePlacesRequest(request: Request) {
   const headers = { "Cache-Control": "no-store" };
 
   if (request.method !== "GET") {
@@ -97,5 +98,10 @@ async function handlePlacesRequest(request: Request) {
   }
 }
 
-const places = { fetch: handlePlacesRequest };
-export default places;
+export default async function handler(request: IncomingMessage, response: ServerResponse) {
+  const result = await handlePlacesRequest(
+    new Request(new URL(request.url ?? "/", "http://localhost"), { method: request.method }),
+  );
+  response.writeHead(result.status, Object.fromEntries(result.headers));
+  response.end(Buffer.from(await result.arrayBuffer()));
+}

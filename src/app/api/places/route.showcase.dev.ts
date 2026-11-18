@@ -1,3 +1,3 @@
-import places from "../../../../api/places";
+import { handlePlacesRequest } from "../../../../api/places";
 
-export const GET = places.fetch;
+export const GET = handlePlacesRequest;
