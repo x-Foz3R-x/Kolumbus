@@ -231,7 +231,7 @@ export function MenuComponent({
 
   // Set isMounted to true when open becomes true
   useEffect(() => {
-    isOpen && setIsMounted(true);
+    if (isOpen) setIsMounted(true);
   }, [isOpen]);
 
   return (

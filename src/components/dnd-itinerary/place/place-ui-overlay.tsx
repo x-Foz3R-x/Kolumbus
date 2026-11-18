@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import { FloatingDelayGroup } from "@floating-ui/react";
 
 import { cn, os } from "~/lib/utils";

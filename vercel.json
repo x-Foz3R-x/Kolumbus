@@ -1,0 +1,6 @@
+{
+  "framework": null,
+  "buildCommand": "pnpm build:showcase",
+  "outputDirectory": "out",
+  "cleanUrls": true
+}

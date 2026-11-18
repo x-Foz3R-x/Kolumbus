@@ -1,5 +1,6 @@
 import Carousel from "./carousel";
 import { Icons, Link } from "~/components/ui";
+import { startLink } from "~/config/site";
 
 export default function CTA() {
   return (
@@ -41,12 +42,12 @@ export default function CTA() {
 
       <div className="absolute bottom-0 flex h-1/2 w-full items-center justify-center pr-[25vw]">
         <Link.Arrow
-          href="/signup"
+          href={startLink.href}
           variant="primary"
           size="d4xl"
           className="bg-gray-800 outline-gray-800"
         >
-          Start Your Adventure
+          {startLink.label}
         </Link.Arrow>
       </div>
 

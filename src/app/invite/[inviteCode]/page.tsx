@@ -7,5 +7,5 @@ export default async function Invite({ params }: { params: { inviteCode: string 
 
   if (typeof invite === "number") return <InvalidInvite code={invite} />;
 
-  return <InviteTrip invite={invite} />;
+  return <InviteTrip {...invite} />;
 }

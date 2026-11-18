@@ -10,7 +10,10 @@ export const KolumbusFileRouter = {
       const user = auth();
 
       // validate user is logged in
-      if (!user.userId) throw new UploadThingError("Unauthorized");
+      if (!user.userId) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error -- UploadThing handles this error type.
+        throw new UploadThingError("Unauthorized");
+      }
 
       return { userId: user.userId };
     })

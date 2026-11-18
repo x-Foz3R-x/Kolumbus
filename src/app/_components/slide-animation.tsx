@@ -8,6 +8,7 @@ import { EASING } from "~/lib/motion";
 export default function SlideAnimation(props: {
   direction: "in" | "out";
   threshold: number;
+  showOnMobile?: boolean;
   className?: string;
   children?: React.ReactNode;
 }) {
@@ -16,14 +17,20 @@ export default function SlideAnimation(props: {
 
   // Toggle animation state based on scroll position and direction
   useEffect(() => {
-    const handleScroll = () => {
+    const mobile = window.matchMedia("(max-width: 767px)");
+    const updateDisplay = () => {
       const isBeyondThreshold = window.scrollY > props.threshold;
-      setDisplay(props.direction === "in" ? isBeyondThreshold : !isBeyondThreshold);
+      const shouldDisplay = props.direction === "in" ? isBeyondThreshold : !isBeyondThreshold;
+      setDisplay(shouldDisplay || (props.showOnMobile === true && mobile.matches));
     };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [props.direction, props.threshold]);
+    updateDisplay();
+    window.addEventListener("scroll", updateDisplay);
+    mobile.addEventListener("change", updateDisplay);
+    return () => {
+      window.removeEventListener("scroll", updateDisplay);
+      mobile.removeEventListener("change", updateDisplay);
+    };
+  }, [props.direction, props.threshold, props.showOnMobile]);
 
   useEffect(() => setMounted(true), []);
 

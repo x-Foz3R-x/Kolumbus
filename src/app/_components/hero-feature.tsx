@@ -53,6 +53,7 @@ export default function HeroFeature(props: { disableAnimation?: boolean }) {
 
   const [isWithinArea, setIsWithinArea] = useState(false);
   const [scale, setScale] = useState(1);
+  const [mounted, setMounted] = useState(false);
 
   // Calculate scale based on window width
   useEffect(() => {
@@ -61,9 +62,12 @@ export default function HeroFeature(props: { disableAnimation?: boolean }) {
     };
 
     handleResize();
+    setMounted(true);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  if (!mounted) return <div className="hidden h-[416px] w-[530px] md:block" />;
 
   return (
     <div
@@ -115,7 +119,7 @@ export default function HeroFeature(props: { disableAnimation?: boolean }) {
                 props.disableAnimation && "animate-none",
               )}
             >
-              <Place place={day.places[0]} />
+              {day.places[0] && <Place place={day.places[0]} />}
             </Displacement>
           </motion.li>
         ))}

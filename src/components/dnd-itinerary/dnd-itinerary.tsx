@@ -63,16 +63,20 @@ type Props = {
   setItinerary: (itineraryOrIndex: ItinerarySchema | number, desc?: string) => void;
   onItemCreate?: onItemCreate;
   onItemUpdate?: onItemUpdate;
-  onItemsMove?: onItemsMove;
   onItemsDelete?: onItemsDelete;
-  getMovedItemsDetails: (
-    newItinerary: ItinerarySchema,
-    affectedListIds: string[],
-  ) => { id: string; dayIndex?: number; sortIndex?: number }[];
   placeLimit: number;
   dndTrash?: { variant: "default" | "inset"; className?: string } | boolean;
   calendar?: string;
-};
+} & (
+  | {
+      onItemsMove: onItemsMove;
+      getMovedItemsDetails: (
+        newItinerary: ItinerarySchema,
+        affectedListIds: string[],
+      ) => { id: string; dayIndex?: number; sortIndex?: number }[];
+    }
+  | { onItemsMove?: undefined; getMovedItemsDetails?: undefined }
+);
 export function DndItinerary({
   userId,
   tripId,
@@ -334,7 +338,7 @@ export function DndItinerary({
       else if (selectedIds.length > 1) actionDesc = `Move ${selectedIds.length} places`;
 
       setItinerary(itinerary, actionDesc);
-      onItemsMove?.(tripId, getMovedItemsDetails(itinerary, [activeList.id]));
+      if (onItemsMove) onItemsMove(tripId, getMovedItemsDetails(itinerary, affectedListsRef.current));
 
       setActiveItem(null);
       affectedListsRef.current = [];
@@ -363,7 +367,7 @@ export function DndItinerary({
       newItinerary,
       selectedIds.length > 1 ? `Move ${selectedIds.length} places` : "Move place",
     );
-    onItemsMove?.(tripId, getMovedItemsDetails(newItinerary, [activeList.id]));
+    if (onItemsMove) onItemsMove(tripId, getMovedItemsDetails(newItinerary, [activeList.id]));
 
     setActiveItem(null);
     affectedListsRef.current = [];

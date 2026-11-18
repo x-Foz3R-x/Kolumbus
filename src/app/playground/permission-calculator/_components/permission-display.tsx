@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import type { MemberPermissions } from "~/types";
+import type { MemberPermissions } from "~/lib/validations/membership";
 
 export default function PermissionDisplay(props: {
   permission: keyof MemberPermissions;

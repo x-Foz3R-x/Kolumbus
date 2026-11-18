@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "next build",
+    "build:showcase": "NEXT_PUBLIC_KOLUMBUS_SHOWCASE=1 next build",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx ./src/server/db/seed",
     "db:studio": "drizzle-kit studio",
     "dev": "next dev",
+    "dev:showcase": "NEXT_PUBLIC_KOLUMBUS_SHOWCASE=1 next dev",
     "lint": "next lint",
     "start": "next start"
   },

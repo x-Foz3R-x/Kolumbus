@@ -2,6 +2,11 @@ import type { FooterItem } from "~/types";
 
 export type SiteConfig = typeof siteConfig;
 
+export const isShowcase = process.env.NEXT_PUBLIC_KOLUMBUS_SHOWCASE === "1";
+export const startLink = isShowcase
+  ? { href: "/#demo", label: "Try the demo" }
+  : { href: "/signup", label: "Start Your Adventure" };
+
 const links = {
   discord: "https://discord.com/invite/UH5BP8Hy8z",
   instagram: "https://www.instagram.com/kolumbusapp/",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { add } from "date-fns";
 
 import useRandomTrip from "~/hooks/use-random-trip";
@@ -16,7 +16,8 @@ export default function Demo() {
   const { trip, setTrip, updateItinerary, changes, position, jumpTo, randomise } =
     useRandomTrip("random");
 
-  const [itineraryWidth, setItineraryWidth] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const [windows, setWindows] = useState({
     itinerary: true,
     calendar: true,
@@ -79,10 +80,10 @@ export default function Demo() {
     setTasks({
       addEvent: changes.some((change) => /^Add.+/.exec(change)),
       moveEvent:
-        changes.includes("Move event") || changes.some((change) => /Move \d+ events/.test(change)),
-      moveMultipleEvents: changes.some((change) => /Move \d+ events/.test(change)),
+        changes.includes("Move place") || changes.some((change) => /Move \d+ places/.test(change)),
+      moveMultipleEvents: changes.some((change) => /Move \d+ places/.test(change)),
       moveDay: changes.includes("Move day"),
-      updateEvent: changes.includes("Update event"),
+      updateEvent: changes.includes("Update place"),
       deleteEvent: changes.some((change) => /^Delete.+/.exec(change)),
       changeDate: changes.includes("Change date"),
     });
@@ -90,26 +91,8 @@ export default function Demo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changes.length]);
 
-  // Calculate the width of the itinerary window based on the number of events
-  useLayoutEffect(() => {
-    // const totalPadding = 20;
-    // const dayCalendarWidth = 128;
-    // const calendarGap = 20;
-    // const composerGap = 16;
-    // const composerWidth = 32 || 312;
-    // 20 + 128 + 20 + 16 + 32 = 216
-    const preComputedStaticWidth = 216;
-
-    const activityWidth = 160;
-    const eventGap = 8;
-
-    const highestEventCount = Math.max(...trip.itinerary.map((day) => day.places.length));
-
-    setItineraryWidth(
-      preComputedStaticWidth + activityWidth * highestEventCount + eventGap * highestEventCount,
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trip]);
+  const highestPlaceCount = Math.max(0, ...trip.itinerary.map((day) => day.places.length));
+  const itineraryWidth = 216 + (160 + 8) * highestPlaceCount;
 
   const listRef = useRef<HTMLUListElement>(null);
   // Scroll to the bottom of the history list when there are new changes
@@ -119,13 +102,16 @@ export default function Demo() {
     }
   }, [changes.length]);
 
+  if (!mounted) return <div id="demo" className="min-h-[500px] scroll-mt-16" />;
+
   return (
-    <div className="relative h-fit w-full px-4 py-24 font-inter">
-      <div className="flex justify-center gap-4">
+    <div id="demo" className="relative h-fit w-full scroll-mt-16 px-4 py-24 font-inter">
+      <div className="flex flex-col items-center gap-4 xl:flex-row xl:items-start xl:justify-center">
         <Window
           title="Itinerary"
           isOpen={windows.itinerary}
           onClose={() => closeWindow("itinerary")}
+          className="max-w-full overflow-x-auto"
           style={{ width: itineraryWidth + "px" }}
         >
           <DndItinerary
@@ -133,7 +119,6 @@ export default function Demo() {
             userId="guest"
             itinerary={trip.itinerary}
             setItinerary={updateItinerary}
-            // getEntry={() => console.log("getEntry")}
             placeLimit={5}
             dndTrash={{ variant: "inset", className: "h-32" }}
             calendar="left-0 mb-0"

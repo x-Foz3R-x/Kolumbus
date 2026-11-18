@@ -102,7 +102,11 @@ function generateTrip(props: {
     // Randomly select unique places for the day until the required number of places is reached
     while (places.length < placesToPick && attempt < maxAttempts) {
       const randomPlaceIndex = getRandomValue(props.algorithm, day.places.length, attempt);
-      const place = { ...day.places[randomPlaceIndex]!, position: places.length };
+      const place = {
+        ...day.places[randomPlaceIndex]!,
+        dayIndex: index,
+        sortIndex: places.length,
+      };
       if (!places.some((e) => e.id === place.id)) places.push(place);
       if (props.algorithm === "by-day") attempt++;
     }

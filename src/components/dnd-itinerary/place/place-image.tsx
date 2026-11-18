@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { isShowcase } from "~/config/site";
 import { placeFallbackImageUrl } from "~/lib/constants";
 
 export default function PlaceImage(props: { src?: string | null; size?: number }) {
@@ -25,6 +26,7 @@ export default function PlaceImage(props: { src?: string | null; size?: number }
 }
 
 function resolveImageUrl(imageUrl?: string | null) {
+  if (isShowcase) return "/place-fallback.png";
   if (!imageUrl || imageUrl.startsWith(placeFallbackImageUrl)) return placeFallbackImageUrl;
   if (imageUrl.startsWith("http")) return imageUrl;
   if (imageUrl.startsWith("ref:")) {

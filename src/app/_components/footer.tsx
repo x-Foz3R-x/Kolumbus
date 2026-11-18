@@ -1,9 +1,17 @@
-import { siteConfig } from "~/config/site";
+import { isShowcase, siteConfig } from "~/config/site";
 import { cn } from "~/lib/utils";
 
 import { Link } from "~/components/ui";
 
 export default function Footer(props: { className?: string }) {
+  const footerNav = isShowcase
+    ? siteConfig.footerNav
+        .map(({ items }) => ({
+          items: items.filter((item) => item.external || ["/about", "/contact"].includes(item.href)),
+        }))
+        .filter(({ items }) => items.length)
+    : siteConfig.footerNav;
+
   return (
     <footer
       className={cn(
@@ -17,12 +25,12 @@ export default function Footer(props: { className?: string }) {
       </p>
 
       <section className="flex w-full flex-wrap justify-between gap-4 gap-y-8 whitespace-nowrap md:col-span-5 lg:col-span-4 lg:col-start-5">
-        {siteConfig.footerNav.map((nav, i) => (
+        {footerNav.map((nav, i) => (
           <ul key={i} className="flex w-fit flex-col gap-2 lg:w-auto">
             {nav.items.map((item) => (
               <Link.Default
                 key={item.title}
-                href={item.href}
+                href={item.href === "/about" ? "/#about" : item.href}
                 target={item.external ? "_blank" : "_self"}
                 className="duration-250 ease-kolumb-flow hover:text-white"
               >
@@ -39,12 +47,16 @@ export default function Footer(props: { className?: string }) {
         </div>
 
         <div className="order-1 flex flex-wrap items-center justify-center gap-x-6 text-white/50 md:order-2 md:justify-start">
-          <Link.Default href="/privacy" className="px-2 py-1">
-            Privacy
-          </Link.Default>
-          <Link.Default href="/terms" className="px-2 py-1">
-            Terms
-          </Link.Default>
+          {!isShowcase && (
+            <>
+              <Link.Default href="/privacy" className="px-2 py-1">
+                Privacy
+              </Link.Default>
+              <Link.Default href="/terms" className="px-2 py-1">
+                Terms
+              </Link.Default>
+            </>
+          )}
           <p>&copy; Kolumbus 2024</p>
         </div>
       </section>

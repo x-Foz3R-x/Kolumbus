@@ -12,17 +12,14 @@ import PermissionDisplay from "./_components/permission-display";
 export default function PermissionCalculator() {
   const [decodedPermission, setDecodedPermission] = useState(801);
   const [selectedPermissions, setSelectedPermissions] = useState<MemberPermissions>({
-    shareInvite: false,
+    viewInvite: false,
     editInvite: false,
-    kickMembers: false,
-    managePermissions: false,
+    editMembers: false,
 
     editTrip: false,
-    addEvents: false,
-    editEvents: false,
-    deleteEvents: false,
-    editOwnEvents: false,
-    deleteOwnEvents: false,
+    editItinerary: false,
+    editBudget: false,
+    viewDetails: false,
   });
 
   const handleCheckboxChange = (permission: keyof MemberPermissions, checked: boolean) => {
@@ -30,8 +27,8 @@ export default function PermissionCalculator() {
   };
 
   const permissionsKeys = Object.keys(selectedPermissions);
-  const generalPermissionsKeys = permissionsKeys.slice(0, 4);
-  const tripPermissionsKeys = permissionsKeys.slice(4);
+  const generalPermissionsKeys = permissionsKeys.slice(0, 3);
+  const tripPermissionsKeys = permissionsKeys.slice(3);
 
   const encoded = encodePermissions(selectedPermissions, MemberPermissionFlags);
   const decoded = decodePermissions<MemberPermissions>(decodedPermission, MemberPermissionFlags);

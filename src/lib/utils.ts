@@ -2,7 +2,7 @@ import { add, differenceInCalendarDays, format } from "date-fns";
 import clsx, { type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { customAlphabet } from "nanoid";
-import { env } from "~/env";
+import { isShowcase, siteConfig } from "~/config/site";
 
 import type { PlaceSchema } from "./validations/place";
 import type { ItinerarySchema } from "./validations/trip";
@@ -25,7 +25,8 @@ export function os() {
 }
 
 export function absoluteUrl(path: string) {
-  return `${env.NEXT_PUBLIC_APP_URL}${path}`;
+  const base = isShowcase ? siteConfig.url : process.env.NEXT_PUBLIC_APP_URL;
+  return `${base}${path}`;
 }
 
 /**

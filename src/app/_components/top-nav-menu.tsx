@@ -1,31 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { SignedIn, SignedOut, useClerk } from "@clerk/nextjs";
 
-import { accountUrl } from "~/lib/constants";
+import { startLink } from "~/config/site";
 import { EASING } from "~/lib/motion";
 
 import SlideAnimation from "./slide-animation";
-import { Menu, MenuLink, MenuOption } from "~/components/ui/menu";
-import { Divider, Icons } from "~/components/ui";
+import { Menu, MenuLink } from "~/components/ui/menu";
 
-export default function TopNavMenu() {
-  const { signOut } = useClerk();
-  const router = useRouter();
-
+export default function TopNavMenu({ children }: { children?: React.ReactNode }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.push("/");
-  };
-
   return (
-    <div className="absolute right-8 h-16 overflow-hidden py-3.5 pl-0.5">
-      <SlideAnimation direction="in" threshold={100} className="mr-0.5">
+    <div className="absolute right-4 h-16 md:right-8 overflow-hidden py-3.5 pl-0.5">
+      <SlideAnimation direction="in" threshold={100} showOnMobile className="mr-0.5">
         <Menu
           isOpen={isMenuOpen}
           setIsOpen={setMenuOpen}
@@ -88,45 +77,30 @@ export default function TopNavMenu() {
           </button>
 
           <div className="px-1.5">
-            <SignedIn>
-              <MenuLink href="/library" label="library" className="text-base text-gray-600">
-                <Icons.library className="ml-2 h-4 w-4" />
-                Library
-              </MenuLink>
-
-              <Divider className="my-2 bg-kolumblue-400" />
-
-              <MenuLink label="my account" href={accountUrl} className="text-base text-gray-600">
-                <Icons.userSettings className="ml-2 h-4 w-4" />
-                My account
-              </MenuLink>
-              <MenuOption
-                label="sign out"
-                onClick={handleSignOut}
-                className="text-base text-gray-600"
-              >
-                <Icons.signOut className="ml-2 h-4 w-4" />
-                Sign out
-              </MenuOption>
-            </SignedIn>
-
-            <SignedOut>
-              <MenuLink href="/about-me" label="about me" className="text-base text-gray-600">
-                About me
-              </MenuLink>
-              <MenuLink href="/contact" label="contact" className="text-base text-gray-600">
-                Contact
-              </MenuLink>
-              <MenuLink href="/signin" label="sign in" className="text-base text-gray-600">
-                Sign in
-              </MenuLink>
-              <MenuLink href="/signup" label="sign up" className="text-base text-gray-600">
-                Sign up
-              </MenuLink>
-            </SignedOut>
+            {children ?? (
+              <>
+                <PublicLinks />
+                <MenuLink href={startLink.href} label="try the demo" className="text-base text-gray-600">
+                  {startLink.label}
+                </MenuLink>
+              </>
+            )}
           </div>
         </Menu>
       </SlideAnimation>
     </div>
+  );
+}
+
+export function PublicLinks() {
+  return (
+    <>
+      <MenuLink href="/#about" label="about" className="text-base text-gray-600">
+        About
+      </MenuLink>
+      <MenuLink href="/contact" label="contact" className="text-base text-gray-600">
+        Contact
+      </MenuLink>
+    </>
   );
 }

@@ -147,18 +147,16 @@ export const Combobox = {
     };
 
     const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === (KEYS.Enter as string)) {
-        if (combobox.activeIndex !== null) {
-          const selectedListItem = combobox.list[combobox.activeIndex];
-          if (selectedListItem !== undefined) {
-            combobox.setInputValue(selectedListItem.value);
-            combobox.setActiveIndex(null);
-            combobox.setOpen(false);
-          }
+      if (e.key !== (KEYS.Enter as string)) return;
 
-          onEnterPress?.(combobox.list[combobox.activeIndex]);
-        }
+      const selected = combobox.activeIndex === null ? null : combobox.list[combobox.activeIndex];
+      if (selected) {
+        combobox.setInputValue(selected.value);
+        combobox.setActiveIndex(null);
+        combobox.setOpen(false);
       }
+
+      onEnterPress?.(selected ?? null);
     };
 
     //#region Transition timeout

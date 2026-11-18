@@ -1,12 +1,16 @@
-import { SignedIn, SignedOut } from "@clerk/nextjs";
-
 import Logo from "./logo";
 import TopNavMenu from "./top-nav-menu";
 import SlideAnimation from "./slide-animation";
-import ProfileButton from "~/components/profile-button";
 import { Link } from "~/components/ui";
+import { startLink } from "~/config/site";
 
-export default function TopNav() {
+export default function TopNav({
+  actions,
+  menu,
+}: {
+  actions?: React.ReactNode;
+  menu?: React.ReactNode;
+}) {
   return (
     <nav className="apply-custom-cursor fixed inset-x-0 top-0 z-50 flex h-16 items-center whitespace-nowrap font-belanosima">
       <Logo />
@@ -20,7 +24,7 @@ export default function TopNav() {
         <div className="flex items-center gap-4">
           <div className="flex">
             <Link.UnderLine
-              href="/about"
+              href="/#about"
               className="fill-gray-600 px-5 text-[17px] text-gray-600 before:inset-x-5"
             >
               About
@@ -33,25 +37,15 @@ export default function TopNav() {
             </Link.UnderLine>
           </div>
 
-          <SignedIn>
-            <Link.Arrow href="/library" variant="outline" size="lg">
-              Library
+          {actions ?? (
+            <Link.Arrow href={startLink.href} variant="primary" size="lg" className="font-semibold">
+              {startLink.label}
             </Link.Arrow>
-            <ProfileButton />
-          </SignedIn>
-
-          <SignedOut>
-            <Link.Arrow href="/signin" variant="outline" size="lg">
-              Sign in
-            </Link.Arrow>
-            <Link.Arrow href="/signup" variant="primary" size="lg" className="font-semibold">
-              Start Your Adventure
-            </Link.Arrow>
-          </SignedOut>
+          )}
         </div>
       </SlideAnimation>
 
-      <TopNavMenu />
+      <TopNavMenu>{menu}</TopNavMenu>
     </nav>
   );
 }

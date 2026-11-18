@@ -1,5 +1,6 @@
 import { memo, useState } from "react";
 
+import { isShowcase } from "~/config/site";
 import { api } from "~/trpc/react";
 import { useDndItineraryContext } from "./dnd-context";
 import type { DaySchema } from "~/lib/validations/trip";
@@ -47,6 +48,11 @@ export const EventComposer = memo(function EventComposer({
 
   const handleChange = async (searchValue: string) => {
     if (placeCount >= placeLimit) return;
+    if (isShowcase) {
+      const name = searchValue.trim();
+      setPredictionList(name ? [{ value: name }] : []);
+      return;
+    }
 
     setLoading(true);
     autocomplete.mutate(
@@ -85,7 +91,8 @@ export const EventComposer = memo(function EventComposer({
   const handleAdd = (value: unknown) => {
     const prediction = value as Prediction | null;
 
-    if (placeCount >= placeLimit) return;
+    const name = inputValue.trim();
+    if (placeCount >= placeLimit || (!prediction && !name)) return;
 
     const place = constructPlace({
       userId,
@@ -95,7 +102,7 @@ export const EventComposer = memo(function EventComposer({
     });
 
     if (prediction === null) {
-      place.name = inputValue;
+      place.name = name;
       createItem(place);
     } else if (prediction.placeId) {
       place.googleId = prediction.placeId;
@@ -128,6 +135,8 @@ export const EventComposer = memo(function EventComposer({
 
     setIsOpen(false);
     setInputValue("");
+    setPredictionList([]);
+    setIsExpanded(false);
     setSessionToken(createId());
   };
 
@@ -172,6 +181,7 @@ export const EventComposer = memo(function EventComposer({
         isExpanded && "rounded-b-none duration-300 ease-kolumb-flow",
       )}
       triggerProps={{
+        "aria-label": "Add a place",
         onClick: () => setIsOpen(true),
         variant: "unset",
         size: "unset",
@@ -234,6 +244,7 @@ export const EventComposer = memo(function EventComposer({
           }}
         >
           <Button
+            onClick={() => handleAdd(null)}
             variant="unset"
             size="unset"
             className="h-full overflow-hidden rounded-none duration-100 hover:fill-gray-800 focus-visible:fill-gray-800 dark:hover:fill-gray-300 dark:focus-visible:fill-gray-300"

@@ -149,7 +149,7 @@ export function Floating({
 
   // Set isMounted to true when open becomes true
   useEffect(() => {
-    open && setIsMounted(true);
+    if (open) setIsMounted(true);
   }, [open]);
 
   return (

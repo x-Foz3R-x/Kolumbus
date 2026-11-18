@@ -15,7 +15,7 @@ type Invite = {
   name: string;
   startDate: string;
   endDate: string;
-  image: string | null;
+  imageUrl: string | null;
   memberCount: number;
   isMember: boolean;
 };
@@ -35,7 +35,7 @@ export default function InviteTrip(invite: Invite) {
     <>
       <div className="relative h-28 w-28 overflow-hidden rounded-3xl">
         <Image
-          src={invite.image ? invite.image : tripFallbackImageUrl}
+          src={invite.imageUrl ?? tripFallbackImageUrl}
           alt="Trip photo"
           sizes="80px"
           priority

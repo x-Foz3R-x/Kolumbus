@@ -5,7 +5,8 @@ import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import SuperJSON from "superjson";
-import { env } from "~/env";
+import { isShowcase } from "~/config/site";
+import { absoluteUrl } from "~/lib/utils";
 
 import { type AppRouter } from "~/server/api/root";
 
@@ -36,7 +37,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: env.NEXT_PUBLIC_APP_URL + "/api/trpc",
+          url: isShowcase ? "/api/trpc" : absoluteUrl("/api/trpc"),
           headers: () => {
             const headers = new Headers();
             headers.set("x-trpc-source", "nextjs-react");

@@ -12,3 +12,9 @@
 - [x] Analytics (PostHog)
 - [x] Rate limiting (Upstash)
 - [ ] Transfer kolumbus code
+
+## Showcase
+
+Run `pnpm dev:showcase` for the homepage, interactive itinerary demo, and contact page.
+`pnpm build:showcase` exports the same pages to `out/`, which Vercel serves as a static site.
+The showcase runs without an `.env` file.

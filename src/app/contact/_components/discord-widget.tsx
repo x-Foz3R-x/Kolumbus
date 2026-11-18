@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { cn } from "~/lib/utils";
-import type { DiscordServerResponse } from "~/types";
+import type { DiscordServerResponseSchema } from "~/lib/validations/discord";
 
 import { dotDivider, Skeleton } from "~/components/ui";
 import Discord from "~/components/ui/icons/discord";
 
-export default function DiscordWidget(props: { data?: DiscordServerResponse }) {
+export default function DiscordWidget(props: { data?: DiscordServerResponseSchema }) {
   const memberCount = props.data?.approximate_member_count ?? 0;
   const onlineCount = props.data?.approximate_presence_count ?? 0;
 

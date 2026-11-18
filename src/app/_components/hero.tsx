@@ -1,13 +1,14 @@
 import ColorBlock from "./color-block";
 import HeroFeature from "./hero-feature";
 import { Link } from "~/components/ui";
+import { startLink } from "~/config/site";
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-screen w-full items-center justify-around gap-8 px-4 pb-64 pt-40 bg-dot-gray-800/15">
-      <div className="flex flex-col items-center justify-center text-center text-gray-600 selection:bg-kolumblue-200 md:items-start md:text-left">
-        <h1 className="whitespace-nowrap pb-d6 text-d-4xl font-bold">
-          <span className="block text-d-6xl">Travel Planning</span>
+    <section id="about" className="relative flex min-h-screen w-full items-center justify-around gap-8 px-4 pb-64 pt-40 bg-dot-gray-800/15">
+      <div className="flex min-w-0 flex-col items-center justify-center text-center text-gray-600 selection:bg-kolumblue-200 md:items-start md:text-left">
+        <h1 className="pb-d6 text-2xl font-bold sm:whitespace-nowrap sm:text-d-4xl">
+          <span className="block text-3xl sm:text-d-6xl">Travel Planning</span>
           Made
           <ColorBlock className="rotate-3 bg-emerald-400 text-white selection:bg-emerald-100 selection:text-emerald-600 hover:-rotate-6">
             Simple
@@ -23,8 +24,8 @@ export default function Hero() {
           crafting of your itinerary into <br /> an easy task.
         </p>
 
-        <Link.Arrow href="/signup" variant="primary" size="d3xl">
-          Start Your Adventure
+        <Link.Arrow href={startLink.href} variant="primary" size="d3xl">
+          {startLink.label}
         </Link.Arrow>
       </div>
 
