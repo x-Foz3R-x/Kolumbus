@@ -15,8 +15,10 @@ export default function HomePage({ nav }: { nav?: React.ReactNode }) {
 
       <main className="apply-custom-cursor min-h-screen w-full px-4 font-belanosima">
         <Hero />
-        <Features />
-        <Concept />
+        <div className="overflow-hidden rounded-bl-[3rem] bg-gray-800">
+          <Features />
+          <Concept />
+        </div>
         <Demo />
 
         <CTA />

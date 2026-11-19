@@ -7,7 +7,7 @@ import FeaturesCard from "./feature-card";
 export default function Features() {
   return (
     <section
-      className="relative rounded-bl-[3rem] bg-gray-800 px-6 pb-14 pt-20 font-inter sm:px-10 sm:pb-20 lg:px-14"
+      className="relative bg-gray-800 px-6 pb-40 pt-20 font-inter sm:px-10 lg:px-14"
       aria-label="What you can do with Kolumbus"
     >
       <ul className="grid gap-10 md:grid-cols-3 md:gap-6 xl:gap-10">
@@ -66,7 +66,13 @@ export default function Features() {
             <div className="absolute -right-1 -top-4 h-36 w-40 rotate-12 rounded-xl border-2 border-white/50 bg-kolumblue-100 shadow-xl" />
             <div className="relative mr-6 w-40 -rotate-6 overflow-hidden rounded-xl border-2 border-white bg-white shadow-2xl">
               <div className="flex h-28 items-center justify-center bg-kolumblue-100">
-                <Icons.defaultTrip className="h-20 w-28" />
+                <Image
+                  src="/trip-covers/3.webp"
+                  width={160}
+                  height={112}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="p-3">
                 <p className="text-xs font-semibold text-gray-700">A few days in Kraków</p>

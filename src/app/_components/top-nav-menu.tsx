@@ -32,7 +32,7 @@ export default function TopNavMenu({ children }: { children?: React.ReactNode })
             animate: {
               backgroundColor: "white",
               width: "150px",
-              height: "176px",
+              height: children ? "176px" : "140px",
               borderRadius: "12px",
               transition: { ease: EASING.kolumbFlow, duration: 0.4 },
             },
@@ -99,9 +99,6 @@ export default function TopNavMenu({ children }: { children?: React.ReactNode })
 export function PublicLinks() {
   return (
     <>
-      <MenuLink href="/#concept" label="about" className="text-base text-gray-600">
-        About
-      </MenuLink>
       <MenuLink href="/contact" label="contact" className="text-base text-gray-600">
         Contact
       </MenuLink>

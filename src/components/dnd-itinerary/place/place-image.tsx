@@ -12,6 +12,7 @@ export default function PlaceImage(props: {
   src?: string | null;
   size?: number;
   googleId?: string | null;
+  attribution?: "compact" | "full";
 }) {
   const [failedSource, setFailedSource] = useState<string | null>(null);
   const photo = useQuery({
@@ -30,20 +31,25 @@ export default function PlaceImage(props: {
 
       return {
         src: `/api/places?${new URLSearchParams({ action: "image", reference: photo.photo_reference }).toString()}`,
-        attributions: [...data.html_attributions, ...photo.html_attributions].map((html) => {
-          const document = new DOMParser().parseFromString(html, "text/html");
-          const href = document.querySelector("a")?.getAttribute("href");
-          return {
-            label: document.body.textContent ?? "Photo",
-            href: href?.startsWith("https://") ? href : undefined,
-          };
-        }),
+        attributions: [...new Set([...data.html_attributions, ...photo.html_attributions])].map(
+          (html) => {
+            const document = new DOMParser().parseFromString(html, "text/html");
+            const href = document.querySelector("a")?.getAttribute("href");
+            return {
+              label: document.body.textContent ?? "Photo",
+              href: href?.startsWith("https://") ? href : undefined,
+            };
+          },
+        ),
       };
     },
   });
   const imageUrl = photo.data?.src ?? resolveImageUrl(props.src);
   const failed = imageUrl === failedSource;
   const source = failed ? "/place-fallback.png" : imageUrl;
+  const showCredits = !failed && !!photo.data;
+  const fullCredits = showCredits && props.attribution === "full";
+  const sourceUrl = `https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query: "Place", query_place_id: props.googleId ?? "" }).toString()}`;
 
   if (source.startsWith("/") || source.startsWith(placeFallbackImageUrl)) {
     return (
@@ -57,15 +63,22 @@ export default function PlaceImage(props: {
           priority
           fill
         />
-        {!failed && photo.data && (
-          <span className="absolute bottom-0 right-0 max-w-full bg-white/90 px-1 text-xs text-gray-700">
-            <span translate="no" className="block whitespace-nowrap">
+        {fullCredits && photo.data && (
+          <span className="absolute bottom-0.5 right-0.5 flex max-w-[calc(100%-0.5rem)] flex-wrap items-center gap-x-1 rounded-sm bg-white/85 px-1 py-0.5 font-sans text-[9px] leading-[11px] text-gray-600">
+            <a
+              href={sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              translate="no"
+              className="whitespace-nowrap"
+              onClick={(event) => event.stopPropagation()}
+            >
               Google Maps
-            </span>
+            </a>
             {photo.data.attributions.map((attribution, index) => (
               <a
                 key={index}
-                className="block"
+                className="underline decoration-gray-300 underline-offset-2"
                 href={attribution.href}
                 target="_blank"
                 rel="noreferrer"

@@ -8,6 +8,7 @@ export const startLink = isShowcase
   : { href: "/signup", label: "Start Your Adventure" };
 
 const links = {
+  github: "https://github.com/x-Foz3R-x/Kolumbus",
   discord: "https://discord.com/invite/UH5BP8Hy8z",
   instagram: "https://www.instagram.com/kolumbusapp/",
   youtube: "https://www.youtube.com/channel/UCJc9ERuxfuH2xEJmMhdPAUQ",
@@ -17,7 +18,7 @@ const links = {
 export const siteConfig = {
   name: "Kolumbus",
   description: isShowcase
-    ? "Kolumbus, a personal travel-planning project by Paweł Knot. Explore the original concept, app screens and sketches, then try the interactive itinerary demo."
+    ? "Kolumbus, a personal travel-planning project. Explore the original concept, app screens and sketches, then try the interactive itinerary demo."
     : "Travel Planning Made Simple and Fun! Discover the power of Kolumbus and transform your travel planning process. Build your itinerary, navigate your journey with map, manage your travel expenses, and organize your packing list. Your next adventure is just a few clicks away. Start your adventure with Kolumbus today.",
   url: "https://www.kolumbus.app",
   links,

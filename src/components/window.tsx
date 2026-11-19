@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { Button } from "./ui";
+import { Button, Icons } from "./ui";
 
 export default function Window(props: {
   id?: string;
@@ -32,8 +32,10 @@ export default function Window(props: {
             disabled={!props.onClose}
             variant="unset"
             size="unset"
-            className="h-3 w-3 rounded-full border-[0.5px] border-red-600 bg-red-500"
-          />
+            className="flex h-3 w-3 items-center justify-center rounded-full border-[0.5px] border-red-600 bg-red-500"
+          >
+            {props.onClose && <Icons.x aria-hidden="true" className="size-1.5 fill-red-950" />}
+          </Button>
           <Button
             onClick={props.onMinimize}
             aria-label={`Minimize ${props.title}`}
@@ -53,7 +55,7 @@ export default function Window(props: {
         </div>
 
         {/* Title */}
-        <div className="flex h-full w-full items-center justify-center whitespace-nowrap px-5 text-[15px] font-semibold mix-blend-color-burn">
+        <div className="flex h-full min-w-0 flex-1 items-center justify-center overflow-hidden whitespace-nowrap px-2 text-[15px] font-semibold mix-blend-color-burn">
           {props.title}
         </div>
 

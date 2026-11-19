@@ -28,7 +28,7 @@ const tasks = [
   {
     id: "dates",
     title: "Pick a different weekend",
-    hint: "Open Dates in the trip toolbar. Choose a start and end date, then click outside the calendar to apply.",
+    hint: "Click the blue calendar at the right of the trip toolbar. Choose a start and end date, then click outside the calendar to apply.",
   },
   {
     id: "history",

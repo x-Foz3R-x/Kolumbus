@@ -44,6 +44,7 @@ type ModalProps = VariantProps<typeof ModalVariants> & {
   overlayClassName?: string;
   zIndex?: number;
   dismissible?: boolean;
+  returnFocus?: boolean;
   rootSelector?: string;
   buttonProps?: ButtonProps;
   children?: React.ReactNode;
@@ -58,6 +59,7 @@ export function Modal({
   overlayClassName,
   zIndex = 999,
   dismissible = false,
+  returnFocus = true,
   rootSelector,
   buttonProps,
   children,
@@ -148,7 +150,7 @@ export function Modal({
             className={cn("relative grid place-items-center", overlayClassName)}
             lockScroll
           >
-            <FloatingFocusManager context={data.context}>
+            <FloatingFocusManager context={data.context} returnFocus={returnFocus}>
               <AnimatePresence onExitComplete={() => setIsMounted(false)}>
                 {isOpen && (
                   <>

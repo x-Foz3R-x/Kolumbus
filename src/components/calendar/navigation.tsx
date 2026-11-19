@@ -39,7 +39,7 @@ export default function Navigation(props: {
       <Select
         placement="bottom"
         selectedIndex={props.shownDate.getMonth()}
-        zIndex={50}
+        zIndex={1200}
         buttonProps={{
           variant: "appear",
           className: "h-8 rounded-lg hover:bg-gray-100 text-xs hover:shadow-sm",
@@ -62,7 +62,7 @@ export default function Navigation(props: {
       <Select
         placement="bottom"
         selectedIndex={props.shownDate.getFullYear() - props.minDate.getFullYear()}
-        zIndex={50}
+        zIndex={1200}
         buttonProps={{
           variant: "appear",
           className: "h-8 rounded-lg hover:bg-gray-100 text-xs hover:shadow-sm",

@@ -18,6 +18,7 @@ import { Modal, ModalBody, ModalControls, ModalHeader, ModalText } from "~/compo
 import { Button, Icons, ScrollIndicator } from "~/components/ui";
 import { format } from "date-fns";
 import { PlaceOverlay } from "~/components/dnd-itinerary/place";
+import TripToolbar from "~/components/trip-toolbar";
 
 export default function TopNav() {
   const router = useRouter();
@@ -103,39 +104,43 @@ export default function TopNav() {
 
   return (
     <>
-      <nav className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between border-b bg-white/80 px-[1.375rem] backdrop-blur-lg backdrop-saturate-[180%] backdrop-filter">
-        <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
-          <Link
-            href="/"
-            className="flex origin-left items-center gap-2 font-belanosima text-lg font-bold text-kolumblue-500"
-          >
-            <Icons.logo2 className="h-6 fill-kolumblue-500" />
-          </Link>
+      <TripToolbar
+        className="fixed inset-x-0 top-0 z-50"
+        navigation={
+          <>
+            <Link
+              href="/"
+              className="flex origin-left items-center gap-2 font-belanosima text-lg font-bold text-kolumblue-500"
+            >
+              <Icons.logo2 className="h-6 fill-kolumblue-500" />
+            </Link>
 
-          <Icons.slash className="size-[22px] stroke-gray-300" />
+            <Icons.slash className="size-[22px] stroke-gray-300" />
 
-          <TripStack />
-        </section>
+            <TripStack />
+          </>
+        }
+        actions={
+          <>
+            <div id="trash-container" />
 
-        <section className="flex h-full flex-shrink-0 items-center justify-end gap-2">
-          <div id="trash-container" />
+            <Calendar
+              startDate={trip.startDate}
+              endDate={trip.endDate}
+              maxDays={14}
+              onApply={handleUpdate}
+            />
 
-          <Calendar
-            startDate={trip.startDate}
-            endDate={trip.endDate}
-            maxDays={14}
-            onApply={handleUpdate}
-          />
+            <MembersDropdown
+              tripId={trip.id}
+              tripInviteCode={trip.inviteCode}
+              tripMembers={trip.members}
+            />
 
-          <MembersDropdown
-            tripId={trip.id}
-            tripInviteCode={trip.inviteCode}
-            tripMembers={trip.members}
-          />
-
-          <ProfileButton />
-        </section>
-      </nav>
+            <ProfileButton />
+          </>
+        }
+      />
 
       <Modal isOpen={isModalOpen} setOpen={setModalOpen} size="xl">
         <ModalBody.iconDesign variant="danger" icon={<Icons.triangleExclamation />}>
