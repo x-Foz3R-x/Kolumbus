@@ -3,6 +3,7 @@ import "~/styles/custom-cursor.css";
 import TopNav from "./top-nav";
 import Hero from "./hero";
 import Features from "./features";
+import Concept from "./concept";
 import Demo from "./demo";
 import CTA from "./cta";
 import Footer from "./footer";
@@ -15,6 +16,7 @@ export default function HomePage({ nav }: { nav?: React.ReactNode }) {
       <main className="apply-custom-cursor min-h-screen w-full px-4 font-belanosima">
         <Hero />
         <Features />
+        <Concept />
         <Demo />
 
         <CTA />

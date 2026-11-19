@@ -13,7 +13,7 @@ export default function TopNavMenu({ children }: { children?: React.ReactNode })
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="absolute right-4 h-16 md:right-8 overflow-hidden py-3.5 pl-0.5">
+    <div className="absolute right-4 h-16 overflow-hidden py-3.5 pl-0.5 md:right-8">
       <SlideAnimation direction="in" threshold={100} showOnMobile className="mr-0.5">
         <Menu
           isOpen={isMenuOpen}
@@ -80,7 +80,11 @@ export default function TopNavMenu({ children }: { children?: React.ReactNode })
             {children ?? (
               <>
                 <PublicLinks />
-                <MenuLink href={startLink.href} label="try the demo" className="text-base text-gray-600">
+                <MenuLink
+                  href={startLink.href}
+                  label="try the demo"
+                  className="text-base text-gray-600"
+                >
                   {startLink.label}
                 </MenuLink>
               </>
@@ -95,7 +99,7 @@ export default function TopNavMenu({ children }: { children?: React.ReactNode })
 export function PublicLinks() {
   return (
     <>
-      <MenuLink href="/#about" label="about" className="text-base text-gray-600">
+      <MenuLink href="/#concept" label="about" className="text-base text-gray-600">
         About
       </MenuLink>
       <MenuLink href="/contact" label="contact" className="text-base text-gray-600">

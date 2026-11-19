@@ -16,8 +16,9 @@ const links = {
 
 export const siteConfig = {
   name: "Kolumbus",
-  description:
-    "Travel Planning Made Simple and Fun! Discover the power of Kolumbus and transform your travel planning process. Build your itinerary, navigate your journey with map, manage your travel expenses, and organize your packing list. Your next adventure is just a few clicks away. Start your adventure with Kolumbus today.",
+  description: isShowcase
+    ? "Kolumbus, a personal travel-planning project by Paweł Knot. Explore the original concept, app screens and sketches, then try the interactive itinerary demo."
+    : "Travel Planning Made Simple and Fun! Discover the power of Kolumbus and transform your travel planning process. Build your itinerary, navigate your journey with map, manage your travel expenses, and organize your packing list. Your next adventure is just a few clicks away. Start your adventure with Kolumbus today.",
   url: "https://www.kolumbus.app",
   links,
   footerNav: [

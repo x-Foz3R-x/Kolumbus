@@ -32,7 +32,7 @@ export default function Footer(props: { className?: string }) {
             {nav.items.map((item) => (
               <Link.Default
                 key={item.title}
-                href={item.href === "/about" ? "/#about" : item.href}
+                href={item.href === "/about" ? "/#concept" : item.href}
                 target={item.external ? "_blank" : "_self"}
                 className="duration-250 ease-kolumb-flow hover:text-white"
               >

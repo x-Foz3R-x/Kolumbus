@@ -24,7 +24,7 @@ export default function TopNav({
         <div className="flex items-center gap-4">
           <div className="flex">
             <Link.UnderLine
-              href="/#about"
+              href="/#concept"
               className="fill-gray-600 px-5 text-[17px] text-gray-600 before:inset-x-5"
             >
               About

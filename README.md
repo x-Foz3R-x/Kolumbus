@@ -2,7 +2,7 @@
 
 ## Travel Planning made Simple and Fun!
 
-[Start Your Adventure](https://www.kolumbus.app/sign-up)
+[Try the demo](https://www.kolumbus.app/#demo)
 
 ## TODO
 
@@ -24,3 +24,7 @@ of Supabase and Clerk. Custom places remain available when Google cannot be reac
 The demo opens an example trip on a first visit and the local trip library on later visits.
 Trip edits and explored activities are stored in this browser. The trip toolbar contains
 the calendar, undo/redo controls, and history for the current editing session.
+
+The homepage also includes an interactive archive of the original app screens and sketches.
+See [the complete showcase change list](docs/showcase-changes.md) for the implementation scope
+and the source of each image.

@@ -41,6 +41,7 @@ type ModalProps = VariantProps<typeof ModalVariants> & {
   setOpen?: (open: boolean) => void;
   animation?: Exclude<keyof typeof TRANSITION, "fadeToPosition"> | null;
   className?: string;
+  overlayClassName?: string;
   zIndex?: number;
   dismissible?: boolean;
   rootSelector?: string;
@@ -54,6 +55,7 @@ export function Modal({
   animation,
   size,
   className,
+  overlayClassName,
   zIndex = 999,
   dismissible = false,
   rootSelector,
@@ -143,7 +145,7 @@ export function Modal({
         >
           <FloatingOverlay
             style={{ zIndex }}
-            className={cn("relative grid place-items-center")}
+            className={cn("relative grid place-items-center", overlayClassName)}
             lockScroll
           >
             <FloatingFocusManager context={data.context}>
