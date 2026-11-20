@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { add, format } from "date-fns";
+import { add } from "date-fns";
 
 import Calendar from "~/components/calendar";
 import { DndItinerary } from "~/components/dnd-itinerary";
-import { Button, Icons } from "~/components/ui";
+import { Button, Icons, Input } from "~/components/ui";
+import Brand from "~/components/brand";
+import TripToolbar from "~/components/trip-toolbar";
 import { Floating } from "~/components/ui/floating";
 import useHistoryState from "~/hooks/use-history-state";
 import { cn, createId, differenceInDays, formatDate } from "~/lib/utils";
 import type { ItinerarySchema } from "~/lib/validations/trip";
-import type { DemoTrip } from "./use-demo-library";
+import { DEMO_LIMITS, type DemoTrip } from "./use-demo-library";
+import { getDemoMoveTask } from "./demo-activities";
 
 export default function DemoTripEditor(props: {
   initialTrip: DemoTrip;
@@ -31,11 +34,13 @@ export default function DemoTripEditor(props: {
   }, [changes, position, getEntry, onSave]);
 
   const updateItinerary = (value: ItinerarySchema | number, description?: string) => {
+    const previous = description?.startsWith("Move") ? getEntry(position).itinerary : null;
     setTrip(typeof value === "number" ? value : { ...trip, itinerary: value }, description);
-    if (!description) return;
+    if (!description || typeof value === "number") return;
     if (description.startsWith("Add")) onComplete("add");
-    if (description.startsWith("Move")) onComplete("move");
-    if (/Move \d+ places/.test(description)) onComplete("multiple");
+    const movement = previous ? getDemoMoveTask(previous, value, description) : null;
+    if (movement) onComplete(movement);
+    if (description.startsWith("Delete")) onComplete("remove");
     if (description === "Update place") onComplete("details");
   };
 
@@ -63,7 +68,8 @@ export default function DemoTripEditor(props: {
   }, [undo, redo, onComplete]);
 
   const changeDates = (start: Date, end: Date) => {
-    const count = differenceInDays(start, end, true);
+    const count = Math.min(DEMO_LIMITS.days, Math.max(1, differenceInDays(start, end, true)));
+    const boundedEnd = add(start, { days: count - 1 });
     const remainingPlaces = trip.itinerary.slice(count).flatMap((day) => day.places);
     const itinerary = Array.from({ length: count }, (_, index) => ({
       id: trip.itinerary[index]?.id ?? createId(),
@@ -74,7 +80,7 @@ export default function DemoTripEditor(props: {
       ].map((place, sortIndex) => ({ ...place, dayIndex: index, sortIndex })),
     }));
     setTrip(
-      { ...trip, startDate: formatDate(start), endDate: formatDate(end), itinerary },
+      { ...trip, startDate: formatDate(start), endDate: formatDate(boundedEnd), itinerary },
       "Change dates",
     );
     onComplete("dates");
@@ -82,64 +88,46 @@ export default function DemoTripEditor(props: {
 
   return (
     <>
-      <div className="border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
-        <div className="mb-3 flex items-center gap-3">
-          <Button
-            onClick={props.onLibrary}
-            size="sm"
-            className="flex flex-shrink-0 items-center gap-1.5 bg-gray-50 text-gray-500"
-          >
-            <Icons.library className="size-3.5 fill-current" /> Library
-          </Button>
-          <span className="text-gray-200" aria-hidden>
-            /
-          </span>
-          <label className="min-w-0 flex-1">
-            <span className="sr-only">Trip name</span>
-            <input
+      <TripToolbar
+        className="h-auto min-h-14 shrink-0 flex-wrap gap-x-4 gap-y-2 bg-white px-4 py-2 sm:px-5"
+        navigation={
+          <>
+            <Button
+              onClick={props.onLibrary}
+              variant="unset"
+              size="unset"
+              aria-label="Back to library"
+              tooltip={{ children: "Back to library" }}
+              className="flex shrink-0 items-center gap-2 rounded-lg py-1 text-sm text-gray-500 hover:text-kolumblue-600"
+            >
+              <Brand compact className="[&_svg]:size-7" />
+              <span className="hidden sm:inline">Library</span>
+            </Button>
+            <Icons.slash aria-hidden="true" className="size-[22px] shrink-0 stroke-gray-300" />
+            <Input
+              key={position}
+              aria-label="Trip name"
               value={trip.name}
               maxLength={100}
               onChange={(event) => setTrip({ ...trip, name: event.target.value })}
-              onBlur={() =>
-                setTrip({ ...trip, name: trip.name.trim() || "My next adventure" }, "Rename trip")
+              onUpdate={(event) =>
+                setTrip(
+                  { ...trip, name: event.target.value.trim() || "My next adventure" },
+                  "Rename trip",
+                )
               }
-              onKeyDown={(event) => {
-                if (event.key === "Enter") event.currentTarget.blur();
+              className={{
+                container: "h-fit min-w-0 max-w-[min(38ch,60vw)]",
+                input:
+                  "rounded bg-transparent px-0 py-0.5 font-normal shadow-none duration-300 ease-kolumb-flow hover:bg-black/5 hover:shadow-sm focus:bg-white focus:px-2 focus:shadow-focus",
+                dynamic: "peer-hover:px-2 peer-focus:px-2",
               }}
-              className="w-full min-w-0 rounded bg-transparent py-1 font-belanosima text-lg font-semibold text-gray-700 focus-visible:bg-kolumblue-50"
+              dynamicWidth
             />
-          </label>
-        </div>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Calendar
-              startDate={trip.startDate}
-              endDate={trip.endDate}
-              maxDays={14}
-              onApply={changeDates}
-              placement="bottom-start"
-              triggerProps={{
-                "aria-label": "Change trip dates",
-                variant: "unset",
-                size: "sm",
-                className:
-                  "flex items-center gap-2 rounded-lg bg-kolumblue-50 px-3 py-2 text-xs font-medium text-kolumblue-600 hover:bg-kolumblue-100",
-                children: (
-                  <>
-                    <Icons.rangeCalendar className="size-4 fill-current" />
-                    <span>
-                      {format(new Date(trip.startDate), "d MMM")} –{" "}
-                      {format(new Date(trip.endDate), "d MMM")}
-                    </span>
-                  </>
-                ),
-              }}
-            />
-            <span className="hidden text-xs text-gray-400 sm:inline">
-              {trip.itinerary.length} days
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
+          </>
+        }
+        actions={
+          <>
             <Button
               aria-label="Undo last change"
               onClick={() => jumpTo(position - 1)}
@@ -199,16 +187,22 @@ export default function DemoTripEditor(props: {
                 ))}
               </ol>
             </Floating>
-          </div>
-        </div>
-      </div>
-      <div className="h-[clamp(320px,60vh,500px)] overflow-auto bg-gray-50/60 p-4 sm:p-6">
+            <Calendar
+              startDate={trip.startDate}
+              endDate={trip.endDate}
+              maxDays={DEMO_LIMITS.days}
+              onApply={changeDates}
+            />
+          </>
+        }
+      />
+      <div className="min-h-0 flex-1 overflow-auto bg-white p-4 sm:p-6">
         <DndItinerary
           tripId={trip.id}
           userId="guest"
           itinerary={trip.itinerary}
           setItinerary={updateItinerary}
-          placeLimit={100}
+          placeLimit={DEMO_LIMITS.places}
           dndTrash
           calendar="left-0 mb-0"
         />

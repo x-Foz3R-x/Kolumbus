@@ -12,7 +12,8 @@
     "db:push": "drizzle-kit push",
     "db:seed": "tsx ./src/server/db/seed",
     "db:studio": "drizzle-kit studio",
-    "dev": "next dev",
+    "dev": "NEXT_PUBLIC_KOLUMBUS_SHOWCASE=1 next dev",
+    "dev:app": "next dev",
     "dev:showcase": "NEXT_PUBLIC_KOLUMBUS_SHOWCASE=1 next dev",
     "lint": "next lint",
     "start": "next start"

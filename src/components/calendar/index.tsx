@@ -74,14 +74,15 @@ const Calendar = memo(function Calendar(props: {
   return (
     <div id="calendar" className="flex">
       <Floating
-        zIndex={60}
+        zIndex={1100}
         isOpen={isOpen}
         onOpenChange={updateCalendar}
         placement={props.placement ?? "bottom-end"}
         offset={{ mainAxis: 6, crossAxis: 12 }}
+        shift={{ padding: 6, crossAxis: true }}
+        size={false}
         click={{ enabled: true }}
-        className="flex overflow-scroll rounded-xl border bg-white shadow-floating dark:border-gray-700 dark:bg-gray-900"
-        rootSelector="#calendar"
+        className="flex max-h-[calc(100dvh-12px)] w-[290px] max-w-[calc(100vw-12px)] overflow-auto rounded-xl border bg-white shadow-floating dark:border-gray-700 dark:bg-gray-900"
         triggerProps={
           !!props.triggerProps
             ? {
@@ -92,6 +93,7 @@ const Calendar = memo(function Calendar(props: {
                 },
               }
             : {
+                "aria-label": "Change trip dates",
                 variant: "unset",
                 size: "unset",
                 className: "relative h-10 fill-kolumblue-500 flex hover:brightness-110",

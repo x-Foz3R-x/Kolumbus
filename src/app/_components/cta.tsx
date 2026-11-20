@@ -52,9 +52,9 @@ export default function CTA() {
       </div>
 
       <Icons.insetRadius className="absolute bottom-0 left-0 size-12 -rotate-90 fill-kolumblue-500" />
-      <div className="absolute left-0 top-0 h-[25%] w-[25vw] rounded-br-[clamp(2.25rem,2.5vw,3.125rem)] bg-white">
-        <Icons.insetRadius className="absolute -right-12 top-0 size-12 fill-white" />
-        <Icons.insetRadius className="absolute -bottom-12 left-0 size-12 fill-white" />
+      <div className="absolute left-0 top-0 h-[25%] w-[25vw] rounded-br-[clamp(2.25rem,2.5vw,3.125rem)] bg-stone-800 bg-dot-white/15">
+        <Icons.insetRadius className="absolute -right-12 top-0 size-12 fill-stone-800" />
+        <Icons.insetRadius className="absolute -bottom-12 left-0 size-12 fill-stone-800" />
       </div>
       <div className="absolute bottom-0 right-0 h-[25%] w-[25vw] rounded-tl-[clamp(2.25rem,2.5vw,3.125rem)] bg-kolumblue-500">
         <Icons.insetRadius className="absolute -top-12 right-0 size-12 rotate-180 fill-kolumblue-500" />

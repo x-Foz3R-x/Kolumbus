@@ -14,12 +14,14 @@ type Props = {
   isOpen: boolean;
   setOpen: (open: boolean) => void;
   maxDays: number;
+  returnFocus?: boolean;
   onCreate: (name: string, startDate: string, endDate: string) => void;
 };
 export const CreateTripModal = memo(function CreateTripModal({
   isOpen,
   setOpen,
   maxDays,
+  returnFocus,
   onCreate: handleCreate,
 }: Props) {
   const [name, setName] = useState("");
@@ -39,7 +41,7 @@ export const CreateTripModal = memo(function CreateTripModal({
   };
 
   return (
-    <Modal isOpen={isOpen} setOpen={setOpen} dismissible>
+    <Modal isOpen={isOpen} setOpen={setOpen} dismissible returnFocus={returnFocus}>
       <ModalBody.iconDesign icon={<Icons.defaultTrip />}>
         <ModalHeader>Create Trip</ModalHeader>
 
@@ -47,8 +49,14 @@ export const CreateTripModal = memo(function CreateTripModal({
           Enter details below to create a new trip and start planning your itinerary.
         </ModalText>
 
-        <div className="flex gap-3">
-          <Input value={name} label="Trip Name" onChange={(e) => setName(e.target.value)} />
+        <div className="flex flex-wrap gap-3">
+          <Input
+            value={name}
+            label="Trip Name"
+            maxLength={100}
+            className={{ container: "min-w-0 basis-full sm:flex-1 sm:basis-40" }}
+            onChange={(e) => setName(e.target.value)}
+          />
 
           <Calendar
             startDate={formatDate(startDate)}
@@ -58,7 +66,7 @@ export const CreateTripModal = memo(function CreateTripModal({
               setStartDate(startDate);
               setEndDate(endDate);
             }}
-            placement="right"
+            placement="bottom-end"
           />
         </div>
       </ModalBody.iconDesign>
@@ -69,6 +77,7 @@ export const CreateTripModal = memo(function CreateTripModal({
         </Button>
         <Button
           onClick={createNewTrip}
+          disabled={!name.trim()}
           whileHover={{ scale: 1.05 }}
           animatePress
           className="whitespace-nowrap bg-kolumblue-500 text-gray-100"

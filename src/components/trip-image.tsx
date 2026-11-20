@@ -6,11 +6,13 @@ export default function TripImage({ imageUrl, size }: { imageUrl: string; size: 
   // Adjust the source url to include a size parameter if the image
   // is locally generated (url starts with "/")
 
-  const src = imageUrl.startsWith("/") ? `${imageUrl}&size=${parseInt(size) * 2}` : imageUrl;
+  const src = imageUrl.startsWith("/api/")
+    ? `${imageUrl}${imageUrl.includes("?") ? "&" : "?"}size=${parseInt(size) * 2}`
+    : imageUrl;
 
   return imageUrl.startsWith("/") || imageUrl.startsWith(tripFallbackImageUrl) ? (
     // Use the Image component for local or fallback images for optimized loading
-    <Image src={src} alt="Trip image" sizes={size} priority fill />
+    <Image src={src} alt="Trip image" sizes={size} className="object-cover object-center" fill />
   ) : (
     // Use a standard img tag for custom images
     <img src={src} alt="Trip image" className="h-full w-full object-cover object-center" />
