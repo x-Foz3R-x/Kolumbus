@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Icons } from "~/components/ui";
 import { siteConfig } from "~/config/site";
+import ColorBlock from "~/app/_components/color-block";
 
 export default function ContactDetails({ children }: { children?: React.ReactNode }) {
   const email = "pawel@kolumbus.app";
@@ -39,9 +40,9 @@ export default function ContactDetails({ children }: { children?: React.ReactNod
           >
             Good conversations.
             <br />
-            <span className="mt-2 inline-block -rotate-2 bg-yellow-300 px-3 pb-1 text-gray-800">
+            <ColorBlock className="-rotate-3 bg-yellow-300 text-gray-800 selection:bg-yellow-100 selection:text-yellow-600 hover:rotate-6">
               New adventures.
-            </span>
+            </ColorBlock>
           </h1>
           <p className="mt-7 max-w-xl text-sm leading-relaxed text-gray-500">
             Kolumbus is a personal take on making travel planning a little more playful. A question,

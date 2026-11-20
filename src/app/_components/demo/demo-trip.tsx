@@ -13,6 +13,7 @@ import useHistoryState from "~/hooks/use-history-state";
 import { cn, createId, differenceInDays, formatDate } from "~/lib/utils";
 import type { ItinerarySchema } from "~/lib/validations/trip";
 import { DEMO_LIMITS, type DemoTrip } from "./use-demo-library";
+import { getDemoMoveTask } from "./demo-activities";
 
 export default function DemoTripEditor(props: {
   initialTrip: DemoTrip;
@@ -33,11 +34,13 @@ export default function DemoTripEditor(props: {
   }, [changes, position, getEntry, onSave]);
 
   const updateItinerary = (value: ItinerarySchema | number, description?: string) => {
+    const previous = description?.startsWith("Move") ? getEntry(position).itinerary : null;
     setTrip(typeof value === "number" ? value : { ...trip, itinerary: value }, description);
-    if (!description) return;
+    if (!description || typeof value === "number") return;
     if (description.startsWith("Add")) onComplete("add");
-    if (description.startsWith("Move")) onComplete("move");
-    if (/Move \d+ places/.test(description)) onComplete("multiple");
+    const movement = previous ? getDemoMoveTask(previous, value, description) : null;
+    if (movement) onComplete(movement);
+    if (description.startsWith("Delete")) onComplete("remove");
     if (description === "Update place") onComplete("details");
   };
 

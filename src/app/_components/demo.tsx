@@ -9,6 +9,9 @@ import DemoTripEditor from "./demo/demo-trip";
 import useDemoLibrary, { DEMO_LIMITS } from "./demo/use-demo-library";
 import { Icons } from "~/components/ui";
 import { cn } from "~/lib/utils";
+import ColorBlock from "./color-block";
+import ShowcaseSection from "./showcase-section";
+import { countDemoActivities, demoTaskIds } from "./demo/demo-activities";
 
 export default function Demo() {
   const library = useDemoLibrary();
@@ -24,27 +27,23 @@ export default function Demo() {
   };
 
   return (
-    <section
-      className="mx-auto max-w-[1600px] scroll-mt-20 px-0 pb-24 pt-16 font-inter sm:px-4 sm:pb-32 sm:pt-24"
-      aria-labelledby="demo-heading"
+    <ShowcaseSection
+      id="demo"
+      tone="graphite"
+      last
+      title={
+        <>
+          Take Kolumbus for a
+          <ColorBlock className="-rotate-3 bg-orange-400 text-gray-800 selection:bg-orange-100 selection:text-orange-700 hover:rotate-6">
+            spin
+          </ColorBlock>
+        </>
+      }
     >
-      <div className="mb-10 text-center">
-        <h2
-          id="demo-heading"
-          className="font-belanosima text-3xl font-semibold text-gray-700 sm:text-4xl"
-        >
-          Take Kolumbus for a spin
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-gray-500">
-          A little room for your next big adventure. Explore a ready-made trip, then make a plan of
-          your own.
-        </p>
-      </div>
-
-      <div id="demo" className="scroll-mt-20">
+      <div>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 px-1">
-          <p className="text-[11px] leading-relaxed text-gray-400">
-            Local demo · {DEMO_LIMITS.trips} trips · {DEMO_LIMITS.days} days per trip ·{" "}
+          <p className="text-[11px] leading-relaxed text-white/75">
+            Local demo · max {DEMO_LIMITS.trips} trips · max {DEMO_LIMITS.days} days per trip · max{" "}
             {DEMO_LIMITS.places} places per trip
           </p>
           <button
@@ -53,12 +52,12 @@ export default function Demo() {
             aria-expanded={hintsOpen}
             aria-controls="demo-tasks-window"
             onClick={() => setHintsOpen((open) => !open)}
-            className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-xs text-gray-500 shadow-sm hover:border-kolumblue-300 hover:text-kolumblue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-kolumblue-500"
+            className="flex items-center gap-2 rounded px-1 py-1 text-xs text-white/60 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/60"
           >
-            <Icons.clipboardPin aria-hidden="true" className="size-3.5 fill-current" />
-            {hintsOpen ? "Things to try" : "Show things to try"}
-            <span className="rounded-full bg-kolumblue-50 px-1.5 py-0.5 text-[10px] text-kolumblue-600">
-              {library.completed.length}/8
+            <Icons.clipboardPin aria-hidden="true" className="size-3 fill-current" />
+            {hintsOpen ? "Hide things to try" : "Show things to try"}
+            <span className="font-inconsolata text-[11px] text-white/40">
+              {countDemoActivities(library.completed)}/{demoTaskIds.length}
             </span>
           </button>
         </div>
@@ -133,6 +132,6 @@ export default function Demo() {
           </aside>
         </div>
       </div>
-    </section>
+    </ShowcaseSection>
   );
 }

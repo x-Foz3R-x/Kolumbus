@@ -14,7 +14,7 @@ export default function Brand({
     <span
       className={cn(
         "inline-flex shrink-0 items-center gap-2.5 font-belanosima text-2xl font-semibold leading-none",
-        inverse ? "text-white" : "text-gray-800",
+        inverse ? "text-white" : "text-kolumblue-500",
         className,
       )}
       aria-label="Kolumbus"

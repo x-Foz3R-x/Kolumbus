@@ -15,13 +15,15 @@ export default function HomePage({ nav }: { nav?: React.ReactNode }) {
 
       <main className="apply-custom-cursor min-h-screen w-full px-4 font-belanosima">
         <Hero />
-        <div className="overflow-hidden rounded-bl-[3rem] bg-gray-800">
+        <div className="relative -mt-32 overflow-hidden">
           <Features />
           <Concept />
+          <Demo />
         </div>
-        <Demo />
 
-        <CTA />
+        <div className="bg-stone-800 bg-dot-white/15">
+          <CTA />
+        </div>
         <Footer className="rounded-none bg-kolumblue-500" />
       </main>
     </>

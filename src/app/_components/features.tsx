@@ -3,12 +3,24 @@
 import Image from "next/image";
 import { Icons } from "~/components/ui";
 import FeaturesCard from "./feature-card";
+import ColorBlock from "./color-block";
+import ShowcaseSection from "./showcase-section";
 
 export default function Features() {
   return (
-    <section
-      className="relative bg-gray-800 px-6 pb-40 pt-20 font-inter sm:px-10 lg:px-14"
-      aria-label="What you can do with Kolumbus"
+    <ShowcaseSection
+      id="features"
+      tone="dark"
+      first
+      title={
+        <>
+          Discover the
+          <ColorBlock className="-rotate-3 bg-yellow-300 text-gray-800 selection:bg-yellow-100 selection:text-yellow-600 hover:rotate-6">
+            Power
+          </ColorBlock>
+          of Kolumbus
+        </>
+      }
     >
       <ul className="grid gap-10 md:grid-cols-3 md:gap-6 xl:gap-10">
         <FeaturesCard
@@ -85,6 +97,6 @@ export default function Features() {
           </div>
         </FeaturesCard>
       </ul>
-    </section>
+    </ShowcaseSection>
   );
 }
