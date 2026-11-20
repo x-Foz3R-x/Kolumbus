@@ -88,7 +88,7 @@ export function createDemoTrip(template?: number, details?: DemoTripDefinition):
           : "My next adventure",
     startDate,
     endDate: formatDate(add(new Date(startDate), { days: dayCount - 1 })),
-    imageUrl: `/trip-covers/${2 + ((template ?? 1) % 3)}.webp`,
+    imageUrl: "/trip-fallback.png",
     updatedAt: new Date(),
     itinerary: Array.from({ length: dayCount }, (_, dayIndex) => ({
       id: createId(),
